@@ -1,6 +1,6 @@
 # Paper bot — live status
 
-Updated 2026-10-18T11:47:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
+Updated 2026-10-18T11:57:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
 
 | Equity | Net | Trades | Win rate | Profit factor | Avg R | Max DD |
 |---|---|---|---|---|---|---|
