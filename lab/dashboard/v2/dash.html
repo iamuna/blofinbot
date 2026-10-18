@@ -1,0 +1,71 @@
+<title>blofinbot Live</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/*STYLE*/
+</style>
+
+<header class="bar">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">bb</div>
+    <div>
+      <h1>blofinbot Live</h1>
+      <p id="sub">20 BloFin perpetuals · every timeframe 1m → 3M · supervised by Claude</p>
+    </div>
+  </div>
+  <span class="paper" title="Simulated trades only. No orders reach an exchange.">PAPER</span>
+  <div class="ticker" aria-live="polite">
+    <span class="px" id="px">—</span>
+    <small id="pxNote"><span class="livedot" id="liveDot"></span>BTC · waiting for price</small>
+  </div>
+</header>
+<div class="banner" id="banner" hidden></div>
+
+<section class="tiles" id="tiles" aria-label="Account"></section>
+
+<section class="ladder" aria-labelledby="ladH">
+  <div class="ladder-h"><h2 id="ladH">Timeframe ladder — each frame acts at its own close</h2><span class="dim mono" id="ladNote" style="font-size:11px"></span></div>
+  <div class="rungs" id="rungs"></div>
+  <div class="roles"><div class="ex">Execution · works orders every minute</div><div class="su">Setups · add / cut longs</div><div class="st">Big picture · direction, size, shorts</div></div>
+</section>
+
+<main class="grid">
+  <section class="card" aria-labelledby="mH">
+    <div class="card-h"><h2 id="mH">Coins — target vs holding and each timeframe's vote</h2><span class="dim" style="font-size:11.5px">Select a coin for its chart and profile</span></div>
+    <div class="scroll"><table class="m" id="matrix"></table></div>
+  </section>
+  <aside class="card" aria-labelledby="cH">
+    <div class="card-h"><h2 id="cH">Selected coin</h2><span id="cTag"></span></div>
+    <div class="card-b" id="coin"><div class="empty">Waiting for the first sync from the bot.</div></div>
+  </aside>
+</main>
+
+<div class="row2">
+  <section class="card" aria-labelledby="logH">
+    <div class="card-h"><h2 id="logH">Event log</h2><span class="dim mono" id="logCount" style="font-size:11px"></span></div>
+    <div class="log" id="log"></div>
+  </section>
+  <section class="card" aria-labelledby="fH">
+    <div class="card-h"><h2 id="fH">Fills</h2><span class="dim mono" id="fNote" style="font-size:11px"></span></div>
+    <div class="tablebox"><table class="t" id="fills"></table></div>
+  </section>
+</div>
+
+<div class="row2">
+  <section class="card" aria-labelledby="eqH">
+    <div class="card-h"><h2 id="eqH">Equity</h2><span class="dim mono" id="eqNote" style="font-size:11px"></span></div>
+    <div class="eqwrap"><canvas id="equity" role="img" aria-label="Paper account equity over time"></canvas></div>
+  </section>
+  <section class="card" aria-labelledby="rH">
+    <div class="card-h"><h2 id="rH">What the research expects</h2></div>
+    <div class="card-b" id="research"></div>
+  </section>
+</div>
+
+<p class="note">Research and paper trading only, not financial advice. Paper fills: limit orders fill only if a later 1-minute candle trades through them; unfilled orders turn into market orders after 30 minutes with taker fee and slippage. Funding is charged at BloFin's settlement times. Bot state syncs here from the <span class="mono">mtf-state</span> branch of iamuna/blofinbot; the BTC price in the header is live from your Crypto.com connector.</p>
+
+<script>
+/*APP*/
+</script>

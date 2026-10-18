@@ -10,17 +10,8 @@ name: Paper bot (checks every minute)
 # Stop it: Actions → "Paper bot" → ⋯ → Disable workflow.
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"
+  # Retired 2026-10-18: superseded by the 20-coin bot (mtf-bot.yml). Manual runs only.
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "lab/engine.js"
-      - "lab/paperbot.js"
-      - "lab/champion.json"
-      - "lab/restart.txt"
-      - ".github/workflows/paper-bot.yml"
 
 permissions:
   contents: write

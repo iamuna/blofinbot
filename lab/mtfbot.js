@@ -283,8 +283,8 @@ function workOrders(coin, bars) {
     if (b.t < o.t0) continue;
     const side = Math.sign(o.qty);
     const through = side > 0 ? b.l <= o.limit * (1 - EXEC.thruBps / 1e4) : b.h >= o.limit * (1 + EXEC.thruBps / 1e4);
-    if (through) { fill(coin, o.qty, o.limit, EXEC.maker, 'limit'); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(o.limit)} (limit, maker fee) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
-    if (b.t + MIN - o.t0 >= EXEC.chaseMinutes * MIN) { const p = b.c * (1 + side * EXEC.slip); fill(coin, o.qty, p, EXEC.taker, 'market'); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(p)} (market after ${EXEC.chaseMinutes} min) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
+    if (through) { fill(coin, o.qty, o.limit, EXEC.maker, 'limit'); if (S.targets[coin]) S.targets[coin].note = 'filled ' + iso(b.t).slice(11, 16); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(o.limit)} (limit, maker fee) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
+    if (b.t + MIN - o.t0 >= EXEC.chaseMinutes * MIN) { const p = b.c * (1 + side * EXEC.slip); fill(coin, o.qty, p, EXEC.taker, 'market'); if (S.targets[coin]) S.targets[coin].note = 'filled ' + iso(b.t).slice(11, 16); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(p)} (market after ${EXEC.chaseMinutes} min) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
     o.limit = b.c; // re-post at the latest price
   }
 }
