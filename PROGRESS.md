@@ -22,13 +22,16 @@ Decisions (his answers): **top 20 BloFin USDT perps**; timeframe design left to 
 |---|---|---|
 | 1. Evidence review (web) | done 05:00 | docs/MARKET_KNOWLEDGE.md |
 | 2. Top-20 universe + history (GitHub runner) | running — pipeline pushed 05:02 | tools/research_data.py, .github/workflows/research-data.yml → branch `research-data` |
-| 3. Coin profiler | next | lab/research/ (planned: profile.js) |
-| 4. Multi-timeframe portfolio engine | pending | lab/ (planned: mtf.js) |
+| 3. Coin profiler | built 05:15, runs when data lands | lab/mtf/profile.js |
+| 4. Multi-timeframe portfolio engine | v1 05:13 (tested on BTC); portfolio runner 05:20 | lab/mtf/mtf.js, lab/mtf/research.js |
 | 5. Walk-forward validation | pending | docs/RESEARCH_MTF_*.md |
 | 6. Multi-coin paper bot + Ubuntu installer | pending | lab/, deploy/ |
 
 ## Log
 
+- 05:20 — Portfolio research runner (lab/mtf/research.js): full system + ablations per layer/feature, long-only vs long+short, hysteresis and 2× cost stress, six market eras 2020→2026, BTC+ETH-only survivorship check.
+- 05:15 — Coin profiler (lab/mtf/profile.js): liquidity, vol, candle range vs fees per timeframe, variance ratios 15m→1M, autocorrelation, trend efficiency, hour/weekday seasonality, BTC beta, funding → per-coin plan. BTC: trends at 1w/1M (VR 1.05/1.14), mild snap-back at 1d (0.93); fees are 32% of a 1h candle's range but 5% of a daily one.
+- 05:13 — Multi-timeframe engine v1 (lab/mtf/mtf.js): Donchian trend ensemble on 1h,2h,4h,6h,12h,1d,3d,1w,1M,3M (each on its own closes), vol targeting per coin and portfolio, cross-coin momentum tilt, funding crowding filter, hysteresis rebalancing, fees + slippage + funding. BTC-only 2019→2026: Sharpe 0.91 long+short, 1.13 long-only, 0.79 at 2× costs; max drawdown 20–30% vs 56% for the 3M-only reference.
 - 05:03 — Ibrahim asked to keep working, save to GitHub and keep this progress file updated each step.
 - 05:02 — Pushed research-data pipeline (top-20 by BloFin 24h volume; Binance archive 1h full history, 5m 24 months, funding; checksums; gaps reported).
 - 05:00 — Evidence review written: trend ensembles (days→months) are the strongest documented edge; cross-sectional momentum in large coins; minute-scale mean reversion real but below fees (matches our own 60k-config test); session effects; funding as crowding/cost; volatility targeting.
