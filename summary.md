@@ -1,6 +1,6 @@
 # Paper bot — live status
 
-Updated 2026-10-18T17:59:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
+Updated 2026-10-18T18:09:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
 
 | Equity | Net | Trades | Win rate | Profit factor | Avg R | Max DD |
 |---|---|---|---|---|---|---|
@@ -8,7 +8,7 @@ Updated 2026-10-18T17:59:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER
 
 **Champion:** Volatility breakout · 1h (probation, since 2026-10-18T02:00:18Z)
 
-**Thinking:** Flat. Next 1h close at 19:00 UTC — long needs Bollinger breakout or MA crossover (filters not aligned).
+**Thinking:** Flat. Next 1h close at 20:00 UTC — long needs Bollinger breakout or MA crossover (filters not aligned).
 
 ## Recent events
 
