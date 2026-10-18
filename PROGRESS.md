@@ -23,12 +23,16 @@ Decisions (his answers): **top 20 BloFin USDT perps**; timeframe design left to 
 | 1. Evidence review (web) | done 05:00 | docs/MARKET_KNOWLEDGE.md |
 | 2. Top-20 universe + history (GitHub runner) | done 05:03 (verified 17:00) — 20/20 coins, 289 MB | tools/research_data.py → branch `research-data` |
 | 3. Coin profiler | done 17:10 — 20 coins profiled | lab/mtf/profile.js → docs/COIN_PROFILES.md, research_out/profiles/ |
-| 4. Multi-timeframe portfolio engine | v1 05:13 (tested on BTC); portfolio runner 05:20 | lab/mtf/mtf.js, lab/mtf/research.js |
+| 4. Multi-timeframe portfolio engine | v2 17:40 — 20-coin runs; execution layer studied | lab/mtf/mtf.js, research.js, execution_multi.js |
 | 5. Walk-forward validation | pending | docs/RESEARCH_MTF_*.md |
 | 6. Multi-coin paper bot + Ubuntu installer | pending | lab/, deploy/ |
 
 ## Log
 
+- 17:40 — Engine v2 options: size by number of live coins (`normLive`), fee-aware setup gating (`adaptiveSetup`), setup long-only. 20-coin results 2020→2026 (fees+slippage+funding included): v1 long+short Sharpe 0.96 · shorts only on 1d+ 1.26 (positive in all 6 eras) · + normLive 1.36, CAGR 18.9%, max DD 14.7% · adaptive setup gating saves fees but no Sharpe gain (left off) · chase execution +0.02 Sharpe, fees 12%→9%.
+- 17:25 — Execution study, all 20 coins, 6,659 rebalances on 5m candles (lab/mtf/execution_multi.js): market order 8.0 bps; **post at the best price, re-post each 5m bar for 30 min, then market: 5.9 bps in both halves** (robust); deep limit orders (10–40 bps or 0.5–2 ATR away) great in one half, bad in the other — rejected (trends run away from them).
+- 17:20 — Ablations (lab/mtf/research.js, v1): long-only Sharpe 1.44 but −1.39 in the 2022 bear; shorts only on 1d+ timeframes 1.26 and positive in every era → intraday shorts are costly noise.
+- 17:15 — 20-coin v1 baseline 2020→2026: Sharpe 0.96, CAGR 11.4%, vol 11.9%, max DD 13.9%, positive every calendar year incl. 2022 and 2026; 7 rebalances/day; fees 18.1% and funding 13.6% of equity over the period.
 - 17:10 — Coin profiles done (docs/COIN_PROFILES.md). Fixed a day-alignment bug that understated BTC correlation for coins that listed mid-day. Findings: monthly moves persist in most coins (VR 1M > 1), hourly moves snap back in most (VR 1h < 1); fees are 10–60% of an hourly candle, so signals must come from 4h–1d+ and the 1m–30m frames time entries; alts move 1.2–1.5× BTC (corr 0.5–0.9).
 - 17:00 — Session resumed. Saved the unpushed 05:05–05:22 work (lab/mtf/, deploy/). Dataset verified: 20/20 coins OK — BTC, ETH, ZEC, XRP, SOL, NEAR, Q, HYPE, DOGE, XMR, SUI, 1000BONK, PEPE (1000PEPE), HBAR, PUMP, SNDK, TRX, TIA, INJ, QNT. 1h history back to 2019-09 where listed (59,544 h for BTC), 5m for 24 months, funding. Notes: SNDK is a tokenised stock perp (Sandisk) with ~6 months of data; Q, HYPE, PUMP have ~1–1.5 years — short-history coins get smaller weights and are judged on less evidence.
 - 05:20 — Portfolio research runner (lab/mtf/research.js): full system + ablations per layer/feature, long-only vs long+short, hysteresis and 2× cost stress, six market eras 2020→2026, BTC+ETH-only survivorship check.

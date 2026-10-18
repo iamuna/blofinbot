@@ -154,7 +154,26 @@ const DEFAULT = {
   band: 0.25, minTradePct: 0.005, // hysteresis: trade only if |gap| > band × |target| and > minTradePct of equity
   fee: 0.0006, slip: 0.0002, // per side, as a fraction of notional
   start: null, end: null, // unix seconds window for metrics (signals warm up before)
+  // v2 options
+  normLive: false, minLive: 5, // divide risk by the number of coins with data (≥ minLive) instead of the full universe
+  adaptiveSetup: 0, // >0: per coin, a setup timeframe votes only while round-trip cost ≤ this share of its typical candle (trailing 90 days)
+  setupLongOnly: false, // setup layer (1h→12h) adds long exposure only; shorts come from the strategic layer
+  roundTripBps: 16, // used by adaptiveSetup: taker fee + slippage, both sides
 };
+// typical 1h candle range (bps), trailing ~90 days, causal (exponential average of (h-l)/c, outlier-capped)
+function hourRange(grid, g) {
+  const n = grid.n, out = new Float64Array(n).fill(NaN), k = 2 / (90 * 24 + 1);
+  let e = NaN;
+  for (let i = 0; i < n; i++) {
+    if (isNaN(g.c[i]) || !(g.c[i] > 0)) { out[i] = e; continue; }
+    let r = ((g.h[i] - g.l[i]) / g.c[i]) * 1e4;
+    if (isFinite(e)) r = Math.min(r, 5 * e);
+    e = isFinite(e) ? e + k * (r - e) : r;
+    out[i] = e;
+  }
+  return out;
+}
+const TF_HOURS = { '1h': 1, '2h': 2, '4h': 4, '6h': 6, '12h': 12 };
 function simulate(grid, opts) {
   const o = Object.assign({}, DEFAULT, opts || {});
   const n = grid.n, N = grid.coins.length;
@@ -166,7 +185,7 @@ function simulate(grid, opts) {
       const bars = resample(grid, g, tf);
       for (const L of LOOKBACKS[tf]) {
         if (bars.c.length <= L) continue;
-        const shortOk = o.allowShort && (!o.shortTfs || o.shortTfs.includes(tf));
+        const shortOk = o.allowShort && (!o.shortTfs || o.shortTfs.includes(tf)) && !(o.setupLongOnly && LAYER[tf] === 'setup');
         const s = donchian(bars.c, L, shortOk);
         list.push({ tf, L, layer: LAYER[tf], sig: toGrid(n, bars, s, 0) });
       }
@@ -177,6 +196,10 @@ function simulate(grid, opts) {
   // per layer component counts for weighting
   const lw = o.layerWeight;
   const tgt = grid.coins.map(() => new Float64Array(n));
+  const ranges = o.adaptiveSetup ? grid.coins.map((g) => hourRange(grid, g)) : null;
+  // live coin count per hour (coin has a price and a volatility estimate)
+  const live = new Float64Array(n);
+  for (let i = 0; i < n; i++) { let c = 0; for (let j = 0; j < N; j++) if (vols[j][i] > 0 && !isNaN(grid.coins[j].c[i])) c++; live[i] = c; }
   for (let j = 0; j < N; j++) {
     const cs = comps[j], g = grid.coins[j];
     const cnt = { strategic: cs.filter((c) => c.layer === 'strategic').length, setup: cs.filter((c) => c.layer === 'setup').length };
@@ -184,10 +207,22 @@ function simulate(grid, opts) {
       const v = vols[j][i];
       if (!(v > 0) || isNaN(g.c[i])) continue;
       let pos = 0;
-      for (const c of cs) { const s = c.sig[i]; if (s) pos += (s * lw[c.layer]) / Math.max(1, cnt[c.layer]); }
-      // normalise when a layer is absent so the remaining layer can still reach full size
-      const wsum = (cnt.strategic ? lw.strategic : 0) + (cnt.setup ? lw.setup : 0);
-      if (wsum > 0) pos /= wsum;
+      if (ranges) {
+        // setup timeframes vote only where a round trip is a small share of their typical candle
+        const r1 = ranges[j][i];
+        let nSetup = 0, setupSum = 0, nStrat = 0, stratSum = 0;
+        for (const c of cs) {
+          if (c.layer === 'setup') { const share = o.roundTripBps / (r1 * Math.sqrt(TF_HOURS[c.tf])); if (!(share <= o.adaptiveSetup)) continue; nSetup++; setupSum += c.sig[i]; }
+          else { nStrat++; stratSum += c.sig[i]; }
+        }
+        const wS = nStrat ? lw.strategic : 0, wU = nSetup ? lw.setup : 0;
+        if (wS + wU > 0) pos = ((nStrat ? (stratSum / nStrat) * wS : 0) + (nSetup ? (setupSum / nSetup) * wU : 0)) / (wS + wU);
+      } else {
+        for (const c of cs) { const s = c.sig[i]; if (s) pos += (s * lw[c.layer]) / Math.max(1, cnt[c.layer]); }
+        // normalise when a layer is absent so the remaining layer can still reach full size
+        const wsum = (cnt.strategic ? lw.strategic : 0) + (cnt.setup ? lw.setup : 0);
+        if (wsum > 0) pos /= wsum;
+      }
       let scale = Math.min(o.maxCoinLev, o.volTarget / v);
       if (xs) { const r = xs[j][i]; scale *= pos > 0 ? 1 + o.xsec * r : pos < 0 ? 1 - o.xsec * r : 1; }
       if (o.fundingCrowd) {
@@ -196,7 +231,7 @@ function simulate(grid, opts) {
         const ann = (f / 9) * 3 * 365;
         if (pos > 0 && ann > o.fundingCrowd) scale *= 0.5; else if (pos < 0 && ann < -o.fundingCrowd) scale *= 0.5;
       }
-      tgt[j][i] = pos * scale / N; // fraction of equity in this coin
+      tgt[j][i] = pos * scale / (o.normLive ? Math.max(o.minLive, live[i]) : N); // fraction of equity in this coin
     }
   }
   // portfolio-level vol targeting on the strategy's own trailing returns (uses only past equity)
@@ -256,4 +291,4 @@ function simulate(grid, opts) {
   };
 }
 
-module.exports = { TF, LOOKBACKS, LAYER, loadCoin, loadCsvPlain, align, resample, donchian, toGrid, dailyVol, crossMomentum, simulate, DEFAULT, bucketOf, bucketEnd };
+module.exports = { hourRange, TF_HOURS, TF, LOOKBACKS, LAYER, loadCoin, loadCsvPlain, align, resample, donchian, toGrid, dailyVol, crossMomentum, simulate, DEFAULT, bucketOf, bucketEnd };
