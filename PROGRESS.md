@@ -24,11 +24,13 @@ Decisions (his answers): **top 20 BloFin USDT perps**; timeframe design left to 
 | 2. Top-20 universe + history (GitHub runner) | done 05:03 (verified 17:00) — 20/20 coins, 289 MB | tools/research_data.py → branch `research-data` |
 | 3. Coin profiler | done 17:10 — 20 coins profiled | lab/mtf/profile.js → docs/COIN_PROFILES.md, research_out/profiles/ |
 | 4. Multi-timeframe portfolio engine | v2 17:40 — 20-coin runs; execution layer studied | lab/mtf/mtf.js, research.js, execution_multi.js |
-| 5. Walk-forward validation | pending | docs/RESEARCH_MTF_*.md |
-| 6. Multi-coin paper bot + Ubuntu installer | pending | lab/, deploy/ |
+| 5. Validation (ablations, eras, sensitivity, costs, out-of-universe) | done 18:25 | docs/RESEARCH_MTF_2026-10-18.md, research_out/v3/ |
+| 6. Multi-coin paper bot + Ubuntu installer | bot written + offline-tested 18:20; deploying | lab/mtfbot.js, lab/universe.json, deploy/ |
 
 ## Log
 
+- 18:25 — Research report: docs/RESEARCH_MTF_2026-10-18.md. **v3 (shorts only 1d+, live-coin sizing, chase execution): Sharpe 1.40, CAGR 20.8%, vol 14.2%, max DD 13.9%, 6/6 eras.** Lookbacks ×0.7/×1.4 → 1.44/1.46; vol target 15/35% → 1.44/1.42; 2×/3× costs → 1.33/1.27 (6/6); BTC+ETH only 0.84 (6/6). Removing setup layer → 0.90; long-only 1.63 but loses 2022. **Out-of-universe (30 other coins incl. LUNA/FTT/SRM/MATIC): Sharpe 0.86, CAGR 11.3%, max DD 15.9%, 5/6 eras — the honest expectation.** Min-history rule hurts → off. Funding filter, Asia-open boost, fee gating: neutral → off.
+- 18:20 — lab/mtfbot.js (20-coin paper bot) + lab/universe.json written; offline replay of June 2025 5m candles: seeding, hourly targets, limit/market fills, funding and summary all working.
 - 17:40 — Engine v2 options: size by number of live coins (`normLive`), fee-aware setup gating (`adaptiveSetup`), setup long-only. 20-coin results 2020→2026 (fees+slippage+funding included): v1 long+short Sharpe 0.96 · shorts only on 1d+ 1.26 (positive in all 6 eras) · + normLive 1.36, CAGR 18.9%, max DD 14.7% · adaptive setup gating saves fees but no Sharpe gain (left off) · chase execution +0.02 Sharpe, fees 12%→9%.
 - 17:25 — Execution study, all 20 coins, 6,659 rebalances on 5m candles (lab/mtf/execution_multi.js): market order 8.0 bps; **post at the best price, re-post each 5m bar for 30 min, then market: 5.9 bps in both halves** (robust); deep limit orders (10–40 bps or 0.5–2 ATR away) great in one half, bad in the other — rejected (trends run away from them).
 - 17:20 — Ablations (lab/mtf/research.js, v1): long-only Sharpe 1.44 but −1.39 in the 2022 bear; shorts only on 1d+ timeframes 1.26 and positive in every era → intraday shorts are costly noise.

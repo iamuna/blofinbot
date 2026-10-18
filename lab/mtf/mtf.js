@@ -161,6 +161,7 @@ const DEFAULT = {
   roundTripBps: 16, // used by adaptiveSetup: taker fee + slippage, both sides
   lbScale: 1, // sensitivity test: multiply every Donchian lookback
   sessionBoost: 0, // >0: setup-layer votes count (1+x)× from Sunday 23:00 to Monday 23:00 UTC (Asia-open trend effect)
+  minHistoryDays: 0, // a coin trades only after this many days of its own history
 };
 // typical 1h candle range (bps), trailing ~90 days, causal (exponential average of (h-l)/c, outlier-capped)
 function hourRange(grid, g) {
@@ -203,14 +204,17 @@ function simulate(grid, opts) {
   // Sunday 23:00 → Monday 23:00 UTC window
   const sess = (i) => { if (!o.sessionBoost) return 1; const d = new Date(grid.t[i] * 1000), wd = d.getUTCDay(), h = d.getUTCHours(); return (wd === 0 && h >= 23) || (wd === 1 && h < 23) ? 1 + o.sessionBoost : 1; };
   // live coin count per hour (coin has a price and a volatility estimate)
+  // first hour with a price, per coin (for the minimum-history rule)
+  const firstIdx = grid.coins.map((g) => { for (let i = 0; i < n; i++) if (!isNaN(g.c[i])) return i; return n; });
+  const old = (j, i) => i - firstIdx[j] >= o.minHistoryDays * 24;
   const live = new Float64Array(n);
-  for (let i = 0; i < n; i++) { let c = 0; for (let j = 0; j < N; j++) if (vols[j][i] > 0 && !isNaN(grid.coins[j].c[i])) c++; live[i] = c; }
+  for (let i = 0; i < n; i++) { let c = 0; for (let j = 0; j < N; j++) if (vols[j][i] > 0 && !isNaN(grid.coins[j].c[i]) && old(j, i)) c++; live[i] = c; }
   for (let j = 0; j < N; j++) {
     const cs = comps[j], g = grid.coins[j];
     const cnt = { strategic: cs.filter((c) => c.layer === 'strategic').length, setup: cs.filter((c) => c.layer === 'setup').length };
     for (let i = 0; i < n; i++) {
       const v = vols[j][i];
-      if (!(v > 0) || isNaN(g.c[i])) continue;
+      if (!(v > 0) || isNaN(g.c[i]) || !old(j, i)) continue;
       let pos = 0;
       if (ranges) {
         // setup timeframes vote only where a round trip is a small share of their typical candle

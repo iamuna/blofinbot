@@ -1,0 +1,166 @@
+{
+ "generated": "2026-10-18T03:03:44.789402+00:00",
+ "source": "research-data universe.json (top-20 BloFin USDT perps by 24h volume)",
+ "coins": [
+  {
+   "coin": "BTC",
+   "instId": "BTC-USDT",
+   "binance": "BTCUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 93978084.95
+  },
+  {
+   "coin": "ETH",
+   "instId": "ETH-USDT",
+   "binance": "ETHUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 41914710.19
+  },
+  {
+   "coin": "ZEC",
+   "instId": "ZEC-USDT",
+   "binance": "ZECUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 60527004.28
+  },
+  {
+   "coin": "XRP",
+   "instId": "XRP-USDT",
+   "binance": "XRPUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 14781262.2
+  },
+  {
+   "coin": "SOL",
+   "instId": "SOL-USDT",
+   "binance": "SOLUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 12226357.08
+  },
+  {
+   "coin": "NEAR",
+   "instId": "NEAR-USDT",
+   "binance": "NEARUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 11493848.76
+  },
+  {
+   "coin": "Q",
+   "instId": "Q-USDT",
+   "binance": "QUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 10637273.42
+  },
+  {
+   "coin": "HYPE",
+   "instId": "HYPE-USDT",
+   "binance": "HYPEUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 5634562.53
+  },
+  {
+   "coin": "DOGE",
+   "instId": "DOGE-USDT",
+   "binance": "DOGEUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 5377105.82
+  },
+  {
+   "coin": "XMR",
+   "instId": "XMR-USDT",
+   "binance": "XMRUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 5144222.31
+  },
+  {
+   "coin": "SUI",
+   "instId": "SUI-USDT",
+   "binance": "SUIUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 4500024.03
+  },
+  {
+   "coin": "1000BONK",
+   "instId": "1000BONK-USDT",
+   "binance": "1000BONKUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 3991709.89
+  },
+  {
+   "coin": "PEPE",
+   "instId": "PEPE-USDT",
+   "binance": "1000PEPEUSDT",
+   "seedScale": 1000,
+   "quoteVol24hAtSelection": 3265414.56
+  },
+  {
+   "coin": "HBAR",
+   "instId": "HBAR-USDT",
+   "binance": "HBARUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 3259917.16
+  },
+  {
+   "coin": "PUMP",
+   "instId": "PUMP-USDT",
+   "binance": "PUMPUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 3013064.42
+  },
+  {
+   "coin": "SNDK",
+   "instId": "SNDK-USDT",
+   "binance": "SNDKUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 2869151.64
+  },
+  {
+   "coin": "TRX",
+   "instId": "TRX-USDT",
+   "binance": "TRXUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 2828913.04
+  },
+  {
+   "coin": "TIA",
+   "instId": "TIA-USDT",
+   "binance": "TIAUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 2774587.79
+  },
+  {
+   "coin": "INJ",
+   "instId": "INJ-USDT",
+   "binance": "INJUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 2765192.74
+  },
+  {
+   "coin": "QNT",
+   "instId": "QNT-USDT",
+   "binance": "QNTUSDT",
+   "seedScale": 1,
+   "quoteVol24hAtSelection": 2707217.91
+  }
+ ],
+ "engine": {
+  "shortTfs": [
+   "1d",
+   "3d",
+   "1w",
+   "1M",
+   "3M"
+  ],
+  "normLive": true,
+  "fundingCrowd": 0,
+  "minHistoryDays": 0
+ },
+ "risk": {
+  "equity0": 10000,
+  "dailyLossPct": 5,
+  "ddHalvePct": 15,
+  "ddFlatPct": 25,
+  "maxCoinWeight": 0.6,
+  "staleMin": 5
+ }
+}

@@ -1,0 +1,213 @@
+{
+ "generated": "2026-10-18T15:29:25.929Z",
+ "coins": [
+  "BTC",
+  "ETH",
+  "ZEC",
+  "XRP",
+  "SOL",
+  "NEAR",
+  "Q",
+  "HYPE",
+  "DOGE",
+  "XMR",
+  "SUI",
+  "1000BONK",
+  "PEPE",
+  "HBAR",
+  "PUMP",
+  "TRX",
+  "TIA",
+  "INJ",
+  "QNT"
+ ],
+ "config": {
+  "shortTfs": [
+   "1d",
+   "3d",
+   "1w",
+   "1M",
+   "3M"
+  ],
+  "normLive": true,
+  "fundingCrowd": 0,
+  "fee": 0.00059,
+  "slip": 0
+ },
+ "rows": [
+  {
+   "label": "Validation universe (30 other coins, incl. delisted)",
+   "sharpe": 0.86,
+   "cagr": 11.3,
+   "vol": 13.6,
+   "maxDD": 15.9,
+   "tradesPerDay": 4.4,
+   "feesPct": 7.9,
+   "fundingPct": 18.7,
+   "byYear": {
+    "2020": 20.5,
+    "2021": 44.8,
+    "2022": 7,
+    "2023": 5.1,
+    "2024": 9.9,
+    "2025": -6.6,
+    "2026": 3
+   },
+   "eras": [
+    {
+     "era": "2020",
+     "sharpe": 1.45,
+     "ret": 20.5,
+     "maxDD": 8.9
+    },
+    {
+     "era": "2021 bull",
+     "sharpe": 2.35,
+     "ret": 39.7,
+     "maxDD": 7.5
+    },
+    {
+     "era": "2022 bear",
+     "sharpe": 0.52,
+     "ret": 5.6,
+     "maxDD": 10.5
+    },
+    {
+     "era": "2023 recovery",
+     "sharpe": 1.24,
+     "ret": 20.2,
+     "maxDD": 8.2
+    },
+    {
+     "era": "2024–25",
+     "sharpe": -0.41,
+     "ret": -8.2,
+     "maxDD": 14.3
+    },
+    {
+     "era": "2025–26 decline",
+     "sharpe": 0.43,
+     "ret": 4.6,
+     "maxDD": 10.4
+    }
+   ],
+   "posEras": 5
+  },
+  {
+   "label": "Validation universe, long only",
+   "sharpe": 0.89,
+   "cagr": 12.1,
+   "vol": 14,
+   "maxDD": 18.8,
+   "tradesPerDay": 2.5,
+   "feesPct": 4.4,
+   "fundingPct": 21.1,
+   "byYear": {
+    "2020": 24,
+    "2021": 50.2,
+    "2022": -13.2,
+    "2023": 24.4,
+    "2024": 13.4,
+    "2025": -4.1,
+    "2026": -0.4
+   },
+   "eras": [
+    {
+     "era": "2020",
+     "sharpe": 1.62,
+     "ret": 24,
+     "maxDD": 7.5
+    },
+    {
+     "era": "2021 bull",
+     "sharpe": 2.43,
+     "ret": 44.3,
+     "maxDD": 8.3
+    },
+    {
+     "era": "2022 bear",
+     "sharpe": -1.01,
+     "ret": -10.7,
+     "maxDD": 16
+    },
+    {
+     "era": "2023 recovery",
+     "sharpe": 1.57,
+     "ret": 29.4,
+     "maxDD": 10.4
+    },
+    {
+     "era": "2024–25",
+     "sharpe": 0.29,
+     "ret": 0.6,
+     "maxDD": 15.1
+    },
+    {
+     "era": "2025–26 decline",
+     "sharpe": -0.14,
+     "ret": -2.6,
+     "maxDD": 12.3
+    }
+   ],
+   "posEras": 4
+  },
+  {
+   "label": "Validation universe, − setup layer",
+   "sharpe": 0.46,
+   "cagr": 6.3,
+   "vol": 16,
+   "maxDD": 23.9,
+   "tradesPerDay": 2.5,
+   "feesPct": 4.1,
+   "fundingPct": 12,
+   "byYear": {
+    "2020": 12.6,
+    "2021": 32.1,
+    "2022": 18.4,
+    "2023": -7.4,
+    "2024": -2,
+    "2025": -2.9,
+    "2026": -2.2
+   },
+   "eras": [
+    {
+     "era": "2020",
+     "sharpe": 1.07,
+     "ret": 12.7,
+     "maxDD": 8.4
+    },
+    {
+     "era": "2021 bull",
+     "sharpe": 1.92,
+     "ret": 29.8,
+     "maxDD": 7.7
+    },
+    {
+     "era": "2022 bear",
+     "sharpe": 1.05,
+     "ret": 18.3,
+     "maxDD": 10.5
+    },
+    {
+     "era": "2023 recovery",
+     "sharpe": 0.48,
+     "ret": 7.3,
+     "maxDD": 14.9
+    },
+    {
+     "era": "2024–25",
+     "sharpe": -0.74,
+     "ret": -14.1,
+     "maxDD": 23.5
+    },
+    {
+     "era": "2025–26 decline",
+     "sharpe": 0.23,
+     "ret": 2.4,
+     "maxDD": 16.2
+    }
+   ],
+   "posEras": 5
+  }
+ ]
+}
