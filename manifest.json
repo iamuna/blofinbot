@@ -1,0 +1,519 @@
+{
+ "generated_at_utc": "2026-10-18T15:15:10.857241+00:00",
+ "top_n": 20,
+ "explicit_coins": [
+  "LTC",
+  "BCH",
+  "ADA",
+  "LINK",
+  "DOT",
+  "AVAX",
+  "MATIC",
+  "ATOM",
+  "UNI",
+  "FIL",
+  "ETC",
+  "EOS",
+  "XLM",
+  "ALGO",
+  "AAVE",
+  "LUNA",
+  "FTT",
+  "SRM",
+  "AXS",
+  "SAND",
+  "MANA",
+  "CRV",
+  "ICP",
+  "APT",
+  "ARB",
+  "OP",
+  "BNB",
+  "WAVES",
+  "CHZ",
+  "GALA"
+ ],
+ "coins": [
+  {
+   "coin": "LTC",
+   "blofin": "LTC-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "LTCUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59248,
+    "first": 1578556800000,
+    "last": 1792278000000,
+    "gaps": 2
+   },
+   "funding_rows": 7370,
+   "status": "ok"
+  },
+  {
+   "coin": "BCH",
+   "blofin": "BCH-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "BCHUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59568,
+    "first": 1577836800000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7395,
+   "status": "ok"
+  },
+  {
+   "coin": "ADA",
+   "blofin": "ADA-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "ADAUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 58840,
+    "first": 1580457600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7339,
+   "status": "ok"
+  },
+  {
+   "coin": "LINK",
+   "blofin": "LINK-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "LINKUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59176,
+    "first": 1579248000000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7346,
+   "status": "ok"
+  },
+  {
+   "coin": "DOT",
+   "blofin": "DOT-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "DOTUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 53945,
+    "first": 1598079600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6698,
+   "status": "ok"
+  },
+  {
+   "coin": "AVAX",
+   "blofin": "AVAX-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "AVAXUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 53177,
+    "first": 1600844400000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6598,
+   "status": "ok"
+  },
+  {
+   "coin": "MATIC",
+   "blofin": "MATIC-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "MATICUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 34083,
+    "first": 1603350000000,
+    "last": 1726045200000,
+    "gaps": 0
+   },
+   "funding_rows": 6509,
+   "status": "ok"
+  },
+  {
+   "coin": "ATOM",
+   "blofin": "ATOM-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "ATOMUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 58668,
+    "first": 1581076800000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7285,
+   "status": "ok"
+  },
+  {
+   "coin": "UNI",
+   "blofin": "UNI-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "UNIUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 53297,
+    "first": 1600412400000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6614,
+   "status": "ok"
+  },
+  {
+   "coin": "FIL",
+   "blofin": "FIL-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "FILUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 52506,
+    "first": 1602828000000,
+    "last": 1792278000000,
+    "gaps": 2
+   },
+   "funding_rows": 6527,
+   "status": "ok"
+  },
+  {
+   "coin": "ETC",
+   "blofin": "ETC-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "ETCUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59200,
+    "first": 1579161600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7349,
+   "status": "ok"
+  },
+  {
+   "coin": "EOS",
+   "blofin": "EOS-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "EOSUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 47042,
+    "first": 1578470400000,
+    "last": 1747818000000,
+    "gaps": 0
+   },
+   "funding_rows": 7373,
+   "status": "ok"
+  },
+  {
+   "coin": "XLM",
+   "blofin": "XLM-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "XLMUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 58984,
+    "first": 1579507200000,
+    "last": 1792278000000,
+    "gaps": 2
+   },
+   "funding_rows": 7339,
+   "status": "ok"
+  },
+  {
+   "coin": "ALGO",
+   "blofin": "ALGO-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "ALGOUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 55551,
+    "first": 1592298000000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6939,
+   "status": "ok"
+  },
+  {
+   "coin": "AAVE",
+   "blofin": "AAVE-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "AAVEUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 52625,
+    "first": 1602831600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6527,
+   "status": "ok"
+  },
+  {
+   "coin": "LUNA",
+   "blofin": "LUNA-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "LUNAUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 11160,
+    "first": 1611817200000,
+    "last": 1652421600000,
+    "gaps": 2
+   },
+   "funding_rows": 1410,
+   "status": "ok"
+  },
+  {
+   "coin": "FTT",
+   "blofin": "FTT-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "FTTUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 39525,
+    "first": 1649991600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 3522,
+   "status": "ok"
+  },
+  {
+   "coin": "SRM",
+   "blofin": "SRM-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "SRMUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 32670,
+    "first": 1599271200000,
+    "last": 1716879600000,
+    "gaps": 0
+   },
+   "funding_rows": 4241,
+   "status": "ok"
+  },
+  {
+   "coin": "AXS",
+   "blofin": "AXS-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "AXSUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 51785,
+    "first": 1605855600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7346,
+   "status": "ok"
+  },
+  {
+   "coin": "SAND",
+   "blofin": "SAND-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "SANDUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 50081,
+    "first": 1611558000000,
+    "last": 1792278000000,
+    "gaps": 2
+   },
+   "funding_rows": 6224,
+   "status": "ok"
+  },
+  {
+   "coin": "MANA",
+   "blofin": "MANA-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "MANAUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 48905,
+    "first": 1615791600000,
+    "last": 1792278000000,
+    "gaps": 2
+   },
+   "funding_rows": 6077,
+   "status": "ok"
+  },
+  {
+   "coin": "CRV",
+   "blofin": "CRV-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "CRVUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 53705,
+    "first": 1598943600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6662,
+   "status": "ok"
+  },
+  {
+   "coin": "ICP",
+   "blofin": "ICP-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "ICPUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 47035,
+    "first": 1620702000000,
+    "last": 1792278000000,
+    "gaps": 1
+   },
+   "funding_rows": 4473,
+   "status": "ok"
+  },
+  {
+   "coin": "APT",
+   "blofin": "APT-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "APTUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 35038,
+    "first": 1666144800000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 4330,
+   "status": "ok"
+  },
+  {
+   "coin": "ARB",
+   "blofin": "ARB-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "ARBUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 31305,
+    "first": 1679583600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 3863,
+   "status": "ok"
+  },
+  {
+   "coin": "OP",
+   "blofin": "OP-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "OPUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 38386,
+    "first": 1654092000000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 4748,
+   "status": "ok"
+  },
+  {
+   "coin": "BNB",
+   "blofin": "BNB-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "BNBUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 58600,
+    "first": 1581321600000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 7274,
+   "status": "ok"
+  },
+  {
+   "coin": "WAVES",
+   "blofin": "WAVES-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "WAVESUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 54065,
+    "first": 1597215600000,
+    "last": 1792278000000,
+    "gaps": 2
+   },
+   "funding_rows": 5317,
+   "status": "ok"
+  },
+  {
+   "coin": "CHZ",
+   "blofin": "CHZ-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "CHZUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 50297,
+    "first": 1611212400000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 6297,
+   "status": "ok"
+  },
+  {
+   "coin": "GALA",
+   "blofin": "GALA-USDT",
+   "quoteVol24h": 0,
+   "binance_market": "futures/um",
+   "binance_symbol": "GALAUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 44541,
+    "first": 1631934000000,
+    "last": 1792278000000,
+    "gaps": 0
+   },
+   "funding_rows": 5518,
+   "status": "ok"
+  }
+ ],
+ "status": "ok"
+}
