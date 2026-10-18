@@ -34,6 +34,12 @@ FIVE_MIN_MONTHS = int(os.environ.get("FIVE_MIN_MONTHS", "24"))
 START_1H = date(2019, 9, 1)
 ARCH = "https://data.binance.vision/data/{market}/{period}/{kind}/{sym}/{extra}{sym}-{suffix}.zip"
 STABLE = {"USDC", "FDUSD", "TUSD", "DAI", "USDE", "USD1", "PYUSD", "BUSD", "USDP"}
+# Tokenised stocks, indices and commodities: not crypto, different hours and drivers, outside the research.
+NON_CRYPTO = {
+    "SNDK", "SKHYNIX", "SAMSUNG", "TSLA", "NVDA", "AAPL", "AMZN", "GOOGL", "GOOG", "META", "MSFT", "NFLX", "AMD", "INTC",
+    "MSTR", "COIN", "HOOD", "CRCL", "PLTR", "BABA", "TSM", "AVGO", "ORCL", "MU", "SPY", "QQQ", "SPX", "NDX", "DJI",
+    "XAU", "XAG", "XAUT", "PAXG", "GOLD", "SILVER", "OIL", "WTI", "BRENT", "USO", "NATGAS", "COPPER", "EUR", "JPY", "GBP",
+}
 
 
 def get(url: str, retries: int = 4) -> bytes | None:
@@ -62,7 +68,7 @@ def blofin_universe() -> list[dict]:
         if not inst.endswith("-USDT"):
             continue
         base = inst[:-5]
-        if base in STABLE:
+        if base in STABLE or base in NON_CRYPTO:
             continue
         last = float(t.get("last") or 0)
         base_vol = float(t.get("volCurrency24h") or 0)

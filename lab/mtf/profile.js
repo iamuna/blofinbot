@@ -131,4 +131,4 @@ function main() {
   fs.writeFileSync(path.join(out, 'summary.json'), JSON.stringify(profiles, null, 1));
 }
 if (require.main === module) main();
-module.exports = { profileCoin, plan, vr };
+module.exports = { profileCoin, plan, vr, dayReturns, dayCloses };

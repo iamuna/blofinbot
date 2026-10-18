@@ -29,12 +29,14 @@ const SIM = !!A.sim, GIT = !!A.git;
 const SEED = A['seed-dir'] ? path.resolve(A['seed-dir']) : null;
 const PUSH_EVERY = +(A['push-every'] || 10);
 const BRANCH = A.branch || 'mtf-state';
-const UNIVERSE = JSON.parse(fs.readFileSync(path.join(__dirname, 'universe.json'), 'utf8'));
+const BASE_UNIVERSE = JSON.parse(fs.readFileSync(path.join(__dirname, 'universe.json'), 'utf8'));
+let UNIVERSE = BASE_UNIVERSE; // replaced at start-up by resolveUniverse()
+const P = require('./mtf/profile.js');
 const STRAT = ['1d', '3d', '1w', '1M', '3M'];
 // Validated configuration (docs/RESEARCH_MTF_2026-10-18.md)
-const ENGINE = Object.assign({ shortTfs: STRAT, normLive: true, fundingCrowd: 0, minHistoryDays: 0 }, UNIVERSE.engine || {});
+const ENGINE = Object.assign({ shortTfs: STRAT, normLive: true, fundingCrowd: 0, minHistoryDays: 0 }, BASE_UNIVERSE.engine || {});
 const EXEC = { chaseMinutes: 30, thruBps: 0.5, maker: 0.0002, taker: 0.0006, slip: 0.0002 };
-const RISK = Object.assign({ equity0: 10000, dailyLossPct: 5, ddHalvePct: 15, ddFlatPct: 25, maxCoinWeight: 0.6, staleMin: 5 }, UNIVERSE.risk || {});
+const RISK = Object.assign({ equity0: 10000, dailyLossPct: 5, ddHalvePct: 15, ddFlatPct: 25, maxCoinWeight: 0.6, staleMin: 5 }, BASE_UNIVERSE.risk || {});
 const HIST_HOURS = 24 * 500; // hourly history kept per coin (≈ 16 months; covers the 360-day lookback)
 const TFS_ALL = ['1m', '2m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '12h', '1d', '3d', '1w', '1M', '3M'];
 
@@ -97,6 +99,36 @@ const sim = {
   async funding() { return { rate: 0.0001, next: Math.ceil(simNow / (8 * H)) * 8 * H }; },
 };
 const coinCfg = (coin) => UNIVERSE.coins.find((c) => c.coin === coin);
+
+// ───────────────────────── universe: weekly top-20 from research-data (minus exclusions) + coins still held
+function resolveUniverse() {
+  const ex = new Set(BASE_UNIVERSE.exclude || []);
+  let coins = BASE_UNIVERSE.coins.slice(), source = 'lab/universe.json';
+  try {
+    if (SEED && fs.existsSync(path.join(SEED, 'universe.json')) && fs.existsSync(path.join(SEED, 'manifest.json'))) {
+      const u = JSON.parse(fs.readFileSync(path.join(SEED, 'universe.json'), 'utf8')), m = JSON.parse(fs.readFileSync(path.join(SEED, 'manifest.json'), 'utf8'));
+      const by = Object.fromEntries((m.coins || []).map((c) => [c.coin, c]));
+      const pick = (u.selected || []).filter((r) => by[r.base] && by[r.base].status === 'ok' && !ex.has(r.base)).map((r) => ({ coin: r.base, instId: r.instId, binance: by[r.base].binance_symbol, seedScale: by[r.base].binance_symbol.startsWith('1000') && !r.instId.startsWith('1000') ? 1000 : 1 }));
+      if (pick.length >= 5) { coins = pick; source = 'research-data universe ' + (u.generated_at_utc || '').slice(0, 10); }
+    }
+  } catch (e) { console.error('universe', e.message); }
+  coins = coins.filter((c) => !ex.has(c.coin));
+  const have = new Set(coins.map((c) => c.coin));
+  // coins we still hold (or have orders in) stay until flat, with a zero target
+  const prev = ((S && S.universe) || []).slice();
+  // coins with positions or orders but no universe record (e.g. state from an older version)
+  for (const k of new Set([...Object.keys(S.pos || {}), ...Object.keys(S.orders || {})])) if (!prev.some((c) => c.coin === k)) prev.push({ coin: k, instId: k + '-USDT', seedScale: 1 });
+  for (const c of prev) if (!have.has(c.coin) && ((S.pos[c.coin] && S.pos[c.coin].qty) || S.orders[c.coin])) {
+    if (ex.has(c.coin) && S.orders[c.coin] && !(S.pos[c.coin] && S.pos[c.coin].qty)) { delete S.orders[c.coin]; continue; } // excluded and nothing filled: just cancel
+    coins.push(Object.assign({}, c, { windDown: true })); have.add(c.coin);
+  }
+  UNIVERSE = Object.assign({}, BASE_UNIVERSE, { coins, source });
+  const added = coins.filter((c) => !prev.some((p) => p.coin === c.coin)).map((c) => c.coin);
+  const dropped = prev.filter((p) => !have.has(p.coin)).map((p) => p.coin);
+  S.universePrevCount = ((S && S.universe) || []).length;
+  S.universe = coins.map((c) => ({ coin: c.coin, instId: c.instId, binance: c.binance, seedScale: c.seedScale, windDown: !!c.windDown }));
+  return { added, dropped, windDown: coins.filter((c) => c.windDown).map((c) => c.coin) };
+}
 
 // ───────────────────────── state
 let S = null;
@@ -166,6 +198,42 @@ async function syncHours(coin, feed) {
   let added = 0;
   for (const b of got) if (b.t > (rows.length ? rows[rows.length - 1].t : 0) && b.t <= lastClosed) { if (rows.length && b.t - rows[rows.length - 1].t > H) event('data', `${coin}: ${(b.t - rows[rows.length - 1].t) / H - 1} hour(s) missing before ${iso(b.t)} (kept missing)`); rows.push(b); added++; }
   return added;
+}
+
+// deepen a short history from BloFin itself (records earlier than the oldest candle we have)
+async function backfillHours(coin, feed) {
+  if (SIM) return 0;
+  const c = coinCfg(coin), rows = HOURS[coin], want = nowSec() - HIST_HOURS * H;
+  let added = 0;
+  for (let k = 0; k < 12; k++) {
+    const first = rows.length ? rows[0].t : Math.floor(nowSec() / H) * H;
+    if (first <= want) break;
+    const got = await feed.candles(c.instId, 60, 1440, first * 1000);
+    const older = got.filter((b) => b.t < first);
+    if (!older.length) break;
+    rows.unshift(...older); added += older.length;
+    await sleep(150);
+  }
+  return added;
+}
+
+// ───────────────────────── coin profiles: how each market moves (computed before a coin trades, refreshed daily)
+function profileAll(newOnly) {
+  S.profiles = S.profiles || {};
+  const btc = HOURS.BTC && HOURS.BTC.length ? [...P.dayReturns(HOURS.BTC.map((b) => b.t), HOURS.BTC.map((b) => b.c))].sort((a, b) => a[0] - b[0]) : null;
+  for (const c of UNIVERSE.coins) {
+    const rows = HOURS[c.coin];
+    if (!rows || rows.length < 24 * 60) continue;
+    if (newOnly && S.profiles[c.coin]) continue;
+    const n = rows.length, hourly = { t: new Float64Array(n), c: new Float64Array(n), h: new Float64Array(n), l: new Float64Array(n), qv: new Float64Array(n), funding: FUND_HIST[c.coin] || [] };
+    rows.forEach((b, i) => { hourly.t[i] = b.t; hourly.c[i] = b.c; hourly.h[i] = b.h; hourly.l[i] = b.l; hourly.qv[i] = b.v * b.c; });
+    try {
+      const p = P.profileCoin(c.coin, hourly, null, btc);
+      const fresh = !S.profiles[c.coin];
+      S.profiles[c.coin] = { t: nowSec(), days: p.days, annualVol: p.annualVol, varianceRatio: p.varianceRatio, betaBTC: p.betaBTC, corrBTC: p.corrBTC, feeShare1h: p.costShareTaker['1h'], feeShare1d: p.costShareTaker['1d'], trendEfficiency: p.trendEfficiency30d, funding: p.funding || null, plan: p.plan };
+      if (fresh) event('profile', `Analysed ${c.coin}: ${(p.annualVol * 100).toFixed(0)}% annual volatility, ${p.betaBTC}× BTC (corr ${p.corrBTC}); trends at ${p.plan.trendHorizons.join('/') || 'no horizon'}, snaps back at ${p.plan.meanReversionHorizons.join('/') || 'no horizon'}; fees are ${(p.costShareTaker['1h'] * 100).toFixed(0)}% of an hourly candle, ${(p.costShareTaker['1d'] * 100).toFixed(0)}% of a daily one → signals from ${p.plan.smallestSignalTimeframe} and up.`, { coin: c.coin });
+    } catch (e) { error('profile ' + c.coin, e); }
+  }
 }
 
 // ───────────────────────── minute data (memory only; refetched on restart)
@@ -248,7 +316,8 @@ function computeTargets() {
     const byTf = {};
     for (const c of comps) { const k = c.tf; (byTf[k] = byTf[k] || []).push(c.s); }
     const votes = {}; for (const k in byTf) votes[k] = +(byTf[k].reduce((a, b) => a + b, 0) / byTf[k].length).toFixed(2);
-    out[coin] = { weight: r.lastWant[j], vol: r.lastVol[j], xsec: r.lastXsec ? r.lastXsec[j] : null, votes, gridEnd: grid.t[grid.n - 1] };
+    const wd = coinCfg(coin) && coinCfg(coin).windDown;
+    out[coin] = { weight: wd ? 0 : r.lastWant[j], vol: r.lastVol[j], xsec: r.lastXsec ? r.lastXsec[j] : null, votes, gridEnd: grid.t[grid.n - 1], windDown: !!wd };
   });
   return { targets: out, portScale: r.portScale, backtestSharpe: r.sharpe };
 }
@@ -321,7 +390,8 @@ function snapshot(closed) {
         votes: T.votes, xsec: T.xsec != null ? +T.xsec.toFixed(2) : null, vol: T.vol ? +(T.vol * 100).toFixed(0) : null,
         micro: { '1m': microView(coin, 1), '5m': microView(coin, 5), '15m': microView(coin, 15), '30m': microView(coin, 30) },
         order: S.orders[coin] ? { qty: S.orders[coin].qty, limit: S.orders[coin].limit, since: S.orders[coin].t0 } : null,
-        note: T.note || '',
+        note: T.note || '', windDown: !!T.windDown,
+        profile: S.profiles && S.profiles[coin] ? { vol: S.profiles[coin].annualVol, beta: S.profiles[coin].betaBTC, trends: S.profiles[coin].plan.trendHorizons, reverts: S.profiles[coin].plan.meanReversionHorizons, minSignal: S.profiles[coin].plan.smallestSignalTimeframe, feeShare1h: S.profiles[coin].feeShare1h } : null,
       };
     }),
   };
@@ -379,11 +449,17 @@ async function run() {
   if (SIM) simNow = +(A['sim-start'] || Date.parse('2025-06-01T00:00:00Z') / 1000);
   const started = nowSec(), runId = process.env.GITHUB_RUN_ID || 'local-' + started;
   S.runs.push({ id: runId, start: started });
+  const uni = resolveUniverse();
+  if (uni.added.length && (S.universePrevCount || 0) > 0) event('universe', `Universe update (${UNIVERSE.source}): added ${uni.added.join(', ')}`);
+  if (uni.dropped.length) event('universe', `Removed from the universe: ${uni.dropped.join(', ')}`);
+  if (uni.windDown.length) event('universe', `Winding down (no longer top-20, still held): ${uni.windDown.join(', ')}`);
   for (const c of UNIVERSE.coins) {
     loadHours(c.coin);
     if (HOURS[c.coin].length < 24 * 30) { const n = seedHours(c.coin); if (n) event('data', `${c.coin}: seeded ${n} hourly candles from research history`); }
+    if (HOURS[c.coin].length < 24 * 400) { try { const n = await backfillHours(c.coin, feed); if (n) event('data', `${c.coin}: loaded ${n} older hourly candles from BloFin`); } catch (e) { error('backfill ' + c.coin, e); } }
   }
-  event('start', `Bot started (run ${runId}): ${UNIVERSE.coins.length} coins, checking every minute.`);
+  profileAll(true);
+  event('start', `Bot started (run ${runId}): ${UNIVERSE.coins.length} coins (${UNIVERSE.source}), checking every minute.`);
   let stop = false; process.on('SIGTERM', () => (stop = true)); process.on('SIGINT', () => (stop = true));
   let lastPush = 0, needTargets = !Object.keys(S.targets).length;
   while (!stop && nowSec() - started < RUN_MIN * 60) {
@@ -409,6 +485,8 @@ async function run() {
         try {
           const r = computeTargets();
           for (const coin in r.targets) S.targets[coin] = Object.assign(S.targets[coin] || {}, r.targets[coin]);
+          for (const coin of Object.keys(S.targets)) if (!coinCfg(coin)) delete S.targets[coin];
+          if (new Date(hourNow * 1000).getUTCHours() === 0) profileAll(false);
           S.portScale = r.portScale;
           rebalance();
           S.lastHour = hourNow; needTargets = false;
