@@ -1,1 +1,2 @@
 - 2026-10-18T02:52Z · equity $10,000.00 (0.00%) · trades 0 · champion Volatility breakout 1h (probation, 0.125% risk) · heartbeat 6 min, feed BloFin ok, no gaps/errors/rejects · action: none
+- 2026-10-18T05:53Z · equity $10,000.00 (0.00%, unchanged) · trades 0 · champion Volatility breakout 1h (probation, 0.125% risk; kept, 24h hold before any swap) · heartbeat 6 min, feed BloFin ok, no gaps/errors/rejects · action: none
