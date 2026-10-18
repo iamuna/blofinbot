@@ -21,5 +21,18 @@ git -C "$STATE_DIR" config user.name "blofinbot (home)"
 git -C "$STATE_DIR" config user.email "blofinbot@users.noreply.github.com"
 
 GITFLAG=""; [ -n "$REMOTE" ] && GITFLAG="--git --branch $BRANCH"
+# seed history for the multi-coin bot (Binance archive data from the research-data branch; public)
+SEED=/var/lib/blofinbot/research-data
+if [ "$BOT" = "lab/mtfbot.js" ]; then
+  if [ ! -d "$SEED/.git" ]; then
+    git clone -q --depth 1 --filter=blob:none --sparse --branch research-data https://github.com/iamuna/blofinbot.git "$SEED"
+    git -C "$SEED" sparse-checkout set --no-cone '/*/1h.csv.gz' '/*/funding.csv.gz' '/manifest.json' '/universe.json'
+  else
+    git -C "$SEED" pull -q --depth 1 --rebase 2>/dev/null || true
+  fi
+  SEEDFLAG="--seed-dir $SEED"
+else
+  SEEDFLAG=""
+fi
 # one shift = 6 hours; systemd restarts it immediately, continuing from the saved state
-exec node "$BOT" run --state-dir "$STATE_DIR" --minutes 360 $GITFLAG
+exec node "$BOT" run --state-dir "$STATE_DIR" --minutes 360 $GITFLAG $SEEDFLAG

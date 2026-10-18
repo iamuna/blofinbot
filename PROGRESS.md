@@ -25,10 +25,11 @@ Decisions (his answers): **top 20 BloFin USDT perps**; timeframe design left to 
 | 3. Coin profiler | done 17:10 — 20 coins profiled | lab/mtf/profile.js → docs/COIN_PROFILES.md, research_out/profiles/ |
 | 4. Multi-timeframe portfolio engine | v2 17:40 — 20-coin runs; execution layer studied | lab/mtf/mtf.js, research.js, execution_multi.js |
 | 5. Validation (ablations, eras, sensitivity, costs, out-of-universe) | done 18:25 | docs/RESEARCH_MTF_2026-10-18.md, research_out/v3/ |
-| 6. Multi-coin paper bot + Ubuntu installer | bot written + offline-tested 18:20; deploying | lab/mtfbot.js, lab/universe.json, deploy/ |
+| 6. Multi-coin paper bot + Ubuntu installer | deployed 18:45 on GitHub Actions (branch `mtf-state`); installer ready | lab/mtfbot.js, .github/workflows/mtf-bot.yml, deploy/ |
 
 ## Log
 
+- 18:45 — Deployed the 20-coin bot (.github/workflows/mtf-bot.yml → branch `mtf-state`), running beside the BTC bot until verified. Seeds history from research-data (sparse checkout of 1h + funding), then BloFin 1H/1m live. deploy/run-bot.sh now runs mtfbot.js on the home PC with the same seeding. Timeframe clock verified (2m/3m on their minutes, 1w Monday 00:00, 1M on the 1st, 3M at quarter starts).
 - 18:25 — Research report: docs/RESEARCH_MTF_2026-10-18.md. **v3 (shorts only 1d+, live-coin sizing, chase execution): Sharpe 1.40, CAGR 20.8%, vol 14.2%, max DD 13.9%, 6/6 eras.** Lookbacks ×0.7/×1.4 → 1.44/1.46; vol target 15/35% → 1.44/1.42; 2×/3× costs → 1.33/1.27 (6/6); BTC+ETH only 0.84 (6/6). Removing setup layer → 0.90; long-only 1.63 but loses 2022. **Out-of-universe (30 other coins incl. LUNA/FTT/SRM/MATIC): Sharpe 0.86, CAGR 11.3%, max DD 15.9%, 5/6 eras — the honest expectation.** Min-history rule hurts → off. Funding filter, Asia-open boost, fee gating: neutral → off.
 - 18:20 — lab/mtfbot.js (20-coin paper bot) + lab/universe.json written; offline replay of June 2025 5m candles: seeding, hourly targets, limit/market fills, funding and summary all working.
 - 17:40 — Engine v2 options: size by number of live coins (`normLive`), fee-aware setup gating (`adaptiveSetup`), setup long-only. 20-coin results 2020→2026 (fees+slippage+funding included): v1 long+short Sharpe 0.96 · shorts only on 1d+ 1.26 (positive in all 6 eras) · + normLive 1.36, CAGR 18.9%, max DD 14.7% · adaptive setup gating saves fees but no Sharpe gain (left off) · chase execution +0.02 Sharpe, fees 12%→9%.
@@ -47,6 +48,8 @@ Decisions (his answers): **top 20 BloFin USDT perps**; timeframe design left to 
 - 04:05 — Paper bot live on GitHub Actions (BloFin feed), dashboard artifact, hourly supervisor scheduled task (:50 Amsterdam).
 
 ## Where things are
+
+- 20-coin bot state: branch `mtf-state` (state.json, summary.md, hours/<COIN>.csv). Old BTC bot: `paper-state`.
 
 - Repo: github.com/iamuna/blofinbot (main = code, `paper-state` = live paper bot state, `history-data` = BTC 1m gap fill, `research-data` = top-20 dataset).
 - Dashboard: https://claude.ai/artifact/DCr9QM1eNB8E2ULUU2VrwB (synced hourly by the supervisor).

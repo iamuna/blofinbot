@@ -1,0 +1,48 @@
+name: Multi-coin bot (20 coins, every minute)
+
+# Runs lab/mtfbot.js: every minute it pulls each coin's closed 1m candle from BloFin, marks the paper
+# positions and works open orders; every hour it recomputes each coin's target with the validated
+# multi-timeframe engine (docs/RESEARCH_MTF_2026-10-18.md). State lives on the `mtf-state` branch.
+# PAPER ONLY — no API keys, no orders reach an exchange.
+# One job runs ~5h40m; the half-hourly schedule queues the next shift, which continues from the state.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/mtfbot.js"
+      - "lab/mtf/mtf.js"
+      - "lab/universe.json"
+      - ".github/workflows/mtf-bot.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mtf-bot
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 358
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load bot state
+        run: |
+          REMOTE="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          if git clone -q --depth 1 --branch mtf-state "$REMOTE" state; then echo "continuing from saved state"
+          else mkdir -p state && git -C state init -q -b mtf-state && git -C state remote add origin "$REMOTE" && echo "fresh state"; fi
+          git -C state config user.name "blofinbot multi-coin bot"
+          git -C state config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # seed data for coins without hourly history yet (first run, or a coin newly added to the universe)
+          git clone -q --depth 1 --filter=blob:none --sparse --branch research-data "$REMOTE" research
+          git -C research sparse-checkout set --no-cone '/*/1h.csv.gz' '/*/funding.csv.gz' '/manifest.json' '/universe.json'
+          du -sh research state
+
+      - name: Run the bot
+        run: node lab/mtfbot.js run --state-dir state --seed-dir research --minutes 340 --git
