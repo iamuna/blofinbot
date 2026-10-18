@@ -27,7 +27,8 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "research"
+OUT = ROOT / os.environ.get("OUT_DIR", "research")
+COINS = [c.strip().upper() for c in os.environ.get("COINS", "").split(",") if c.strip()]
 TOP_N = int(os.environ.get("TOP_N", "20"))
 FIVE_MIN_MONTHS = int(os.environ.get("FIVE_MIN_MONTHS", "24"))
 START_1H = date(2019, 9, 1)
@@ -111,13 +112,19 @@ def klines(market: str, sym: str, interval: str, first: date, today: date) -> di
     this_month = date(today.year, today.month, 1)
     holes: list[date] = []
     started = False
+    misses = 0
     for y, m in months(first, this_month - timedelta(days=1)):
         raw = archive(market, "monthly", "klines", sym, interval, f"{y:04d}-{m:02d}")
         if raw is None:
             if started:  # a hole after listing: fetch that month day by day
+                misses += 1
+                if misses >= 3:  # delisted: stop, and drop the holes collected while confirming it
+                    holes = holes[: max(0, len(holes) - 2)]
+                    break
                 holes.append(date(y, m, 1))
             continue
         started = True
+        misses = 0
         for k in parse_klines(raw):
             rows[k[0]] = k
     days = []
@@ -127,7 +134,7 @@ def klines(market: str, sym: str, interval: str, first: date, today: date) -> di
             days.append(d)
             d += timedelta(days=1)
     d = this_month
-    while d < today:
+    while d < today and misses < 3:
         days.append(d)
         d += timedelta(days=1)
     for d in days:
@@ -160,10 +167,13 @@ def write_gz(path: Path, header: list[str], rows: list[list]):
 
 def resolve(base: str, today: date) -> tuple[str, str] | None:
     """Find the Binance symbol/market that has archives for this coin."""
-    probe = (today.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+    probes = [(today.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")]
+    if COINS:  # explicit list may include delisted coins
+        probes += ["2024-06", "2023-01", "2022-04", "2021-06"]
     for market, sym in (("futures/um", f"{base}USDT"), ("futures/um", f"1000{base}USDT"), ("spot", f"{base}USDT")):
-        if archive(market, "monthly", "klines", sym, "1h", probe) is not None:
-            return market, sym
+        for probe in probes:
+            if archive(market, "monthly", "klines", sym, "1h", probe) is not None:
+                return market, sym
     return None
 
 
@@ -179,11 +189,14 @@ def build_coin(row: dict, today: date) -> dict:
         info.update({"binance_market": market, "binance_symbol": sym, "price_scale": 1000 if sym.startswith("1000") else 1})
         h1 = klines(market, sym, "1h", START_1H, today)
         five_from = date(today.year, today.month, 1) - timedelta(days=31 * FIVE_MIN_MONTHS)
-        m5 = klines(market, sym, "5m", five_from.replace(day=1), today)
+        m5 = klines(market, sym, "5m", five_from.replace(day=1), today) if FIVE_MIN_MONTHS > 0 else {}
         hdr = ["t", "o", "h", "l", "c", "v", "qv", "n", "tbv"]
         write_gz(OUT / base / "1h.csv.gz", hdr, [h1[k] for k in sorted(h1)])
-        write_gz(OUT / base / "5m.csv.gz", hdr, [m5[k] for k in sorted(m5)])
+        if m5:
+            write_gz(OUT / base / "5m.csv.gz", hdr, [m5[k] for k in sorted(m5)])
         for name, rows, step in (("1h", h1, 3_600_000), ("5m", m5, 300_000)):
+            if not rows:
+                continue
             ts = sorted(rows)
             gaps = sum(1 for a, b in zip(ts, ts[1:]) if b - a != step)
             info[name] = {"rows": len(ts), "first": ts[0] if ts else None, "last": ts[-1] if ts else None, "gaps": gaps}
@@ -203,14 +216,19 @@ def main() -> int:
     today = datetime.now(timezone.utc).date()
     manifest = {"generated_at_utc": datetime.now(timezone.utc).isoformat(), "top_n": TOP_N}
     try:
-        uni = blofin_universe()
-        manifest["blofin_usdt_perps"] = len(uni)
-        pick = [r for r in uni if r["base"] in ("BTC", "ETH")]
-        for r in uni:
-            if len(pick) >= TOP_N:
-                break
-            if r not in pick:
-                pick.append(r)
+        if COINS:
+            uni = [{"instId": f"{c}-USDT", "base": c, "last": 0, "quoteVol24h": 0} for c in COINS]
+            pick = uni
+            manifest["explicit_coins"] = COINS
+        else:
+            uni = blofin_universe()
+            manifest["blofin_usdt_perps"] = len(uni)
+            pick = [r for r in uni if r["base"] in ("BTC", "ETH")]
+            for r in uni:
+                if len(pick) >= TOP_N:
+                    break
+                if r not in pick:
+                    pick.append(r)
         (OUT / "universe.json").write_text(json.dumps({"generated_at_utc": manifest["generated_at_utc"], "ranked_top50": uni[:50], "selected": pick}, indent=1))
         with ThreadPoolExecutor(max_workers=6) as ex:
             coins = list(ex.map(lambda r: build_coin(r, today), pick))
