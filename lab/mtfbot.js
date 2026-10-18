@@ -51,6 +51,8 @@ const iso = (t) => new Date(t * 1000).toISOString().replace('.000Z', 'Z');
 const money = (x) => (x < 0 ? '-$' : '$') + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const px = (x) => (x == null || !isFinite(x) ? '—' : x >= 100 ? x.toLocaleString('en-US', { maximumFractionDigits: 2 }) : x >= 1 ? x.toFixed(4) : x.toPrecision(5));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// write to a temp file and rename: a process killed mid-write never leaves a truncated state file behind
+function writeAtomic(file, text) { const tmp = file + '.tmp'; fs.writeFileSync(tmp, text); fs.renameSync(tmp, file); }
 
 // ───────────────────────── market data (BloFin public REST; closed candles only, ascending)
 async function getJSON(url) {
@@ -98,6 +100,9 @@ const sim = {
     let cur = null; const span = 3600;
     for (const b of rows) { if (b.t + 300 > simNow) break; const k = Math.floor(b.t / span) * span; if (!cur || cur.t !== k) { if (cur) out.push(cur); cur = { t: k, o: b.o, h: b.h, l: b.l, c: b.c, v: b.v }; } else { cur.h = Math.max(cur.h, b.h); cur.l = Math.min(cur.l, b.l); cur.c = b.c; cur.v += b.v; } }
     if (cur && cur.t + span <= simNow) out.push(cur);
+    // test hook: --sim-hour-lag N delays each hourly candle by N minutes, like BloFin confirming it late
+    const lag = +(A['sim-hour-lag'] || 0) * 60;
+    while (lag && out.length && out[out.length - 1].t + span + lag > simNow) out.pop();
     return out.slice(-limit);
   },
   async funding() { return { rate: 0.0001, next: Math.ceil(simNow / (8 * H)) * 8 * H }; },
@@ -147,8 +152,8 @@ function save() {
   S.updatedAt = nowSec();
   S.fills = S.fills.slice(-3000); S.events = S.events.slice(-800); S.equity = S.equity.slice(-8000); S.errors = S.errors.slice(-100); S.runs = S.runs.slice(-50);
   fs.mkdirSync(DIR, { recursive: true });
-  fs.writeFileSync(path.join(DIR, 'state.json'), JSON.stringify(S));
-  fs.writeFileSync(path.join(DIR, 'summary.md'), summary());
+  writeAtomic(path.join(DIR, 'state.json'), JSON.stringify(S));
+  writeAtomic(path.join(DIR, 'summary.md'), summary());
 }
 function event(type, text, extra) { const t = nowSec(); S.events.push(Object.assign({ t, type, text }, extra || {})); if (!SIM || A.verbose) console.log(`[${iso(t)}] ${type.padEnd(7)} ${text}`); }
 let lastErr = '', lastErrT = 0;
@@ -168,8 +173,8 @@ function saveHours(coin) {
   fs.mkdirSync(path.join(DIR, 'hours'), { recursive: true });
   const rows = HOURS[coin].slice(-HIST_HOURS);
   HOURS[coin] = rows;
-  fs.writeFileSync(hourFile(coin), 't,o,h,l,c,v\n' + rows.map((b) => [b.t, b.o, b.h, b.l, b.c, +b.v.toFixed(4)].join(',')).join('\n') + '\n');
-  fs.writeFileSync(path.join(DIR, 'hours', coin + '.funding.csv'), 't,rate\n' + FUND_HIST[coin].slice(-2000).map((r) => r.join(',')).join('\n') + '\n');
+  writeAtomic(hourFile(coin), 't,o,h,l,c,v\n' + rows.map((b) => [b.t, b.o, b.h, b.l, b.c, +b.v.toFixed(4)].join(',')).join('\n') + '\n');
+  writeAtomic(path.join(DIR, 'hours', coin + '.funding.csv'), 't,rate\n' + FUND_HIST[coin].slice(-2000).map((r) => r.join(',')).join('\n') + '\n');
 }
 // seed from the research-data branch (Binance USD-M history), rescaled to BloFin's contract price units
 function seedHours(coin) {
@@ -428,7 +433,7 @@ function summary() {
 }
 
 // ───────────────────────── git persistence + supervisor control
-function git(args) { return cp.execFileSync('git', ['-C', DIR, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim(); }
+function git(args) { return cp.execFileSync('git', ['-C', DIR, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000 }).trim(); }
 function push(msg) {
   if (!GIT) return;
   try {
@@ -521,7 +526,14 @@ async function run() {
     setupBroker();
   }
   event('start', `Bot started (run ${runId}): ${UNIVERSE.coins.length} coins (${UNIVERSE.source}), mode ${MODE.toUpperCase()}, checking every minute.`);
-  let stop = false; process.on('SIGTERM', () => (stop = true)); process.on('SIGINT', () => (stop = true));
+  let stop = false, down = false;
+  const shutdown = (sig) => {
+    stop = true;
+    if (down) return; down = true;
+    try { event('stop', `Run ${runId} stopped (${sig}) after ${Math.round((nowSec() - started) / 60)} minutes; state saved, the next run continues from it.`); stats(); save(); push(`mtf ${iso(nowSec())} stopped by ${sig}`); } catch (e) { console.error(e); }
+    process.exit(0);
+  };
+  process.on('SIGTERM', () => shutdown('SIGTERM')); process.on('SIGINT', () => shutdown('SIGINT'));
   let lastPush = 0, needTargets = !Object.keys(S.targets).length;
   while (!stop && nowSec() - started < RUN_MIN * 60) {
     const tick = nowSec(), boundary = Math.floor(tick / MIN) * MIN;
@@ -539,12 +551,20 @@ async function run() {
       // 2) hour close: candles, funding info, targets, orders
       const hourNow = Math.floor(tick / H) * H;
       if (hourNow > S.lastHour || needTargets) {
-        let added = 0;
-        for (const c of UNIVERSE.coins) {
-          try { added += await syncHours(c.coin, feed); if (!SIM) await sleep(80); } catch (e) { error('hours ' + c.coin, e); }
-          try { payFunding(c.coin, await feed.funding(c.instId)); } catch (e) { error('funding ' + c.coin, e); }
+        for (const c of UNIVERSE.coins) { // only coins still missing the last closed hour make a request
+          try { if (await syncHours(c.coin, feed) && !SIM) await sleep(80); } catch (e) { error('hours ' + c.coin, e); }
         }
-        try {
+        if (S.fundingHour !== hourNow) {
+          for (const c of UNIVERSE.coins) { try { payFunding(c.coin, await feed.funding(c.instId)); } catch (e) { error('funding ' + c.coin, e); } }
+          S.fundingHour = hourNow;
+        } else for (const c of UNIVERSE.coins) payFunding(c.coin, null);
+        // BloFin confirms an hourly candle a little after the hour; targets wait for every coin's confirmed
+        // candle (closed candles only) for up to 10 minutes, then go ahead and say which coins were late
+        const late = UNIVERSE.coins.filter((c) => { const r = HOURS[c.coin]; return r && r.length > 24 * 30 && r[r.length - 1].t < hourNow - H; }).map((c) => c.coin);
+        const waited = Math.floor((tick - hourNow) / 60);
+        if (late.length && waited < 10 && !needTargets) { /* try again next minute */ }
+        else try {
+          if (late.length) event('data', `${late.join(', ')}: no confirmed ${iso(hourNow - H).slice(11, 16)} UTC hourly candle from BloFin after ${waited} min — targets use the last confirmed close`);
           const r = computeTargets();
           for (const coin in r.targets) S.targets[coin] = Object.assign(S.targets[coin] || {}, r.targets[coin]);
           for (const coin of Object.keys(S.targets)) if (!coinCfg(coin)) delete S.targets[coin];
@@ -564,7 +584,7 @@ async function run() {
       save();
       if (nowSec() - lastPush >= PUSH_EVERY * 60) { lastPush = nowSec(); push(`mtf ${iso(nowSec())} eq ${S.stats.equity} pos ${S.stats.positions}`); }
     } catch (e) { error('tick', e); }
-    if (SIM) { simNow += 300; continue; }
+    if (SIM) { simNow += 300; await new Promise((r) => setImmediate(r)); continue; } // yield so signals are handled in replays too
     const next = (Math.floor(Date.now() / 60000) + 1) * 60000 + 5000;
     while (!stop && Date.now() < next) await sleep(Math.min(1000, next - Date.now()));
   }

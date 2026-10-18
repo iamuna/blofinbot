@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # lets each run re-enable its own schedule (GitHub pauses schedules of quiet public repos after 60 days)
 
 concurrency:
   group: mtf-bot
@@ -44,5 +45,11 @@ jobs:
           git -C research sparse-checkout set --no-cone '/*/1h.csv.gz' '/*/funding.csv.gz' '/manifest.json' '/universe.json'
           du -sh research state
 
+      - name: Keep the schedule enabled
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/mtf-bot.yml/enable" || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Run the bot
-        run: node lab/mtfbot.js run --state-dir state --seed-dir research --minutes 340 --git
+        # exec: node itself receives the cancel signal, saves and pushes its state before GitHub stops the job
+        run: exec node lab/mtfbot.js run --state-dir state --seed-dir research --minutes 340 --git
