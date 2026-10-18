@@ -1,6 +1,6 @@
 # Paper bot — live status
 
-Updated 2026-10-18T02:56:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
+Updated 2026-10-18T03:06:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
 
 | Equity | Net | Trades | Win rate | Profit factor | Avg R | Max DD |
 |---|---|---|---|---|---|---|
@@ -8,10 +8,11 @@ Updated 2026-10-18T02:56:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER
 
 **Champion:** Volatility breakout · 1h (probation, since 2026-10-18T02:00:18Z)
 
-**Thinking:** Flat. Next 1h close at 04:00 UTC — long needs Bollinger breakout or MA crossover (filters not aligned).
+**Thinking:** Flat. Next 1h close at 05:00 UTC — long needs Bollinger breakout or MA crossover (filters not aligned).
 
 ## Recent events
 
+- `2026-10-18T02:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.71R (5 tr), test +0.48R (11 tr). No challenger passed the gate with at least 30 out-of-sample trades.
 - `2026-10-18T02:05:39Z` Bot started (run 39088793615) on BloFin BTC-USDT perpetual. Checking every minute.
 - `2026-10-18T02:00:18Z` Supervisor set risk per trade to 0.125%
 - `2026-10-18T02:00:18Z` Supervisor set the champion: Volatility breakout · 1h — Restoring the 4-year-tested champion. The 4h Bollinger re-entry strategy passed on only 30 out-of-sample trades with a +0.02R test result: too thin to replace a strategy that held up in 14 of 16 quarters and an unseen bear year.
