@@ -31,7 +31,7 @@ const SIM = !!A.sim;
 const GIT = !!A.git;
 const VENUES = String(A.venue || 'blofin,cryptocom,binance').split(',');
 const THINK_TFS = String(A['think-tfs'] || '60,240').split(',').map(Number);
-const HTF_DAYS = { 15: 90, 60: 365, 240: 730 };
+const HTF_DAYS = { 15: 120, 60: 730, 240: 1460 };
 const CHAMPION_FILE = path.join(__dirname, 'champion.json');
 const BRANCH = A.branch || 'paper-state';
 
@@ -374,39 +374,51 @@ async function think(feed, why) {
     try { bars = await loadHTF(feed, tf); } catch (e) { error('history ' + tfLabel(tf), e); continue; }
     if (bars.length < 400) { error('history ' + tfLabel(tf), new Error('only ' + bars.length + ' bars')); continue; }
     const D = E.makeDataset(bars, { venue: state.venue });
-    const minTrades = tf >= 240 ? 15 : 30;
+    const minTrades = tf >= 240 ? 30 : 50;
     const seeds = [];
     if (champ && champ.tf === tf) seeds.push(champ.s);
     for (const r of state.leaderboard) if (r.tf === tf && seeds.length < 4) seeds.push(r.s);
-    const O = E.createOptimizer(D, { pop: 40, gens: 18, splits: [0.6, 0.8], objective, minTrades, cfg: state.cfg, seedStrats: seeds, seed: (t % 100000) + tf, space: { triggers: Object.keys(E.RULES).filter((k) => E.RULES[k].role === 'trigger'), filters: Object.keys(E.RULES).filter((k) => E.RULES[k].role === 'filter'), dir: 'auto', minRR: 1, maxRR: 5 } });
+    const O = E.createOptimizer(D, { pop: 40, gens: 18, splits: [0.6, 0.8], trainFolds: 3, objective, minTrades, cfg: state.cfg, seedStrats: seeds, seed: (t % 100000) + tf, space: { triggers: Object.keys(E.RULES).filter((k) => E.RULES[k].role === 'trigger'), filters: Object.keys(E.RULES).filter((k) => E.RULES[k].role === 'filter'), dir: 'auto', minRR: 1, maxRR: 5 } });
     while (O.next()) {}
     for (const r of O.board(5)) rows.push({ tf, s: r.s, name: r.name, score: r.score, gate: r.gate, train: slim(r.train), val: slim(r.val), test: slim(r.test), bars: D.n, from: D.t[0], to: D.t[D.n - 1] });
     if (champ && champ.tf === tf) champEval = scoreOn(D, champ.s, O.splits.a, O.splits.b, objective, minTrades);
   }
-  rows.sort((x, y) => (y.gate.pass - x.gate.pass) || y.score - x.score);
+  // Strong enough to act on: passes the gate with a real sample (≥ 30 validation + test trades).
+  const strong = (r) => r.gate.pass && r.val && r.test && r.val.n + r.test.n >= 30;
+  rows.sort((x, y) => (strong(y) - strong(x)) || (y.gate.pass - x.gate.pass) || y.score - x.score);
   state.leaderboard = rows.slice(0, 10);
-  const best = rows.find((r) => r.gate.pass);
+  const best = rows.find(strong);
+  const fit = (m) => E.fitness(m, objective, 5, 0);
   let verdict;
-  const heldFor = champ ? t - champ.since : Infinity;
+  const heldFor = champ ? t - champ.since : Infinity, MIN_HOLD = 24 * 3600;
   if (champEval) champ.lastCheck = { t, gate: champEval.gate.pass, val: slim(champEval.val), test: slim(champEval.test) };
-  if (best && (!champ || champ.status !== 'gated' || (champEval && !champEval.gate.pass) || (champEval && best.score >= champEval.score + 0.1 && E.fitness(best.val, objective, 5, 0) >= champEval.fv && E.fitness(best.test, objective, 5, 0) >= champEval.ft && heldFor >= 6 * 3600))) {
+  const champStrong = champEval && champEval.gate.pass && champEval.val.n + champEval.test.n >= 30;
+  const beats = best && champEval && best.score >= champEval.score + 0.1 && fit(best.val) >= champEval.fv && fit(best.test) >= champEval.ft;
+  // a gated champion that came from a re-think and now fails the gate on fresh data may be replaced by any strong challenger
+  const broken = champ && champ.status === 'gated' && champ.source === 're-think' && champEval && !champEval.gate.pass;
+  if (champ && champ.status === 'probation' && champStrong) {
+    champ.status = 'gated'; state.cfg.risk.riskPct = CFG.risk.riskPct; champ.evidence = Object.assign({}, champ.evidence, { venue: { val: slim(champEval.val), test: slim(champEval.test) } });
+    verdict = `Champion passed the gate on ${state.venue} data (val ${sgnR(champEval.val.expR)} on ${champEval.val.n} trades, test ${sgnR(champEval.test.expR)} on ${champEval.test.n}). Promoted to full risk.`;
+    event(t, 'think', verdict, { switched: true });
+  } else if (best && (!champ || (heldFor >= MIN_HOLD && (beats || broken)))) {
     const prev = champ ? champ.name : 'none';
-    const same = champ && E.stratKey(champ.s) + JSON.stringify(champ.s.exit) === E.stratKey(best.s) + JSON.stringify(best.s.exit) && champ.tf === best.tf;
-    state.champion = { s: best.s, tf: best.tf, name: same ? champ.name : best.name + ' · ' + tfLabel(best.tf), status: 'gated', since: same ? champ.since : t, evidence: { train: best.train, val: best.val, test: best.test }, source: same ? champ.source : 're-think' };
+    state.champion = { s: best.s, tf: best.tf, name: best.name + ' · ' + tfLabel(best.tf), status: 'gated', since: t, evidence: { train: best.train, val: best.val, test: best.test }, source: 're-think' };
     state.cfg.risk.riskPct = CFG.risk.riskPct;
     Xcache = null;
-    verdict = same ? `Champion confirmed on ${state.venue} data and promoted to full risk.` : `Switched champion: ${prev} → ${state.champion.name}. Validation ${sgnR(best.val.expR)}/PF ${best.val.pf.toFixed(2)} (${best.val.n} tr), test ${sgnR(best.test.expR)}/PF ${best.test.pf.toFixed(2)} (${best.test.n} tr).`;
+    verdict = `Switched champion: ${prev} → ${state.champion.name}. Validation ${sgnR(best.val.expR)}/PF ${best.val.pf.toFixed(2)} (${best.val.n} tr), test ${sgnR(best.test.expR)}/PF ${best.test.pf.toFixed(2)} (${best.test.n} tr).`;
     event(t, 'think', verdict, { switched: true });
   } else if (!champ && rows.length) {
     const r = rows[0];
     state.champion = { s: r.s, tf: r.tf, name: r.name + ' · ' + tfLabel(r.tf), status: 'probation', since: t, evidence: { train: r.train, val: r.val, test: r.test }, source: 're-think' };
-    state.cfg.risk.riskPct = 0.125; Xcache = null;
-    verdict = `No strategy passed the out-of-sample gate. Paper-trading the best candidate on probation at half risk: ${state.champion.name}.`;
+    state.cfg.risk.riskPct = CFG.risk.riskPct / 2; Xcache = null;
+    verdict = `No strategy passed the out-of-sample gate with enough trades. Paper-trading the best candidate on probation at half risk: ${state.champion.name}.`;
     event(t, 'think', verdict, { switched: true });
   } else {
-    verdict = champEval
-      ? `Kept champion (${champEval.gate.pass ? 'still passes' : 'FAILS'} the gate on fresh data: val ${sgnR(champEval.val.expR)}, test ${sgnR(champEval.test.expR)}). ${best ? 'Best challenger ' + best.name + ' did not beat it by enough.' : 'No challenger passed the gate.'}`
-      : `Kept champion. ${best ? 'Best challenger: ' + best.name + '.' : 'No challenger passed the gate.'}`;
+    const ce = champEval ? ` On ${state.venue} data it shows val ${sgnR(champEval.val.expR)} (${champEval.val.n} tr), test ${sgnR(champEval.test.expR)} (${champEval.test.n} tr).` : '';
+    const why2 = !best ? 'No challenger passed the gate with at least 30 out-of-sample trades.'
+      : heldFor < MIN_HOLD ? `Best challenger ${best.name} · ${tfLabel(best.tf)} passes, but the champion is held at least 24h before any swap.`
+      : `Best challenger ${best.name} · ${tfLabel(best.tf)} did not beat the champion by enough.`;
+    verdict = `Kept champion.${ce} ${why2}`;
     event(t, 'think', verdict);
   }
   state.thinks.push({ t, why, ms: Date.now() - t0, verdict, top: state.leaderboard.slice(0, 3).map((r) => ({ tf: r.tf, name: r.name, gate: r.gate.pass, val: r.val, test: r.test })) });
