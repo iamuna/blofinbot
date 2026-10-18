@@ -1,6 +1,6 @@
 # blofinbot
 
-Multi-coin, multi-timeframe research and paper-trading system for BloFin USDT perpetuals. **PAPER only** — nothing here places real orders.
+Multi-coin, multi-timeframe research and paper-trading system for BloFin USDT perpetuals. **PAPER by default** — the BloFin DEMO broker exists but is switched off, runs only on your own PC with your demo key, and LIVE (real money) is not possible with this build.
 
 **Status and how to resume work: [PROGRESS.md](PROGRESS.md).**
 
@@ -29,6 +29,7 @@ Research behind it: [docs/RESEARCH_MTF_2026-10-18.md](docs/RESEARCH_MTF_2026-10-
 | Dashboard | claude.ai artifact, synced hourly by the supervisor (`lab/sync_dashboard_mtf.js`) |
 | Supervisor | Claude, hourly scheduled task, procedure in [docs/SUPERVISOR.md](docs/SUPERVISOR.md) |
 | 24/7 home PC (optional) | `deploy/install-ubuntu.sh` (Ubuntu Server 24.04 LTS) runs the same bot under systemd |
+| BloFin demo broker (off) | `lab/broker/` (signed client, restart-safe order intents, fake exchange + tests); switched on only by you with `deploy/enable-demo.sh` — [docs/DEMO_TRADING.md](docs/DEMO_TRADING.md) |
 
 ## Commands
 
@@ -41,6 +42,10 @@ Research behind it: [docs/RESEARCH_MTF_2026-10-18.md](docs/RESEARCH_MTF_2026-10-
     node lab/mtf/study_v3.js <research-data> research_out/v3 [<validation-data>]
     node lab/mtf/execution_multi.js <research-data> research_out/execution
 
+    # demo broker: offline tests and a replay against an in-process fake exchange
+    node --test lab/broker/test/*.test.js
+    node lab/mtfbot.js run --state-dir /tmp/d --seed-dir <research-data checkout> --sim --broker demo --fake-exchange --minutes 600
+
     # home PC
     curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/main/deploy/install-ubuntu.sh | sudo bash
 
@@ -48,6 +53,6 @@ The earlier Python history/learning core (`btc_bot/`, `tools/`, `tests/`, `HANDO
 
 ## Path to real money
 
-Paper (now) → BloFin demo account with the same order logic (reusing the old bot's signed BloFin client) → small live — each step only after the previous one has enough trades to judge, with API keys kept on your own machine.
+Paper (now) → BloFin demo account with the same strategy and real post-only orders (built, tested offline, off — [docs/DEMO_TRADING.md](docs/DEMO_TRADING.md)) → small live — each step only after the previous one has enough trades to judge, with API keys kept on your own machine.
 
 Research and paper trading only. Not financial advice, not a claim of future profitability.

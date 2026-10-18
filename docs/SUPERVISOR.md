@@ -4,6 +4,8 @@ The **20-coin multi-timeframe paper bot** (`lab/mtfbot.js`, workflow `mtf-bot.ym
 
 (The earlier single-coin BTC bot, `lab/paperbot.js` / `paper-state`, is retired: its workflow runs only on manual dispatch.)
 
+If Ibrahim has switched on demo trading on his PC (docs/DEMO_TRADING.md), the demo bot's state is on branch `demo-state-home` and is read the same way (`summary.md`, `state.json`, plus `broker-journal.jsonl`). Extra checks there: intents stuck in `SUBMIT_UNKNOWN` / `CANCEL_UNKNOWN` for more than a few minutes, repeated `REJECTED_EXCHANGE`, `demo` events saying the broker is disarmed. The supervisor may pause or flatten it through `control.json` on that branch; it never touches the key or the service.
+
 ## 1. Read the bot
 
     git clone --depth 1 --branch mtf-state https://github.com/iamuna/blofinbot /home/claude/mstate   # or git -C /home/claude/mstate pull

@@ -3,6 +3,7 @@
  * blofinbot multi-coin, multi-timeframe paper bot.
  *
  *   node lab/mtfbot.js run    --state-dir state [--minutes 340] [--git] [--seed-dir research-data] [--sim]
+ *                             [--broker paper|demo] [--fake-exchange (with --sim: demo broker against an in-process fake)]
  *   node lab/mtfbot.js report --state-dir state
  *
  * Every minute, for every coin in lab/universe.json:
@@ -12,7 +13,9 @@
  * Every hour close: append BloFin 1H candles and recompute each coin's target position with the
  * multi-timeframe engine (lab/mtf/mtf.js, configuration V3 = what the research validated), apply the
  * portfolio risk governor, and send orders where holdings are outside the hysteresis band.
- * PAPER ONLY: nothing is sent to an exchange.
+ * PAPER by default: nothing is sent to an exchange. `--broker demo` (or BLOFIN_MODE=demo) drives a BloFin DEMO
+ * account through lab/broker/demo.js with keys from the environment of the user's own machine; it refuses to
+ * run on GitHub Actions. LIVE is not supported by this build. See docs/DEMO_TRADING.md.
  */
 'use strict';
 const fs = require('fs'), path = require('path'), cp = require('child_process'), zlib = require('zlib');
@@ -29,6 +32,7 @@ const SIM = !!A.sim, GIT = !!A.git;
 const SEED = A['seed-dir'] ? path.resolve(A['seed-dir']) : null;
 const PUSH_EVERY = +(A['push-every'] || 10);
 const BRANCH = A.branch || 'mtf-state';
+const MODE = String(A.broker || process.env.BLOFIN_MODE || 'paper').toLowerCase();
 const BASE_UNIVERSE = JSON.parse(fs.readFileSync(path.join(__dirname, 'universe.json'), 'utf8'));
 let UNIVERSE = BASE_UNIVERSE; // replaced at start-up by resolveUniverse()
 const P = require('./mtf/profile.js');
@@ -45,7 +49,7 @@ let simNow = 0;
 const nowSec = () => (SIM ? simNow : Math.floor(Date.now() / 1000));
 const iso = (t) => new Date(t * 1000).toISOString().replace('.000Z', 'Z');
 const money = (x) => (x < 0 ? '-$' : '$') + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const px = (x) => (x >= 100 ? x.toLocaleString('en-US', { maximumFractionDigits: 2 }) : x >= 1 ? x.toFixed(4) : x.toPrecision(5));
+const px = (x) => (x == null || !isFinite(x) ? '—' : x >= 100 ? x.toLocaleString('en-US', { maximumFractionDigits: 2 }) : x >= 1 ? x.toFixed(4) : x.toPrecision(5));
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ───────────────────────── market data (BloFin public REST; closed candles only, ascending)
@@ -133,11 +137,11 @@ function resolveUniverse() {
 // ───────────────────────── state
 let S = null;
 function fresh() {
-  return { version: 1, createdAt: nowSec(), updatedAt: 0, equity0: RISK.equity0, cash: RISK.equity0, pos: {}, orders: {}, fills: [], events: [], equity: [], peak: RISK.equity0, day: -1, dayStart: RISK.equity0, lastHour: 0, lastMin: {}, funding: {}, targets: {}, thinking: null, errors: [], runs: [], controlApplied: null, paused: false, riskScale: 1, governor: 'normal', stats: null };
+  return { version: 1, mode: MODE, createdAt: nowSec(), updatedAt: 0, equity0: RISK.equity0, cash: RISK.equity0, pos: {}, orders: {}, fills: [], events: [], equity: [], peak: RISK.equity0, day: -1, dayStart: RISK.equity0, lastHour: 0, lastMin: {}, funding: {}, targets: {}, thinking: null, errors: [], runs: [], controlApplied: null, paused: false, riskScale: 1, governor: 'normal', stats: null };
 }
 function load() {
   const p = path.join(DIR, 'state.json');
-  S = fs.existsSync(p) ? Object.assign(fresh(), JSON.parse(fs.readFileSync(p, 'utf8'))) : fresh();
+  S = fs.existsSync(p) ? Object.assign(fresh(), { mode: 'paper' }, JSON.parse(fs.readFileSync(p, 'utf8'))) : fresh();
 }
 function save() {
   S.updatedAt = nowSec();
@@ -254,6 +258,7 @@ const lastPrice = (coin) => { const m = MINS[coin]; if (m && m.length) return m[
 
 // ───────────────────────── paper broker
 function equityNow() {
+  if (BROKER) { const e = BROKER.equity(); return isFinite(e) && e > 0 ? e : S.lastBrokerEquity || S.equity0; }
   let e = S.cash;
   for (const coin in S.pos) { const p = S.pos[coin], c = lastPrice(coin); if (p.qty && isFinite(c)) e += p.qty * (c - p.avg); }
   return e;
@@ -277,6 +282,7 @@ function fill(coin, qty, price, fee, why) {
   S.fills.push({ t: nowSec(), coin, qty, price, feeUsd: +feeUsd.toFixed(4), why });
 }
 function workOrders(coin, bars) {
+  if (BROKER) return; // the demo broker works orders on the exchange (brokerTick)
   const o = S.orders[coin];
   if (!o) return;
   for (const b of bars) {
@@ -292,7 +298,7 @@ function payFunding(coin, info) {
   const f = S.funding[coin];
   if (f && f.next && nowSec() >= f.next) {
     const p = S.pos[coin], c = lastPrice(coin);
-    if (p && p.qty && isFinite(c) && isFinite(f.rate)) { const usd = p.qty * c * f.rate; S.cash -= usd; S.fundingPaid = (S.fundingPaid || 0) + usd; }
+    if (!BROKER && p && p.qty && isFinite(c) && isFinite(f.rate)) { const usd = p.qty * c * f.rate; S.cash -= usd; S.fundingPaid = (S.fundingPaid || 0) + usd; }
     FUND_HIST[coin] = FUND_HIST[coin] || []; FUND_HIST[coin].push([f.next, f.rate]);
     f.next = 0;
   }
@@ -335,6 +341,8 @@ function governor(eq) {
   return { scale, blockAdds, dd, dl };
 }
 function rebalance() {
+  if (BROKER && !BROKER.ready) { for (const coin in S.targets) S.targets[coin].note = 'demo broker not ready: ' + BROKER.reason; S.rebalancePending = true; return; }
+  S.rebalancePending = false;
   const eq = equityNow();
   const g = governor(eq);
   for (const coin in S.targets) {
@@ -342,16 +350,17 @@ function rebalance() {
     if (!isFinite(c) || c <= 0) continue;
     const mins = MINS[coin];
     if (!SIM && (!mins || !mins.length || nowSec() - (mins[mins.length - 1].t + MIN) > RISK.staleMin * MIN)) { T.note = 'stale data: no orders'; continue; }
-    let w = Math.max(-RISK.maxCoinWeight, Math.min(RISK.maxCoinWeight, T.weight * g.scale));
+    let w = S.flatten ? 0 : Math.max(-RISK.maxCoinWeight, Math.min(RISK.maxCoinWeight, T.weight * g.scale));
     const cur = (S.pos[coin] ? S.pos[coin].qty : 0) * c / eq;
     const gap = w - cur;
     const adds = Math.abs(w) > Math.abs(cur) + 1e-9;
     if (g.blockAdds && adds) { T.note = 'adds blocked by risk governor'; continue; }
     // hysteresis: same rule as the backtest (trade if |gap| > 0.5% of equity and outside a 25% band, or on a sign change)
-    if (Math.abs(gap) < ENGINE.minTradePct || (Math.abs(gap) < ENGINE.band * Math.abs(w) && w !== 0 && Math.sign(w) === Math.sign(cur))) { if (S.orders[coin] && Math.sign(S.orders[coin].qty) !== Math.sign(gap)) delete S.orders[coin]; T.note = 'within band'; continue; }
+    if (Math.abs(gap) < ENGINE.minTradePct || (Math.abs(gap) < ENGINE.band * Math.abs(w) && w !== 0 && Math.sign(w) === Math.sign(cur))) { if (BROKER) { const g0 = BROKER.goal(coin); if (g0 && Math.sign(g0.base - (S.pos[coin] ? S.pos[coin].qty : 0)) !== Math.sign(gap)) BROKER.clearGoal(coin); } else if (S.orders[coin] && Math.sign(S.orders[coin].qty) !== Math.sign(gap)) delete S.orders[coin]; T.note = 'within band'; continue; }
     const qty = (gap * eq) / c;
     const reason = `target ${(w * 100).toFixed(1)}% of equity (was ${(cur * 100).toFixed(1)}%)`;
-    S.orders[coin] = { qty, limit: c, t0: nowSec() - (nowSec() % MIN), reason };
+    if (BROKER) { if (!BROKER.setGoal(coin, coinCfg(coin).instId, (w * eq) / c, reason)) { T.note = 'not tradable on BloFin demo'; continue; } }
+    else S.orders[coin] = { qty, limit: c, t0: nowSec() - (nowSec() % MIN), reason };
     T.note = 'order working';
     event('order', `${coin}: ${qty > 0 ? 'buy' : 'sell'} ${Math.abs(qty).toPrecision(4)} (~${money(Math.abs(qty * c))}) — ${reason}`, { coin });
   }
@@ -404,7 +413,7 @@ function stats() {
 }
 function summary() {
   const s = S.stats || {};
-  const L = ['# Multi-coin paper bot — live status', '', `Updated ${S.updatedAt ? iso(S.updatedAt) : '—'} · ${UNIVERSE.coins.length} coins · mode: **PAPER** · risk governor: ${S.governor}${S.paused ? ' (paused)' : ''}`, ''];
+  const L = [`# Multi-coin ${S.mode === 'demo' ? 'BloFin DEMO' : 'paper'} bot — live status`, '', `Updated ${S.updatedAt ? iso(S.updatedAt) : '—'} · ${UNIVERSE.coins.length} coins · mode: **${(S.mode || 'paper').toUpperCase()}** · risk governor: ${S.governor}${S.paused ? ' (paused)' : ''}`, ''];
   L.push('| Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |', '|---|---|---|---|---|---|---|');
   L.push(`| ${money(s.equity || 0)} | ${(s.netPct || 0).toFixed(2)}% | ${((s.gross || 0) * 100).toFixed(0)}% | ${s.drawdownPct || 0}% | ${s.fills || 0} | ${money(s.feesUsd || 0)} | ${money(s.fundingUsd || 0)} |`, '');
   if (S.thinking) {
@@ -435,16 +444,64 @@ function readControl() {
   let c; try { c = JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { error('control.json', e); return; }
   if (!c.id || c.id === S.controlApplied) return;
   S.controlApplied = c.id;
-  if (c.pause != null) { S.paused = !!c.pause; event('super', `Supervisor ${S.paused ? 'paused' : 'resumed'} the bot${c.note ? ' — ' + c.note : ''}`); }
+  if (c.pause != null) { S.paused = !!c.pause; if (!S.paused) S.flatten = false; event('super', `Supervisor ${S.paused ? 'paused' : 'resumed'} the bot${c.note ? ' — ' + c.note : ''}`); }
   if (c.riskScale != null) { S.riskScale = Math.max(0, Math.min(1, +c.riskScale)); event('super', `Supervisor set risk scale to ${S.riskScale}`); }
-  if (c.flatten) { for (const coin in S.pos) if (S.pos[coin].qty) S.orders[coin] = { qty: -S.pos[coin].qty, limit: lastPrice(coin), t0: nowSec() - (nowSec() % MIN), reason: 'supervisor flatten' }; S.paused = true; event('super', 'Supervisor: flatten all positions and pause'); }
+  if (c.flatten && BROKER) { for (const coin in S.pos) if (S.pos[coin].qty && coinCfg(coin)) BROKER.setGoal(coin, coinCfg(coin).instId, 0, 'supervisor flatten'); S.paused = true; S.flatten = true; event('super', 'Supervisor: flatten all positions and pause'); }
+  else if (c.flatten) { for (const coin in S.pos) if (S.pos[coin].qty) S.orders[coin] = { qty: -S.pos[coin].qty, limit: lastPrice(coin), t0: nowSec() - (nowSec() % MIN), reason: 'supervisor flatten' }; S.paused = true; S.flatten = true; event('super', 'Supervisor: flatten all positions and pause'); }
   if (c.resetPeak) { S.peak = equityNow(); event('super', 'Supervisor reset the drawdown peak'); }
   if (c.note && c.pause == null) event('super', 'Supervisor note: ' + c.note);
+}
+
+// ───────────────────────── demo broker (off unless --broker demo / BLOFIN_MODE=demo)
+let BROKER = null, FAKE = null;
+function checkMode() { // before any network access
+  if (MODE === 'paper') { if (S.mode !== 'paper') throw new Error(`state dir ${DIR} belongs to a ${S.mode} run; paper needs its own state dir/branch`); return; }
+  if (MODE !== 'demo') throw new Error(`broker mode "${MODE}" is not supported by this build (paper | demo)`);
+  if (process.env.GITHUB_ACTIONS && !SIM) throw new Error('demo trading never runs on GitHub Actions: API keys stay on your own machine');
+  if (S.mode !== MODE) throw new Error(`state dir ${DIR} belongs to a ${S.mode} run; use a separate state dir/branch for ${MODE}`);
+  if (!A['fake-exchange'] && !(process.env.BLOFIN_API_KEY && process.env.BLOFIN_API_SECRET && process.env.BLOFIN_PASSPHRASE)) throw new Error('demo mode needs BLOFIN_API_KEY, BLOFIN_API_SECRET and BLOFIN_PASSPHRASE in the environment (deploy/enable-demo.sh)');
+}
+function setupBroker() {
+  if (MODE === 'paper') return;
+  const { createClient } = require('./broker/blofin.js');
+  const { DemoBroker } = require('./broker/demo.js');
+  let copts = { mode: 'demo', apiKey: process.env.BLOFIN_API_KEY, secret: process.env.BLOFIN_API_SECRET, passphrase: process.env.BLOFIN_PASSPHRASE };
+  if (A['fake-exchange']) {
+    if (!SIM) throw new Error('--fake-exchange is for offline --sim runs only');
+    const { createFakeExchange } = require('./broker/fake_exchange.js');
+    FAKE = createFakeExchange({ key: 'fake', secret: 'fake-secret', pass: 'fake', equity: RISK.equity0 });
+    for (const c of UNIVERSE.coins) {
+      const p0 = lastPrice(c.coin); if (!(p0 > 0)) continue;
+      const e = Math.floor(Math.log10(p0));
+      FAKE.addInstrument(c.instId, { contractValue: Math.pow(10, -e - 1 + 1), lotSize: 1, minSize: 1, tickSize: +Math.pow(10, e - 4).toPrecision(1) }, p0);
+    }
+    let vms = 0; // the client paces requests; in a replay its waits advance a private clock instead of sleeping
+    copts = Object.assign(copts, { apiKey: 'fake', secret: 'fake-secret', passphrase: 'fake', fetchImpl: FAKE.fetchImpl, sleep: async (ms) => { vms += ms; }, nowMs: () => simNow * 1000 + vms });
+  }
+  const client = createClient(copts);
+  BROKER = new DemoBroker({ client, dir: DIR, now: nowSec, log: (type, text) => event(type === 'order' ? 'order' : 'demo', text), coins: UNIVERSE.coins.map((c) => ({ coin: c.coin, instId: c.instId })), chaseMinutes: EXEC.chaseMinutes, maxCoinWeight: RISK.maxCoinWeight, leverage: RISK.leverage || 5 });
+}
+async function brokerTick() {
+  if (FAKE) for (const c of UNIVERSE.coins) { const m = MINS[c.coin]; if (m && m.length && FAKE.inst[c.instId]) { const b = m[m.length - 1]; FAKE.market(c.instId, b.c, b.l, b.h); } }
+  await BROKER.tick();
+  if (!BROKER.ready || !BROKER.snap) return;
+  const eq = BROKER.equity();
+  if (!S.brokerStarted && eq > 0) { S.brokerStarted = nowSec(); S.equity0 = S.cash = S.peak = S.dayStart = eq; event('demo', `Demo account equity at start: ${money(eq)} — performance is measured from here`); }
+  if (eq > 0) S.lastBrokerEquity = eq;
+  if (S.rebalancePending && Object.keys(S.targets).length) { S.pos = BROKER.positionsBase(); rebalance(); }
+  S.pos = BROKER.positionsBase();
+  S.orders = BROKER.openOrdersView();
+  for (const f of BROKER.drainFills()) {
+    S.fills.push({ t: f.t, coin: f.coin, qty: f.qty, price: f.price, feeUsd: +f.feeUsd.toFixed(4), why: f.kind, orderId: f.orderId });
+    if (S.targets[f.coin]) S.targets[f.coin].note = 'filled ' + iso(f.t).slice(11, 16);
+    event('fill', `${f.coin} ${f.qty > 0 ? 'bought' : 'sold'} ${Math.abs(f.qty).toPrecision(4)} at ${px(f.price)} (${f.kind === 'market' ? 'market' : 'post-only, maker fee'}) on BloFin demo — ${f.reason}`, { coin: f.coin });
+  }
 }
 
 // ───────────────────────── main loop
 async function run() {
   load();
+  checkMode();
   const feed = SIM ? sim : blofin;
   if (SIM) simNow = +(A['sim-start'] || Date.parse('2025-06-01T00:00:00Z') / 1000);
   const started = nowSec(), runId = process.env.GITHUB_RUN_ID || 'local-' + started;
@@ -459,7 +516,11 @@ async function run() {
     if (HOURS[c.coin].length < 24 * 400) { try { const n = await backfillHours(c.coin, feed); if (n) event('data', `${c.coin}: loaded ${n} older hourly candles from BloFin`); } catch (e) { error('backfill ' + c.coin, e); } }
   }
   profileAll(true);
-  event('start', `Bot started (run ${runId}): ${UNIVERSE.coins.length} coins (${UNIVERSE.source}), checking every minute.`);
+  if (MODE !== 'paper') {
+    for (const c of UNIVERSE.coins) { try { await syncMinutes(c.coin, feed); } catch (e) { error('minutes ' + c.coin, e); } }
+    setupBroker();
+  }
+  event('start', `Bot started (run ${runId}): ${UNIVERSE.coins.length} coins (${UNIVERSE.source}), mode ${MODE.toUpperCase()}, checking every minute.`);
   let stop = false; process.on('SIGTERM', () => (stop = true)); process.on('SIGINT', () => (stop = true));
   let lastPush = 0, needTargets = !Object.keys(S.targets).length;
   while (!stop && nowSec() - started < RUN_MIN * 60) {
@@ -474,6 +535,7 @@ async function run() {
           if (!SIM) await sleep(60);
         } catch (e) { error('minutes ' + c.coin, e); }
       }
+      if (BROKER) { try { await brokerTick(); } catch (e) { error('broker', e); } }
       // 2) hour close: candles, funding info, targets, orders
       const hourNow = Math.floor(tick / H) * H;
       if (hourNow > S.lastHour || needTargets) {
