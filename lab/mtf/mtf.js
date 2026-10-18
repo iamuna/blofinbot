@@ -159,6 +159,8 @@ const DEFAULT = {
   adaptiveSetup: 0, // >0: per coin, a setup timeframe votes only while round-trip cost ≤ this share of its typical candle (trailing 90 days)
   setupLongOnly: false, // setup layer (1h→12h) adds long exposure only; shorts come from the strategic layer
   roundTripBps: 16, // used by adaptiveSetup: taker fee + slippage, both sides
+  lbScale: 1, // sensitivity test: multiply every Donchian lookback
+  sessionBoost: 0, // >0: setup-layer votes count (1+x)× from Sunday 23:00 to Monday 23:00 UTC (Asia-open trend effect)
 };
 // typical 1h candle range (bps), trailing ~90 days, causal (exponential average of (h-l)/c, outlier-capped)
 function hourRange(grid, g) {
@@ -183,7 +185,8 @@ function simulate(grid, opts) {
     const list = [];
     for (const tf of o.tfs) {
       const bars = resample(grid, g, tf);
-      for (const L of LOOKBACKS[tf]) {
+      for (const L0 of LOOKBACKS[tf]) {
+        const L = Math.max(2, Math.round(L0 * o.lbScale));
         if (bars.c.length <= L) continue;
         const shortOk = o.allowShort && (!o.shortTfs || o.shortTfs.includes(tf)) && !(o.setupLongOnly && LAYER[tf] === 'setup');
         const s = donchian(bars.c, L, shortOk);
@@ -197,6 +200,8 @@ function simulate(grid, opts) {
   const lw = o.layerWeight;
   const tgt = grid.coins.map(() => new Float64Array(n));
   const ranges = o.adaptiveSetup ? grid.coins.map((g) => hourRange(grid, g)) : null;
+  // Sunday 23:00 → Monday 23:00 UTC window
+  const sess = (i) => { if (!o.sessionBoost) return 1; const d = new Date(grid.t[i] * 1000), wd = d.getUTCDay(), h = d.getUTCHours(); return (wd === 0 && h >= 23) || (wd === 1 && h < 23) ? 1 + o.sessionBoost : 1; };
   // live coin count per hour (coin has a price and a volatility estimate)
   const live = new Float64Array(n);
   for (let i = 0; i < n; i++) { let c = 0; for (let j = 0; j < N; j++) if (vols[j][i] > 0 && !isNaN(grid.coins[j].c[i])) c++; live[i] = c; }
@@ -215,12 +220,13 @@ function simulate(grid, opts) {
           if (c.layer === 'setup') { const share = o.roundTripBps / (r1 * Math.sqrt(TF_HOURS[c.tf])); if (!(share <= o.adaptiveSetup)) continue; nSetup++; setupSum += c.sig[i]; }
           else { nStrat++; stratSum += c.sig[i]; }
         }
-        const wS = nStrat ? lw.strategic : 0, wU = nSetup ? lw.setup : 0;
+        const wS = nStrat ? lw.strategic : 0, wU = nSetup ? lw.setup * sess(i) : 0;
         if (wS + wU > 0) pos = ((nStrat ? (stratSum / nStrat) * wS : 0) + (nSetup ? (setupSum / nSetup) * wU : 0)) / (wS + wU);
       } else {
-        for (const c of cs) { const s = c.sig[i]; if (s) pos += (s * lw[c.layer]) / Math.max(1, cnt[c.layer]); }
+        const ws = sess(i);
+        for (const c of cs) { const s = c.sig[i]; if (s) pos += (s * lw[c.layer] * (c.layer === 'setup' ? ws : 1)) / Math.max(1, cnt[c.layer]); }
         // normalise when a layer is absent so the remaining layer can still reach full size
-        const wsum = (cnt.strategic ? lw.strategic : 0) + (cnt.setup ? lw.setup : 0);
+        const wsum = (cnt.strategic ? lw.strategic : 0) + (cnt.setup ? lw.setup * ws : 0);
         if (wsum > 0) pos /= wsum;
       }
       let scale = Math.min(o.maxCoinLev, o.volTarget / v);
