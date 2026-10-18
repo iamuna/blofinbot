@@ -1,0 +1,138 @@
+{
+ "coin": "XRP",
+ "from": "2020-01-06",
+ "to": "2026-10-16",
+ "days": 2476,
+ "medianDailyVolumeUSD": 794626308,
+ "annualVol": 0.645,
+ "range": {
+  "5m": 19.8,
+  "15m": 36.1,
+  "30m": 51.6,
+  "1h": 75.2,
+  "4h": 156.6,
+  "1d": 424.3
+ },
+ "costShareTaker": {
+  "5m": 0.808,
+  "15m": 0.443,
+  "30m": 0.31,
+  "1h": 0.213,
+  "4h": 0.102,
+  "1d": 0.038
+ },
+ "costShareMaker": {
+  "5m": 0.202,
+  "15m": 0.111,
+  "30m": 0.078,
+  "1h": 0.053,
+  "4h": 0.026,
+  "1d": 0.009
+ },
+ "varianceRatio": {
+  "4h": 0.921,
+  "1d": 0.979,
+  "1w": 0.965,
+  "1M": 1.434,
+  "15m": 0.989,
+  "1h": 0.93
+ },
+ "autocorr": {
+  "1h": -0.0159,
+  "1d": 0.0553,
+  "5m": -0.0053
+ },
+ "trendEfficiency30d": 0.141,
+ "hourVol": [
+  1.08,
+  1.16,
+  0.86,
+  0.78,
+  0.8,
+  0.93,
+  0.85,
+  0.76,
+  1.08,
+  0.8,
+  0.73,
+  0.93,
+  1,
+  1.24,
+  1.26,
+  1.41,
+  1.11,
+  1.14,
+  1.04,
+  1.07,
+  0.98,
+  0.97,
+  0.88,
+  0.73
+ ],
+ "hourReturnBps": [
+  -2.85,
+  3.01,
+  1.56,
+  1.5,
+  2.92,
+  -1.79,
+  -6.63,
+  0.82,
+  9.1,
+  1.49,
+  -2.36,
+  2.06,
+  1.5,
+  -0.46,
+  4.42,
+  -0.76,
+  2.33,
+  0.81,
+  1.24,
+  0.86,
+  -2.76,
+  0.04,
+  1.07,
+  -5.18
+ ],
+ "weekdayReturnBps": [
+  0.3,
+  1.4,
+  -1.2,
+  0.1,
+  -1.9,
+  2.4,
+  2.4
+ ],
+ "betaBTC": 1.27,
+ "corrBTC": 0.86,
+ "funding": {
+  "annualMean": 0.1,
+  "positiveShare": 0.54,
+  "p95Annual": 11,
+  "p05Annual": -15.1
+ },
+ "plan": {
+  "executionTimeframe": "30m",
+  "smallestSignalTimeframe": "1d",
+  "quietestHoursUTC": [
+   3,
+   7,
+   10,
+   23
+  ],
+  "trendHorizons": [
+   "1M"
+  ],
+  "meanReversionHorizons": [
+   "4h",
+   "1h"
+  ],
+  "riskCluster": "BTC",
+  "notes": [
+   "1-hour moves tend to snap back: avoid chasing hourly breakouts",
+   "trends persist at 1M: trend ensemble leads",
+   "moves mostly with BTC: counts toward the BTC risk cluster"
+  ]
+ }
+}

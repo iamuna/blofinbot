@@ -1,0 +1,138 @@
+{
+ "coin": "PUMP",
+ "from": "2025-04-12",
+ "to": "2026-10-16",
+ "days": 552,
+ "medianDailyVolumeUSD": 168975442,
+ "annualVol": 1.229,
+ "range": {
+  "5m": 45.1,
+  "15m": 81.4,
+  "30m": 117.3,
+  "1h": 171.6,
+  "4h": 357.4,
+  "1d": 975.4
+ },
+ "costShareTaker": {
+  "5m": 0.355,
+  "15m": 0.197,
+  "30m": 0.136,
+  "1h": 0.093,
+  "4h": 0.045,
+  "1d": 0.016
+ },
+ "costShareMaker": {
+  "5m": 0.089,
+  "15m": 0.049,
+  "30m": 0.034,
+  "1h": 0.023,
+  "4h": 0.011,
+  "1d": 0.004
+ },
+ "varianceRatio": {
+  "4h": 1.026,
+  "1d": 0.953,
+  "1w": 0.915,
+  "1M": 0.917,
+  "15m": 0.984,
+  "1h": 0.936
+ },
+ "autocorr": {
+  "1h": -0.0193,
+  "1d": 0.0064,
+  "5m": -0.0135
+ },
+ "trendEfficiency30d": 0.188,
+ "hourVol": [
+  0.57,
+  0.66,
+  0.69,
+  0.56,
+  0.77,
+  0.56,
+  0.74,
+  3.81,
+  0.54,
+  0.54,
+  0.52,
+  0.56,
+  0.57,
+  0.64,
+  0.73,
+  0.89,
+  0.73,
+  0.67,
+  0.62,
+  0.63,
+  0.72,
+  0.62,
+  0.58,
+  0.49
+ ],
+ "hourReturnBps": [
+  -9.48,
+  2.24,
+  11.63,
+  0.9,
+  4.3,
+  -5.09,
+  -10.63,
+  -37.99,
+  -0.03,
+  -0.6,
+  -4.36,
+  -2.27,
+  1.96,
+  -1.7,
+  0.31,
+  -4.82,
+  9.19,
+  -1.64,
+  1.42,
+  -4.52,
+  4.16,
+  -0.21,
+  2.58,
+  -9.26
+ ],
+ "weekdayReturnBps": [
+  1.1,
+  0.1,
+  2.5,
+  -5.8,
+  -18.4,
+  -2.3,
+  7
+ ],
+ "betaBTC": 1.44,
+ "corrBTC": 0.52,
+ "funding": {
+  "annualMean": 2.5,
+  "positiveShare": 0.78,
+  "p95Annual": 5.5,
+  "p05Annual": -6.5
+ },
+ "plan": {
+  "executionTimeframe": "5m",
+  "smallestSignalTimeframe": "4h",
+  "quietestHoursUTC": [
+   8,
+   9,
+   10,
+   23
+  ],
+  "trendHorizons": [
+   "4h"
+  ],
+  "meanReversionHorizons": [
+   "1w",
+   "1M",
+   "1h"
+  ],
+  "riskCluster": "own",
+  "notes": [
+   "1-hour moves tend to snap back: avoid chasing hourly breakouts",
+   "no horizon shows clear persistence: smaller trend allocation"
+  ]
+ }
+}

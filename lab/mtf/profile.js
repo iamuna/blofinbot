@@ -20,6 +20,9 @@ function vr(c, base, q) { const r1 = logret(c, base), rq = logret(c, base * q); 
 function median(a) { const s = a.filter((x) => isFinite(x)).sort((x, y) => x - y); return s.length ? s[Math.floor(s.length / 2)] : NaN; }
 function pct(a, p) { const s = a.filter((x) => isFinite(x)).sort((x, y) => x - y); return s.length ? s[Math.min(s.length - 1, Math.floor(p * s.length))] : NaN; }
 
+// close of each UTC day (the 23:00 hourly candle), keyed by day number; missing days are skipped
+function dayCloses(t, c) { const m = new Map(); for (let i = 0; i < t.length; i++) if (new Date(t[i] * 1000).getUTCHours() === 23 && c[i] > 0) m.set(Math.floor(t[i] / 86400), c[i]); return m; }
+function dayReturns(t, c) { const dc = dayCloses(t, c), out = new Map(); for (const [k, v] of dc) if (dc.has(k - 1)) out.set(k, Math.log(v / dc.get(k - 1))); return out; }
 function load5m(dir, coin) {
   const p = `${dir}/${coin}/5m.csv.gz`;
   if (!fs.existsSync(p)) return null;
@@ -36,7 +39,7 @@ function profileCoin(coin, hourly, five, btcDaily) {
   const qvDay = []; for (let i = Math.max(0, n - 90 * 24); i + 24 <= n; i += 24) { let s = 0; for (let k = i; k < i + 24; k++) s += hourly.qv[k]; qvDay.push(s); }
   p.medianDailyVolumeUSD = Math.round(median(qvDay));
   // volatility
-  const dr = logret(c, 24);
+  const dr = [...dayReturns(t, c).values()];
   p.annualVol = +(Math.sqrt(variance(dr.slice(-365))) * Math.sqrt(365)).toFixed(3);
   // median candle range (high-low)/close in bps per timeframe, and what a taker round trip costs relative to it
   const rangeBps = (h, l, cl) => { const a = []; for (let i = 0; i < cl.length; i++) if (cl[i] > 0) a.push(((h[i] - l[i]) / cl[i]) * 1e4); return median(a); };
@@ -55,7 +58,7 @@ function profileCoin(coin, hourly, five, btcDaily) {
   p.autocorr = { '1h': +autocorr(logret(c2, 1)).toFixed(4), '1d': +autocorr(logret(c, 24).slice(-730)).toFixed(4) };
   if (five) p.autocorr['5m'] = +autocorr(logret(five.c.slice(-365 * 288), 1)).toFixed(4);
   // Kaufman efficiency of daily moves over 30 days (1 = straight line, 0 = noise)
-  const d = []; for (let i = 23; i < n; i += 24) d.push(c[i]);
+  const d = [...dayCloses(t, c).values()];
   const eff = []; for (let k = 30; k < d.length; k++) { let path = 0; for (let q = k - 29; q <= k; q++) path += Math.abs(d[q] - d[q - 1]); eff.push(Math.abs(d[k] - d[k - 30]) / path); }
   p.trendEfficiency30d = +median(eff.slice(-730)).toFixed(3);
   // seasonality (last 2 years): relative volatility and mean return by UTC hour; mean return by weekday
@@ -67,7 +70,7 @@ function profileCoin(coin, hourly, five, btcDaily) {
   p.weekdayReturnBps = wr.map((x, k) => +((x / Math.max(1, wn[k])) * 1e4).toFixed(1)); // Sunday = 0 (per hour)
   // beta and correlation to BTC (daily, last 365 days)
   if (btcDaily && coin !== 'BTC') {
-    const mine = new Map(); for (let i = 24; i < n; i += 24) mine.set(Math.floor(t[i] / 86400), Math.log(c[i] / c[i - 24]));
+    const mine = dayReturns(t, c);
     const xs = [], ys = []; for (const [k, r] of btcDaily) if (mine.has(k)) { xs.push(r); ys.push(mine.get(k)); }
     const X = xs.slice(-365), Y = ys.slice(-365), mx = X.reduce((a, b) => a + b, 0) / X.length, my = Y.reduce((a, b) => a + b, 0) / Y.length;
     let cov = 0, vx = 0, vy = 0; for (let i = 0; i < X.length; i++) { cov += (X[i] - mx) * (Y[i] - my); vx += (X[i] - mx) ** 2; vy += (Y[i] - my) ** 2; }
@@ -119,7 +122,7 @@ function main() {
   for (const coin of ['BTC', ...uni.filter((x) => x !== 'BTC')]) {
     if (!ok.has(coin)) { profiles.push({ coin, skipped: 'no data' }); continue; }
     const hc = M.loadCoin(dir, coin), five = load5m(dir, coin);
-    if (coin === 'BTC') { btcDaily = []; for (let i = 24; i < hc.n; i += 24) btcDaily.push([Math.floor(hc.t[i] / 86400), Math.log(hc.c[i] / hc.c[i - 24])]); }
+    if (coin === 'BTC') btcDaily = [...dayReturns(Array.from(hc.t), Array.from(hc.c))].sort((a, b) => a[0] - b[0]);
     const p = profileCoin(coin, hc, five, btcDaily);
     fs.writeFileSync(path.join(out, coin + '.json'), JSON.stringify(p, null, 1));
     profiles.push(p);

@@ -22,13 +22,14 @@ Decisions (his answers): **top 20 BloFin USDT perps**; timeframe design left to 
 |---|---|---|
 | 1. Evidence review (web) | done 05:00 | docs/MARKET_KNOWLEDGE.md |
 | 2. Top-20 universe + history (GitHub runner) | done 05:03 (verified 17:00) — 20/20 coins, 289 MB | tools/research_data.py → branch `research-data` |
-| 3. Coin profiler | built 05:15, runs when data lands | lab/mtf/profile.js |
+| 3. Coin profiler | done 17:10 — 20 coins profiled | lab/mtf/profile.js → docs/COIN_PROFILES.md, research_out/profiles/ |
 | 4. Multi-timeframe portfolio engine | v1 05:13 (tested on BTC); portfolio runner 05:20 | lab/mtf/mtf.js, lab/mtf/research.js |
 | 5. Walk-forward validation | pending | docs/RESEARCH_MTF_*.md |
 | 6. Multi-coin paper bot + Ubuntu installer | pending | lab/, deploy/ |
 
 ## Log
 
+- 17:10 — Coin profiles done (docs/COIN_PROFILES.md). Fixed a day-alignment bug that understated BTC correlation for coins that listed mid-day. Findings: monthly moves persist in most coins (VR 1M > 1), hourly moves snap back in most (VR 1h < 1); fees are 10–60% of an hourly candle, so signals must come from 4h–1d+ and the 1m–30m frames time entries; alts move 1.2–1.5× BTC (corr 0.5–0.9).
 - 17:00 — Session resumed. Saved the unpushed 05:05–05:22 work (lab/mtf/, deploy/). Dataset verified: 20/20 coins OK — BTC, ETH, ZEC, XRP, SOL, NEAR, Q, HYPE, DOGE, XMR, SUI, 1000BONK, PEPE (1000PEPE), HBAR, PUMP, SNDK, TRX, TIA, INJ, QNT. 1h history back to 2019-09 where listed (59,544 h for BTC), 5m for 24 months, funding. Notes: SNDK is a tokenised stock perp (Sandisk) with ~6 months of data; Q, HYPE, PUMP have ~1–1.5 years — short-history coins get smaller weights and are judged on less evidence.
 - 05:20 — Portfolio research runner (lab/mtf/research.js): full system + ablations per layer/feature, long-only vs long+short, hysteresis and 2× cost stress, six market eras 2020→2026, BTC+ETH-only survivorship check.
 - 05:15 — Coin profiler (lab/mtf/profile.js): liquidity, vol, candle range vs fees per timeframe, variance ratios 15m→1M, autocorrelation, trend efficiency, hour/weekday seasonality, BTC beta, funding → per-coin plan. BTC: trends at 1w/1M (VR 1.05/1.14), mild snap-back at 1d (0.93); fees are 32% of a 1h candle's range but 5% of a daily one.

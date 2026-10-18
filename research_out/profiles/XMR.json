@@ -1,0 +1,141 @@
+{
+ "coin": "XMR",
+ "from": "2020-02-03",
+ "to": "2026-10-16",
+ "days": 2448,
+ "medianDailyVolumeUSD": 40264021,
+ "annualVol": 0.825,
+ "range": {
+  "5m": 30,
+  "15m": 55.1,
+  "30m": 78.9,
+  "1h": 113.3,
+  "4h": 223.8,
+  "1d": 527.4
+ },
+ "costShareTaker": {
+  "5m": 0.533,
+  "15m": 0.29,
+  "30m": 0.203,
+  "1h": 0.141,
+  "4h": 0.071,
+  "1d": 0.03
+ },
+ "costShareMaker": {
+  "5m": 0.133,
+  "15m": 0.073,
+  "30m": 0.051,
+  "1h": 0.035,
+  "4h": 0.018,
+  "1d": 0.008
+ },
+ "varianceRatio": {
+  "4h": 0.923,
+  "1d": 0.76,
+  "1w": 0.805,
+  "1M": 0.565,
+  "15m": 0.93,
+  "1h": 0.875
+ },
+ "autocorr": {
+  "1h": -0.0482,
+  "1d": -0.0358,
+  "5m": -0.0264
+ },
+ "trendEfficiency30d": 0.133,
+ "hourVol": [
+  0.99,
+  1.16,
+  1.04,
+  0.9,
+  1.13,
+  0.92,
+  1,
+  0.93,
+  1.13,
+  0.88,
+  0.91,
+  0.92,
+  0.95,
+  1.05,
+  1.06,
+  1.14,
+  0.96,
+  1,
+  0.97,
+  0.87,
+  1.01,
+  1.1,
+  0.97,
+  0.92
+ ],
+ "hourReturnBps": [
+  2.23,
+  7.04,
+  4.28,
+  5.17,
+  6.62,
+  0.32,
+  6.27,
+  12.98,
+  3.99,
+  2.15,
+  -6.12,
+  -5.38,
+  -14.94,
+  -7.39,
+  -6.71,
+  -0.54,
+  -1,
+  -2.2,
+  -0.32,
+  -5.18,
+  9.22,
+  2.69,
+  5.26,
+  -0.97
+ ],
+ "weekdayReturnBps": [
+  1.9,
+  0.1,
+  0.3,
+  1.9,
+  -2.2,
+  0.3,
+  2.9
+ ],
+ "betaBTC": 0.89,
+ "corrBTC": 0.48,
+ "funding": {
+  "annualMean": 18.4,
+  "positiveShare": 0.97,
+  "p95Annual": 62.6,
+  "p05Annual": 11
+ },
+ "plan": {
+  "executionTimeframe": "15m",
+  "smallestSignalTimeframe": "4h",
+  "quietestHoursUTC": [
+   3,
+   9,
+   10,
+   19
+  ],
+  "trendHorizons": [],
+  "meanReversionHorizons": [
+   "4h",
+   "1d",
+   "1w",
+   "1M",
+   "15m",
+   "1h"
+  ],
+  "riskCluster": "own",
+  "notes": [
+   "15-minute moves tend to snap back: buy dips / sell rips when entering",
+   "1-hour moves tend to snap back: avoid chasing hourly breakouts",
+   "no horizon shows clear persistence: smaller trend allocation",
+   "funding is usually expensive for longs: crowding filter matters"
+  ]
+ }
+}

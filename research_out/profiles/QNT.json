@@ -1,0 +1,138 @@
+{
+ "coin": "QNT",
+ "from": "2022-10-20",
+ "to": "2026-10-16",
+ "days": 1458,
+ "medianDailyVolumeUSD": 3008441,
+ "annualVol": 1.1,
+ "range": {
+  "5m": 24.4,
+  "15m": 45.9,
+  "30m": 67.4,
+  "1h": 97.4,
+  "4h": 201.1,
+  "1d": 516.3
+ },
+ "costShareTaker": {
+  "5m": 0.656,
+  "15m": 0.349,
+  "30m": 0.237,
+  "1h": 0.164,
+  "4h": 0.08,
+  "1d": 0.031
+ },
+ "costShareMaker": {
+  "5m": 0.164,
+  "15m": 0.087,
+  "30m": 0.059,
+  "1h": 0.041,
+  "4h": 0.02,
+  "1d": 0.008
+ },
+ "varianceRatio": {
+  "4h": 0.866,
+  "1d": 0.987,
+  "1w": 1.517,
+  "1M": 1.327,
+  "15m": 0.942,
+  "1h": 0.981
+ },
+ "autocorr": {
+  "1h": -0.0102,
+  "1d": 0.058,
+  "5m": -0.0131
+ },
+ "trendEfficiency30d": 0.136,
+ "hourVol": [
+  0.93,
+  1.11,
+  0.89,
+  0.87,
+  0.82,
+  0.89,
+  0.86,
+  0.76,
+  0.99,
+  0.88,
+  0.8,
+  0.84,
+  0.91,
+  1.09,
+  1.05,
+  1.17,
+  1.07,
+  1.16,
+  0.92,
+  0.87,
+  0.96,
+  1,
+  1.72,
+  0.99
+ ],
+ "hourReturnBps": [
+  0.41,
+  2.02,
+  2.03,
+  -0.42,
+  2.52,
+  -1.26,
+  -0.97,
+  0.73,
+  -5.21,
+  -1.71,
+  -5.99,
+  2.76,
+  1.61,
+  -0.98,
+  0.52,
+  -0.52,
+  2.57,
+  -0.08,
+  0.88,
+  -0.69,
+  1.07,
+  1.96,
+  13.69,
+  0.27
+ ],
+ "weekdayReturnBps": [
+  -0.5,
+  -2.4,
+  2.3,
+  1.3,
+  -3.4,
+  2.4,
+  4.7
+ ],
+ "betaBTC": 0.77,
+ "corrBTC": 0.31,
+ "funding": {
+  "annualMean": 1.3,
+  "positiveShare": 0.62,
+  "p95Annual": 11,
+  "p05Annual": -17
+ },
+ "plan": {
+  "executionTimeframe": "15m",
+  "smallestSignalTimeframe": "4h",
+  "quietestHoursUTC": [
+   4,
+   7,
+   10,
+   11
+  ],
+  "trendHorizons": [
+   "1w",
+   "1M"
+  ],
+  "meanReversionHorizons": [
+   "4h",
+   "15m"
+  ],
+  "riskCluster": "own",
+  "notes": [
+   "15-minute moves tend to snap back: buy dips / sell rips when entering",
+   "trends persist at 1w/1M: trend ensemble leads"
+  ]
+ }
+}
