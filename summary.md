@@ -1,6 +1,6 @@
 # Paper bot — live status
 
-Updated 2026-10-18T15:49:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
+Updated 2026-10-18T15:59:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER**
 
 | Equity | Net | Trades | Win rate | Profit factor | Avg R | Max DD |
 |---|---|---|---|---|---|---|
@@ -12,6 +12,7 @@ Updated 2026-10-18T15:49:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER
 
 ## Recent events
 
+- `2026-10-18T15:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.70R (5 tr), test +0.48R (11 tr). No challenger passed the gate with at least 30 out-of-sample trades.
 - `2026-10-18T14:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.70R (5 tr), test +0.48R (11 tr). Best challenger EMA 37/50 cross | RSI7 30/75 · 4h passes, but the champion is held at least 24h before any swap.
 - `2026-10-18T13:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.68R (5 tr), test +0.48R (11 tr). No challenger passed the gate with at least 30 out-of-sample trades.
 - `2026-10-18T13:27:13Z` Bot started (run 39126018565) on BloFin BTC-USDT perpetual. Checking every minute.
@@ -26,4 +27,3 @@ Updated 2026-10-18T15:49:04Z · feed: BloFin BTC-USDT perpetual · mode: **PAPER
 - `2026-10-18T07:46:04Z` Run 39088793615 ending after 340 minutes; the next run continues from this state.
 - `2026-10-18T06:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.67R (5 tr), test +0.48R (11 tr). No challenger passed the gate with at least 30 out-of-sample trades.
 - `2026-10-18T05:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.72R (5 tr), test +0.48R (11 tr). No challenger passed the gate with at least 30 out-of-sample trades.
-- `2026-10-18T04:58:04Z` Kept champion. On BloFin BTC-USDT perpetual data it shows val −0.71R (5 tr), test +0.48R (11 tr). Best challenger BB20×2.5 breakout | BB20×2 re-entry | Fib 0.618 · MACD side · 1h passes, but the champion is held at least 24h before any swap.
