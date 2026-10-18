@@ -1,47 +1,53 @@
 # blofinbot
 
-BTC-USDT 1-minute research and paper-trading system aimed at BloFin perpetuals.
+Multi-coin, multi-timeframe research and paper-trading system for BloFin USDT perpetuals. **PAPER only** — nothing here places real orders.
 
-| Part | Where | What it does |
+**Status and how to resume work: [PROGRESS.md](PROGRESS.md).**
+
+## What it does
+
+Every minute, for each of the top-20 crypto perpetuals on BloFin (re-ranked weekly; tokenised stocks excluded):
+
+| Timeframes | Role | Acts |
 |---|---|---|
-| History + learning core (Python) | `btc_bot/`, `tools/`, `tests/` | SQLite 1m history, TA/pattern map, multi-timeframe context, outcome labels, strategy versions, `RiskGovernor`. See `HANDOFF.md`. |
-| Strategy engine (JavaScript) | `lab/engine.js` | Indicators (SMA/EMA, RSI, MACD, Bollinger, ATR), support/resistance, Fibonacci, Carney harmonics, Elliott impulse entries, Wyckoff springs/upthrusts, Dalio-style regime filter and risk-parity sizing, bar-by-bar simulator with the same risk limits as `btc_bot/risk.py`, and a genetic optimizer with a chronological train / validation / test gate. Runs in Node and in the browser. |
-| Paper bot | `lab/paperbot.js`, `lab/champion.json`, `.github/workflows/paper-bot.yml` | Checks every closed 1-minute candle, manages the paper position every minute, trades the champion strategy, re-optimises hourly on the venue's own 1h/4h history and only swaps strategy when a challenger passes the out-of-sample gate. State, trades and a live `summary.md` are on the `paper-state` branch. |
-| History gap fill | `tools/fetch_binance_archive.py`, `.github/workflows/fill-history-gap.yml` | Rebuilds Binance BTCUSDT 1m candles from 2025-10-11 (end of the source ZIP) to now from Binance's public archive and publishes them on the `history-data` branch, daily. |
+| 1m, 2m, 3m, 5m, 15m, 30m | **Execution**: post orders at the best price, re-post each minute, market after 30 min; mark positions; data checks | every minute / at each frame's close |
+| 1h, 2h, 4h, 6h, 12h | **Setups**: add and cut long exposure between daily closes | at each frame's close |
+| 1d, 3d, 1w, 1M, 3M | **Big picture**: direction and size per coin; the only source of shorts | at each frame's close |
 
-Read `AGENTS.md` and `HANDOFF.md` before changing execution code. PAPER is the default; nothing here places real orders.
+Each coin's target = trend votes from many lookbacks per timeframe → sized to 25% annual volatility → tilted toward the strongest coins → portfolio scaled to 25% volatility. Every coin is profiled (volatility, BTC beta, which horizons trend or snap back, what fees cost per candle) before it trades. Hard risk limits: daily loss 5% blocks new risk; drawdown 15% halves risk; 25% goes flat and pauses.
 
-## Python core commands
+Research behind it: [docs/RESEARCH_MTF_2026-10-18.md](docs/RESEARCH_MTF_2026-10-18.md). Backtest 2020–2026 after fees, slippage and funding: Sharpe 1.40 on the top-20; **0.86 on 30 coins it never saw (incl. LUNA, FTT, SRM, MATIC) — the realistic expectation.** Why not 100–200 trades a day: [docs/RESEARCH_HF_2026-10-18.md](docs/RESEARCH_HF_2026-10-18.md). Coin profiles: [docs/COIN_PROFILES.md](docs/COIN_PROFILES.md). Evidence review: [docs/MARKET_KNOWLEDGE.md](docs/MARKET_KNOWLEDGE.md).
 
-    python -m btc_bot.cli --db data/btc_history.sqlite bootstrap BTCUSD_1m_Binance.zip
-    python -m btc_bot.cli --db data/btc_history.sqlite repair-gaps
-    python -m btc_bot.cli --db data/btc_history.sqlite sync
-    python -m btc_bot.cli --db data/btc_history.sqlite verify
-    python -m btc_bot.cli --db data/btc_history.sqlite features --rebuild
-    python -m btc_bot.cli --db data/btc_history.sqlite mtf
-    python -m btc_bot.cli --db data/btc_history.sqlite outcomes --rebuild
-    python -m btc_bot.cli --db data/btc_history.sqlite learn --challengers 24
-    python -m btc_bot.cli --db data/btc_history.sqlite status
+## Where things run
 
-## Paper bot
+| Piece | Where |
+|---|---|
+| 20-coin paper bot | `lab/mtfbot.js`, GitHub Actions `mtf-bot.yml`, state on branch `mtf-state` (`summary.md` = live status) |
+| Engine | `lab/mtf/mtf.js` (signals, sizing, portfolio simulation — same code in research and live) |
+| Research data | `tools/research_data.py` → branch `research-data` (weekly); validation coins → `validation-data` |
+| BTC 1m history gap fill | `tools/fetch_binance_archive.py` → branch `history-data` (daily) |
+| Dashboard | claude.ai artifact, synced hourly by the supervisor (`lab/sync_dashboard_mtf.js`) |
+| Supervisor | Claude, hourly scheduled task, procedure in [docs/SUPERVISOR.md](docs/SUPERVISOR.md) |
+| 24/7 home PC (optional) | `deploy/install-ubuntu.sh` (Ubuntu Server 24.04 LTS) runs the same bot under systemd |
 
-Runs on GitHub Actions in ~5h40m shifts; each shift continues from the `paper-state` branch. Read `summary.md` on that branch for equity, open position, what the bot is thinking and recent events. The supervisor (Claude) reviews it hourly and can steer it through `control.json` on the same branch (`pause`, `forceChampion`, `riskPct`, `thinkNow`, `note`).
+## Commands
 
-Local run:
+    # offline replay on research data (no network)
+    node lab/mtfbot.js run --state-dir /tmp/s --seed-dir <research-data checkout> --sim --minutes 600
+    node lab/mtfbot.js report --state-dir /tmp/s
 
-    node lab/paperbot.js run --state-dir paper --minutes 60
-    node lab/paperbot.js report --state-dir paper
+    # research
+    node lab/mtf/profile.js <research-data> research_out/profiles
+    node lab/mtf/study_v3.js <research-data> research_out/v3 [<validation-data>]
+    node lab/mtf/execution_multi.js <research-data> research_out/execution
 
-Offline test with a simulated exchange: add `--sim`.
+    # home PC
+    curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/main/deploy/install-ubuntu.sh | sudo bash
 
-GitHub's terms allow Actions for building and testing software; this is a forward test of the bot. For a permanent 24/7 deployment move it to your own machine or a small server (same command).
+The earlier Python history/learning core (`btc_bot/`, `tools/`, `tests/`, `HANDOFF.md`, `AGENTS.md`) and the retired single-coin bot (`lab/paperbot.js`, `lab/engine.js`) remain for reference.
 
-Research behind the starting champion and the measurement of the old bot: `docs/RESEARCH_2026-10-18.md`.
+## Path to real money
 
-## History gap
+Paper (now) → BloFin demo account with the same order logic (reusing the old bot's signed BloFin client) → small live — each step only after the previous one has enough trades to judge, with API keys kept on your own machine.
 
-The source ZIP (4,278,671 candles, 2017-08-17 → 2025-10-11 11:02 UTC) is not in the repo. The `history-data` branch holds the continuation in the same format as `tools/build_btc_gap.py`, starting with a three-candle overlap so `tools/merge_btc_gap.py` can verify the join. Missing minutes are listed in the manifest, never invented.
-
-## Status
-
-Research and paper trading only. Not a claim of profitability.
+Research and paper trading only. Not financial advice, not a claim of future profitability.
