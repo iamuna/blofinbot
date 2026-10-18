@@ -1,34 +1,40 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-18T16:59:09Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-18T17:09:10Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
-| $10,007.05 | 0.07% | 17% | -0.03% | 12 | $0.33 | $0.14 |
+| $10,009.94 | 0.10% | 16% | -0.01% | 14 | $0.36 | $0.14 |
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
-| XMR | 591.97 | 4.09% | 4.51% | 0.77 | 0.83 | 0.76 | within band |
-| INJ | 8.0970 | 1.9% | 2.16% | 0.76 | 0.53 | 0.65 | within band |
-| NEAR | 4.7810 | 1.56% | 1.73% | 0.91 | 0.3 | 0.88 | within band |
-| BTC | 81,048.5 | 1.17% | 1.26% | 0.34 | 0.07 | 0.41 | within band |
-| 1000BONK | 0.0028790 | -1.13% | -1.24% | -0.58 | 0 | -1 | within band |
-| Q | 0.12034 | 1.05% | 1.16% | 0.62 | 0.87 | 1 | within band |
-| HYPE | 77.0260 | 1.01% | 1.13% | 0.76 | 0.07 | -0.18 | within band |
-| LINK | 11.7480 | 0.75% | 0.75% | 0.52 | 0 | 0.18 | filled 16:00 |
-| ZEC | 1,083.78 | 0.69% | 0.74% | 0.71 | 0.07 | 0.29 | within band |
-| DOGE | 0.077550 | -0.65% | -0.69% | -0.11 | 0 | -0.88 | within band |
-| PUMP | 0.0041240 | 0.55% | 0.59% | 0.59 | 0 | 0.53 | within band |
-| SOL | 101.99 | 0.53% | 0.59% | 0.28 | 0.07 | -0.06 | within band |
-| LTC | 58.1800 | 0.45% | 0% | 0.3 | 0 | -0.29 | within band |
-| HBAR | 0.086010 | 0.36% | 0% | 0.23 | 0.3 | -0.41 | within band |
-| SUI | 0.95750 | 0.29% | 0% | 0.27 | 0.07 | 0.06 | within band |
-| ETH | 2,364.34 | 0.26% | 0% | 0.21 | 0.07 | -0.53 | within band |
-| PEPE | 0.0000038450 | 0.25% | 0% | 0.27 | 0.07 | -0.65 | within band |
-| XRP | 1.2695 | 0.11% | 0% | 0.21 | 0 | -0.76 | within band |
+| XMR | 590.7 | 3.59% | 3.58% | 0.77 | 0.83 | 0.68 | filled 17:00 |
+| INJ | 8.1090 | 1.68% | 2.17% | 0.76 | 0.53 | 0.58 | within band |
+| NEAR | 4.8230 | 1.42% | 1.74% | 0.91 | 0.3 | 0.89 | within band |
+| BTC | 81,148.2 | 1.04% | 1.26% | 0.34 | 0.07 | 0.37 | within band |
+| 1000BONK | 0.0028900 | -1.02% | -1.24% | -0.58 | 0 | -1 | within band |
+| Q | 0.12103 | 0.95% | 1.16% | 0.62 | 0.87 | 1 | within band |
+| HYPE | 77.1930 | 0.92% | 1.13% | 0.76 | 0.07 | -0.16 | within band |
+| QNT | 190.28 | 0.76% | 0.76% | 0.87 | 0.23 | 0.79 | filled 17:02 |
+| LINK | 11.7960 | 0.67% | 0.75% | 0.52 | 0 | 0.16 | within band |
+| ZEC | 1,091.51 | 0.61% | 0.75% | 0.71 | 0.07 | 0.26 | within band |
+| DOGE | 0.077820 | -0.59% | -0.69% | -0.11 | 0 | -0.89 | within band |
+| PUMP | 0.0041420 | 0.49% | 0.59% | 0.59 | 0 | 0.47 | within band |
+| SOL | 102.33 | 0.48% | 0.6% | 0.28 | 0.07 | -0.05 | within band |
+| BCH | 268.87 | -0.46% | 0% | -0.3 | 0 | -0.68 | within band |
+| LTC | 58.4000 | 0.41% | 0% | 0.3 | 0 | -0.26 | within band |
+| HBAR | 0.085610 | 0.34% | 0% | 0.23 | 0.3 | -0.37 | within band |
+| SUI | 0.96370 | 0.26% | 0% | 0.27 | 0.07 | 0.05 | within band |
+| ETH | 2,373.1 | 0.24% | 0% | 0.21 | 0.07 | -0.47 | within band |
+| PEPE | 0.0000038720 | 0.24% | 0% | 0.27 | 0.07 | -0.58 | within band |
+| XRP | 1.2736 | 0.1% | 0% | 0.21 | 0 | -0.79 | within band |
 
 ## Recent events
 
+- `2026-10-18T17:03:09Z` QNT bought 0.4018 at 189.92 (limit, maker fee) — target 0.8% of equity (was 0.0%)
+- `2026-10-18T17:01:07Z` XMR sold 0.1563 at 592.41 (limit, maker fee) — target 3.6% of equity (was 4.5%)
+- `2026-10-18T17:00:19Z` QNT: buy 0.4018 (~$75.87) — target 0.8% of equity (was 0.0%)
+- `2026-10-18T17:00:19Z` XMR: sell 0.1563 (~$92.61) — target 3.6% of equity (was 4.5%)
 - `2026-10-18T16:26:19Z` Bot started (run 39144871438): 20 coins (research-data universe 2026-10-18), mode PAPER, checking every minute.
 - `2026-10-18T16:26:19Z` QNT: loaded 11520 older hourly candles from BloFin
 - `2026-10-18T16:26:16Z` BCH: seeded 11983 hourly candles from research history
@@ -45,7 +51,3 @@ Updated 2026-10-18T16:59:09Z · 20 coins · mode: **PAPER** · risk governor: no
 - `2026-10-18T15:53:07Z` LTC: seeded 11984 hourly candles from research history
 - `2026-10-18T15:49:09Z` PUMP bought 1.427e+4 at 0.0041660 (limit, maker fee) — target 0.6% of equity (was 0.0%)
 - `2026-10-18T15:49:09Z` INJ bought 26.74 at 8.0800 (limit, maker fee) — target 2.2% of equity (was 0.0%)
-- `2026-10-18T15:49:08Z` HYPE bought 1.465 at 77.3620 (limit, maker fee) — target 1.1% of equity (was 0.0%)
-- `2026-10-18T15:49:08Z` 1000BONK sold 4.305e+4 at 0.0028770 (limit, maker fee) — target -1.2% of equity (was 0.0%)
-- `2026-10-18T15:49:07Z` DOGE sold 884.7 at 0.077260 (limit, maker fee) — target -0.7% of equity (was 0.0%)
-- `2026-10-18T15:49:07Z` XMR bought 0.7625 at 584.61 (limit, maker fee) — target 4.5% of equity (was 0.0%)
