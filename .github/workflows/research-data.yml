@@ -1,0 +1,53 @@
+name: Research data (top-20 BloFin perps)
+
+# Ranks BloFin USDT perpetuals by 24h volume and rebuilds 1h (full history), 5m (24 months) and funding
+# data for the top 20 from Binance's public archive. Published on the `research-data` branch
+# (single commit, replaced on each run). Runs weekly and when the builder changes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/research_data.py"
+      - ".github/workflows/research-data.yml"
+  schedule:
+    - cron: "41 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: research-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build dataset
+        continue-on-error: true
+        run: python3 tools/research_data.py
+      - name: Publish to research-data branch
+        if: always()
+        run: |
+          set -e
+          mkdir -p research
+          [ -f research/manifest.json ] || echo '{"status":"failed","error":"builder produced no manifest"}' > research/manifest.json
+          cd research
+          cat > README.md <<'EOF'
+          # research-data
+
+          Top-20 BloFin USDT perpetuals by 24h volume (see universe.json), with Binance archive history:
+          1h candles (full), 5m candles (24 months), 8h funding rates. Columns: t (ms, candle open, UTC),
+          o, h, l, c, v (base), qv (quote), n (trades), tbv (taker-buy base volume). Rebuilt weekly by
+          .github/workflows/research-data.yml. manifest.json lists rows, gaps and any coin that failed.
+          EOF
+          git init -q -b research-data
+          git config user.name "blofinbot research"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "research data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" research-data
