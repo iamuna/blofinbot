@@ -156,12 +156,12 @@ class DemoBroker {
   }
 
   // ───────── goals from the strategy (base units, signed)
-  setGoal(coin, instId, baseQty, reason) {
+  setGoal(coin, instId, baseQty, reason, arrival) {
     const inst = this.inst[instId];
     if (!inst) return null;
     const contracts = Q.toContracts(baseQty, inst);
     const t0 = this.now() - (this.now() % 60);
-    this.S.goals[coin] = { instId, contracts, base: baseQty, reason, t0 };
+    this.S.goals[coin] = { instId, contracts, base: baseQty, reason, t0, arrival: arrival || null };
     this.save();
     return this.S.goals[coin];
   }
@@ -283,7 +283,7 @@ class DemoBroker {
     this.S.seq += 1;
     const id = `${coin}-${this.S.seq}`;
     const clientOrderId = (PREFIX + this.S.epoch.toString(36) + this.S.seq.toString(36)).replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
-    const it = { id, coin, instId: order.instId, clientOrderId, side: order.side, orderType: order.orderType, size: order.size, price: order.price || null, reduceOnly: order.reduceOnly === 'true', reason: g ? g.reason : '', goalT0: g ? g.t0 : null, createdAt: this.now(), state: 'NEW', filled: 0 };
+    const it = { id, coin, instId: order.instId, clientOrderId, side: order.side, orderType: order.orderType, size: order.size, price: order.price || null, reduceOnly: order.reduceOnly === 'true', reason: g ? g.reason : '', goalT0: g ? g.t0 : null, arrival: g ? g.arrival : null, createdAt: this.now(), state: 'NEW', filled: 0 };
     this.S.intents[id] = it;
     return it;
   }
@@ -349,7 +349,7 @@ class DemoBroker {
     if (filled > 0) {
       const inst = this.inst[it.instId];
       const qty = (it.side === 'buy' ? 1 : -1) * Q.contractsToBase(filled, inst);
-      this.fills.push({ t: this.now(), coin: it.coin, qty, price: +d.averagePrice, feeUsd: Math.abs(+d.fee || 0), kind: it.orderType === 'market' ? 'market' : 'limit', orderId: it.orderId, clientOrderId: it.clientOrderId, reason: it.reason });
+      this.fills.push({ t: this.now(), coin: it.coin, qty, price: +d.averagePrice, feeUsd: Math.abs(+d.fee || 0), kind: it.orderType === 'market' ? 'market' : 'limit', orderId: it.orderId, clientOrderId: it.clientOrderId, reason: it.reason, arrival: it.arrival || null });
     }
   }
 

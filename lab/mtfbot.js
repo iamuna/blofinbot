@@ -289,8 +289,8 @@ function workOrders(coin, bars) {
     if (b.t < o.t0) continue;
     const side = Math.sign(o.qty);
     const through = side > 0 ? b.l <= o.limit * (1 - EXEC.thruBps / 1e4) : b.h >= o.limit * (1 + EXEC.thruBps / 1e4);
-    if (through) { fill(coin, o.qty, o.limit, EXEC.maker, 'limit'); if (S.targets[coin]) S.targets[coin].note = 'filled ' + iso(b.t).slice(11, 16); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(o.limit)} (limit, maker fee) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
-    if (b.t + MIN - o.t0 >= EXEC.chaseMinutes * MIN) { const p = b.c * (1 + side * EXEC.slip); fill(coin, o.qty, p, EXEC.taker, 'market'); if (S.targets[coin]) S.targets[coin].note = 'filled ' + iso(b.t).slice(11, 16); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(p)} (market after ${EXEC.chaseMinutes} min) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
+    if (through) { fill(coin, o.qty, o.limit, EXEC.maker, 'limit'); S.fills[S.fills.length - 1].arrival = o.arrival; if (S.targets[coin]) S.targets[coin].note = 'filled ' + iso(b.t).slice(11, 16); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(o.limit)} (limit, maker fee) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
+    if (b.t + MIN - o.t0 >= EXEC.chaseMinutes * MIN) { const p = b.c * (1 + side * EXEC.slip); fill(coin, o.qty, p, EXEC.taker, 'market'); S.fills[S.fills.length - 1].arrival = o.arrival; if (S.targets[coin]) S.targets[coin].note = 'filled ' + iso(b.t).slice(11, 16); event('fill', `${coin} ${side > 0 ? 'bought' : 'sold'} ${Math.abs(o.qty).toPrecision(4)} at ${px(p)} (market after ${EXEC.chaseMinutes} min) — ${o.reason}`, { coin }); delete S.orders[coin]; return; }
     o.limit = b.c; // re-post at the latest price
   }
 }
@@ -359,8 +359,8 @@ function rebalance() {
     if (Math.abs(gap) < ENGINE.minTradePct || (Math.abs(gap) < ENGINE.band * Math.abs(w) && w !== 0 && Math.sign(w) === Math.sign(cur))) { if (BROKER) { const g0 = BROKER.goal(coin); if (g0 && Math.sign(g0.base - (S.pos[coin] ? S.pos[coin].qty : 0)) !== Math.sign(gap)) BROKER.clearGoal(coin); } else if (S.orders[coin] && Math.sign(S.orders[coin].qty) !== Math.sign(gap)) delete S.orders[coin]; T.note = 'within band'; continue; }
     const qty = (gap * eq) / c;
     const reason = `target ${(w * 100).toFixed(1)}% of equity (was ${(cur * 100).toFixed(1)}%)`;
-    if (BROKER) { if (!BROKER.setGoal(coin, coinCfg(coin).instId, (w * eq) / c, reason)) { T.note = 'not tradable on BloFin demo'; continue; } }
-    else S.orders[coin] = { qty, limit: c, t0: nowSec() - (nowSec() % MIN), reason };
+    if (BROKER) { if (!BROKER.setGoal(coin, coinCfg(coin).instId, (w * eq) / c, reason, c)) { T.note = 'not tradable on BloFin demo'; continue; } }
+    else S.orders[coin] = { qty, limit: c, arrival: c, t0: nowSec() - (nowSec() % MIN), reason };
     T.note = 'order working';
     event('order', `${coin}: ${qty > 0 ? 'buy' : 'sell'} ${Math.abs(qty).toPrecision(4)} (~${money(Math.abs(qty * c))}) — ${reason}`, { coin });
   }
@@ -492,7 +492,7 @@ async function brokerTick() {
   S.pos = BROKER.positionsBase();
   S.orders = BROKER.openOrdersView();
   for (const f of BROKER.drainFills()) {
-    S.fills.push({ t: f.t, coin: f.coin, qty: f.qty, price: f.price, feeUsd: +f.feeUsd.toFixed(4), why: f.kind, orderId: f.orderId });
+    S.fills.push({ t: f.t, coin: f.coin, qty: f.qty, price: f.price, feeUsd: +f.feeUsd.toFixed(4), why: f.kind, orderId: f.orderId, arrival: f.arrival });
     if (S.targets[f.coin]) S.targets[f.coin].note = 'filled ' + iso(f.t).slice(11, 16);
     event('fill', `${f.coin} ${f.qty > 0 ? 'bought' : 'sold'} ${Math.abs(f.qty).toPrecision(4)} at ${px(f.price)} (${f.kind === 'market' ? 'market' : 'post-only, maker fee'}) on BloFin demo — ${f.reason}`, { coin: f.coin });
   }

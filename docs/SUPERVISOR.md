@@ -49,6 +49,12 @@ Then write the three files to the dashboard artifact with `ArtifactData`: `get` 
 
 Dashboard: https://claude.ai/artifact/DCr9QM1eNB8E2ULUU2VrwB
 
+## 3b. Readiness (first check after 00:00 UTC)
+
+    node lab/readiness.js /home/claude/mstate
+
+Mention the verdict in the report when it changes (e.g. "4/7 → 5/7", or "Ready for demo"). Ready means Ibrahim may switch on demo trading on his PC (docs/DEMO_TRADING.md); the supervisor never does it.
+
 ## 4. Log and report
 
 Append one line to `supervisor.md` on `mtf-state` (UTC time, equity, change, positions, fills since last line, governor, action). Send Ibrahim two or three sentences: equity and change since the last review, notable fills or universe changes, anything you did and why. Say plainly when nothing happened.

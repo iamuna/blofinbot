@@ -44,7 +44,19 @@ Offline tests (fake BloFin exchange that verifies signatures and injects failure
 
 ## When to switch it on
 
-When the paper bot has run for at least a few weeks without malfunctions and its results sit inside the backtest's range (see PROGRESS.md). The supervisor will say when that point is reached; it never switches demo on itself.
+When `node lab/readiness.js <paper state dir>` says **Ready** (also shown on the dashboard). It checks the mechanics, written down in advance — profit is not a check, because three weeks cannot tell skill from luck:
+
+| Check | paper → demo | demo → small live |
+|---|---|---|
+| Running | ≥ 21 days | ≥ 42 days |
+| Up (last 14 days, from the 15-minute equity samples) | ≥ 95% | ≥ 97% |
+| Same error 3+ times in the last 7 days | none | none |
+| Fills | ≥ 40 | ≥ 120 |
+| Execution cost per unit traded (fees + slippage vs the price at the decision) | ≤ 10 bps (research 5.9) | ≤ 9 bps |
+| Drawdown | < 15%, governor not flat | < 15%, governor not flat |
+| Realised volatility | 4–30% a year (backtest 14.2%) | 4–30% a year |
+
+The supervisor reports when the verdict changes; it never switches demo on itself.
 
 ## How to switch it on (your PC, after `deploy/install-ubuntu.sh`)
 

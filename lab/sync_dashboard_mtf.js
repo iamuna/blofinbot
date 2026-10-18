@@ -19,6 +19,8 @@ const state = {
   positions: Object.entries(S.pos || {}).filter(([, p]) => p.qty).map(([coin, p]) => ({ coin, qty: sig(p.qty, 6), avg: sig(p.avg) })),
   universe: U.coins.map((c) => c.coin), runs: (S.runs || []).slice(-5), errors: (S.errors || []).slice(-10),
   research: research ? { main: pick(research.main), validation: pick(research.validation), btceth: pick(research.btceth) } : null,
+  readiness: (() => { try { return require('./readiness.js').analyse(S); } catch (e) { return null; } })(),
+  mode: S.mode || 'paper',
 };
 let eq = S.equity || [];
 if (eq.length > 900) { const k = Math.ceil(eq.length / 900); eq = eq.filter((_, i) => i % k === 0 || i === eq.length - 1); }

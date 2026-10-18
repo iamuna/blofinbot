@@ -127,6 +127,7 @@ table.t th, table.t td { text-align: right; padding: 5px 10px; border-bottom: 1p
 table.t th.l, table.t td.l { text-align: left; }
 table.t th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
 table.t td { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+table.t.rd td { text-align: left; white-space: normal; font-family: inherit; vertical-align: top; } table.t.rd td.mono { font-family: var(--f-mono); color: var(--ink-2); } table.t.rd td:first-child { width: 1.5em; padding-right: 0; }
 .eqwrap { height: 180px; position: relative; }
 .eqwrap canvas { width: 100%; height: 100%; display: block; }
 .empty { padding: 18px 12px; color: var(--ink-3); font-size: 13px; }

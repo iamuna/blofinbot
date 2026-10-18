@@ -163,10 +163,18 @@
     g.fillText(utc(t0).slice(0, 5), L, Hh - 7); g.fillText(utc(t1).slice(0, 5), R - 34, Hh - 7);
     $('#eqNote').textContent = money(last) + ' · ' + pct((last / e0 - 1) * 100);
   }
+  function readinessHtml() {
+    const rd = S.state && S.state.readiness;
+    if (!rd || !rd.checks) return '';
+    const n = rd.checks.length, ok = rd.checks.filter((c) => c.ok).length;
+    return `<p class="desc" style="margin:14px 0 6px"><b>Ready for ${esc(rd.next || 'the next step')}?</b> <span class="tag ${rd.ready ? 'acc' : ''}">${rd.ready ? 'READY' : 'NOT YET'} · ${ok}/${n}</span> <span class="dim">checks the mechanics (uptime, errors, costs, risk), not profit — weeks are too short to judge profit</span></p>` +
+      `<table class="t rd"><tbody>${rd.checks.map((c) => `<tr><td class="${c.ok ? 'pos' : 'dim'}">${c.ok ? '✓' : '…'}</td><td>${esc(c.name)}</td><td class="mono">${esc(c.value)}</td></tr>`).join('')}</tbody></table>`;
+  }
   function renderResearch() {
     const r = S.state && S.state.research;
     const k = (lab, m, note) => m ? `<div class="kpi"><span>${esc(lab)}</span><b class="${cls(m.sharpe)}">${m.sharpe}</b><small>Sharpe · ${m.cagr}%/yr · max DD ${m.maxDD}% · ${m.posEras}/6 eras up</small><small class="dim">${esc(note)}</small></div>` : '';
     $('#research').innerHTML = (r ? `<div class="kpis">${k('Top-20 coins, 2020–26', r.main, 'flattered: chosen by today’s volume')}${k('30 unseen coins', r.validation, 'incl. LUNA, FTT, SRM, MATIC — the honest guide')}${k('BTC + ETH only', r.btceth, 'no selection luck at all')}</div>` : '') +
+      readinessHtml() +
       `<p class="desc">All after fees, slippage and funding. Each timeframe from 1 hour to 3 months votes at its own close (many lookbacks each); each coin is sized to 25% volatility and tilted toward the strongest coins; shorts come only from 1-day-and-up timeframes. One-minute to 30-minute frames work the orders: post at the best price, re-post each minute, market after 30 minutes — about 2 bps cheaper than market orders. Expect long flat stretches; the worst historical drawdown was 14–16%.</p>`;
   }
   function renderAll() { renderHeader(); renderTiles(); renderLadder(); renderMatrix(); renderCoin(); renderLog(); renderFills(); renderEquity(); renderResearch(); }
