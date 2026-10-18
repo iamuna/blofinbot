@@ -533,7 +533,7 @@ var Engine = (function () {
     return memo(D, 'quad' + len, () => {
       const e = ma(D, 'EMA', len), a = atr(D, 14), pct = nanArr(D.n), out = new Int8Array(D.n).fill(-1);
       for (let i = 0; i < D.n; i++) pct[i] = a[i] / D.c[i];
-      const base = smaArr(pct, Math.min(500, Math.max(50, Math.floor(D.n / 6))));
+      const base = smaArr(pct, 300); // fixed window: results must not depend on how much history is loaded
       for (let i = 20; i < D.n; i++) {
         if (isNaN(e[i]) || isNaN(e[i - 20]) || isNaN(base[i])) continue;
         const up = D.c[i] > e[i] && e[i] >= e[i - 20];
@@ -580,33 +580,73 @@ var Engine = (function () {
 
   // ───────────────────────────── strategy → per-bar entry signal
   function stratKey(s) { return JSON.stringify([s.dir, s.mode, s.window, s.triggers, s.filters]); }
-  function prepare(D, s) {
-    return memo(D, 'prep:' + stratKey(s), () => {
-      const n = D.n, sig = new Int8Array(n);
-      const trig = s.triggers.map((r) => ruleSignals(D, r)), filt = s.filters.map((r) => ruleSignals(D, r));
-      if (!trig.length) return { sig };
-      const w = Math.max(1, s.window || 1), lastL = trig.map(() => -1e9), lastS = trig.map(() => -1e9);
-      const allowL = s.dir !== 'short', allowS = s.dir !== 'long';
-      for (let i = 0; i < n; i++) {
-        let anyL = false, anyS = false, allL = true, allS = true;
-        for (let k = 0; k < trig.length; k++) {
-          if (trig[k].L[i]) { lastL[k] = i; anyL = true; }
-          if (trig[k].S[i]) { lastS[k] = i; anyS = true; }
-          if (i - lastL[k] >= w) allL = false;
-          if (i - lastS[k] >= w) allS = false;
-        }
-        let goL = s.mode === 'all' ? allL && anyL : anyL, goS = s.mode === 'all' ? allS && anyS : anyS;
-        if (goL || goS) for (const f of filt) { if (!f.L[i]) goL = false; if (!f.S[i]) goS = false; }
-        goL = goL && allowL; goS = goS && allowS;
-        sig[i] = goL && !goS ? 1 : goS && !goL ? -1 : 0;
+  function swingExtremes(D, look) {
+    return memo(D, 'sw' + look, () => {
+      const lo = nanArr(D.n), hi = nanArr(D.n);
+      for (let i = 0; i < D.n; i++) {
+        let a = Infinity, b = -Infinity;
+        for (let q = Math.max(0, i - look); q <= i; q++) { if (D.l[q] < a) a = D.l[q]; if (D.h[q] > b) b = D.h[q]; }
+        lo[i] = a; hi[i] = b;
       }
-      return { sig };
+      return { lo, hi };
     });
+  }
+  function buildSig(D, s) {
+    const n = D.n, sig = new Int8Array(n);
+    const trig = s.triggers.map((r) => ruleSignals(D, r)), filt = s.filters.map((r) => ruleSignals(D, r));
+    if (!trig.length) return sig;
+    const w = Math.max(1, s.window || 1), lastL = trig.map(() => -1e9), lastS = trig.map(() => -1e9);
+    const allowL = s.dir !== 'short', allowS = s.dir !== 'long';
+    for (let i = 0; i < n; i++) {
+      let anyL = false, anyS = false, allL = true, allS = true;
+      for (let k = 0; k < trig.length; k++) {
+        if (trig[k].L[i]) { lastL[k] = i; anyL = true; }
+        if (trig[k].S[i]) { lastS[k] = i; anyS = true; }
+        if (i - lastL[k] >= w) allL = false;
+        if (i - lastS[k] >= w) allS = false;
+      }
+      let goL = s.mode === 'all' ? allL && anyL : anyL, goS = s.mode === 'all' ? allS && anyS : anyS;
+      if (goL || goS) for (const f of filt) { if (!f.L[i]) goL = false; if (!f.S[i]) goS = false; }
+      goL = goL && allowL; goS = goS && allowS;
+      sig[i] = goL && !goS ? 1 : goS && !goL ? -1 : 0;
+    }
+    return sig;
+  }
+  // X = everything the simulator needs on D's own bar index: entry signal, ATR, realised vol, swing extremes.
+  function prepare(D, s) {
+    const sig = D.n < 60000 ? memo(D, 'prep:' + stratKey(s), () => buildSig(D, s)) : buildSig(D, s);
+    const sw = swingExtremes(D, 10);
+    return { sig, atr: atr(D, 14), rv: realizedVol(D), swLo: sw.lo, swHi: sw.hi };
+  }
+  // Signals from a higher timeframe (Dtf = resample(D1, f)), managed on 1-minute bars.
+  // A tf bar's signal appears on the 1m bar where that tf bar closes; entries fill at the next 1m open.
+  // ATR / swing / realised-vol come from the last CLOSED tf bar, so nothing leaks from a forming bar.
+  function tfMap(D1, Dtf, f) {
+    return memo(D1, 'tfmap' + f + ':' + Dtf.n, () => {
+      const n = D1.n, span = D1.tf * f, kOf = new Int32Array(n).fill(-1), closeAt = new Uint8Array(n);
+      let k = 0;
+      for (let i = 0; i < n; i++) {
+        const b = Math.floor(D1.t[i] / span) * span;
+        while (k < Dtf.n - 1 && Dtf.t[k] < b) k++;
+        const last = D1.t[i] + D1.tf >= b + span || (i + 1 < n && Math.floor(D1.t[i + 1] / span) * span !== b && D1.t[i + 1] - D1.t[i] > D1.tf);
+        if (last && Dtf.t[k] === b) { closeAt[i] = 1; kOf[i] = k; } else kOf[i] = Dtf.t[k] === b ? k - 1 : k;
+      }
+      const atrT = atr(Dtf, 14), rvT = realizedVol(Dtf), swT = swingExtremes(Dtf, 10);
+      const A = nanArr(n), RV = nanArr(n), LO = nanArr(n), HI = nanArr(n);
+      for (let i = 0; i < n; i++) { const q = kOf[i]; if (q >= 0) { A[i] = atrT[q]; RV[i] = rvT[q]; LO[i] = swT.lo[q]; HI[i] = swT.hi[q]; } }
+      return { kOf, closeAt, atr: A, rv: RV, swLo: LO, swHi: HI };
+    });
+  }
+  function prepareTf(D1, Dtf, f, s) {
+    if (!f || f <= 1) return prepare(D1, s);
+    const M = tfMap(D1, Dtf, f), st = prepare(Dtf, s).sig, sig = new Int8Array(D1.n);
+    for (let i = 0; i < D1.n; i++) if (M.closeAt[i]) sig[i] = st[M.kOf[i]];
+    return { sig, atr: M.atr, rv: M.rv, swLo: M.swLo, swHi: M.swHi, tf: f };
   }
 
   // ───────────────────────────── simulator (bar by bar; also drives the paper-trading bot)
   // Risk governor mirrors btc_bot/risk.py RiskPolicy: hard limits, never optimised.
-  const GOV_DEFAULT = { on: true, minRisk: 0.05, maxRisk: 0.5, dailyLoss: 2, maxDD: 6, streakReduce: 3, streakStop: 6, minStopAtr: 0.65, maxStopAtr: 2.5 };
+  const GOV_DEFAULT = { on: true, minRisk: 0.05, maxRisk: 0.5, dailyLoss: 2, maxDD: 6, streakReduce: 3, streakStop: 6, minStopAtr: 0.65, maxStopAtr: 2.5, maxCostR: 0.35 };
   function newState(cfg) {
     return { cfg, cash: cfg.equity, pos: null, pending: null, trades: [], peak: cfg.equity, maxDD: 0, blown: false, hwm: cfg.equity, day: -1, dayStart: cfg.equity, streak: 0, rejects: {}, halted: null };
   }
@@ -621,14 +661,13 @@ var Engine = (function () {
     if (S.streak >= g.streakReduce) riskPct *= 0.5;
     return { ok: true, riskPct };
   }
-  function stopDistance(D, s, ex, dir, gov) {
-    const a = atr(D, 14)[s];
+  function stopDistance(D, s, ex, dir, gov, X) {
+    const a = X.atr[s];
     if (isNaN(a) || a <= 0) return NaN;
     let d;
     if (ex.stop === 'pct') d = D.c[s] * ex.pct / 100;
     else if (ex.stop === 'swing') {
-      let ext = dir > 0 ? Infinity : -Infinity;
-      for (let q = Math.max(0, s - 10); q <= s; q++) ext = dir > 0 ? Math.min(ext, D.l[q]) : Math.max(ext, D.h[q]);
+      const ext = dir > 0 ? X.swLo[s] : X.swHi[s];
       d = Math.abs(D.c[s] - ext) + 0.1 * a;
       d = clamp(d, 0.3 * a, 6 * a);
     } else d = ex.mult * a;
@@ -636,7 +675,9 @@ var Engine = (function () {
     return d;
   }
   function closePos(S, D, i, price, reason, ev) {
-    const P = S.pos, cfg = S.cfg, fee = cfg.costs.fee / 100, slip = cfg.costs.slip / 100;
+    const P = S.pos, cfg = S.cfg, slip = cfg.costs.slip / 100;
+    // targets rest as limit orders (maker fee, no slippage); stops and market exits pay taker + slippage
+    const fee = (reason === 'target' && cfg.costs.maker != null ? cfg.costs.maker : cfg.costs.fee) / 100;
     let xp = price;
     if (reason !== 'target') xp = P.dir > 0 ? price * (1 - slip) : price * (1 + slip);
     const pnl = P.dir * P.qty * (xp - P.ep) - P.feeIn - P.qty * xp * fee;
@@ -669,7 +710,7 @@ var Engine = (function () {
       const eq = S.cash;
       let qty;
       if (cfg.risk.mode === 'vol') {
-        const rv = realizedVol(D)[pd.s];
+        const rv = X.rv[pd.s];
         const notional = eq * (cfg.risk.targetVol / 100) / (isNaN(rv) || rv <= 0 ? 0.6 : rv);
         qty = notional / ep;
       } else qty = (eq * pd.riskPct / 100) / d;
@@ -696,7 +737,7 @@ var Engine = (function () {
     }
     // 3 — end-of-bar management: breakeven, trailing (stops only ever tighten), time stop, opposite signal
     if (S.pos) {
-      const Q = S.pos, a = atr(D, 14)[i], qx = Q.exit || ex;
+      const Q = S.pos, a = X.atr[i], qx = Q.exit || ex;
       Q.best = Q.dir > 0 ? Math.max(Q.best, h) : Math.min(Q.best, l);
       const fav = (Q.best - Q.ep) * Q.dir;
       if (qx.be > 0 && !Q.be && fav >= qx.be * Q.d) {
@@ -707,7 +748,7 @@ var Engine = (function () {
         const ns = Q.best - Q.dir * qx.trail * a;
         if ((ns - Q.stop) * Q.dir > 0) { Q.stop = ns; if (ev) ev.push({ type: 'trail', i, stop: ns }); }
       }
-      if (qx.maxBars > 0 && i - Q.ei + 1 >= qx.maxBars) closePos(S, D, i, c, 'time', ev);
+      if (qx.maxBars > 0 && i - Q.ei + 1 >= qx.maxBars * (X.tf || 1)) closePos(S, D, i, c, 'time', ev); // maxBars counts bars of the signal timeframe
       else if (qx.opp && X.sig[i] === -Q.dir) closePos(S, D, i, c, 'signal', ev);
     }
     // 4 — new signal at this close → risk governor → fill next open
@@ -720,8 +761,13 @@ var Engine = (function () {
           if (gt.reason === 'account drawdown breaker' && !S.halted) S.halted = { i, reason: gt.reason };
           if (ev) ev.push({ type: 'reject', i, dir: sg, reason: gt.reason });
         } else {
-          const d = stopDistance(D, i, ex, sg, cfg.gov);
-          if (d > 0) S.pending = { dir: sg, s: i, d, rr: ex.rr, sid: strat.id, riskPct: gt.riskPct, exit: ex };
+          const d = stopDistance(D, i, ex, sg, cfg.gov, X);
+          // execution filter: round-trip fees + slippage may not eat more than maxCostR of the planned risk
+          const costR = d > 0 ? (2 * (cfg.costs.fee + cfg.costs.slip) / 100 * D.c[i]) / d : Infinity;
+          if (cfg.gov && cfg.gov.on && cfg.gov.maxCostR > 0 && costR > cfg.gov.maxCostR) {
+            S.rejects['costs too high vs stop'] = (S.rejects['costs too high vs stop'] || 0) + 1;
+            if (ev) ev.push({ type: 'reject', i, dir: sg, reason: 'costs too high vs stop', costR });
+          } else if (d > 0) S.pending = { dir: sg, s: i, d, rr: ex.rr, sid: strat.id, riskPct: gt.riskPct, exit: ex };
         }
       }
     }
@@ -733,9 +779,10 @@ var Engine = (function () {
     return eqNow;
   }
 
-  function backtest(D, strat, cfg, from, to) {
+  function backtest(D, strat, cfg, from, to, X) {
     from = Math.max(1, from || 1); to = Math.min(D.n, to || D.n);
-    const X = prepare(D, strat), S = newState(cfg), curve = new Float64Array(Math.max(0, to - from));
+    X = X || prepare(D, strat);
+    const S = newState(cfg), curve = new Float64Array(Math.max(0, to - from));
     for (let i = from; i < to; i++) curve[i - from] = step(S, D, X, strat, i, i < to - 1, null);
     if (S.pos) { closePos(S, D, to - 1, D.c[to - 1], 'end', null); curve[curve.length - 1] = S.cash; }
     const m = metrics(S.trades, curve, cfg, D, from, to); m.rejects = S.rejects; m.halted = S.halted;
@@ -771,7 +818,7 @@ var Engine = (function () {
   }
 
   // ───────────────────────────── strategies & genetic optimiser
-  const EXIT_OPTS = { stop: ['atr', 'swing', 'pct'], mult: [1, 1.5, 2, 2.5, 3], pct: [0.15, 0.3, 0.5, 1], trail: [0, 0, 1.5, 2, 3], trailAfter: [0.5, 1, 1.5, 2], be: [0, 0, 0.75, 1, 1.5], maxBars: [0, 0, 30, 60, 120, 240], opp: [false, false, true] };
+  const EXIT_OPTS = { stop: ['atr', 'swing', 'pct'], mult: [1, 1.5, 2, 2.5, 3], pct: [0.3, 0.5, 0.75, 1, 1.5], trail: [0, 0, 1.5, 2, 3], trailAfter: [0.5, 1, 1.5, 2], be: [0, 0, 0.75, 1, 1.5], maxBars: [0, 0, 30, 60, 120, 240], opp: [false, false, true] };
   let uid = 0;
   function newId() { uid++; return 's' + Date.now().toString(36) + uid.toString(36); }
   function defaultParams(id) { return Object.assign({}, RULES[id].def); }
@@ -883,16 +930,27 @@ var Engine = (function () {
     const r = rng(opt.seed || 1234567);
     const sp = opt.splits || [0.6, 0.8];
     const a = Math.floor(D.n * sp[0]), b = Math.floor(D.n * sp[1]);
-    const warm = Math.min(Math.floor(D.n * 0.05), 300);
+    const warm = Math.min(Math.floor(D.n * 0.05), 300 * (opt.tf || 1));
     const cache = new Map();
+    const f = opt.tf || 1, Dtf = f > 1 ? (opt.Dtf || resample(D, f)) : D;
+    const Xof = (s) => prepareTf(D, Dtf, f, s);
     let evals = 0, gen = 0;
     const keyOf = (s) => stratKey(s) + JSON.stringify(s.exit);
     const evalS = (s) => {
       const k = keyOf(s);
       let e = cache.get(k);
       if (!e) {
-        const bt = backtest(D, s, opt.cfg, warm, a);
-        e = { m: bt.metrics, f: fitness(bt.metrics, opt.objective, opt.minTrades, complexityOf(s)) };
+        const X = Xof(s), bt = backtest(D, s, opt.cfg, warm, a, X);
+        let f = fitness(bt.metrics, opt.objective, opt.minTrades, complexityOf(s));
+        const K = opt.trainFolds || 0;
+        if (K > 1) {
+          // robustness: every chunk of the training period must hold up, not just the total
+          const fs = [], span = Math.floor((a - warm) / K);
+          for (let q = 0; q < K; q++) fs.push(fitness(backtest(D, s, opt.cfg, warm + q * span, warm + (q + 1) * span, X).metrics, opt.objective, Math.max(3, Math.round(opt.minTrades / K)), 0));
+          const mean = fs.reduce((x, y) => x + y, 0) / K, sd = Math.sqrt(fs.reduce((x, y) => x + (y - mean) * (y - mean), 0) / K);
+          f = 0.5 * f + 0.5 * (mean - 0.5 * sd) - 0.03 * complexityOf(s);
+        }
+        e = { m: bt.metrics, f };
         cache.set(k, e); evals++;
       }
       return e;
@@ -911,11 +969,11 @@ var Engine = (function () {
         const k = keyOf(x.s);
         let vt = valCache.get(k);
         if (!vt) {
-          const val = backtest(D, x.s, opt.cfg, a, b).metrics, test = backtest(D, x.s, opt.cfg, b, D.n).metrics;
+          const X = Xof(x.s), val = backtest(D, x.s, opt.cfg, a, b, X).metrics, test = backtest(D, x.s, opt.cfg, b, D.n, X).metrics;
           vt = { val, test, vf: fitness(val, opt.objective, Math.max(5, Math.round(opt.minTrades / 3)), 0) };
           valCache.set(k, vt);
         }
-        rows.push({ s: x.s, name: describe(x.s), train: x.e.m, val: vt.val, test: vt.test, fit: x.e.f, score: x.e.f + vt.vf, gate: gateCheck(vt.val, vt.test, opt.minTrades) });
+        rows.push({ s: x.s, tf: f, name: describe(x.s), train: x.e.m, val: vt.val, test: vt.test, fit: x.e.f, score: x.e.f + vt.vf, gate: gateCheck(vt.val, vt.test, opt.minTrades) });
       }
       rows.sort((x, y) => y.score - x.score);
       return rows.slice(0, limit || opt.top || 10);
@@ -938,7 +996,7 @@ var Engine = (function () {
       gen++;
       return { gen, gens: opt.gens, evals, best: scored.reduce((m, x) => Math.max(m, x.e.f), -Infinity) };
     }
-    return { next, board, splits: { warm, a, b, n: D.n }, get gen() { return gen; } };
+    return { next, board, splits: { warm, a, b, n: D.n }, Dtf, Xof, get gen() { return gen; } };
   }
   function optimize(D, opt, onGen) {
     const O = createOptimizer(D, opt);
@@ -1019,7 +1077,7 @@ var Engine = (function () {
     return rows;
   }
 
-  const api = { rng, genSample, parseCandles, makeDataset, datasetFromArrays, toArrays, sliceDataset, resample, detectTf, ma, emaArr, smaArr, rsi, macd, bb, atr, pivots, ZigZag, regimeQuad, RULES, RIBBON, HARMONICS, EXIT_OPTS, ruleSignals, prepare, newState, step, closePos, backtest, metrics, optimize, randomStrat, describe, structureAt, explain, defaultParams, newId, clone, stratKey, fitness, createOptimizer, gateCheck, GOV_DEFAULT };
+  const api = { rng, genSample, parseCandles, makeDataset, datasetFromArrays, toArrays, sliceDataset, resample, detectTf, ma, emaArr, smaArr, rsi, macd, bb, atr, pivots, ZigZag, regimeQuad, RULES, RIBBON, HARMONICS, EXIT_OPTS, ruleSignals, prepare, newState, step, closePos, backtest, metrics, optimize, randomStrat, describe, structureAt, explain, defaultParams, newId, clone, stratKey, fitness, createOptimizer, gateCheck, GOV_DEFAULT, prepareTf, tfMap, swingExtremes, realizedVol, complexityOf };
 
   // ───────────────────────────── worker glue
   if (typeof importScripts === 'function' && typeof self !== 'undefined') {

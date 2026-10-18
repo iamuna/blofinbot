@@ -1,0 +1,51 @@
+name: Paper bot (checks every minute)
+
+# Runs lab/paperbot.js: pulls each closed 1m BTC candle, manages the paper position every minute,
+# trades the champion strategy's signals and re-optimises hourly. State (candles, trades, events,
+# champion, thinking) lives on the `paper-state` branch and is pushed every 10 minutes.
+# PAPER ONLY — no API keys, no orders reach an exchange.
+#
+# One job runs for ~5h40m; the half-hourly schedule keeps the next run queued so the bot
+# continues from the saved state. Pushing bot code to main restarts it with the new code.
+# Stop it: Actions → "Paper bot" → ⋯ → Disable workflow.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "lab/engine.js"
+      - "lab/paperbot.js"
+      - "lab/champion.json"
+      - ".github/workflows/paper-bot.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paper-bot
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 358
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load bot state
+        run: |
+          REMOTE="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          if git clone -q --depth 1 --branch paper-state "$REMOTE" state; then
+            echo "continuing from saved state"
+          else
+            mkdir -p state && cd state && git init -q -b paper-state && git remote add origin "$REMOTE" && cd ..
+            echo "fresh state"
+          fi
+          git -C state config user.name "blofinbot paper bot"
+          git -C state config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run the paper bot
+        run: node lab/paperbot.js run --state-dir state --minutes 340 --git
