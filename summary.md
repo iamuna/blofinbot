@@ -1,36 +1,38 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-18T17:55:34Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-18T18:06:08Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
-| $10,005.04 | 0.05% | 16% | 0.03% | 14 | $0.36 | $0.14 |
+| $10,005.81 | 0.06% | 16% | 0.03% | 15 | $0.37 | $0.14 |
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
-| XMR | 588 | 3.59% | 3.56% | 0.77 | 0.83 | 0.68 | filled 17:00 |
-| INJ | 8.0660 | 1.68% | 2.16% | 0.76 | 0.53 | 0.58 | within band |
-| NEAR | 4.7530 | 1.42% | 1.72% | 0.91 | 0.3 | 0.89 | within band |
-| BTC | 81,131 | 1.04% | 1.26% | 0.34 | 0.07 | 0.37 | within band |
-| 1000BONK | 0.0028760 | -1.02% | -1.24% | -0.58 | 0 | -1 | within band |
-| Q | 0.12163 | 0.95% | 1.17% | 0.62 | 0.87 | 1 | within band |
-| HYPE | 77.4590 | 0.92% | 1.13% | 0.76 | 0.07 | -0.16 | within band |
-| QNT | 189.73 | 0.76% | 0.76% | 0.87 | 0.23 | 0.79 | filled 17:02 |
-| LINK | 11.7570 | 0.67% | 0.75% | 0.52 | 0 | 0.16 | within band |
-| ZEC | 1,088.13 | 0.61% | 0.75% | 0.71 | 0.07 | 0.26 | within band |
-| DOGE | 0.077710 | -0.59% | -0.69% | -0.11 | 0 | -0.89 | within band |
-| PUMP | 0.0041200 | 0.49% | 0.59% | 0.59 | 0 | 0.47 | within band |
-| SOL | 101.98 | 0.48% | 0.59% | 0.28 | 0.07 | -0.05 | within band |
-| BCH | 269.13 | -0.46% | 0% | -0.3 | 0 | -0.68 | within band |
-| LTC | 57.9400 | 0.41% | 0% | 0.3 | 0 | -0.26 | within band |
-| HBAR | 0.084760 | 0.34% | 0% | 0.23 | 0.3 | -0.37 | within band |
-| SUI | 0.95930 | 0.26% | 0% | 0.27 | 0.07 | 0.05 | within band |
-| ETH | 2,367.83 | 0.24% | 0% | 0.21 | 0.07 | -0.47 | within band |
-| PEPE | 0.0000038660 | 0.24% | 0% | 0.27 | 0.07 | -0.58 | within band |
-| XRP | 1.2715 | 0.1% | 0% | 0.21 | 0 | -0.79 | within band |
+| XMR | 588.97 | 3.63% | 3.57% | 0.77 | 0.83 | 0.68 | within band |
+| INJ | 8.0660 | 1.62% | 1.62% | 0.76 | 0.43 | 0.58 | filled 18:01 |
+| NEAR | 4.7730 | 1.43% | 1.73% | 0.91 | 0.3 | 0.89 | within band |
+| BTC | 81,186.4 | 1.05% | 1.26% | 0.34 | 0.07 | 0.37 | within band |
+| 1000BONK | 0.0028800 | -1.03% | -1.24% | -0.58 | 0 | -1 | within band |
+| Q | 0.12083 | 0.96% | 1.16% | 0.62 | 0.87 | 1 | within band |
+| HYPE | 77.3780 | 0.93% | 1.13% | 0.76 | 0.07 | -0.16 | within band |
+| QNT | 190.05 | 0.72% | 0.76% | 0.87 | 0.13 | 0.79 | within band |
+| LINK | 11.7780 | 0.68% | 0.75% | 0.52 | 0 | 0.16 | within band |
+| ZEC | 1,086.59 | 0.62% | 0.74% | 0.71 | 0.07 | 0.26 | within band |
+| DOGE | 0.077790 | -0.6% | -0.69% | -0.11 | 0 | -0.89 | within band |
+| PUMP | 0.0041280 | 0.49% | 0.59% | 0.59 | 0 | 0.47 | within band |
+| SOL | 102.31 | 0.48% | 0.6% | 0.28 | 0.07 | -0.05 | within band |
+| BCH | 269.25 | -0.47% | 0% | -0.3 | 0 | -0.68 | within band |
+| LTC | 58.0000 | 0.42% | 0% | 0.3 | 0 | -0.26 | within band |
+| SUI | 0.96130 | 0.26% | 0% | 0.27 | 0.07 | 0.05 | within band |
+| ETH | 2,369.69 | 0.25% | 0% | 0.21 | 0.07 | -0.47 | within band |
+| PEPE | 0.0000038740 | 0.24% | 0% | 0.27 | 0.07 | -0.58 | within band |
+| HBAR | 0.084760 | 0.17% | 0% | 0.23 | 0.07 | -0.37 | within band |
+| XRP | 1.2734 | 0.1% | 0% | 0.21 | 0 | -0.79 | within band |
 
 ## Recent events
 
+- `2026-10-18T18:02:08Z` INJ sold 6.653 at 8.0730 (limit, maker fee) — target 1.6% of equity (was 2.2%)
+- `2026-10-18T18:01:10Z` INJ: sell 6.653 (~$53.71) — target 1.6% of equity (was 2.2%)
 - `2026-10-18T17:55:30Z` Bot started (run 39151703254): 20 coins (research-data universe 2026-10-18), mode PAPER, checking every minute.
 - `2026-10-18T17:03:09Z` QNT bought 0.4018 at 189.92 (limit, maker fee) — target 0.8% of equity (was 0.0%)
 - `2026-10-18T17:01:07Z` XMR sold 0.1563 at 592.41 (limit, maker fee) — target 3.6% of equity (was 4.5%)
@@ -49,5 +51,3 @@ Updated 2026-10-18T17:55:34Z · 20 coins · mode: **PAPER** · risk governor: no
 - `2026-10-18T16:00:18Z` LINK: buy 6.387 (~$75.12) — target 0.8% of equity (was 0.0%)
 - `2026-10-18T15:53:07Z` Bot started (run 39142444909): 18 coins (research-data universe 2026-10-18), checking every minute.
 - `2026-10-18T15:53:07Z` LINK: seeded 11984 hourly candles from research history
-- `2026-10-18T15:53:07Z` LTC: seeded 11984 hourly candles from research history
-- `2026-10-18T15:49:09Z` PUMP bought 1.427e+4 at 0.0041660 (limit, maker fee) — target 0.6% of equity (was 0.0%)
