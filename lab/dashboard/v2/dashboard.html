@@ -256,7 +256,7 @@ table.t.rd td { text-align: left; white-space: normal; font-family: inherit; ver
       $('#sub').textContent = `${(s.universe || []).length} BloFin perpetuals · synced ${s.syncedAt ? ago(s.syncedAt) : '—'} · bot heartbeat ${s.updatedAt ? ago(s.updatedAt) : '—'} · risk governor ${s.governor || 'normal'}`;
       const msgs = [];
       if (s.paused) msgs.push('Paused: no new positions.');
-      if (s.updatedAt && Date.now() / 1000 - s.updatedAt > 3 * 3600) msgs.push(`Last refresh from the bot was ${ago(s.updatedAt)}; it syncs here hourly.`);
+      if (s.updatedAt && Date.now() / 1000 - s.updatedAt > 7 * 3600) msgs.push(`Last refresh from the bot was ${ago(s.updatedAt)}; it syncs here every 6 hours.`);
       if (s.errors && s.errors.length) { const e = s.errors[s.errors.length - 1]; if (Date.now() / 1000 - e.t < 3600) msgs.push('Recent bot error: ' + e.msg); }
       const b = $('#banner'); b.hidden = !msgs.length; b.className = 'banner' + (s.paused || (s.errors && s.errors.length) ? ' warn' : ''); b.textContent = msgs.join(' ');
     }

@@ -26,8 +26,8 @@ Research behind it: [docs/RESEARCH_MTF_2026-10-18.md](docs/RESEARCH_MTF_2026-10-
 | Engine | `lab/mtf/mtf.js` (signals, sizing, portfolio simulation — same code in research and live) |
 | Research data | `tools/research_data.py` → branch `research-data` (weekly); validation coins → `validation-data` |
 | BTC 1m history gap fill | `tools/fetch_binance_archive.py` → branch `history-data` (daily) |
-| Dashboard | claude.ai artifact, synced hourly by the supervisor (`lab/sync_dashboard_mtf.js`) |
-| Supervisor | Claude, hourly scheduled task, procedure in [docs/SUPERVISOR.md](docs/SUPERVISOR.md) |
+| Dashboard | claude.ai artifact, synced every 6 hours by the supervisor (`lab/sync_dashboard_mtf.js`) |
+| Supervisor | Claude, scheduled task every 6 hours (00:50, 06:50, 12:50, 18:50 UTC), procedure in [docs/SUPERVISOR.md](docs/SUPERVISOR.md) |
 | 24/7 home PC (optional) | `deploy/install-ubuntu.sh` (Ubuntu Server 24.04 LTS) runs the same bot under systemd |
 | BloFin demo broker (off) | `lab/broker/` (signed client, restart-safe order intents, fake exchange + tests); switched on only by you with `deploy/enable-demo.sh` — [docs/DEMO_TRADING.md](docs/DEMO_TRADING.md) |
 

@@ -1,6 +1,6 @@
-# Supervisor procedure (hourly, run by Claude)
+# Supervisor procedure (every 6 hours, run by Claude)
 
-The **20-coin multi-timeframe paper bot** (`lab/mtfbot.js`, workflow `mtf-bot.yml`, state branch `mtf-state`) acts every minute. The supervisor checks on it once an hour, keeps the dashboard current and steps in only when something is wrong. PAPER only: the supervisor never adds API keys, never enables demo/live, never raises risk above the limits in `lab/universe.json`.
+The **20-coin multi-timeframe paper bot** (`lab/mtfbot.js`, workflow `mtf-bot.yml`, state branch `mtf-state`) acts every minute. The supervisor checks on it every 6 hours (scheduled task at 00:50, 06:50, 12:50 and 18:50 UTC; the bot workflow restarts itself every 30 minutes if a run dies, so the supervisor is the backstop), keeps the dashboard current and steps in only when something is wrong. PAPER only: the supervisor never adds API keys, never enables demo/live, never raises risk above the limits in `lab/universe.json`.
 
 (The earlier single-coin BTC bot, `lab/paperbot.js` / `paper-state`, is retired: its workflow runs only on manual dispatch.)
 
