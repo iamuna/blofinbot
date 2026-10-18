@@ -1,0 +1,1704 @@
+<title>BTC Paper Bot</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: operations board — status strip, chart beside the bot's mind (champion · position · thinking), then the record (events, trades, equity, research) */
+:root {
+  --paper: #edf1f5; --panel: #fafbfc; --sunk: #e3e9f0; --ink: #142039; --ink-2: #4a5a73; --ink-3: #7b889d;
+  --rule: #cdd6e1; --rule-2: #dee5ed; --accent: #2546c8; --accent-wash: rgba(37, 70, 200, 0.09);
+  --bot: #9d5d06; --bot-wash: rgba(196, 128, 22, 0.13); --up: #0a8063; --down: #c63f27;
+  --up-wash: rgba(10, 128, 99, 0.11); --down-wash: rgba(198, 63, 39, 0.11);
+  --ma21: #c98a12; --ma37: #2546c8; --ma50: #138a9e; --bb: #7a6bd1; --fib: #b26a12; --sr: #5e6f8a;
+  --grid: rgba(20, 32, 57, 0.065);
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --r: 4px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0d1524; --panel: #121c2f; --sunk: #0a101c; --ink: #e3eaf5; --ink-2: #9ba9c0; --ink-3: #6b7991;
+    --rule: #233150; --rule-2: #1a2640; --accent: #8199ff; --accent-wash: rgba(129, 153, 255, 0.12);
+    --bot: #f0b14d; --bot-wash: rgba(240, 177, 77, 0.12); --up: #2bc093; --down: #ff7657;
+    --up-wash: rgba(43, 192, 147, 0.13); --down-wash: rgba(255, 118, 87, 0.13);
+    --ma21: #f0b14d; --ma37: #8199ff; --ma50: #42c3d6; --bb: #a597ff; --fib: #f0a548; --sr: #93a3bd; --grid: rgba(227, 234, 245, 0.06);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0d1524; --panel: #121c2f; --sunk: #0a101c; --ink: #e3eaf5; --ink-2: #9ba9c0; --ink-3: #6b7991;
+  --rule: #233150; --rule-2: #1a2640; --accent: #8199ff; --accent-wash: rgba(129, 153, 255, 0.12);
+  --bot: #f0b14d; --bot-wash: rgba(240, 177, 77, 0.12); --up: #2bc093; --down: #ff7657;
+  --up-wash: rgba(43, 192, 147, 0.13); --down-wash: rgba(255, 118, 87, 0.13);
+  --ma21: #f0b14d; --ma37: #8199ff; --ma50: #42c3d6; --bb: #a597ff; --fib: #f0a548; --sr: #93a3bd; --grid: rgba(227, 234, 245, 0.06);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--paper); color: var(--ink); }
+body {
+  font-family: var(--f-display); font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 32px;
+}
+button { font: inherit; color: inherit; }
+.mono, .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+.pos { color: var(--up); } .neg { color: var(--down); } .dim { color: var(--ink-3); }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding-block: 16px 12px; border-bottom: 1px solid var(--rule); }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.mark { width: 34px; height: 34px; display: grid; place-items: center; flex: none; background: var(--ink); color: var(--paper); border-radius: var(--r); font: 700 19px/1 var(--f-display); }
+.brand h1 { font: 760 22px/1.05 var(--f-display); font-stretch: 118%; letter-spacing: -0.01em; }
+.brand p { margin: 2px 0 0; color: var(--ink-2); font-size: 12.5px; }
+.paper { font: 700 10.5px/1 var(--f-mono); letter-spacing: 0.16em; padding: 5px 8px; border: 1px solid var(--bot); background: var(--bot-wash); color: var(--bot); border-radius: 3px; }
+.ticker { margin-left: auto; display: grid; justify-items: end; gap: 2px; }
+.ticker .px { font: 600 24px/1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.ticker small { font-size: 11.5px; color: var(--ink-3); }
+.livedot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--ink-3); margin-right: 6px; vertical-align: 1px; }
+.livedot.on { background: var(--up); box-shadow: 0 0 0 3px var(--up-wash); }
+
+.tiles { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); border: 1px solid var(--rule); border-radius: var(--r); background: var(--panel); margin-top: 16px; }
+.tile { padding: 10px 12px; border-right: 1px solid var(--rule-2); min-width: 0; }
+.tile:last-child { border-right: 0; }
+.tile span { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); font-weight: 600; white-space: nowrap; }
+.tile b { display: block; font: 600 19px/1.3 var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tile small { display: block; font: 11px/1.3 var(--f-mono); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; margin-top: 16px; align-items: start; }
+.col { display: grid; gap: 16px; min-width: 0; }
+.card { border: 1px solid var(--rule); border-radius: var(--r); background: var(--panel); min-width: 0; }
+.card-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--rule-2); flex-wrap: wrap; }
+.card-h h2 { font: 700 11px/1.2 var(--f-display); font-stretch: 115%; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-2); }
+.card-b { padding: 12px; display: grid; gap: 10px; }
+
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--ink-2); min-height: 28px; }
+.seg button + button { border-left: 1px solid var(--rule-2); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--rule); background: var(--panel); border-radius: 999px; padding: 2px 9px 2px 7px; font-size: 11px; font-weight: 600; color: var(--ink-2); cursor: pointer; min-height: 24px; }
+.chip i { width: 10px; height: 3px; border-radius: 2px; background: currentColor; display: inline-block; }
+.chip[aria-pressed="true"] { color: var(--ink); border-color: var(--ink-3); background: var(--sunk); }
+.chip[aria-pressed="false"] i { opacity: 0.3; }
+.chartwrap { position: relative; height: clamp(360px, 56vh, 600px); touch-action: none; }
+.chartwrap canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
+.legend { position: absolute; left: 10px; top: 8px; right: 76px; pointer-events: none; font: 11px/1.4 var(--f-mono); color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 2px 12px; font-variant-numeric: tabular-nums; }
+.legend b { color: var(--ink); font-weight: 600; }
+.help { position: absolute; left: 10px; bottom: 26px; font-size: 10.5px; color: var(--ink-3); pointer-events: none; }
+
+.champ-name { font: 700 17px/1.25 var(--f-display); font-stretch: 108%; }
+.pill { font: 600 10.5px/1 var(--f-mono); letter-spacing: 0.04em; padding: 4px 7px; border-radius: 3px; background: var(--sunk); color: var(--ink-2); white-space: nowrap; display: inline-block; }
+.pill.up { background: var(--up-wash); color: var(--up); } .pill.down { background: var(--down-wash); color: var(--down); } .pill.bot { background: var(--bot-wash); color: var(--bot); } .pill.acc { background: var(--accent-wash); color: var(--accent); }
+.desc { color: var(--ink-2); font-size: 13px; margin: 0; }
+.kv { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.kv div { font: 13px/1.3 var(--f-mono); font-variant-numeric: tabular-nums; min-width: 0; }
+.kv span { display: block; font-family: var(--f-display); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); font-weight: 600; }
+.poscard.long { background: var(--up-wash); } .poscard.short { background: var(--down-wash); }
+.decision { font-size: 13.5px; padding: 8px 10px; border-left: 3px solid var(--bot); background: var(--bot-wash); border-radius: 0 var(--r) var(--r) 0; }
+.checks { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.checks td { padding: 4px 0; border-bottom: 1px solid var(--rule-2); }
+.checks td:not(:first-child), .checks th:not(:first-child) { text-align: center; width: 52px; font-family: var(--f-mono); font-weight: 600; }
+.checks th { font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-3); font-weight: 600; text-align: left; padding-bottom: 3px; }
+.yes { color: var(--up); } .no { color: var(--ink-3); }
+.read { display: grid; gap: 3px; font-size: 12.5px; }
+.read div { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 8px; }
+.read b { font-weight: 600; color: var(--ink-3); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 1px; }
+
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 16px; align-items: start; }
+.log { max-height: 360px; overflow: auto; }
+.log div { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; padding: 6px 12px; border-bottom: 1px solid var(--rule-2); font-size: 12.5px; }
+.log time { font: 11px/1.5 var(--f-mono); color: var(--ink-3); }
+.log .t-enter { color: var(--accent); } .log .t-exit.w { color: var(--up); } .log .t-exit.l { color: var(--down); } .log .t-think { color: var(--bot); } .log .t-super { color: var(--bot); font-weight: 600; } .log .t-reject { color: var(--ink-3); font-style: italic; }
+.tablebox { max-height: 360px; overflow: auto; }
+table.t { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.t th, table.t td { text-align: right; padding: 5px 10px; border-bottom: 1px solid var(--rule-2); white-space: nowrap; }
+table.t th:first-child, table.t td:first-child, table.t th.l, table.t td.l { text-align: left; }
+table.t th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--ink-3); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
+table.t td { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eqwrap { height: 170px; position: relative; }
+.eqwrap canvas { width: 100%; height: 100%; display: block; }
+.empty { padding: 18px 12px; color: var(--ink-3); font-size: 13px; }
+.note { color: var(--ink-3); font-size: 11.5px; max-width: 90ch; margin: 20px 0 0; }
+.banner { margin-top: 12px; padding: 8px 12px; border-radius: var(--r); font-size: 13px; background: var(--sunk); color: var(--ink-2); }
+.banner.warn { background: var(--down-wash); color: var(--down); }
+
+@media (max-width: 1100px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tile:nth-child(4n) { border-right: 0; }
+  .tile:nth-child(-n + 4) { border-bottom: 1px solid var(--rule-2); }
+  .row2 { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tile:nth-child(2n) { border-right: 0; }
+  .tile:nth-child(-n + 6) { border-bottom: 1px solid var(--rule-2); }
+  .ticker { margin-left: 0; justify-items: start; }
+  .chartwrap { height: 420px; }
+  .legend { right: 10px; }
+  .kv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+</style>
+
+<header class="bar">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">₿</div>
+    <div>
+      <h1>BTC Paper Bot</h1>
+      <p id="sub">blofinbot · checks every minute · supervised by Claude</p>
+    </div>
+  </div>
+  <span class="paper" title="Simulated trades only. No orders reach an exchange.">PAPER</span>
+  <div class="ticker" aria-live="polite">
+    <span class="px" id="px">—</span>
+    <small id="pxNote"><span class="livedot" id="liveDot"></span>waiting for price</small>
+  </div>
+</header>
+<div class="banner" id="banner" hidden></div>
+
+<section class="tiles" id="tiles" aria-label="Account"></section>
+
+<main class="grid">
+  <div class="col">
+    <section class="card" aria-labelledby="chartH">
+      <div class="card-h">
+        <h2 id="chartH">BTC-USDT</h2>
+        <div class="chips" id="chips" role="group" aria-label="Overlays"></div>
+        <div class="seg" id="tfSeg" role="group" aria-label="Timeframe"></div>
+      </div>
+      <div class="chartwrap" id="chartWrap">
+        <canvas id="chart" role="img" aria-label="BTC candlestick chart with the bot's trades"></canvas>
+        <div class="legend" id="legend"></div>
+        <div class="help">Drag to pan · scroll to zoom · double-click for latest</div>
+      </div>
+    </section>
+  </div>
+  <aside class="col">
+    <section class="card" aria-labelledby="champH">
+      <div class="card-h"><h2 id="champH">Champion strategy</h2><span id="champPill"></span></div>
+      <div class="card-b" id="champ"><div class="empty">Waiting for the first sync from the bot.</div></div>
+    </section>
+    <section class="card" aria-labelledby="posH">
+      <div class="card-h"><h2 id="posH">Position</h2><span id="posPill" class="pill">Flat</span></div>
+      <div class="card-b" id="pos"></div>
+    </section>
+    <section class="card" aria-labelledby="thinkH">
+      <div class="card-h"><h2 id="thinkH">What the bot sees</h2><span class="mono dim" id="thinkAt" style="font-size:11px"></span></div>
+      <div class="card-b" id="think"></div>
+    </section>
+  </aside>
+</main>
+
+<div class="row2">
+  <section class="card" aria-labelledby="logH">
+    <div class="card-h"><h2 id="logH">Event log</h2><span class="dim mono" id="logCount" style="font-size:11px"></span></div>
+    <div class="log" id="log"></div>
+  </section>
+  <section class="card" aria-labelledby="trH">
+    <div class="card-h"><h2 id="trH">Closed trades</h2></div>
+    <div class="tablebox"><table class="t" id="trades"></table></div>
+  </section>
+</div>
+
+<div class="row2">
+  <section class="card" aria-labelledby="eqH">
+    <div class="card-h"><h2 id="eqH">Equity</h2><span class="dim mono" id="eqNote" style="font-size:11px"></span></div>
+    <div class="eqwrap"><canvas id="equity" role="img" aria-label="Paper account equity over time"></canvas></div>
+  </section>
+  <section class="card" aria-labelledby="lbH">
+    <div class="card-h"><h2 id="lbH">Hourly re-think</h2><span class="dim mono" id="lbNote" style="font-size:11px"></span></div>
+    <div class="tablebox"><table class="t" id="lb"></table></div>
+  </section>
+</div>
+
+<section class="card" style="margin-top:16px" aria-labelledby="resH">
+  <div class="card-h"><h2 id="resH">Why this strategy — research on 4.8M real 1-minute candles</h2></div>
+  <div class="card-b">
+    <p class="desc">Costs included everywhere: 0.06% taker fee + 0.02% slippage per side, 0.02% maker fee on targets. The old bot's own signal code was run unmodified; the champion was chosen on 2022-10 → 2025-10 and then tested on the year after, which it never saw (BTC fell from $112k to $82k).</p>
+    <div class="tablebox" style="max-height:none">
+      <table class="t">
+        <thead><tr><th class="l">Strategy</th><th class="l">Signals</th><th>Trades</th><th>Before costs</th><th>Costs / trade</th><th>After costs</th><th>Profit factor</th></tr></thead>
+        <tbody>
+          <tr><td class="l">Old bot v2.3</td><td class="l">1m</td><td>15,375</td><td>+0.04R</td><td>4.91R</td><td class="neg">−4.87R</td><td class="neg">0.02</td></tr>
+          <tr><td class="l">Old bot v2.3</td><td class="l">5m</td><td>16,217</td><td>−0.02R</td><td>0.67R</td><td class="neg">−0.69R</td><td class="neg">0.37</td></tr>
+          <tr><td class="l">Old bot v2.3</td><td class="l">15m</td><td>4,997</td><td>−0.02R</td><td>0.33R</td><td class="neg">−0.35R</td><td class="neg">0.60</td></tr>
+          <tr><td class="l">Old bot v2.3</td><td class="l">1h</td><td>1,221</td><td>+0.04R</td><td>0.15R</td><td class="neg">−0.10R</td><td class="neg">0.86</td></tr>
+          <tr><td class="l">Volatility breakout (champion)</td><td class="l">1h, managed every minute · 4 years</td><td>161</td><td>—</td><td>—</td><td class="pos">+0.32R</td><td class="pos">2.12</td></tr>
+          <tr><td class="l">Volatility breakout (champion)</td><td class="l">unseen year 2025-10 → 2026-10</td><td>41</td><td>—</td><td>—</td><td class="pos">+0.11R</td><td class="pos">1.50</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="desc">One-minute signals cannot pay for themselves: a 1m stop is a few dollars wide, so fees cost several times the risk. The bot therefore checks every minute — stops, targets, breakeven, data freshness — but takes entries from closed 1-hour candles.</p>
+  </div>
+</section>
+
+<p class="note">Research and paper trading only, not financial advice. Simulated fills assume the next candle's open for entries and the stop first when stop and target share a candle; funding and exchange outages are not modeled. Bot state syncs here from the <span class="mono">paper-state</span> branch of iamuna/blofinbot; the live price comes from your Crypto.com connector.</p>
+
+<script id="engine-src">
+/* BTC Strategy Lab — engine. Pure functions; runs in the page and inside a Web Worker. */
+var Engine = (function () {
+  'use strict';
+
+  // ───────────────────────────── utilities
+  function rng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function gauss(r) {
+    let u = 0, v = 0;
+    while (u === 0) u = r();
+    while (v === 0) v = r();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+  const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const nanArr = (n) => new Float64Array(n).fill(NaN);
+
+  // ───────────────────────────── datasets
+  function makeDataset(bars, meta) {
+    const n = bars.length;
+    const D = { n, t: new Float64Array(n), o: new Float64Array(n), h: new Float64Array(n), l: new Float64Array(n), c: new Float64Array(n), v: new Float64Array(n), meta: meta || {}, cache: new Map() };
+    for (let i = 0; i < n; i++) {
+      const b = bars[i];
+      D.t[i] = b.t; D.o[i] = b.o; D.h[i] = b.h; D.l[i] = b.l; D.c[i] = b.c; D.v[i] = b.v || 0;
+    }
+    D.tf = detectTf(D.t);
+    D.barsPerYear = (365 * 86400) / D.tf;
+    return D;
+  }
+  function datasetFromArrays(a, meta) {
+    const D = { n: a.t.length, t: a.t, o: a.o, h: a.h, l: a.l, c: a.c, v: a.v, meta: meta || {}, cache: new Map() };
+    D.tf = detectTf(D.t);
+    D.barsPerYear = (365 * 86400) / D.tf;
+    return D;
+  }
+  function toArrays(D) { return { t: D.t, o: D.o, h: D.h, l: D.l, c: D.c, v: D.v }; }
+  function detectTf(t) {
+    const n = t.length; if (n < 2) return 60;
+    const diffs = [];
+    for (let i = 1; i < Math.min(n, 400); i++) diffs.push(t[i] - t[i - 1]);
+    diffs.sort((a, b) => a - b);
+    return diffs[Math.floor(diffs.length / 2)] || 60;
+  }
+  function sliceDataset(D, from, to) {
+    const bars = [];
+    for (let i = from; i < to; i++) bars.push({ t: D.t[i], o: D.o[i], h: D.h[i], l: D.l[i], c: D.c[i], v: D.v[i] });
+    return makeDataset(bars, D.meta);
+  }
+
+  // Simulated BTC-like 1-minute candles: trending and ranging regimes with volatility clustering.
+  function genSample(opts) {
+    opts = opts || {};
+    const n = opts.n || 6000, tf = opts.tf || 60, r = rng(opts.seed || 20261018);
+    const end = Math.floor((opts.end || Date.now() / 1000) / tf) * tf;
+    let price = opts.start || 98000, regime = 'range', left = 0, drift = 0, anchor = price;
+    let vol = 0.0008, volTarget = 0.0008;
+    const bars = [];
+    for (let i = 0; i < n; i++) {
+      if (left <= 0) {
+        const u = r();
+        regime = u < 0.36 ? 'up' : u < 0.68 ? 'down' : 'range';
+        left = 180 + Math.floor(r() * 720);
+        drift = (0.00003 + r() * 0.0001) * (regime === 'up' ? 1 : -1);
+        anchor = price;
+        volTarget = 0.0004 + r() * 0.001;
+      }
+      left--;
+      vol += (volTarget - vol) * 0.03;
+      vol *= Math.exp(gauss(r) * 0.06);
+      vol = clamp(vol, 0.00018, 0.0045);
+      const mu = regime === 'range' ? -0.012 * Math.log(price / anchor) : drift;
+      let z = gauss(r);
+      if (r() < 0.012) z *= 3.2;
+      const ret = mu + vol * z;
+      const o = price, c = price * Math.exp(ret);
+      const wick = vol * 0.75;
+      let h = Math.max(o, c) * Math.exp(Math.abs(gauss(r)) * wick);
+      let l = Math.min(o, c) * Math.exp(-Math.abs(gauss(r)) * wick);
+      if (regime === 'range' && r() < 0.01) { if (r() < 0.5) l *= 1 - vol * 3; else h *= 1 + vol * 3; }
+      const v = 18 * Math.exp(gauss(r) * 0.45) * (1 + 2.2 * Math.abs(z)) * (vol / 0.0008);
+      bars.push({ t: end - (n - 1 - i) * tf, o, h, l, c, v });
+      price = c;
+    }
+    return bars;
+  }
+
+  // CSV / JSON candle import: TradingView exports, Binance kline CSVs, BloFin/OKX JSON, generic OHLCV.
+  function parseTime(x) {
+    if (x === undefined || x === null || x === '') return NaN;
+    const num = typeof x === 'number' ? x : (/^\s*-?\d+(\.\d+)?\s*$/.test(String(x)) ? parseFloat(x) : NaN);
+    if (!isNaN(num)) {
+      if (num > 1e14) return Math.floor(num / 1e6);
+      if (num > 1e11) return Math.floor(num / 1e3);
+      return Math.floor(num);
+    }
+    let s = String(x).trim().replace(/^"|"$/g, '');
+    if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(s)) s = s.replace(' ', 'T') + 'Z';
+    const ms = Date.parse(s);
+    return isNaN(ms) ? NaN : Math.floor(ms / 1000);
+  }
+  function parseCandles(text) {
+    text = String(text || '').trim();
+    if (!text) return { bars: [], error: 'The file is empty.' };
+    let rows = [];
+    if (text[0] === '[' || text[0] === '{') {
+      let js;
+      try { js = JSON.parse(text); } catch (e) { return { bars: [], error: 'That looks like JSON but could not be read: ' + e.message }; }
+      let arr = Array.isArray(js) ? js : (js.data || js.result || js.candles || js.klines || []);
+      if (arr && !Array.isArray(arr) && typeof arr === 'object') { const k = Object.keys(arr).find((kk) => Array.isArray(arr[kk])); arr = k ? arr[k] : []; }
+      for (const r of arr) {
+        if (Array.isArray(r)) rows.push({ t: parseTime(r[0]), o: +r[1], h: +r[2], l: +r[3], c: +r[4], v: +(r[5] || 0) });
+        else if (r && typeof r === 'object') {
+          const g = (...ks) => { for (const k of ks) if (r[k] !== undefined) return r[k]; return undefined; };
+          rows.push({ t: parseTime(g('time', 't', 'timestamp', 'ts', 'open_time', 'openTime', 'date')), o: +g('open', 'o'), h: +g('high', 'h'), l: +g('low', 'l'), c: +g('close', 'c'), v: +(g('volume', 'vol', 'v') || 0) });
+        }
+      }
+    } else {
+      const lines = text.split(/\r?\n/).filter((s) => s.trim());
+      const first = lines[0];
+      const delim = first.includes('\t') ? '\t' : (first.split(';').length > first.split(',').length ? ';' : ',');
+      const split = (s) => s.split(delim).map((x) => x.trim().replace(/^"|"$/g, ''));
+      const head = split(first);
+      const hasHeader = head.some((x) => /[a-df-z]/i.test(x) && isNaN(parseTime(x)));
+      let idx = { t: 0, o: 1, h: 2, l: 3, c: 4, v: 5 };
+      if (hasHeader) {
+        const find = (re) => head.findIndex((hd) => re.test(hd.toLowerCase()));
+        idx = { t: find(/^(time|date|datetime|timestamp|ts|open[ _]?time|unix)/), o: find(/^(open|o)$/), h: find(/^(high|h)$/), l: find(/^(low|l)$/), c: find(/^(close|c|last)$/), v: find(/^(volume|vol|v|base[ _]?volume)/) };
+        if (idx.t < 0) idx.t = 0;
+        if (idx.o < 0 || idx.h < 0 || idx.l < 0 || idx.c < 0) return { bars: [], error: 'Could not find open, high, low and close columns in the header.' };
+      }
+      for (let k = hasHeader ? 1 : 0; k < lines.length; k++) {
+        const p = split(lines[k]);
+        rows.push({ t: parseTime(p[idx.t]), o: +p[idx.o], h: +p[idx.h], l: +p[idx.l], c: +p[idx.c], v: idx.v >= 0 ? +(p[idx.v] || 0) : 0 });
+      }
+    }
+    rows = rows.filter((b) => isFinite(b.t) && isFinite(b.o) && isFinite(b.h) && isFinite(b.l) && isFinite(b.c) && b.h >= b.l && b.o > 0);
+    rows.forEach((b) => { if (!isFinite(b.v)) b.v = 0; b.h = Math.max(b.h, b.o, b.c); b.l = Math.min(b.l, b.o, b.c); });
+    rows.sort((a, b) => a.t - b.t);
+    const out = [];
+    for (const b of rows) if (!out.length || b.t > out[out.length - 1].t) out.push(b);
+    if (out.length < 300) return { bars: out, error: out.length ? 'Only ' + out.length + ' candles found. Load at least 300 for meaningful tests.' : 'No candles found. Expected columns: time, open, high, low, close, volume.' };
+    return { bars: out, error: null };
+  }
+  function resample(D, factor) {
+    if (factor <= 1) return D;
+    const span = D.tf * factor, bars = [];
+    let cur = null;
+    for (let i = 0; i < D.n; i++) {
+      const bucket = Math.floor(D.t[i] / span) * span;
+      if (!cur || cur.t !== bucket) { if (cur) bars.push(cur); cur = { t: bucket, o: D.o[i], h: D.h[i], l: D.l[i], c: D.c[i], v: D.v[i] }; }
+      else { cur.h = Math.max(cur.h, D.h[i]); cur.l = Math.min(cur.l, D.l[i]); cur.c = D.c[i]; cur.v += D.v[i]; }
+    }
+    if (cur) bars.push(cur);
+    return makeDataset(bars, D.meta);
+  }
+
+  // ───────────────────────────── indicators (all causal: value at i uses bars ≤ i)
+  function memo(D, key, fn) {
+    let v = D.cache.get(key);
+    if (v === undefined) { v = fn(); D.cache.set(key, v); }
+    return v;
+  }
+  function firstValid(src) { for (let i = 0; i < src.length; i++) if (!isNaN(src[i])) return i; return src.length; }
+  function smaArr(src, n) {
+    const out = nanArr(src.length), f = firstValid(src);
+    let s = 0;
+    for (let i = f; i < src.length; i++) {
+      s += src[i];
+      if (i - f >= n) s -= src[i - n];
+      if (i - f >= n - 1) out[i] = s / n;
+    }
+    return out;
+  }
+  function emaArr(src, n) {
+    const out = nanArr(src.length), f = firstValid(src), k = 2 / (n + 1);
+    if (f + n > src.length) return out;
+    let s = 0;
+    for (let i = f; i < f + n; i++) s += src[i];
+    let e = s / n; out[f + n - 1] = e;
+    for (let i = f + n; i < src.length; i++) { e = src[i] * k + e * (1 - k); out[i] = e; }
+    return out;
+  }
+  const ma = (D, type, n) => memo(D, type + n, () => (type === 'SMA' ? smaArr(D.c, n) : emaArr(D.c, n)));
+  function rsi(D, n) {
+    return memo(D, 'rsi' + n, () => {
+      const c = D.c, out = nanArr(D.n);
+      let g = 0, l = 0;
+      for (let i = 1; i < D.n; i++) {
+        const ch = c[i] - c[i - 1], up = ch > 0 ? ch : 0, dn = ch < 0 ? -ch : 0;
+        if (i <= n) { g += up; l += dn; if (i === n) { g /= n; l /= n; out[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); } }
+        else { g = (g * (n - 1) + up) / n; l = (l * (n - 1) + dn) / n; out[i] = l === 0 ? 100 : 100 - 100 / (1 + g / l); }
+      }
+      return out;
+    });
+  }
+  function macd(D, f, s, sig) {
+    return memo(D, 'macd' + f + '_' + s + '_' + sig, () => {
+      const ef = emaArr(D.c, f), es = emaArr(D.c, s), m = nanArr(D.n);
+      for (let i = 0; i < D.n; i++) m[i] = ef[i] - es[i];
+      const sg = emaArr(m, sig), hist = nanArr(D.n);
+      for (let i = 0; i < D.n; i++) hist[i] = m[i] - sg[i];
+      return { m, s: sg, h: hist };
+    });
+  }
+  function bb(D, n, k) {
+    return memo(D, 'bb' + n + '_' + k, () => {
+      const c = D.c, mid = smaArr(c, n), up = nanArr(D.n), lo = nanArr(D.n);
+      let s = 0, s2 = 0;
+      for (let i = 0; i < D.n; i++) {
+        s += c[i]; s2 += c[i] * c[i];
+        if (i >= n) { s -= c[i - n]; s2 -= c[i - n] * c[i - n]; }
+        if (i >= n - 1) { const mean = s / n, sd = Math.sqrt(Math.max(0, s2 / n - mean * mean)); up[i] = mean + k * sd; lo[i] = mean - k * sd; }
+      }
+      return { mid, up, lo };
+    });
+  }
+  function atr(D, n) {
+    n = n || 14;
+    return memo(D, 'atr' + n, () => {
+      const out = nanArr(D.n);
+      let a = 0;
+      for (let i = 1; i < D.n; i++) {
+        const tr = Math.max(D.h[i] - D.l[i], Math.abs(D.h[i] - D.c[i - 1]), Math.abs(D.l[i] - D.c[i - 1]));
+        if (i <= n) { a += tr; if (i === n) { a /= n; out[i] = a; } }
+        else { a = (a * (n - 1) + tr) / n; out[i] = a; }
+      }
+      return out;
+    });
+  }
+  function volSma(D, n) { return memo(D, 'vsma' + n, () => smaArr(D.v, n)); }
+  // annualised realised volatility over the last 100 bars (used for risk-parity sizing)
+  function realizedVol(D) {
+    return memo(D, 'rv', () => {
+      const out = nanArr(D.n), n = 100;
+      let s = 0, s2 = 0;
+      const r = new Float64Array(D.n);
+      for (let i = 1; i < D.n; i++) r[i] = Math.log(D.c[i] / D.c[i - 1]);
+      for (let i = 1; i < D.n; i++) {
+        s += r[i]; s2 += r[i] * r[i];
+        if (i > n) { s -= r[i - n]; s2 -= r[i - n] * r[i - n]; }
+        if (i >= n) { const m = s / n; out[i] = Math.sqrt(Math.max(1e-12, s2 / n - m * m)) * Math.sqrt(D.barsPerYear); }
+      }
+      return out;
+    });
+  }
+
+  // Swing pivots: a pivot at i is only known k bars later (conf = i + k). Rules respect conf.
+  function pivots(D, k) {
+    return memo(D, 'piv' + k, () => {
+      const out = [];
+      for (let i = k; i < D.n - k; i++) {
+        let isH = true, isL = true;
+        for (let j = 1; j <= k; j++) {
+          if (isH && (D.h[i - j] >= D.h[i] || D.h[i + j] > D.h[i])) isH = false;
+          if (isL && (D.l[i - j] <= D.l[i] || D.l[i + j] < D.l[i])) isL = false;
+          if (!isH && !isL) break;
+        }
+        const H = isH ? { i, type: 'H', price: D.h[i], conf: i + k } : null;
+        const L = isL ? { i, type: 'L', price: D.l[i], conf: i + k } : null;
+        if (H && L) { if (D.c[i] >= D.o[i]) out.push(L, H); else out.push(H, L); }
+        else if (H) out.push(H); else if (L) out.push(L);
+      }
+      return out;
+    });
+  }
+  // Incremental alternating zig-zag built only from confirmed pivots.
+  function ZigZag(piv) { this.p = piv; this.ptr = 0; this.pts = []; this.ver = 0; }
+  ZigZag.prototype.advance = function (j) {
+    while (this.ptr < this.p.length && this.p[this.ptr].conf <= j) {
+      const q = this.p[this.ptr++], pts = this.pts, last = pts[pts.length - 1];
+      if (!last || last.type !== q.type) { pts.push(q); this.ver++; }
+      else if ((q.type === 'H' && q.price >= last.price) || (q.type === 'L' && q.price <= last.price)) { pts[pts.length - 1] = q; this.ver++; }
+    }
+    return this.pts;
+  };
+
+  // ───────────────────────────── harmonic ratios (Scott Carney)
+  const HARMONICS = {
+    Gartley: { ab: [0.618, 0.618], bc: [0.382, 0.886], d: 0.786, ext: [1.13, 1.618] },
+    Bat: { ab: [0.382, 0.5], bc: [0.382, 0.886], d: 0.886, ext: [1.618, 2.618] },
+    Butterfly: { ab: [0.786, 0.786], bc: [0.382, 0.886], d: 1.27, ext: [1.618, 2.24] },
+    Crab: { ab: [0.382, 0.618], bc: [0.382, 0.886], d: 1.618, ext: [2.24, 3.618] },
+  };
+  const inR = (x, lo, hi, tol) => x >= lo * (1 - tol) && x <= hi * (1 + tol);
+  // pts: last four zig-zag points X,A,B,C. Returns matching patterns with their D level.
+  function harmonicCandidates(X, A, B, C, tol, only) {
+    const bull = X.type === 'L';
+    const sgn = bull ? 1 : -1;
+    const XA = (A.price - X.price) * sgn, AB = (A.price - B.price) * sgn, BC = (C.price - B.price) * sgn;
+    if (XA <= 0 || AB <= 0 || BC <= 0) return [];
+    const abR = AB / XA, bcR = BC / AB, out = [];
+    for (const name in HARMONICS) {
+      if (only && only !== 'any' && only !== name) continue;
+      const H = HARMONICS[name];
+      if (!inR(abR, H.ab[0], H.ab[1], tol) || !inR(bcR, H.bc[0], H.bc[1], tol)) continue;
+      const D = A.price - sgn * H.d * XA;
+      const ext = ((C.price - D) * sgn) / BC;
+      if (!inR(ext, H.ext[0], H.ext[1], tol * 2)) continue;
+      const band = Math.max(tol * 0.5 * XA, 0);
+      out.push({ name, bull, D, top: D + band, bot: D - band, X, A, B, C, ratios: { ab: abR, bc: bcR, ext } });
+    }
+    return out;
+  }
+
+  // ───────────────────────────── rule catalogue
+  const RULES = {
+    ma_cross: { role: 'trigger', group: 'Moving averages', label: 'MA crossover', params: { type: ['EMA', 'SMA'], fast: [9, 21, 37, 50], slow: [50, 100, 200] }, def: { type: 'EMA', fast: 21, slow: 50 }, desc: 'Fast MA crosses the slow MA.' },
+    rsi_cross: { role: 'trigger', group: 'Oscillators', label: 'RSI reversal', params: { len: [7, 14, 21], lo: [20, 25, 30, 35], hi: [65, 70, 75, 80] }, def: { len: 14, lo: 30, hi: 70 }, desc: 'RSI climbs back above oversold (long) or drops below overbought (short).' },
+    macd_cross: { role: 'trigger', group: 'Oscillators', label: 'MACD signal cross', params: { fast: [8, 12], slow: [21, 26], sig: [5, 9], zone: ['any', 'beyond zero'] }, def: { fast: 12, slow: 26, sig: 9, zone: 'any' }, desc: 'MACD line crosses its signal line.' },
+    bb_revert: { role: 'trigger', group: 'Bands', label: 'Bollinger re-entry', params: { len: [20, 30], mult: [2, 2.5] }, def: { len: 20, mult: 2 }, desc: 'Close returns inside the band after closing outside it.' },
+    bb_break: { role: 'trigger', group: 'Bands', label: 'Bollinger breakout', params: { len: [20, 30], mult: [2, 2.5] }, def: { len: 20, mult: 2 }, desc: 'Close breaks outside the band.' },
+    sr_bounce: { role: 'trigger', group: 'Structure', label: 'Support / resistance bounce', params: { k: [3, 5, 8, 13], tol: [0.25, 0.5, 1], touches: [1, 2] }, def: { k: 5, tol: 0.5, touches: 2 }, desc: 'Wick tags a swing level and the candle closes back away from it.' },
+    sr_break: { role: 'trigger', group: 'Structure', label: 'Support / resistance breakout', params: { k: [3, 5, 8, 13], tol: [0.25, 0.5], touches: [1, 2] }, def: { k: 5, tol: 0.25, touches: 2 }, desc: 'Close breaks through the nearest swing level.' },
+    fib_pull: { role: 'trigger', group: 'Structure', label: 'Fibonacci pullback', params: { k: [3, 5, 8, 13], level: [0.382, 0.5, 0.618, 0.786], tol: [0.25, 0.5] }, def: { k: 5, level: 0.618, tol: 0.25 }, desc: 'Price retraces the last swing leg to a Fib level and rejects it.' },
+    harmonic: { role: 'trigger', group: 'Patterns', label: 'Harmonic PRZ (Carney)', params: { k: [3, 5, 8], pattern: ['any', 'Gartley', 'Bat', 'Butterfly', 'Crab'], tol: [0.05, 0.08, 0.12] }, def: { k: 5, pattern: 'any', tol: 0.08 }, desc: 'XABC matches Gartley, Bat, Butterfly or Crab ratios and price reaches the D zone.' },
+    elliott: { role: 'trigger', group: 'Patterns', label: 'Elliott impulse entry', params: { k: [3, 5, 8, 13], wave: ['3', '5', '3 or 5'] }, def: { k: 5, wave: '3 or 5' }, desc: 'Valid wave 1–2 then break of wave 1 (wave 3), or valid 1–4 count turning into wave 5.' },
+    wyckoff: { role: 'trigger', group: 'Patterns', label: 'Wyckoff spring / upthrust', params: { len: [30, 60, 120], width: [6, 10, 15], vol: ['required', 'ignored'] }, def: { len: 60, width: 10, vol: 'required' }, desc: 'Price pierces a trading range and closes back inside it.' },
+    price_ma: { role: 'filter', group: 'Moving averages', label: 'Price vs MA', params: { type: ['EMA', 'SMA'], len: [21, 37, 50, 100, 200, 500, 1000] }, def: { type: 'EMA', len: 200 }, desc: 'Longs only above the MA, shorts only below.' },
+    ma_ribbon: { role: 'filter', group: 'Moving averages', label: 'MA ribbon aligned', params: { type: ['EMA', 'SMA'], depth: [3, 4, 5] }, def: { type: 'EMA', depth: 3 }, desc: '21 > 37 > 50 (> 100 > 200) for longs; reversed for shorts.' },
+    rsi_side: { role: 'filter', group: 'Oscillators', label: 'RSI side of 50', params: { len: [7, 14, 21] }, def: { len: 14 }, desc: 'Longs with RSI above 50, shorts below.' },
+    macd_side: { role: 'filter', group: 'Oscillators', label: 'MACD histogram side', params: { fast: [8, 12], slow: [21, 26], sig: [5, 9] }, def: { fast: 12, slow: 26, sig: 9 }, desc: 'Longs with a positive histogram, shorts with a negative one.' },
+    regime: { role: 'filter', group: 'Regime', label: 'Regime quadrant (Dalio-style)', params: { len: [100, 200, 500], mode: ['with trend', 'calm only', 'volatile only', 'with trend + calm', 'with trend + volatile'] }, def: { len: 200, mode: 'with trend' }, desc: 'Splits the market into four quadrants (trend up/down × calm/volatile) and only trades the ones you allow.' },
+  };
+  const RIBBON = [21, 37, 50, 100, 200];
+
+  function ruleKey(r) { return r.id + JSON.stringify(r.p); }
+  function ruleSignals(D, r) {
+    return memo(D, 'rule:' + ruleKey(r), () => RULE_FN[r.id](D, r.p));
+  }
+  const U8 = (n) => new Uint8Array(n);
+
+  const RULE_FN = {
+    ma_cross(D, p) {
+      const f = ma(D, p.type, p.fast), s = ma(D, p.type, p.slow), L = U8(D.n), S = U8(D.n);
+      if (p.fast >= p.slow) return { L, S };
+      for (let i = 1; i < D.n; i++) {
+        if (isNaN(s[i - 1])) continue;
+        if (f[i - 1] <= s[i - 1] && f[i] > s[i]) L[i] = 1;
+        if (f[i - 1] >= s[i - 1] && f[i] < s[i]) S[i] = 1;
+      }
+      return { L, S };
+    },
+    rsi_cross(D, p) {
+      const r = rsi(D, p.len), L = U8(D.n), S = U8(D.n);
+      for (let i = 1; i < D.n; i++) {
+        if (isNaN(r[i - 1])) continue;
+        if (r[i - 1] < p.lo && r[i] >= p.lo) L[i] = 1;
+        if (r[i - 1] > p.hi && r[i] <= p.hi) S[i] = 1;
+      }
+      return { L, S };
+    },
+    macd_cross(D, p) {
+      const m = macd(D, p.fast, p.slow, p.sig), L = U8(D.n), S = U8(D.n);
+      for (let i = 1; i < D.n; i++) {
+        if (isNaN(m.s[i - 1])) continue;
+        const up = m.m[i - 1] <= m.s[i - 1] && m.m[i] > m.s[i], dn = m.m[i - 1] >= m.s[i - 1] && m.m[i] < m.s[i];
+        if (up && (p.zone === 'any' || m.m[i] < 0)) L[i] = 1;
+        if (dn && (p.zone === 'any' || m.m[i] > 0)) S[i] = 1;
+      }
+      return { L, S };
+    },
+    bb_revert(D, p) {
+      const b = bb(D, p.len, p.mult), c = D.c, L = U8(D.n), S = U8(D.n);
+      for (let i = 1; i < D.n; i++) {
+        if (isNaN(b.lo[i - 1])) continue;
+        if (c[i - 1] < b.lo[i - 1] && c[i] > b.lo[i]) L[i] = 1;
+        if (c[i - 1] > b.up[i - 1] && c[i] < b.up[i]) S[i] = 1;
+      }
+      return { L, S };
+    },
+    bb_break(D, p) {
+      const b = bb(D, p.len, p.mult), c = D.c, L = U8(D.n), S = U8(D.n);
+      for (let i = 1; i < D.n; i++) {
+        if (isNaN(b.up[i - 1])) continue;
+        if (c[i - 1] <= b.up[i - 1] && c[i] > b.up[i]) L[i] = 1;
+        if (c[i - 1] >= b.lo[i - 1] && c[i] < b.lo[i]) S[i] = 1;
+      }
+      return { L, S };
+    },
+    sr_bounce(D, p) { return srRule(D, p, 'bounce'); },
+    sr_break(D, p) { return srRule(D, p, 'break'); },
+    fib_pull(D, p) {
+      const zz = new ZigZag(pivots(D, p.k)), a = atr(D, 14), L = U8(D.n), S = U8(D.n);
+      let used = -1;
+      for (let j = 1; j < D.n; j++) {
+        const pts = zz.advance(j);
+        if (pts.length < 2 || isNaN(a[j])) continue;
+        const P1 = pts[pts.length - 1], P0 = pts[pts.length - 2];
+        if (P1.i === used || j <= P1.conf) continue;
+        const size = Math.abs(P1.price - P0.price);
+        if (size < 3 * a[j]) continue;
+        const tol = p.tol * a[j];
+        if (P1.type === 'H') {
+          const lv = P1.price - p.level * size;
+          if (D.l[j] <= lv + tol && D.c[j] > lv && D.c[j] > D.o[j] && D.l[j] > P0.price) { L[j] = 1; used = P1.i; }
+        } else {
+          const lv = P1.price + p.level * size;
+          if (D.h[j] >= lv - tol && D.c[j] < lv && D.c[j] < D.o[j] && D.h[j] < P0.price) { S[j] = 1; used = P1.i; }
+        }
+      }
+      return { L, S };
+    },
+    harmonic(D, p) {
+      const zz = new ZigZag(pivots(D, p.k)), L = U8(D.n), S = U8(D.n);
+      let ver = -1, cands = [], used = -1, extreme = NaN;
+      for (let j = 1; j < D.n; j++) {
+        const pts = zz.advance(j);
+        if (pts.length < 4) continue;
+        const C = pts[pts.length - 1];
+        if (zz.ver !== ver) {
+          ver = zz.ver;
+          cands = harmonicCandidates(pts[pts.length - 4], pts[pts.length - 3], pts[pts.length - 2], C, p.tol, p.pattern);
+          extreme = C.price;
+          // price since C must not have broken beyond C before confirmation
+          for (let q = C.i + 1; q < j; q++) extreme = C.type === 'H' ? Math.max(extreme, D.h[q]) : Math.min(extreme, D.l[q]);
+        }
+        if (!cands.length || used === C.i) continue;
+        if (C.type === 'H') extreme = Math.max(extreme, D.h[j]); else extreme = Math.min(extreme, D.l[j]);
+        if (extreme !== C.price) { cands = []; continue; }
+        for (const h of cands) {
+          if (h.bull && D.l[j] <= h.top && D.c[j] >= h.bot) { L[j] = 1; used = C.i; break; }
+          if (!h.bull && D.h[j] >= h.bot && D.c[j] <= h.top) { S[j] = 1; used = C.i; break; }
+        }
+      }
+      return { L, S };
+    },
+    elliott(D, p) {
+      const zz = new ZigZag(pivots(D, p.k)), a = atr(D, 14), L = U8(D.n), S = U8(D.n);
+      const want3 = p.wave !== '5', want5 = p.wave !== '3';
+      let used3 = -1, used5 = -1;
+      for (let j = 1; j < D.n; j++) {
+        const pts = zz.advance(j), m = pts.length;
+        if (m < 3 || isNaN(a[j])) continue;
+        if (want3) {
+          const P0 = pts[m - 3], P1 = pts[m - 2], P2 = pts[m - 1];
+          if (P2.i !== used3 && j > P2.conf) {
+            const sg = P2.type === 'L' ? 1 : -1;
+            const w1 = (P1.price - P0.price) * sg, w2 = (P1.price - P2.price) * sg;
+            if (w1 > 2 * a[j] && w2 > 0) {
+              const ret = w2 / w1;
+              if (ret >= 0.382 && ret <= 0.886) {
+                if (sg > 0 && D.c[j] > P1.price && D.c[j - 1] <= P1.price) { L[j] = 1; used3 = P2.i; }
+                if (sg < 0 && D.c[j] < P1.price && D.c[j - 1] >= P1.price) { S[j] = 1; used3 = P2.i; }
+              }
+            }
+          }
+        }
+        if (want5 && m >= 5) {
+          const P = pts.slice(m - 5), P4 = P[4];
+          if (P4.i !== used5 && j === P4.conf) {
+            const sg = P4.type === 'L' ? 1 : -1;
+            const w1 = (P[1].price - P[0].price) * sg, w2 = (P[1].price - P[2].price) * sg, w3 = (P[3].price - P[2].price) * sg, w4 = (P[3].price - P[4].price) * sg;
+            const ok = w1 > 0 && w3 > 0 && w2 > 0 && w4 > 0 && w2 < w1 && w3 >= w1 && (P[4].price - P[1].price) * sg > 0 && w4 / w3 >= 0.236 && w4 / w3 <= 0.618 && w3 > 2 * a[j];
+            if (ok && (sg > 0 ? D.c[j] > P4.price && D.c[j] > D.c[j - 1] : D.c[j] < P4.price && D.c[j] < D.c[j - 1])) {
+              if (sg > 0) L[j] = 1; else S[j] = 1;
+              used5 = P4.i;
+            }
+          }
+        }
+      }
+      return { L, S };
+    },
+    wyckoff(D, p) {
+      const a = atr(D, 14), vs = volSma(D, 20), L = U8(D.n), S = U8(D.n), n = p.len;
+      for (let j = n + 1; j < D.n; j++) {
+        const A = a[j - 1];
+        if (isNaN(A)) continue;
+        let hi = -Infinity, lo = Infinity;
+        for (let q = j - n; q < j; q++) { if (D.h[q] > hi) hi = D.h[q]; if (D.l[q] < lo) lo = D.l[q]; }
+        const w = hi - lo;
+        if (w > p.width * A || w < 2 * A) continue;
+        const volOk = p.vol === 'ignored' || (vs[j - 1] > 0 && D.v[j] > 1.3 * vs[j - 1]);
+        if (!volOk) continue;
+        if (D.l[j] < lo && D.c[j] > lo && D.l[j] > lo - 1.5 * A) L[j] = 1;
+        if (D.h[j] > hi && D.c[j] < hi && D.h[j] < hi + 1.5 * A) S[j] = 1;
+      }
+      return { L, S };
+    },
+    price_ma(D, p) {
+      const m = ma(D, p.type, p.len), L = U8(D.n), S = U8(D.n);
+      for (let i = 0; i < D.n; i++) { if (isNaN(m[i])) continue; if (D.c[i] > m[i]) L[i] = 1; else if (D.c[i] < m[i]) S[i] = 1; }
+      return { L, S };
+    },
+    ma_ribbon(D, p) {
+      const lens = RIBBON.slice(0, p.depth), arrs = lens.map((n) => ma(D, p.type, n)), L = U8(D.n), S = U8(D.n);
+      for (let i = 0; i < D.n; i++) {
+        let up = true, dn = true;
+        for (let q = 0; q < arrs.length - 1; q++) {
+          const x = arrs[q][i], y = arrs[q + 1][i];
+          if (isNaN(x) || isNaN(y)) { up = dn = false; break; }
+          if (!(x > y)) up = false;
+          if (!(x < y)) dn = false;
+        }
+        L[i] = up ? 1 : 0; S[i] = dn ? 1 : 0;
+      }
+      return { L, S };
+    },
+    rsi_side(D, p) {
+      const r = rsi(D, p.len), L = U8(D.n), S = U8(D.n);
+      for (let i = 0; i < D.n; i++) { if (isNaN(r[i])) continue; if (r[i] > 50) L[i] = 1; else if (r[i] < 50) S[i] = 1; }
+      return { L, S };
+    },
+    macd_side(D, p) {
+      const m = macd(D, p.fast, p.slow, p.sig), L = U8(D.n), S = U8(D.n);
+      for (let i = 0; i < D.n; i++) { if (isNaN(m.h[i])) continue; if (m.h[i] > 0) L[i] = 1; else if (m.h[i] < 0) S[i] = 1; }
+      return { L, S };
+    },
+    regime(D, p) {
+      const q = regimeQuad(D, p.len), L = U8(D.n), S = U8(D.n);
+      for (let i = 0; i < D.n; i++) {
+        const v = q[i];
+        if (v < 0) continue;
+        const up = v === 0 || v === 1, calm = v === 0 || v === 2;
+        let okL = true, okS = true;
+        if (p.mode.indexOf('with trend') === 0) { okL = up; okS = !up; }
+        if (p.mode.indexOf('calm') >= 0) { okL = okL && calm; okS = okS && calm; }
+        if (p.mode.indexOf('volatile') >= 0) { okL = okL && !calm; okS = okS && !calm; }
+        L[i] = okL ? 1 : 0; S[i] = okS ? 1 : 0;
+      }
+      return { L, S };
+    },
+  };
+
+  // 0 trend up + calm, 1 trend up + volatile, 2 trend down + calm, 3 trend down + volatile, -1 unknown
+  function regimeQuad(D, len) {
+    return memo(D, 'quad' + len, () => {
+      const e = ma(D, 'EMA', len), a = atr(D, 14), pct = nanArr(D.n), out = new Int8Array(D.n).fill(-1);
+      for (let i = 0; i < D.n; i++) pct[i] = a[i] / D.c[i];
+      const base = smaArr(pct, 300); // fixed window: results must not depend on how much history is loaded
+      for (let i = 20; i < D.n; i++) {
+        if (isNaN(e[i]) || isNaN(e[i - 20]) || isNaN(base[i])) continue;
+        const up = D.c[i] > e[i] && e[i] >= e[i - 20];
+        const down = D.c[i] < e[i] && e[i] <= e[i - 20];
+        const trendUp = up || (!down && D.c[i] > e[i]);
+        const calm = pct[i] <= base[i];
+        out[i] = (trendUp ? 0 : 2) + (calm ? 0 : 1);
+      }
+      return out;
+    });
+  }
+
+  function srLevels(recent, ref, tolAbs) {
+    // returns sorted list of {price, touches}
+    return recent.map((p) => { let t = 0; for (const q of recent) if (Math.abs(q.price - p.price) <= tolAbs) t++; return { price: p.price, touches: t, type: p.type, i: p.i }; });
+  }
+  function srRule(D, p, mode) {
+    const piv = pivots(D, p.k), a = atr(D, 14), L = U8(D.n), S = U8(D.n), recent = [];
+    let ptr = 0;
+    for (let j = 1; j < D.n; j++) {
+      let changed = false;
+      while (ptr < piv.length && piv[ptr].conf <= j) { recent.push(piv[ptr++]); if (recent.length > 24) recent.shift(); changed = true; }
+      const A = a[j];
+      if (isNaN(A) || recent.length < 2) continue;
+      const tol = p.tol * A;
+      let sup = -Infinity, res = Infinity, supT = 0, resT = 0;
+      const ref = mode === 'bounce' ? D.c[j] : D.c[j - 1];
+      for (const q of recent) {
+        if (q.price < ref && q.price > sup) sup = q.price;
+        if (q.price > ref && q.price < res) res = q.price;
+      }
+      if (isFinite(sup)) for (const q of recent) if (Math.abs(q.price - sup) <= tol) supT++;
+      if (isFinite(res)) for (const q of recent) if (Math.abs(q.price - res) <= tol) resT++;
+      if (mode === 'bounce') {
+        if (isFinite(sup) && supT >= p.touches && D.l[j] <= sup + tol && D.c[j] > sup && D.c[j - 1] > sup && D.c[j] > D.o[j]) L[j] = 1;
+        if (isFinite(res) && resT >= p.touches && D.h[j] >= res - tol && D.c[j] < res && D.c[j - 1] < res && D.c[j] < D.o[j]) S[j] = 1;
+      } else {
+        if (isFinite(res) && resT >= p.touches && D.c[j] > res + tol * 0.25) L[j] = 1;
+        if (isFinite(sup) && supT >= p.touches && D.c[j] < sup - tol * 0.25) S[j] = 1;
+      }
+    }
+    return { L, S };
+  }
+
+  // ───────────────────────────── strategy → per-bar entry signal
+  function stratKey(s) { return JSON.stringify([s.dir, s.mode, s.window, s.triggers, s.filters]); }
+  function swingExtremes(D, look) {
+    return memo(D, 'sw' + look, () => {
+      const lo = nanArr(D.n), hi = nanArr(D.n);
+      for (let i = 0; i < D.n; i++) {
+        let a = Infinity, b = -Infinity;
+        for (let q = Math.max(0, i - look); q <= i; q++) { if (D.l[q] < a) a = D.l[q]; if (D.h[q] > b) b = D.h[q]; }
+        lo[i] = a; hi[i] = b;
+      }
+      return { lo, hi };
+    });
+  }
+  function buildSig(D, s) {
+    const n = D.n, sig = new Int8Array(n);
+    const trig = s.triggers.map((r) => ruleSignals(D, r)), filt = s.filters.map((r) => ruleSignals(D, r));
+    if (!trig.length) return sig;
+    const w = Math.max(1, s.window || 1), lastL = trig.map(() => -1e9), lastS = trig.map(() => -1e9);
+    const allowL = s.dir !== 'short', allowS = s.dir !== 'long';
+    for (let i = 0; i < n; i++) {
+      let anyL = false, anyS = false, allL = true, allS = true;
+      for (let k = 0; k < trig.length; k++) {
+        if (trig[k].L[i]) { lastL[k] = i; anyL = true; }
+        if (trig[k].S[i]) { lastS[k] = i; anyS = true; }
+        if (i - lastL[k] >= w) allL = false;
+        if (i - lastS[k] >= w) allS = false;
+      }
+      let goL = s.mode === 'all' ? allL && anyL : anyL, goS = s.mode === 'all' ? allS && anyS : anyS;
+      if (goL || goS) for (const f of filt) { if (!f.L[i]) goL = false; if (!f.S[i]) goS = false; }
+      goL = goL && allowL; goS = goS && allowS;
+      sig[i] = goL && !goS ? 1 : goS && !goL ? -1 : 0;
+    }
+    return sig;
+  }
+  // X = everything the simulator needs on D's own bar index: entry signal, ATR, realised vol, swing extremes.
+  function prepare(D, s) {
+    const sig = D.n < 60000 ? memo(D, 'prep:' + stratKey(s), () => buildSig(D, s)) : buildSig(D, s);
+    const sw = swingExtremes(D, 10);
+    return { sig, atr: atr(D, 14), rv: realizedVol(D), swLo: sw.lo, swHi: sw.hi };
+  }
+  // Signals from a higher timeframe (Dtf = resample(D1, f)), managed on 1-minute bars.
+  // A tf bar's signal appears on the 1m bar where that tf bar closes; entries fill at the next 1m open.
+  // ATR / swing / realised-vol come from the last CLOSED tf bar, so nothing leaks from a forming bar.
+  function tfMap(D1, Dtf, f) {
+    return memo(D1, 'tfmap' + f + ':' + Dtf.n, () => {
+      const n = D1.n, span = D1.tf * f, kOf = new Int32Array(n).fill(-1), closeAt = new Uint8Array(n);
+      let k = 0;
+      for (let i = 0; i < n; i++) {
+        const b = Math.floor(D1.t[i] / span) * span;
+        while (k < Dtf.n - 1 && Dtf.t[k] < b) k++;
+        const last = D1.t[i] + D1.tf >= b + span || (i + 1 < n && Math.floor(D1.t[i + 1] / span) * span !== b && D1.t[i + 1] - D1.t[i] > D1.tf);
+        if (last && Dtf.t[k] === b) { closeAt[i] = 1; kOf[i] = k; } else kOf[i] = Dtf.t[k] === b ? k - 1 : k;
+      }
+      const atrT = atr(Dtf, 14), rvT = realizedVol(Dtf), swT = swingExtremes(Dtf, 10);
+      const A = nanArr(n), RV = nanArr(n), LO = nanArr(n), HI = nanArr(n);
+      for (let i = 0; i < n; i++) { const q = kOf[i]; if (q >= 0) { A[i] = atrT[q]; RV[i] = rvT[q]; LO[i] = swT.lo[q]; HI[i] = swT.hi[q]; } }
+      return { kOf, closeAt, atr: A, rv: RV, swLo: LO, swHi: HI };
+    });
+  }
+  function prepareTf(D1, Dtf, f, s) {
+    if (!f || f <= 1) return prepare(D1, s);
+    const M = tfMap(D1, Dtf, f), st = prepare(Dtf, s).sig, sig = new Int8Array(D1.n);
+    for (let i = 0; i < D1.n; i++) if (M.closeAt[i]) sig[i] = st[M.kOf[i]];
+    return { sig, atr: M.atr, rv: M.rv, swLo: M.swLo, swHi: M.swHi, tf: f };
+  }
+
+  // ───────────────────────────── simulator (bar by bar; also drives the paper-trading bot)
+  // Risk governor mirrors btc_bot/risk.py RiskPolicy: hard limits, never optimised.
+  const GOV_DEFAULT = { on: true, minRisk: 0.05, maxRisk: 0.5, dailyLoss: 2, maxDD: 6, streakReduce: 3, streakStop: 6, minStopAtr: 0.65, maxStopAtr: 2.5, maxCostR: 0.35 };
+  function newState(cfg) {
+    return { cfg, cash: cfg.equity, pos: null, pending: null, trades: [], peak: cfg.equity, maxDD: 0, blown: false, hwm: cfg.equity, day: -1, dayStart: cfg.equity, streak: 0, rejects: {}, halted: null };
+  }
+  function gate(S, D, i) {
+    const g = S.cfg.gov;
+    let riskPct = S.cfg.risk.riskPct;
+    if (!g || !g.on) return { ok: true, riskPct };
+    if (S.cash <= S.hwm * (1 - g.maxDD / 100)) return { ok: false, reason: 'account drawdown breaker' };
+    if (S.cash <= S.dayStart * (1 - g.dailyLoss / 100)) return { ok: false, reason: 'daily loss breaker' };
+    if (S.streak >= g.streakStop) return { ok: false, reason: 'loss-streak breaker' };
+    riskPct = clamp(riskPct, g.minRisk, g.maxRisk);
+    if (S.streak >= g.streakReduce) riskPct *= 0.5;
+    return { ok: true, riskPct };
+  }
+  function stopDistance(D, s, ex, dir, gov, X) {
+    const a = X.atr[s];
+    if (isNaN(a) || a <= 0) return NaN;
+    let d;
+    if (ex.stop === 'pct') d = D.c[s] * ex.pct / 100;
+    else if (ex.stop === 'swing') {
+      const ext = dir > 0 ? X.swLo[s] : X.swHi[s];
+      d = Math.abs(D.c[s] - ext) + 0.1 * a;
+      d = clamp(d, 0.3 * a, 6 * a);
+    } else d = ex.mult * a;
+    if (gov && gov.on) d = clamp(d, gov.minStopAtr * a, gov.maxStopAtr * a);
+    return d;
+  }
+  function closePos(S, D, i, price, reason, ev) {
+    const P = S.pos, cfg = S.cfg, slip = cfg.costs.slip / 100;
+    // targets rest as limit orders (maker fee, no slippage); stops and market exits pay taker + slippage
+    const fee = (reason === 'target' && cfg.costs.maker != null ? cfg.costs.maker : cfg.costs.fee) / 100;
+    let xp = price;
+    if (reason !== 'target') xp = P.dir > 0 ? price * (1 - slip) : price * (1 + slip);
+    const pnl = P.dir * P.qty * (xp - P.ep) - P.feeIn - P.qty * xp * fee;
+    S.cash += pnl;
+    S.streak = pnl < 0 ? S.streak + 1 : 0;
+    if (S.cash > S.hwm) S.hwm = S.cash;
+    const tr = { dir: P.dir, ei: P.ei, ep: P.ep, xi: i, xp, stop0: P.stop0, tp: P.tp, qty: P.qty, pnl, R: pnl / P.risk, reason, bars: i - P.ei + 1, rr: P.rr, sid: P.sid };
+    S.trades.push(tr);
+    S.pos = null;
+    if (S.cash <= S.cfg.equity * 0.05) S.blown = true;
+    if (ev) ev.push({ type: 'exit', i, tr });
+    return tr;
+  }
+  // Process bar i. X = prepare(D, strat). allowEntry=false stops new signals (end of a test window).
+  function step(S, D, X, strat, i, allowEntry, ev) {
+    const cfg = S.cfg, ex = strat.exit, fee = cfg.costs.fee / 100, slip = cfg.costs.slip / 100;
+    const o = D.o[i], h = D.h[i], l = D.l[i], c = D.c[i];
+    const day = Math.floor(D.t[i] / 86400);
+    if (day !== S.day) {
+      S.day = day;
+      S.dayStart = S.cash + (S.pos ? S.pos.dir * S.pos.qty * (o - S.pos.ep) : 0);
+      if (cfg.gov && cfg.gov.on && S.streak >= cfg.gov.streakStop) S.streak = 0; // loss-streak pause lasts until the next UTC day
+    }
+    // 1 — fill an entry signalled on the previous close
+    if (S.pending && !S.pos) {
+      const pd = S.pending; S.pending = null;
+      const ep = pd.dir > 0 ? o * (1 + slip) : o * (1 - slip);
+      const d = pd.d;
+      const stop = ep - pd.dir * d, tp = ep + pd.dir * pd.rr * d;
+      const eq = S.cash;
+      let qty;
+      if (cfg.risk.mode === 'vol') {
+        const rv = X.rv[pd.s];
+        const notional = eq * (cfg.risk.targetVol / 100) / (isNaN(rv) || rv <= 0 ? 0.6 : rv);
+        qty = notional / ep;
+      } else qty = (eq * pd.riskPct / 100) / d;
+      qty = Math.min(qty, (eq * cfg.risk.maxLev) / ep);
+      if (qty > 0 && isFinite(qty)) {
+        S.pos = { dir: pd.dir, ei: i, ep, stop, stop0: stop, tp, d, qty, risk: qty * d, feeIn: qty * ep * fee, best: ep, rr: pd.rr, sid: pd.sid, be: false, exit: pd.exit || ex };
+        if (ev) ev.push({ type: 'enter', i, pos: S.pos });
+      }
+    }
+    // 2 — stops and targets against this bar's range (stop assumed first when both are touched)
+    const P = S.pos;
+    if (P) {
+      if (P.dir > 0) {
+        if (o <= P.stop && P.ei < i) closePos(S, D, i, o, 'stop', ev);
+        else if (l <= P.stop) closePos(S, D, i, P.stop, P.stop > P.stop0 ? (P.stop >= P.ep ? 'trail' : 'stop') : 'stop', ev);
+        else if (o >= P.tp && P.ei < i) closePos(S, D, i, o, 'target', ev);
+        else if (h >= P.tp) closePos(S, D, i, P.tp, 'target', ev);
+      } else {
+        if (o >= P.stop && P.ei < i) closePos(S, D, i, o, 'stop', ev);
+        else if (h >= P.stop) closePos(S, D, i, P.stop, P.stop < P.stop0 ? (P.stop <= P.ep ? 'trail' : 'stop') : 'stop', ev);
+        else if (o <= P.tp && P.ei < i) closePos(S, D, i, o, 'target', ev);
+        else if (l <= P.tp) closePos(S, D, i, P.tp, 'target', ev);
+      }
+    }
+    // 3 — end-of-bar management: breakeven, trailing (stops only ever tighten), time stop, opposite signal
+    if (S.pos) {
+      const Q = S.pos, a = X.atr[i], qx = Q.exit || ex;
+      Q.best = Q.dir > 0 ? Math.max(Q.best, h) : Math.min(Q.best, l);
+      const fav = (Q.best - Q.ep) * Q.dir;
+      if (qx.be > 0 && !Q.be && fav >= qx.be * Q.d) {
+        const ns = Q.ep + Q.dir * Q.ep * fee * 2;
+        if ((ns - Q.stop) * Q.dir > 0) { Q.stop = ns; Q.be = true; if (ev) ev.push({ type: 'be', i, stop: ns }); }
+      }
+      if (qx.trail > 0 && fav >= qx.trailAfter * Q.d && !isNaN(a)) {
+        const ns = Q.best - Q.dir * qx.trail * a;
+        if ((ns - Q.stop) * Q.dir > 0) { Q.stop = ns; if (ev) ev.push({ type: 'trail', i, stop: ns }); }
+      }
+      if (qx.maxBars > 0 && i - Q.ei + 1 >= qx.maxBars * (X.tf || 1)) closePos(S, D, i, c, 'time', ev); // maxBars counts bars of the signal timeframe
+      else if (qx.opp && X.sig[i] === -Q.dir) closePos(S, D, i, c, 'signal', ev);
+    }
+    // 4 — new signal at this close → risk governor → fill next open
+    if (!S.pos && !S.pending && allowEntry && !S.blown) {
+      const sg = X.sig[i];
+      if (sg !== 0) {
+        const gt = gate(S, D, i);
+        if (!gt.ok) {
+          S.rejects[gt.reason] = (S.rejects[gt.reason] || 0) + 1;
+          if (gt.reason === 'account drawdown breaker' && !S.halted) S.halted = { i, reason: gt.reason };
+          if (ev) ev.push({ type: 'reject', i, dir: sg, reason: gt.reason });
+        } else {
+          const d = stopDistance(D, i, ex, sg, cfg.gov, X);
+          // execution filter: round-trip fees + slippage may not eat more than maxCostR of the planned risk
+          const costR = d > 0 ? (2 * (cfg.costs.fee + cfg.costs.slip) / 100 * D.c[i]) / d : Infinity;
+          if (cfg.gov && cfg.gov.on && cfg.gov.maxCostR > 0 && costR > cfg.gov.maxCostR) {
+            S.rejects['costs too high vs stop'] = (S.rejects['costs too high vs stop'] || 0) + 1;
+            if (ev) ev.push({ type: 'reject', i, dir: sg, reason: 'costs too high vs stop', costR });
+          } else if (d > 0) S.pending = { dir: sg, s: i, d, rr: ex.rr, sid: strat.id, riskPct: gt.riskPct, exit: ex };
+        }
+      }
+    }
+    const unreal = S.pos ? S.pos.dir * S.pos.qty * (c - S.pos.ep) : 0;
+    const eqNow = S.cash + unreal;
+    if (eqNow > S.peak) S.peak = eqNow;
+    const dd = (S.peak - eqNow) / S.peak;
+    if (dd > S.maxDD) S.maxDD = dd;
+    return eqNow;
+  }
+
+  function backtest(D, strat, cfg, from, to, X) {
+    from = Math.max(1, from || 1); to = Math.min(D.n, to || D.n);
+    X = X || prepare(D, strat);
+    const S = newState(cfg), curve = new Float64Array(Math.max(0, to - from));
+    for (let i = from; i < to; i++) curve[i - from] = step(S, D, X, strat, i, i < to - 1, null);
+    if (S.pos) { closePos(S, D, to - 1, D.c[to - 1], 'end', null); curve[curve.length - 1] = S.cash; }
+    const m = metrics(S.trades, curve, cfg, D, from, to); m.rejects = S.rejects; m.halted = S.halted;
+    return { trades: S.trades, curve, from, to, metrics: m };
+  }
+
+  function metrics(trades, curve, cfg, D, from, to) {
+    const n = trades.length, eq0 = cfg.equity;
+    const end = curve.length ? curve[curve.length - 1] : eq0;
+    let wins = 0, gw = 0, gl = 0, sR = 0, sR2 = 0, winR = 0, lossR = 0, bars = 0, rrT = 0;
+    for (const t of trades) {
+      sR += t.R; sR2 += t.R * t.R; bars += t.bars; rrT += t.rr;
+      if (t.pnl > 0) { wins++; gw += t.pnl; winR += t.R; } else { gl -= t.pnl; lossR += t.R; }
+    }
+    let peak = eq0, mdd = 0, sr = 0, sr2 = 0, prev = eq0;
+    for (let k = 0; k < curve.length; k++) {
+      const e = curve[k];
+      if (e > peak) peak = e;
+      const dd = (peak - e) / peak; if (dd > mdd) mdd = dd;
+      const r = prev > 0 ? e / prev - 1 : 0; sr += r; sr2 += r * r; prev = e;
+    }
+    const m = curve.length || 1, mean = sr / m, sd = Math.sqrt(Math.max(0, sr2 / m - mean * mean));
+    const expR = n ? sR / n : 0, sdR = n > 1 ? Math.sqrt(Math.max(1e-9, (sR2 - n * expR * expR) / (n - 1))) : 1;
+    const avgWin = wins ? winR / wins : 0, avgLoss = n - wins ? lossR / (n - wins) : 0;
+    return {
+      n, winRate: n ? wins / n : 0, netPct: (end / eq0 - 1) * 100, end,
+      pf: gl > 0 ? gw / gl : (gw > 0 ? 99 : 0),
+      maxDD: mdd * 100, expR, sdR, sqn: n > 1 ? (expR / sdR) * Math.sqrt(Math.min(n, 100)) : 0,
+      avgWinR: avgWin, avgLossR: avgLoss, realRR: avgLoss < 0 ? avgWin / -avgLoss : 0, targetRR: n ? rrT / n : 0,
+      sharpe: sd > 0 ? (mean / sd) * Math.sqrt(D.barsPerYear) : 0,
+      exposure: (bars / Math.max(1, to - from)) * 100, avgBars: n ? bars / n : 0,
+    };
+  }
+
+  // ───────────────────────────── strategies & genetic optimiser
+  const EXIT_OPTS = { stop: ['atr', 'swing', 'pct'], mult: [1, 1.5, 2, 2.5, 3], pct: [0.3, 0.5, 0.75, 1, 1.5], trail: [0, 0, 1.5, 2, 3], trailAfter: [0.5, 1, 1.5, 2], be: [0, 0, 0.75, 1, 1.5], maxBars: [0, 0, 30, 60, 120, 240], opp: [false, false, true] };
+  let uid = 0;
+  function newId() { uid++; return 's' + Date.now().toString(36) + uid.toString(36); }
+  function defaultParams(id) { return Object.assign({}, RULES[id].def); }
+  function randomParams(r, id) { const ps = RULES[id].params, out = {}; for (const k in ps) out[k] = pick(r, ps[k]); fixParams(id, out); return out; }
+  function fixParams(id, p) { if (id === 'ma_cross' && p.fast >= p.slow) { p.fast = 21; p.slow = Math.max(50, p.slow); } return p; }
+  function roundRR(x) { return Math.round(x * 4) / 4; }
+  function randomStrat(r, space) {
+    const tr = space.triggers.slice(), fl = space.filters.slice();
+    const nt = tr.length ? 1 + (r() < 0.35 && tr.length > 1 ? 1 : 0) : 0;
+    const triggers = [];
+    for (let k = 0; k < nt; k++) { const id = tr.splice(Math.floor(r() * tr.length), 1)[0]; triggers.push({ id, p: randomParams(r, id) }); }
+    const nf = fl.length ? Math.floor(r() * Math.min(3, fl.length + 1)) : 0;
+    const filters = [];
+    for (let k = 0; k < nf; k++) { const id = fl.splice(Math.floor(r() * fl.length), 1)[0]; filters.push({ id, p: randomParams(r, id) }); }
+    const s = {
+      id: newId(), dir: space.dir === 'auto' ? pick(r, ['long', 'short', 'both']) : space.dir,
+      mode: triggers.length > 1 && r() < 0.5 ? 'all' : 'any', window: pick(r, [1, 3, 5, 8]), triggers, filters,
+      exit: { stop: pick(r, EXIT_OPTS.stop), mult: pick(r, EXIT_OPTS.mult), pct: pick(r, EXIT_OPTS.pct), rr: roundRR(space.minRR + r() * (space.maxRR - space.minRR)), trail: pick(r, EXIT_OPTS.trail), trailAfter: pick(r, EXIT_OPTS.trailAfter), be: pick(r, EXIT_OPTS.be), maxBars: pick(r, EXIT_OPTS.maxBars), opp: pick(r, EXIT_OPTS.opp) },
+    };
+    return s;
+  }
+  function clone(s) { return JSON.parse(JSON.stringify(s)); }
+  function mutate(r, s0, space) {
+    const s = clone(s0); s.id = newId();
+    const ops = r();
+    if (ops < 0.3 && (s.triggers.length || s.filters.length)) {
+      const all = s.triggers.concat(s.filters), rule = pick(r, all), keys = Object.keys(RULES[rule.id].params), k = pick(r, keys);
+      rule.p[k] = pick(r, RULES[rule.id].params[k]); fixParams(rule.id, rule.p);
+    } else if (ops < 0.42) {
+      const unused = space.triggers.filter((id) => !s.triggers.some((t) => t.id === id));
+      if (s.triggers.length > 1 && (r() < 0.5 || !unused.length || s.triggers.length >= 3)) s.triggers.splice(Math.floor(r() * s.triggers.length), 1);
+      else if (unused.length) { const id = pick(r, unused); s.triggers.push({ id, p: randomParams(r, id) }); }
+    } else if (ops < 0.54) {
+      const unused = space.filters.filter((id) => !s.filters.some((t) => t.id === id));
+      if (s.filters.length && (r() < 0.5 || !unused.length || s.filters.length >= 3)) s.filters.splice(Math.floor(r() * s.filters.length), 1);
+      else if (unused.length) { const id = pick(r, unused); s.filters.push({ id, p: randomParams(r, id) }); }
+    } else if (ops < 0.66) {
+      s.exit.rr = roundRR(clamp(s.exit.rr + (r() - 0.5) * 1.5, space.minRR, space.maxRR));
+    } else if (ops < 0.9) {
+      const k = pick(r, ['stop', 'mult', 'pct', 'trail', 'trailAfter', 'be', 'maxBars', 'opp']);
+      s.exit[k] = pick(r, EXIT_OPTS[k]);
+    } else if (ops < 0.95) {
+      s.mode = s.mode === 'all' ? 'any' : 'all'; s.window = pick(r, [1, 3, 5, 8]);
+    } else if (space.dir === 'auto') s.dir = pick(r, ['long', 'short', 'both']);
+    if (!s.triggers.length && space.triggers.length) { const id = pick(r, space.triggers); s.triggers.push({ id, p: randomParams(r, id) }); }
+    return s;
+  }
+  function crossover(r, a, b) {
+    const s = clone(r() < 0.5 ? a : b); s.id = newId();
+    const o = r() < 0.5 ? a : b;
+    if (r() < 0.5) s.triggers = clone(o.triggers);
+    if (r() < 0.5) s.filters = clone(o.filters);
+    for (const k in s.exit) if (r() < 0.5) s.exit[k] = o.exit[k];
+    return s;
+  }
+  // Robust fitness: expectancy is shrunk toward a small loss for small samples, R spread is floored,
+  // thin samples and extra rules are penalised. This keeps the optimiser from crowning 6-trade flukes.
+  function fitness(m, objective, minTrades, complexity) {
+    if (m.n < 3) return -50 + m.n;
+    const n = m.n, prior = 8;
+    const shrunk = (m.expR * n - 0.1 * prior) / (n + prior);
+    const sd = Math.max(m.sdR || 1, 0.9);
+    const conf = n / (n + prior);
+    let f;
+    if (objective === 'expectancy') f = shrunk * 4 * Math.sqrt(Math.min(n, 60) / 60) - m.maxDD / 40;
+    else if (objective === 'pf') f = (Math.min(m.pf, 4) - 1) * conf - m.maxDD / 50;
+    else if (objective === 'return_dd') f = (m.netPct / Math.max(m.maxDD, 2)) * conf;
+    else f = (shrunk / sd) * Math.sqrt(Math.min(n, 100)) - m.maxDD / 30;
+    if (n < minTrades) f -= 4 * (1 - n / minTrades);
+    return f - 0.03 * (complexity || 0);
+  }
+  const complexityOf = (s) => s.triggers.length + s.filters.length + (s.exit.trail > 0 ? 1 : 0) + (s.exit.be > 0 ? 1 : 0) + (s.exit.maxBars > 0 ? 1 : 0) + (s.exit.opp ? 1 : 0);
+  function describe(s) {
+    const lab = (r) => {
+      const p = r.p;
+      switch (r.id) {
+        case 'ma_cross': return p.type + ' ' + p.fast + '/' + p.slow + ' cross';
+        case 'rsi_cross': return 'RSI' + p.len + ' ' + p.lo + '/' + p.hi;
+        case 'macd_cross': return 'MACD ' + p.fast + '/' + p.slow + '/' + p.sig + (p.zone === 'any' ? '' : ' beyond 0');
+        case 'bb_revert': return 'BB' + p.len + '×' + p.mult + ' re-entry';
+        case 'bb_break': return 'BB' + p.len + '×' + p.mult + ' breakout';
+        case 'sr_bounce': return 'S/R bounce';
+        case 'sr_break': return 'S/R breakout';
+        case 'fib_pull': return 'Fib ' + p.level;
+        case 'harmonic': return (p.pattern === 'any' ? 'Harmonic' : p.pattern) + ' PRZ';
+        case 'elliott': return 'Elliott w' + p.wave.replace(' or ', '/');
+        case 'wyckoff': return 'Wyckoff spring/UT';
+        case 'price_ma': return '> ' + p.type + p.len;
+        case 'ma_ribbon': return 'ribbon ×' + p.depth;
+        case 'rsi_side': return 'RSI±50';
+        case 'macd_side': return 'MACD side';
+        case 'regime': return 'regime: ' + p.mode;
+        default: return r.id;
+      }
+    };
+    const t = s.triggers.map(lab).join(s.mode === 'all' ? ' + ' : ' | ');
+    const f = s.filters.length ? ' · ' + s.filters.map(lab).join(', ') : '';
+    return t + f;
+  }
+
+  // Genetic optimiser, run one generation at a time. Chronological split like btc_bot/learning.py:
+  // train (evolves), validation (ranks), test (untouched until the promotion gate).
+  function gateCheck(val, test, minTrades) {
+    const need = Math.max(5, Math.round(minTrades / 4));
+    const ok = (m) => m && m.n >= need && m.expR > 0 && m.pf > 1;
+    return { pass: ok(val) && ok(test), valOk: ok(val), testOk: ok(test), need };
+  }
+  function createOptimizer(D, opt) {
+    const r = rng(opt.seed || 1234567);
+    const sp = opt.splits || [0.6, 0.8];
+    const a = Math.floor(D.n * sp[0]), b = Math.floor(D.n * sp[1]);
+    const warm = Math.min(Math.floor(D.n * 0.05), 300 * (opt.tf || 1));
+    const cache = new Map();
+    const f = opt.tf || 1, Dtf = f > 1 ? (opt.Dtf || resample(D, f)) : D;
+    const Xof = (s) => prepareTf(D, Dtf, f, s);
+    let evals = 0, gen = 0;
+    const keyOf = (s) => stratKey(s) + JSON.stringify(s.exit);
+    const evalS = (s) => {
+      const k = keyOf(s);
+      let e = cache.get(k);
+      if (!e) {
+        const X = Xof(s), bt = backtest(D, s, opt.cfg, warm, a, X);
+        let f = fitness(bt.metrics, opt.objective, opt.minTrades, complexityOf(s));
+        const K = opt.trainFolds || 0;
+        if (K > 1) {
+          // robustness: every chunk of the training period must hold up, not just the total
+          const fs = [], span = Math.floor((a - warm) / K);
+          for (let q = 0; q < K; q++) fs.push(fitness(backtest(D, s, opt.cfg, warm + q * span, warm + (q + 1) * span, X).metrics, opt.objective, Math.max(3, Math.round(opt.minTrades / K)), 0));
+          const mean = fs.reduce((x, y) => x + y, 0) / K, sd = Math.sqrt(fs.reduce((x, y) => x + (y - mean) * (y - mean), 0) / K);
+          f = 0.5 * f + 0.5 * (mean - 0.5 * sd) - 0.03 * complexityOf(s);
+        }
+        e = { m: bt.metrics, f };
+        cache.set(k, e); evals++;
+      }
+      return e;
+    };
+    let pop = [];
+    if (opt.seedStrats) for (const s of opt.seedStrats) { const c = clone(s); c.id = newId(); pop.push(c); }
+    while (pop.length < opt.pop) pop.push(randomStrat(r, opt.space));
+    let scored = pop.map((s) => ({ s, e: evalS(s) }));
+    const valCache = new Map();
+    function board(limit) {
+      const seen = new Set(), rows = [];
+      const sorted = scored.slice().sort((x, y) => y.e.f - x.e.f || complexityOf(x.s) - complexityOf(y.s));
+      for (const x of sorted.slice(0, 40)) {
+        const sig = x.e.m.n + '|' + x.e.m.netPct.toFixed(3) + '|' + x.e.m.maxDD.toFixed(3);
+        if (seen.has(sig)) continue; seen.add(sig);
+        const k = keyOf(x.s);
+        let vt = valCache.get(k);
+        if (!vt) {
+          const X = Xof(x.s), val = backtest(D, x.s, opt.cfg, a, b, X).metrics, test = backtest(D, x.s, opt.cfg, b, D.n, X).metrics;
+          vt = { val, test, vf: fitness(val, opt.objective, Math.max(5, Math.round(opt.minTrades / 3)), 0) };
+          valCache.set(k, vt);
+        }
+        rows.push({ s: x.s, tf: f, name: describe(x.s), train: x.e.m, val: vt.val, test: vt.test, fit: x.e.f, score: x.e.f + vt.vf, gate: gateCheck(vt.val, vt.test, opt.minTrades) });
+      }
+      rows.sort((x, y) => y.score - x.score);
+      return rows.slice(0, limit || opt.top || 10);
+    }
+    function next() {
+      if (gen >= opt.gens) return null;
+      scored.sort((x, y) => y.e.f - x.e.f);
+      const nextPop = scored.slice(0, Math.max(2, Math.floor(opt.pop * 0.12))).map((x) => x.s);
+      const tour = () => { let best = null; for (let k = 0; k < 3; k++) { const x = scored[Math.floor(r() * scored.length)]; if (!best || x.e.f > best.e.f) best = x; } return best.s; };
+      while (nextPop.length < opt.pop) {
+        const u = r();
+        let c;
+        if (u < 0.12) c = randomStrat(r, opt.space);
+        else if (u < 0.55) c = mutate(r, crossover(r, tour(), tour()), opt.space);
+        else c = mutate(r, tour(), opt.space);
+        if (r() < 0.3) c = mutate(r, c, opt.space);
+        nextPop.push(c);
+      }
+      scored = nextPop.map((s) => ({ s, e: evalS(s) }));
+      gen++;
+      return { gen, gens: opt.gens, evals, best: scored.reduce((m, x) => Math.max(m, x.e.f), -Infinity) };
+    }
+    return { next, board, splits: { warm, a, b, n: D.n }, Dtf, Xof, get gen() { return gen; } };
+  }
+  function optimize(D, opt, onGen) {
+    const O = createOptimizer(D, opt);
+    let p;
+    while ((p = O.next())) { if (onGen) onGen(Object.assign(p, { top: (p.gen % (opt.boardEvery || 1) === 0 || p.gen === opt.gens) ? O.board() : null })); }
+    return O.board();
+  }
+
+  // ───────────────────────────── market structure for drawing and for the bot's "thinking" feed
+  function structureAt(D, j, k) {
+    k = k || 5;
+    const piv = pivots(D, k), zz = new ZigZag(piv);
+    const pts = zz.advance(j).slice(-12);
+    const a = atr(D, 14)[j] || 0;
+    const recent = piv.filter((p) => p.conf <= j).slice(-24);
+    const tol = 0.5 * a;
+    const lv = srLevels(recent, D.c[j], tol);
+    const levels = [];
+    for (const x of lv.sort((p, q) => q.touches - p.touches)) {
+      if (levels.some((y) => Math.abs(y.price - x.price) <= tol)) continue;
+      levels.push(x);
+      if (levels.length >= 6) break;
+    }
+    let sup = null, res = null;
+    for (const x of levels) {
+      if (x.price < D.c[j] && (!sup || x.price > sup.price)) sup = x;
+      if (x.price > D.c[j] && (!res || x.price < res.price)) res = x;
+    }
+    let fib = null;
+    if (pts.length >= 2) {
+      const P1 = pts[pts.length - 1], P0 = pts[pts.length - 2];
+      const size = P1.price - P0.price;
+      fib = { from: P0, to: P1, up: size > 0, levels: [0.236, 0.382, 0.5, 0.618, 0.786].map((f) => ({ f, price: P1.price - f * size })), ext: [1.272, 1.618].map((f) => ({ f, price: P0.price + f * size })) };
+    }
+    let harm = null;
+    if (pts.length >= 4) {
+      const m = pts.length, c = harmonicCandidates(pts[m - 4], pts[m - 3], pts[m - 2], pts[m - 1], 0.08, 'any');
+      if (c.length) harm = c[0];
+    }
+    let ew = null;
+    if (pts.length >= 5) {
+      const P = pts.slice(-5), sg = P[4].type === 'L' ? 1 : -1;
+      const w1 = (P[1].price - P[0].price) * sg, w2 = (P[1].price - P[2].price) * sg, w3 = (P[3].price - P[2].price) * sg, w4 = (P[3].price - P[4].price) * sg;
+      if (w1 > 0 && w2 > 0 && w2 < w1 && w3 >= w1 && w4 > 0 && (P[4].price - P[1].price) * sg > 0) ew = { pts: P, bull: sg > 0, label: 'Waves 1–4 valid, watching for wave 5' };
+    }
+    if (!ew && pts.length >= 3) {
+      const P = pts.slice(-3), sg = P[2].type === 'L' ? 1 : -1;
+      const w1 = (P[1].price - P[0].price) * sg, w2 = (P[1].price - P[2].price) * sg;
+      if (w1 > 2 * a && w2 > 0 && w2 / w1 >= 0.382 && w2 / w1 <= 0.886) ew = { pts: P, bull: sg > 0, label: 'Wave 1–2 complete, wave 3 starts above ' + fmtP(P[1].price) };
+    }
+    let wy = null;
+    const n = 60;
+    if (j > n) {
+      let hi = -Infinity, lo = Infinity;
+      for (let q = j - n; q < j; q++) { hi = Math.max(hi, D.h[q]); lo = Math.min(lo, D.l[q]); }
+      const A = atr(D, 14)[j - 1];
+      if (hi - lo <= 10 * A && hi - lo >= 2 * A) wy = { hi, lo, from: j - n, to: j };
+    }
+    const q = regimeQuad(D, 200)[j];
+    return { pts, levels, sup, res, fib, harm, ew, wy, quad: q, atr: a };
+  }
+  function fmtP(x) { return x >= 1000 ? x.toLocaleString('en-US', { maximumFractionDigits: 0 }) : x.toFixed(2); }
+
+  // Rule-by-rule status at bar j for the bot's thinking panel.
+  function explain(D, s, j) {
+    const rows = [];
+    const w = Math.max(1, s.window || 1);
+    for (const r of s.triggers) {
+      const sg = ruleSignals(D, r);
+      let lastL = -1, lastS = -1;
+      for (let q = j; q >= Math.max(0, j - 400); q--) { if (lastL < 0 && sg.L[q]) lastL = q; if (lastS < 0 && sg.S[q]) lastS = q; if (lastL >= 0 && lastS >= 0) break; }
+      rows.push({ role: 'trigger', label: RULES[r.id].label, L: lastL >= 0 && j - lastL < w, S: lastS >= 0 && j - lastS < w, agoL: lastL >= 0 ? j - lastL : null, agoS: lastS >= 0 ? j - lastS : null });
+    }
+    for (const r of s.filters) {
+      const sg = ruleSignals(D, r);
+      rows.push({ role: 'filter', label: RULES[r.id].label, L: !!sg.L[j], S: !!sg.S[j] });
+    }
+    return rows;
+  }
+
+  const api = { rng, genSample, parseCandles, makeDataset, datasetFromArrays, toArrays, sliceDataset, resample, detectTf, ma, emaArr, smaArr, rsi, macd, bb, atr, pivots, ZigZag, regimeQuad, RULES, RIBBON, HARMONICS, EXIT_OPTS, ruleSignals, prepare, newState, step, closePos, backtest, metrics, optimize, randomStrat, describe, structureAt, explain, defaultParams, newId, clone, stratKey, fitness, createOptimizer, gateCheck, GOV_DEFAULT, prepareTf, tfMap, swingExtremes, realizedVol, complexityOf };
+
+  // ───────────────────────────── worker glue
+  if (typeof importScripts === 'function' && typeof self !== 'undefined') {
+    let DS = null;
+    self.onmessage = function (e) {
+      const m = e.data;
+      if (m.cmd === 'data') { DS = datasetFromArrays(m.arrays, m.meta); return; }
+      if (m.cmd === 'optimize') {
+        let D = DS;
+        if (m.range) D = sliceDataset(DS, m.range[0], m.range[1]);
+        const t0 = Date.now(), O = createOptimizer(D, m.opt);
+        let p, last = 0;
+        while ((p = O.next())) {
+          const now = Date.now();
+          const send = now - last > 250 || p.gen === p.gens;
+          if (send) { last = now; self.postMessage({ type: 'progress', job: m.job, gen: p.gen, gens: p.gens, evals: p.evals, top: (p.gen % 3 === 0 || p.gen === p.gens) ? O.board() : null, ms: now - t0, splits: O.splits }); }
+        }
+        self.postMessage({ type: 'done', job: m.job, top: O.board(), ms: Date.now() - t0, splits: O.splits, range: m.range || null });
+      }
+    };
+  }
+  return api;
+})();
+if (typeof module !== 'undefined') module.exports = Engine;
+
+</script>
+<script>
+(function () {
+  'use strict';
+  const E = window.Engine;
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const px = (x) => (x == null || !isFinite(x) ? '—' : x.toLocaleString('en-US', { maximumFractionDigits: x >= 1000 ? 1 : 2 }));
+  const money = (x) => (x == null || !isFinite(x) ? '—' : (x < 0 ? '−$' : '$') + Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+  const pct = (x, d = 2) => (x == null || !isFinite(x) ? '—' : (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(d) + '%');
+  const rr = (x) => (x == null || !isFinite(x) ? '—' : (x > 0 ? '+' : x < 0 ? '−' : '') + Math.abs(x).toFixed(2) + 'R');
+  const cls = (x) => (x > 0 ? 'pos' : x < 0 ? 'neg' : '');
+  const iso = (t) => new Date(t * 1000).toISOString();
+  const utc = (t) => iso(t).slice(5, 16).replace('T', ' ');
+  const ago = (t) => { const s = Math.max(0, Date.now() / 1000 - t); return s < 90 ? Math.round(s) + 's ago' : s < 5400 ? Math.round(s / 60) + ' min ago' : s < 172800 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' days ago'; };
+  const tfLabel = (m) => (m >= 60 ? m / 60 + 'h' : m + 'm');
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+  const S = { state: null, journal: null, candles: null, live: null, liveAt: 0, tf: 'h1', ov: { ema: true, bb: true, sr: true, fib: false, trades: true } };
+
+  // ───────────────────────── chart
+  class Chart {
+    constructor(cv, legend) {
+      this.cv = cv; this.ctx = cv.getContext('2d'); this.legend = legend;
+      this.bars = null; this.end = 0; this.count = 120; this.hover = -1; this.hy = -1; this.follow = true;
+      const ro = new ResizeObserver(() => this.resize()); ro.observe(cv.parentElement);
+      let drag = null;
+      cv.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, end: this.end }; cv.setPointerCapture(e.pointerId); });
+      cv.addEventListener('pointermove', (e) => {
+        const r = cv.getBoundingClientRect();
+        if (drag) { const bw = this.plotW / this.count; this.end = drag.end - (e.clientX - drag.x) / bw; this.follow = false; this.clampView(); }
+        this.hover = this.idxAt(e.clientX - r.left); this.hy = e.clientY - r.top; this.draw();
+      });
+      cv.addEventListener('pointerup', () => { drag = null; });
+      cv.addEventListener('pointerleave', () => { this.hover = -1; this.draw(); });
+      cv.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const r = cv.getBoundingClientRect(), i = this.idxAt(e.clientX - r.left);
+        const f = e.deltaY > 0 ? 1.15 : 1 / 1.15, nc = Math.max(20, Math.min(this.bars ? this.bars.t.length + 10 : 500, this.count * f));
+        if (i >= 0) this.end = i + (this.end - i) * (nc / this.count);
+        this.count = nc; this.follow = this.end >= (this.bars ? this.bars.t.length : 0); this.clampView(); this.draw();
+      }, { passive: false });
+      cv.addEventListener('dblclick', () => { this.reset(); });
+    }
+    reset() { this.follow = true; this.count = Math.min(120, this.bars ? this.bars.t.length : 120); this.end = (this.bars ? this.bars.t.length : 0) + 2; this.draw(); }
+    clampView() { const n = this.bars ? this.bars.t.length : 0; this.end = Math.max(this.count * 0.3, Math.min(n + this.count * 0.4, this.end)); }
+    resize() { const r = this.cv.parentElement.getBoundingClientRect(), d = window.devicePixelRatio || 1; this.W = r.width; this.H = r.height; this.cv.width = r.width * d; this.cv.height = r.height * d; this.ctx.setTransform(d, 0, 0, d, 0, 0); this.draw(); }
+    get plotW() { return (this.W || 600) - 70; }
+    idxAt(x) { const bw = this.plotW / this.count; const i = Math.round(this.end - (this.plotW - x) / bw - 0.5); return this.bars && i >= 0 && i < this.bars.t.length && x < this.plotW ? i : -1; }
+    set(bars, extras, keepView) { const was = this.bars ? this.bars.t.length : 0; this.bars = bars; this.ex = extras || {}; if (!keepView || !was) this.reset(); else { if (this.follow) this.end = bars.t.length + 2; this.draw(); } }
+    draw() {
+      if (this.raf) return;
+      this.raf = requestAnimationFrame(() => { this.raf = 0; this.paint(); });
+    }
+    paint() {
+      const c = this.ctx, W = this.W, H = this.H, B = this.bars;
+      if (!W || !H) return;
+      const col = { ink: css('--ink'), ink2: css('--ink-2'), ink3: css('--ink-3'), grid: css('--grid'), rule: css('--rule'), up: css('--up'), down: css('--down'), panel: css('--panel'), bot: css('--bot'), accent: css('--accent'), ma21: css('--ma21'), ma37: css('--ma37'), ma50: css('--ma50'), bb: css('--bb'), fib: css('--fib'), sr: css('--sr') };
+      c.clearRect(0, 0, W, H);
+      if (!B || !B.t.length) { c.fillStyle = col.ink3; c.font = '13px ' + css('--f-display'); c.fillText('Waiting for candles from the bot…', 16, 40); return; }
+      const pw = this.plotW, top = 26, timeH = 22, ph = H - top - timeH, bw = pw / this.count, n = B.t.length;
+      const i0 = Math.max(0, Math.floor(this.end - this.count) - 1), i1 = Math.min(n - 1, Math.ceil(this.end));
+      const xOf = (i) => pw - (this.end - i - 0.5) * bw;
+      let lo = Infinity, hi = -Infinity;
+      for (let i = i0; i <= i1; i++) { if (B.l[i] < lo) lo = B.l[i]; if (B.h[i] > hi) hi = B.h[i]; }
+      const ex = this.ex || {};
+      for (const L of ex.lines || []) if (L.keep) { lo = Math.min(lo, L.price); hi = Math.max(hi, L.price); }
+      if (!isFinite(lo)) return;
+      const pad = (hi - lo) * 0.08 || hi * 0.001; lo -= pad; hi += pad;
+      const yOf = (p) => top + ((hi - p) / (hi - lo)) * ph;
+      // grid + price axis
+      const step = niceStep((hi - lo) / Math.max(3, Math.floor(ph / 60)));
+      c.font = '10.5px ' + css('--f-mono'); c.textBaseline = 'middle';
+      for (let p = Math.ceil(lo / step) * step; p <= hi; p += step) {
+        const y = Math.round(yOf(p)) + 0.5;
+        c.strokeStyle = col.grid; c.lineWidth = 1; c.beginPath(); c.moveTo(0, y); c.lineTo(pw, y); c.stroke();
+        c.fillStyle = col.ink3; c.fillText(px(p), pw + 6, y);
+      }
+      // time axis
+      const span = B.t.length > 1 ? B.t[1] - B.t[0] : 60, every = Math.max(1, Math.ceil(90 / bw));
+      c.textBaseline = 'alphabetic';
+      for (let i = i0; i <= i1; i++) {
+        if (i % every) continue;
+        const x = xOf(i); if (x < 20 || x > pw - 20) continue;
+        const d = new Date(B.t[i] * 1000);
+        const lab = span >= 3600 && d.getUTCHours() === 0 ? d.toISOString().slice(5, 10) : d.toISOString().slice(11, 16);
+        c.fillStyle = col.ink3; c.fillText(lab, x - 14, H - 6);
+        c.strokeStyle = col.grid; c.beginPath(); c.moveTo(Math.round(x) + 0.5, top); c.lineTo(Math.round(x) + 0.5, top + ph); c.stroke();
+      }
+      c.strokeStyle = col.rule; c.beginPath(); c.moveTo(pw + 0.5, 0); c.lineTo(pw + 0.5, H); c.moveTo(0, top + ph + 0.5); c.lineTo(pw, top + ph + 0.5); c.stroke();
+      c.save(); c.beginPath(); c.rect(0, 0, pw, top + ph); c.clip();
+      // volume
+      let vmax = 0; for (let i = i0; i <= i1; i++) vmax = Math.max(vmax, B.v[i] || 0);
+      if (vmax > 0) for (let i = i0; i <= i1; i++) {
+        const vh = (B.v[i] / vmax) * ph * 0.16, x = xOf(i);
+        c.fillStyle = B.c[i] >= B.o[i] ? col.up : col.down; c.globalAlpha = 0.16; c.fillRect(x - bw * 0.35, top + ph - vh, Math.max(1, bw * 0.7), vh); c.globalAlpha = 1;
+      }
+      // Bollinger band fill + lines
+      if (ex.bb) {
+        c.fillStyle = col.bb; c.globalAlpha = 0.06; c.beginPath(); let st = false;
+        for (let i = i0; i <= i1; i++) { if (isNaN(ex.bb.up[i])) continue; const x = xOf(i), y = yOf(ex.bb.up[i]); if (!st) { c.moveTo(x, y); st = true; } else c.lineTo(x, y); }
+        for (let i = i1; i >= i0; i--) { if (isNaN(ex.bb.lo[i])) continue; c.lineTo(xOf(i), yOf(ex.bb.lo[i])); }
+        c.fill(); c.globalAlpha = 1;
+        line(c, ex.bb.up, i0, i1, xOf, yOf, col.bb, 1, [3, 3]); line(c, ex.bb.lo, i0, i1, xOf, yOf, col.bb, 1, [3, 3]);
+      }
+      for (const m of ex.mas || []) line(c, m.arr, i0, i1, xOf, yOf, css(m.color), 1.4);
+      // candles
+      const bwid = Math.max(1, bw * 0.68);
+      for (let i = i0; i <= i1; i++) {
+        const x = xOf(i), up = B.c[i] >= B.o[i];
+        c.strokeStyle = c.fillStyle = up ? col.up : col.down;
+        c.beginPath(); c.moveTo(Math.round(x) + 0.5, yOf(B.h[i])); c.lineTo(Math.round(x) + 0.5, yOf(B.l[i])); c.stroke();
+        const y1 = yOf(Math.max(B.o[i], B.c[i])), y2 = yOf(Math.min(B.o[i], B.c[i]));
+        c.fillRect(x - bwid / 2, y1, bwid, Math.max(1, y2 - y1));
+      }
+      // horizontal levels
+      c.font = '10.5px ' + css('--f-mono');
+      for (const L of ex.lines || []) {
+        const y = Math.round(yOf(L.price)) + 0.5; if (y < top || y > top + ph) continue;
+        const x0 = L.from != null ? Math.max(0, xOf(L.from)) : 0;
+        const lc = css(L.color) || L.color; c.strokeStyle = lc; c.lineWidth = L.w || 1; c.setLineDash(L.dash || []); c.beginPath(); c.moveTo(x0, y); c.lineTo(pw, y); c.stroke(); c.setLineDash([]);
+        if (L.label) { c.fillStyle = lc; c.textBaseline = 'bottom'; c.fillText(L.label, Math.max(x0 + 4, 4), y - 2); }
+      }
+      // trade markers
+      for (const m of ex.markers || []) {
+        if (m.i < i0 || m.i > i1) continue;
+        const x = xOf(m.i);
+        if (m.kind === 'entry') {
+          const y = m.dir > 0 ? yOf(B.l[m.i]) + 10 : yOf(B.h[m.i]) - 10;
+          c.fillStyle = col.accent; c.beginPath();
+          if (m.dir > 0) { c.moveTo(x, y - 6); c.lineTo(x - 5, y + 3); c.lineTo(x + 5, y + 3); } else { c.moveTo(x, y + 6); c.lineTo(x - 5, y - 3); c.lineTo(x + 5, y - 3); }
+          c.fill();
+        } else {
+          const y = yOf(m.price);
+          c.fillStyle = m.R > 0 ? col.up : col.down; c.beginPath(); c.arc(x, y, 4, 0, Math.PI * 2); c.fill();
+          c.font = '600 10px ' + css('--f-mono'); c.textBaseline = 'bottom'; c.fillText(rr(m.R), x + 6, y - 3);
+          if (m.ei != null && m.ei >= i0) { c.strokeStyle = m.R > 0 ? col.up : col.down; c.setLineDash([2, 3]); c.beginPath(); c.moveTo(xOf(m.ei), yOf(m.ep)); c.lineTo(x, y); c.stroke(); c.setLineDash([]); }
+        }
+      }
+      c.restore();
+      // last price tag
+      const last = ex.livePrice || B.c[n - 1], ly = yOf(last);
+      if (ly > top && ly < top + ph) {
+        c.fillStyle = last >= B.o[n - 1] ? col.up : col.down; c.fillRect(pw + 1, ly - 9, 69, 18);
+        c.fillStyle = col.panel; c.textBaseline = 'middle'; c.font = '600 10.5px ' + css('--f-mono'); c.fillText(px(last), pw + 5, ly);
+      }
+      // crosshair + legend
+      const hi_ = this.hover >= 0 ? this.hover : n - 1;
+      if (this.hover >= 0) {
+        const x = Math.round(xOf(this.hover)) + 0.5; c.strokeStyle = col.ink3; c.setLineDash([3, 3]); c.beginPath(); c.moveTo(x, top); c.lineTo(x, top + ph); c.stroke();
+        if (this.hy > top && this.hy < top + ph) { c.beginPath(); c.moveTo(0, this.hy + 0.5); c.lineTo(pw, this.hy + 0.5); c.stroke(); const p = hi - ((this.hy - top) / ph) * (hi - lo); c.setLineDash([]); c.fillStyle = col.ink; c.fillRect(pw + 1, this.hy - 9, 69, 18); c.fillStyle = col.panel; c.textBaseline = 'middle'; c.fillText(px(p), pw + 5, this.hy); }
+        c.setLineDash([]);
+      }
+      const ch = B.c[hi_] - B.o[hi_];
+      this.legend.innerHTML = `<span>${esc(utc(B.t[hi_]))} UTC</span><span>O <b>${px(B.o[hi_])}</b></span><span>H <b>${px(B.h[hi_])}</b></span><span>L <b>${px(B.l[hi_])}</b></span><span>C <b class="${cls(ch)}">${px(B.c[hi_])}</b></span>` + (ex.mas || []).map((m) => `<span style="color:var(${m.color})">${m.name} ${px(m.arr[hi_])}</span>`).join('');
+    }
+  }
+  function line(c, arr, i0, i1, xOf, yOf, color, w, dash) {
+    c.strokeStyle = color; c.lineWidth = w; c.setLineDash(dash || []); c.beginPath(); let st = false;
+    for (let i = i0; i <= i1; i++) { const v = arr[i]; if (isNaN(v)) { st = false; continue; } const x = xOf(i), y = yOf(v); if (!st) { c.moveTo(x, y); st = true; } else c.lineTo(x, y); }
+    c.stroke(); c.setLineDash([]); c.lineWidth = 1;
+  }
+  function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; }
+
+  const chart = new Chart($('#chart'), $('#legend'));
+
+  // ───────────────────────── chart data assembly
+  function seriesFor(tf) {
+    const C = S.candles; if (!C || !C[tf]) return null;
+    const src = C[tf], b = { t: src.t.slice(), o: src.o.slice(), h: src.h.slice(), l: src.l.slice(), c: src.c.slice(), v: (src.v || src.t.map(() => 0)).slice() };
+    return b;
+  }
+  const TF = { m1: 60, h1: 3600, h4: 14400 };
+  function renderChart(keepView) {
+    const b = seriesFor(S.tf);
+    if (!b) { chart.set({ t: [], o: [], h: [], l: [], c: [], v: [] }, {}, false); return; }
+    const D = E.datasetFromArrays({ t: Float64Array.from(b.t), o: Float64Array.from(b.o), h: Float64Array.from(b.h), l: Float64Array.from(b.l), c: Float64Array.from(b.c), v: Float64Array.from(b.v) }, {});
+    const ex = { mas: [], lines: [], markers: [] };
+    if (S.ov.ema) ex.mas = [21, 37, 50].map((nn, k) => ({ name: 'EMA' + nn, arr: E.ma(D, 'EMA', nn), color: ['--ma21', '--ma37', '--ma50'][k] }));
+    if (S.ov.bb) { const bb = E.bb(D, 20, 2.5); ex.bb = { up: bb.up, lo: bb.lo }; }
+    if ((S.ov.sr || S.ov.fib) && D.n > 40) {
+      const st = E.structureAt(D, D.n - 1, S.tf === 'm1' ? 8 : 5);
+      if (S.ov.sr) for (const L of st.levels.slice(0, 5)) ex.lines.push({ price: L.price, color: '--sr', dash: [5, 4], label: (L.price < D.c[D.n - 1] ? 'S ' : 'R ') + px(L.price) + (L.touches > 1 ? ' ×' + L.touches : '') });
+      if (S.ov.fib && st.fib) for (const f of st.fib.levels) ex.lines.push({ price: f.price, from: st.fib.to.i, color: '--fib', dash: [2, 3], label: 'Fib ' + f.f });
+    }
+    const span = TF[S.tf], bi = (t) => { const bt = Math.floor(t / span) * span; let lo = 0, hi = D.n - 1, r = -1; while (lo <= hi) { const m = (lo + hi) >> 1; if (D.t[m] <= bt) { r = m; lo = m + 1; } else hi = m - 1; } return r; };
+    if (S.ov.trades && S.journal) for (const tr of S.journal.trades || []) {
+      const ei = bi(tr.et), xi = bi(tr.xt); if (xi < 0) continue;
+      if (ei >= 0) ex.markers.push({ kind: 'entry', i: ei, dir: tr.dir });
+      ex.markers.push({ kind: 'exit', i: xi, price: tr.xp, R: tr.R, ei: ei >= 0 ? ei : null, ep: tr.ep });
+    }
+    const pos = S.state && S.state.position;
+    if (pos) {
+      const ei = bi(pos.et);
+      if (ei >= 0) ex.markers.push({ kind: 'entry', i: ei, dir: pos.dir });
+      ex.lines.push({ price: pos.ep, from: ei >= 0 ? ei : null, color: '--ink-2', w: 1, label: 'entry ' + px(pos.ep), keep: true });
+      ex.lines.push({ price: pos.stop, from: ei >= 0 ? ei : null, color: '--down', w: 1.5, label: 'stop ' + px(pos.stop), keep: true });
+      ex.lines.push({ price: pos.tp, from: ei >= 0 ? ei : null, color: '--up', w: 1.5, label: 'target ' + px(pos.tp), keep: true });
+    }
+    if (S.live) ex.livePrice = S.live.price;
+    chart.set(b, ex, keepView);
+    $('#chartH').textContent = 'BTC-USDT · ' + ({ m1: '1 minute', h1: '1 hour', h4: '4 hours' }[S.tf]) + (S.candles && S.candles.venue ? ' · ' + S.candles.venue : '');
+  }
+
+  // ───────────────────────── panels
+  function tile(label, value, sub, c) { return `<div class="tile"><span>${esc(label)}</span><b class="${c || ''}">${value}</b><small>${sub || '&nbsp;'}</small></div>`; }
+  function renderTiles() {
+    const st = S.state && S.state.stats;
+    if (!st) { $('#tiles').innerHTML = ['Equity', 'Net P&L', 'Today', 'Trades', 'Win rate', 'Profit factor', 'Avg trade', 'Max drawdown'].map((l) => tile(l, '—')).join(''); return; }
+    const pos = S.state.position, livePx = S.live ? S.live.price : null;
+    const unreal = pos && livePx ? pos.dir * pos.qty * (livePx - pos.ep) : st.unrealized || 0;
+    const eq = (st.equity - (st.unrealized || 0)) + unreal, eq0 = S.state.cfg ? S.state.cfg.equity : 10000;
+    const n = st.trades;
+    $('#tiles').innerHTML =
+      tile('Equity', money(eq), pos ? 'incl. ' + money(unreal) + ' open' : 'start ' + money(eq0)) +
+      tile('Net P&L', pct((eq / eq0 - 1) * 100), money(eq - eq0), cls(eq - eq0)) +
+      tile('Today', money(st.todayPnl), 'closed trades, UTC day', cls(st.todayPnl)) +
+      tile('Trades', String(n), n ? (st.rejectsTotal ? st.rejectsTotal + ' signals skipped' : 'closed') : 'none closed yet') +
+      tile('Win rate', n ? (st.winRate * 100).toFixed(0) + '%' : '—', n ? '' : 'needs trades') +
+      tile('Profit factor', n ? (st.pf >= 99 ? '∞' : st.pf.toFixed(2)) : '—', 'gross win ÷ gross loss', n ? (st.pf >= 1 ? 'pos' : 'neg') : '') +
+      tile('Avg trade', n ? rr(st.expR) : '—', 'in risk units', cls(st.expR)) +
+      tile('Max drawdown', pct(-st.maxDD), 'from equity peak', st.maxDD > 0 ? 'neg' : '');
+  }
+  function evRow(m, k) { return m ? `<div><span>${k}</span><span class="${cls(m.expR)}">${rr(m.expR)}</span> · PF ${m.pf >= 99 ? '∞' : m.pf.toFixed(2)}<br><small class="dim">${m.n} trades</small></div>` : ''; }
+  function renderChamp() {
+    const s = S.state; if (!s || !s.champion) return;
+    const ch = s.champion, ev = ch.evidence || {};
+    $('#champPill').innerHTML = `<span class="pill ${ch.status === 'gated' ? 'up' : 'bot'}">${ch.status === 'gated' ? 'passed gate · full risk' : 'probation · half risk'}</span>`;
+    const ev4 = ev.minuteManaged4y && ev.minuteManaged4y.full;
+    $('#champ').innerHTML = `<div class="champ-name">${esc(ch.name)}</div>
+      <p class="desc">${esc(ch.description || '')}</p>
+      <div class="kv">${evRow(ev.train, 'Train')}${evRow(ev.val, 'Validation')}${evRow(ev.unseenYearTest || ev.test, ev.unseenYearTest ? 'Unseen year' : 'Test')}</div>
+      ${ev4 ? `<div class="kv"><div><span>4 years</span><span class="pos">${rr(ev4.expR)}</span> · PF ${ev4.pf.toFixed(2)}<br><small class="dim">${ev4.n} trades</small></div><div><span>Quarters up</span>${ev.minuteManaged4y.positive} of ${ev.minuteManaged4y.of}</div><div><span>Max DD</span>${ev4.maxDD.toFixed(1)}%</div></div>` : ''}
+      ${ch.lastCheck ? `<div class="kv"><div><span>Venue check</span>${ch.lastCheck.gate ? '<span class="pos">passes</span>' : '<span class="dim">not yet</span>'}</div><div><span>Val</span>${ch.lastCheck.val ? ch.lastCheck.val.n + ' tr ' + rr(ch.lastCheck.val.expR) : '—'}</div><div><span>Test</span>${ch.lastCheck.test ? ch.lastCheck.test.n + ' tr ' + rr(ch.lastCheck.test.expR) : '—'}</div></div>` : ''}
+      <div class="dim" style="font-size:11.5px">Signals on ${tfLabel(ch.tf)} candles · since ${esc(utc(ch.since))} UTC · source: ${esc(ch.source || '')} · risk ${s.cfg ? s.cfg.risk.riskPct : '—'}% per trade</div>`;
+  }
+  function renderPos() {
+    const s = S.state; const p = s && s.position;
+    if (!p) { $('#posPill').className = 'pill'; $('#posPill').textContent = 'Flat'; $('#pos').innerHTML = `<p class="desc">No open position. ${s && s.paused ? 'Paused by the supervisor.' : 'Watching every minute for the next signal.'}</p>`; $('#pos').parentElement.classList.remove('long', 'short'); return; }
+    const last = S.live ? S.live.price : s.stats && s.stats.price, rNow = last ? ((last - p.ep) * p.dir) / p.d : null, upnl = last ? p.dir * p.qty * (last - p.ep) : null;
+    $('#posPill').className = 'pill ' + (p.dir > 0 ? 'up' : 'down'); $('#posPill').textContent = p.dir > 0 ? 'LONG' : 'SHORT';
+    const card = $('#pos').parentElement; card.classList.add('poscard'); card.classList.toggle('long', p.dir > 0); card.classList.toggle('short', p.dir < 0);
+    $('#pos').innerHTML = `<div class="kv"><div><span>Entry</span>${px(p.ep)}</div><div><span>Stop</span>${px(p.stop)}</div><div><span>Target</span>${px(p.tp)}</div>
+      <div><span>Now</span><span class="${cls(rNow)}">${rr(rNow)}</span></div><div><span>Open P&L</span><span class="${cls(upnl)}">${money(upnl)}</span></div><div><span>Size</span>${p.qty.toFixed(4)} BTC</div></div>
+      <div class="dim" style="font-size:11.5px">Opened ${esc(utc(p.et))} UTC · risk ${money(p.risk)} · ${p.be ? 'stop at breakeven' : 'initial stop'}${p.stop !== p.stop0 && !p.be ? ' (trailed)' : ''}</div>`;
+  }
+  function renderThink() {
+    const th = S.state && S.state.thinking;
+    if (!th) { $('#think').innerHTML = '<div class="empty">The bot writes what it sees after each minute.</div>'; return; }
+    $('#thinkAt').textContent = 'last candle ' + utc(th.t) + ' UTC';
+    const ck = (th.checks || []).map((x) => `<tr><td>${esc(x.label)} <span class="dim" style="font-size:10.5px">${x.role}</span></td><td class="${x.L ? 'yes' : 'no'}">${x.L ? '✓' : '·'}</td><td class="${x.S ? 'yes' : 'no'}">${x.S ? '✓' : '·'}</td></tr>`).join('');
+    $('#think').innerHTML = `<div class="decision">${esc(th.decision)}</div>
+      ${ck ? `<table class="checks"><thead><tr><th>Rule (closed ${tfLabel(th.tf)} bar)</th><th>Long</th><th>Short</th></tr></thead><tbody>${ck}</tbody></table>` : ''}
+      <div class="read">${(th.read || []).map((r) => `<div><b>${esc(r.k)}</b><span class="${r.tone === 'up' ? 'pos' : r.tone === 'down' ? 'neg' : ''}">${esc(r.v)}</span></div>`).join('')}</div>`;
+  }
+  function renderLog() {
+    const evs = (S.journal && S.journal.events) || [];
+    $('#logCount').textContent = evs.length ? evs.length + ' latest' : '';
+    $('#log').innerHTML = evs.length ? evs.slice().reverse().map((e) => `<div><time>${esc(utc(e.t))}</time><span class="t-${esc(e.type)} ${e.type === 'exit' ? (e.R > 0 ? 'w' : 'l') : ''}">${esc(e.text)}</span></div>`).join('') : '<div class="empty" style="display:block">No events yet.</div>';
+  }
+  function renderTrades() {
+    const tr = ((S.journal && S.journal.trades) || []).slice().reverse();
+    $('#trades').innerHTML = `<thead><tr><th>Closed (UTC)</th><th class="l">Side</th><th>Entry</th><th>Exit</th><th class="l">Reason</th><th>R</th><th>P&L</th></tr></thead><tbody>` +
+      (tr.length ? tr.map((t) => `<tr><td>${esc(utc(t.xt))}</td><td class="l">${t.dir > 0 ? 'Long' : 'Short'}</td><td>${px(t.ep)}</td><td>${px(t.xp)}</td><td class="l">${esc(t.reason)}</td><td class="${cls(t.R)}">${rr(t.R)}</td><td class="${cls(t.pnl)}">${money(t.pnl)}</td></tr>`).join('') : `<tr><td colspan="7" class="l dim" style="font-family:inherit">No closed trades yet. A 1h strategy trades a few times a week at most.</td></tr>`) + '</tbody>';
+  }
+  function renderLb() {
+    const s = S.state; const rows = (s && s.leaderboard) || [];
+    const lt = s && s.thinks && s.thinks[s.thinks.length - 1];
+    $('#lbNote').textContent = lt ? 'last ' + utc(lt.t) + ' UTC' : '';
+    $('#lb').innerHTML = `<thead><tr><th class="l">Challenger</th><th>Val</th><th>Test</th><th class="l">Gate</th></tr></thead><tbody>` +
+      (rows.length ? rows.slice(0, 8).map((r) => `<tr><td class="l" style="font-family:inherit;white-space:normal;min-width:180px">${esc(r.name)} · ${tfLabel(r.tf)}</td><td class="${cls(r.val && r.val.expR)}">${r.val ? rr(r.val.expR) + ' /' + r.val.n : '—'}</td><td class="${cls(r.test && r.test.expR)}">${r.test ? rr(r.test.expR) + ' /' + r.test.n : '—'}</td><td class="l">${r.gate && r.gate.pass ? '<span class="pill up">pass</span>' : '<span class="pill">fail</span>'}</td></tr>`).join('') : '<tr><td colspan="4" class="l dim" style="font-family:inherit">The first re-think runs within the hour.</td></tr>') +
+      '</tbody>' + (lt ? `<tfoot><tr><td colspan="4" class="l" style="font-family:inherit;white-space:normal;color:var(--ink-2)">${esc(lt.verdict)}</td></tr></tfoot>` : '');
+  }
+  function renderEquity() {
+    const cv = $('#equity'), ctx = cv.getContext('2d'), r = cv.parentElement.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+    cv.width = r.width * d; cv.height = r.height * d; ctx.setTransform(d, 0, 0, d, 0, 0);
+    const W = r.width, H = r.height, pts = ((S.journal && S.journal.equity) || []).slice();
+    ctx.clearRect(0, 0, W, H);
+    const eq0 = S.state && S.state.cfg ? S.state.cfg.equity : 10000;
+    if (pts.length < 2) { ctx.fillStyle = css('--ink-3'); ctx.font = '12.5px ' + css('--f-display'); ctx.fillText('The curve fills in as the bot runs.', 12, 24); $('#eqNote').textContent = ''; return; }
+    let lo = eq0, hi = eq0; for (const p of pts) { lo = Math.min(lo, p[1]); hi = Math.max(hi, p[1]); }
+    const pad = (hi - lo) * 0.15 || 10; lo -= pad; hi += pad;
+    const L = 8, R = W - 62, T = 10, Bm = H - 20, t0 = pts[0][0], t1 = pts[pts.length - 1][0] || t0 + 1;
+    const x = (t) => L + ((t - t0) / Math.max(1, t1 - t0)) * (R - L), y = (v) => T + ((hi - v) / (hi - lo)) * (Bm - T);
+    ctx.strokeStyle = css('--rule'); ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(L, y(eq0)); ctx.lineTo(R, y(eq0)); ctx.stroke(); ctx.setLineDash([]);
+    const last = pts[pts.length - 1][1], c = last >= eq0 ? css('--up') : css('--down');
+    ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(x(p[0]), y(p[1])) : ctx.moveTo(x(p[0]), y(p[1])))); ctx.strokeStyle = c; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.lineTo(x(t1), Bm); ctx.lineTo(x(t0), Bm); ctx.closePath(); ctx.fillStyle = c; ctx.globalAlpha = 0.08; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(x(t1), y(last), 3, 0, Math.PI * 2); ctx.fillStyle = c; ctx.fill();
+    ctx.font = '10.5px ' + css('--f-mono'); ctx.fillStyle = css('--ink-3'); ctx.textBaseline = 'middle';
+    ctx.fillText(money(hi - pad).replace('.00', ''), R + 6, y(hi - pad)); ctx.fillText(money(lo + pad).replace('.00', ''), R + 6, y(lo + pad));
+    ctx.fillText(utc(t0).slice(0, 5), L, H - 8); ctx.fillText(utc(t1).slice(0, 5), R - 34, H - 8);
+    $('#eqNote').textContent = money(last) + ' · ' + pct((last / eq0 - 1) * 100);
+  }
+  function renderHeader() {
+    const s = S.state;
+    if (s) {
+      $('#sub').textContent = `${s.venue || 'feed pending'} · synced ${s.syncedAt ? ago(s.syncedAt) : '—'} · bot heartbeat ${s.updatedAt ? ago(s.updatedAt) : '—'}`;
+      const stale = s.updatedAt && Date.now() / 1000 - s.updatedAt > 3 * 3600;
+      const b = $('#banner');
+      const msgs = [];
+      if (s.paused) msgs.push('Paused by the supervisor: no new entries.');
+      if (stale) msgs.push(`This view was last refreshed from the bot ${ago(s.updatedAt)}; trades after that appear on the next hourly sync.`);
+      if (s.errors && s.errors.length) { const e = s.errors[s.errors.length - 1]; if (Date.now() / 1000 - e.t < 3600) msgs.push('Recent bot error: ' + e.msg); }
+      b.hidden = !msgs.length; b.className = 'banner' + (s.paused || (s.errors && s.errors.length) ? ' warn' : ''); b.textContent = msgs.join(' ');
+    }
+    const L = S.live;
+    const synced = s && s.stats ? s.stats.price : null;
+    $('#px').textContent = L ? px(L.price) : synced ? px(synced) : '—';
+    $('#liveDot').className = 'livedot' + (L && Date.now() - S.liveAt < 150000 ? ' on' : '');
+    $('#pxNote').lastChild.textContent = L ? `live · Crypto.com perp · ${new Date(S.liveAt).toISOString().slice(11, 16)} UTC` : (S.liveErr || (synced ? 'last synced price' : 'waiting for price'));
+  }
+  function renderAll(keepView) { renderHeader(); renderTiles(); renderChamp(); renderPos(); renderThink(); renderLog(); renderTrades(); renderLb(); renderEquity(); renderChart(keepView); }
+
+  // ───────────────────────── controls
+  $('#tfSeg').innerHTML = [['m1', '1m'], ['h1', '1h'], ['h4', '4h']].map(([k, l]) => `<button id="tf-${k}" aria-pressed="${k === S.tf}">${l}</button>`).join('');
+  $('#tfSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; S.tf = b.id.slice(3); for (const x of $('#tfSeg').children) x.setAttribute('aria-pressed', String(x === b)); renderChart(false); });
+  const OV = [['ema', 'EMA 21·37·50', '--ma37'], ['bb', 'Bollinger 2.5σ', '--bb'], ['sr', 'Support / resistance', '--sr'], ['fib', 'Fibonacci', '--fib'], ['trades', 'Trades', '--accent']];
+  $('#chips').innerHTML = OV.map(([k, l, c]) => `<button class="chip" id="ov-${k}" aria-pressed="${S.ov[k]}"><i style="color:var(${c})"></i>${l}</button>`).join('');
+  $('#chips').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; const k = b.id.slice(3); S.ov[k] = !S.ov[k]; b.setAttribute('aria-pressed', String(S.ov[k])); renderChart(true); });
+  window.addEventListener('resize', () => renderEquity());
+  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { chart.draw(); renderEquity(); }); } catch (e) { /* older browsers */ }
+  new MutationObserver(() => { chart.draw(); renderEquity(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  setInterval(() => { renderHeader(); }, 30000);
+
+  renderAll(false);
+
+  // ───────────────────────── data: bot state from the artifact database (synced hourly by the supervisor)
+  (async () => {
+    const db = window.claude && window.claude.use ? await window.claude.use('db') : null;
+    if (!db) { $('#champ').innerHTML = '<div class="empty">Open this page in claude.ai to see the bot\'s synced state.</div>'; return; }
+    const on = (id, key) => db.doc('bot/' + id).onSnapshot((snap) => { S[key] = snap.exists ? snap.data() : null; renderAll(true); }, () => {});
+    on('state', 'state'); on('journal', 'journal'); on('candles', 'candles');
+  })();
+
+  // ───────────────────────── live price from the viewer's Crypto.com connector
+  (async () => {
+    const mcp = window.claude && window.claude.use ? await window.claude.use('mcp') : null;
+    if (!mcp) { S.liveErr = 'live price needs claude.ai'; renderHeader(); return; }
+    mcp.watchTool('Crypto.com', 'get_candlestick', { instrument_name: 'BTCUSD-PERP', timeframe: '1m' }, (ev) => {
+      if (ev.type === 'data') {
+        const p = ev.result && ev.result.payload, rows = (p && (p.data || (p.result && p.result.data))) || [];
+        if (!rows.length) return;
+        const newest = rows.reduce((a, r) => (Date.parse(r.timestamp || 0) > Date.parse(a.timestamp || 0) ? r : a), rows[0]);
+        const price = +(newest.close ?? newest.c);
+        if (isFinite(price) && price > 0) { S.live = { price }; S.liveAt = ev.result.cache ? ev.result.cache.storedAt : Date.now(); S.liveErr = null; renderHeader(); renderTiles(); renderPos(); chart.ex && (chart.ex.livePrice = price); chart.draw(); }
+      } else {
+        const code = ev.error && ev.error.code;
+        if (['needs_reauth', 'server_not_connected', 'not_in_manifest', 'blocked_by_policy', 'approval_required', 'selection_required'].includes(code)) S.live = null;
+        S.liveErr = code === 'needs_reauth' ? 'Reconnect Crypto.com in Settings → Connectors for a live price'
+          : code === 'server_not_connected' ? 'Add the Crypto.com connector for a live price'
+          : code === 'not_in_manifest' || code === 'approval_required' ? 'Allow Crypto.com for this page to see a live price'
+          : 'Live price unavailable right now; showing the last synced price';
+        renderHeader();
+      }
+    }, { refetchInterval: 60000 });
+  })();
+})();
+
+</script>

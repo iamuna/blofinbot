@@ -19,6 +19,7 @@ on:
       - "lab/engine.js"
       - "lab/paperbot.js"
       - "lab/champion.json"
+      - "lab/restart.txt"
       - ".github/workflows/paper-bot.yml"
 
 permissions:
