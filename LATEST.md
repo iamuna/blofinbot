@@ -1,0 +1,16 @@
+# Strategy factory — latest test
+
+Tested 2026-10-19T23:01Z on 31 coins, 2026-04-01 → 2026-10-18. Variants tried so far: 10 → t-stat bar 2.50.
+
+| Strategy | Origin | Trades | Avg R | t | Avg R at 1.5× costs | Thirds (sum R) | Backtest gate |
+|---|---|---|---|---|---|---|---|
+| intraday-trend | config | 7794 | -0.1181 | -9.96 | -0.1639 | -347.22 / -342.48 / -230.89 | average -0.1639 R at 1.5× costs (need > 0); newest third -0.0873 R (need > 0); positive in fewer than 2 of 3 thirds; t -9.96 < 2.50 (bar for 10 tries) |
+| trend-pullback | config | 11593 | -0.1729 | -16.26 | -0.2502 | -642.3 / -793.31 / -568.7 | average -0.2502 R at 1.5× costs (need > 0); newest third -0.1398 R (need > 0); positive in fewer than 2 of 3 thirds; t -16.26 < 2.50 (bar for 10 tries) |
+| session-drive | config | 917 | -0.1732 | -5.01 | -0.2138 | -33.05 / -76.63 / -49.11 | average -0.2138 R at 1.5× costs (need > 0); newest third -0.198 R (need > 0); positive in fewer than 2 of 3 thirds; t -5.01 < 2.50 (bar for 10 tries) |
+| overshoot-fade | config | 4700 | -0.3528 | -14.2 | -0.5493 | -618.84 / -379 / -660.2 | average -0.5493 R at 1.5× costs (need > 0); newest third -0.3185 R (need > 0); positive in fewer than 2 of 3 thirds; t -14.2 < 2.50 (bar for 10 tries) |
+| leader-follow | config | 1543 | -0.2833 | -11.86 | -0.4547 | -152.1 / -124.13 / -160.95 | average -0.4547 R at 1.5× costs (need > 0); newest third -0.2495 R (need > 0); positive in fewer than 2 of 3 thirds; t -11.86 < 2.50 (bar for 10 tries) |
+| crowd-squeeze | config | 26 | -0.0885 | -0.33 | -0.1268 | 7.47 / -1.15 / -8.63 | 26 trades (need 300); average -0.1268 R at 1.5× costs (need > 0); newest third -0.7188 R (need > 0); positive in fewer than 2 of 3 thirds; t -0.33 < 2.50 (bar for 10 tries) |
+| noise-breakout | config | 32524 | -0.302 | -46.53 | -0.4171 | -3388.32 / -3289.07 / -3143.29 | average -0.4171 R at 1.5× costs (need > 0); newest third -0.2711 R (need > 0); positive in fewer than 2 of 3 thirds; t -46.53 < 2.50 (bar for 10 tries) |
+| it-45-long | config | 716 | 0.1406 | 2.52 | 0.124 | 3.62 / -21 / 118.03 | **pass** |
+| it-45-hold32 | config | 1328 | 0.0208 | 0.61 | 0.0034 | -11.8 / -35.21 / 74.57 | positive in fewer than 2 of 3 thirds; t 0.61 < 2.50 (bar for 10 tries) |
+| it-45-hold16 | config | 1264 | 0.0145 | 0.52 | -0.0026 | -0.06 / -29 / 47.37 | average -0.0026 R at 1.5× costs (need > 0); positive in fewer than 2 of 3 thirds; t 0.52 < 2.50 (bar for 10 tries) |

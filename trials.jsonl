@@ -1,0 +1,10 @@
+{"key":"intraday-trend:44136fa355b3","name":"intraday-trend","base":"intraday-trend","params":{},"at":"2026-10-19T23:01:27.671Z","n":7794,"avgR":-0.1181,"tStat":-9.96}
+{"key":"trend-pullback:44136fa355b3","name":"trend-pullback","base":"trend-pullback","params":{},"at":"2026-10-19T23:01:27.671Z","n":11593,"avgR":-0.1729,"tStat":-16.26}
+{"key":"session-drive:44136fa355b3","name":"session-drive","base":"session-drive","params":{},"at":"2026-10-19T23:01:27.671Z","n":917,"avgR":-0.1732,"tStat":-5.01}
+{"key":"overshoot-fade:44136fa355b3","name":"overshoot-fade","base":"overshoot-fade","params":{},"at":"2026-10-19T23:01:27.671Z","n":4700,"avgR":-0.3528,"tStat":-14.2}
+{"key":"leader-follow:44136fa355b3","name":"leader-follow","base":"leader-follow","params":{},"at":"2026-10-19T23:01:27.671Z","n":1543,"avgR":-0.2833,"tStat":-11.86}
+{"key":"crowd-squeeze:44136fa355b3","name":"crowd-squeeze","base":"crowd-squeeze","params":{},"at":"2026-10-19T23:01:27.671Z","n":26,"avgR":-0.0885,"tStat":-0.33}
+{"key":"noise-breakout:44136fa355b3","name":"noise-breakout","base":"noise-breakout","params":{},"at":"2026-10-19T23:01:27.671Z","n":32524,"avgR":-0.302,"tStat":-46.53}
+{"key":"intraday-trend:053d0e339678","name":"it-45-long","base":"intraday-trend","params":{"onlyTfs":[45],"holdBars":32,"stopAtr":3,"trailAtr":5,"volZ":0.5,"er":0.3,"sides":[1],"againstBias":0.3},"at":"2026-10-19T23:01:27.671Z","n":716,"avgR":0.1406,"tStat":2.52}
+{"key":"intraday-trend:61fe075d36f4","name":"it-45-hold32","base":"intraday-trend","params":{"onlyTfs":[45],"holdBars":32,"stopAtr":3,"trailAtr":5,"volZ":1,"er":0.35,"againstBias":0.2},"at":"2026-10-19T23:01:27.671Z","n":1328,"avgR":0.0208,"tStat":0.61}
+{"key":"intraday-trend:ed5f1a2883eb","name":"it-45-hold16","base":"intraday-trend","params":{"onlyTfs":[45],"holdBars":16,"stopAtr":3,"trailAtr":4,"volZ":1,"er":0.4,"againstBias":0.2},"at":"2026-10-19T23:01:27.671Z","n":1264,"avgR":0.0145,"tStat":0.52}
