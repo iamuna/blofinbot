@@ -16,13 +16,13 @@ class Accountant extends Agent {
   static agentName = 'accountant';
   async onStart() {
     this.X = Object.assign({ account: 'paper', paperEquity: 10000 }, this.cfg.trading || {});
-    this.file = path.join(this.ctx.dataDir, 'state', 'accountant.json');
+    this.file = path.join(this.ctx.dataDir, 'state', `accountant-${this.X.account}.json`); // paper and demo keep separate books
     const e0 = this.X.paperEquity;
     this.A = readJSON(this.file, { equity0: e0, cash: e0, peak: e0, dayStart: e0, day: Math.floor(this.now() / DAY), fees: 0, funding: 0, trades: 0, wins: 0, results: {}, byStrategy: {} });
     this.open = []; this.last = new Map();
     const pos = await this.bus.kv.get('positions'); if (pos) this.open = pos.open;
     this.subscribe('trade.closed', (m) => this.onTrade(m.data), { durable: true });
-    this.subscribe('positions', (m) => { this.open = m.data.open; });
+    this.subscribe('positions', (m) => { this.open = m.data.open; if (m.data.equity > 0) this.exchangeEquity = m.data.equity; });
     this.subscribe('md.ticker', (m) => this.last.set(m.data.coin, m.data.last));
     this.every(5000, () => this.snapshot());
     await this.snapshot();
@@ -44,7 +44,12 @@ class Accountant extends Agent {
     const A = this.A, now = this.now();
     let upl = 0, gross = 0, openRisk = 0;
     for (const p of this.open) { const px = this.last.get(p.coin) || p.last || p.entry; upl += p.side * (px - p.entry) * p.qty; gross += p.qty * px; openRisk += p.qty * Math.abs(px - p.stop); }
-    const equity = A.cash + upl;
+    // on a real (demo/live) account BloFin's own equity is the truth; the first reading sets the starting point
+    let equity = A.cash + upl;
+    if (this.X.account !== 'paper' && this.exchangeEquity > 0) {
+      if (!A.exchangeStart) { A.exchangeStart = this.exchangeEquity; A.equity0 = A.cash = A.peak = A.dayStart = this.exchangeEquity; this.save(); }
+      equity = this.exchangeEquity; upl = equity - A.cash;
+    }
     const day = Math.floor(now / DAY);
     if (day !== A.day) { A.day = day; A.dayStart = equity; this.save(); }
     if (equity > A.peak) { A.peak = equity; this.save(); }

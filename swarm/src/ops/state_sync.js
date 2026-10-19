@@ -45,12 +45,12 @@ class StateSync extends Agent {
   append(file, rows) { if (rows.length) fs.appendFileSync(path.join(this.dir, file), rows.map((r) => JSON.stringify(r)).join('\n') + '\n'); }
   async sync() {
     const kv = async (k) => this.bus.kv.get(k);
-    const [account, positions, universe, guard, results] = [await kv('account'), await kv('positions'), await kv('universe'), await kv('guard'), await kv('strategyResults')];
+    const [account, positions, universe, guard, results, strategyModes] = [await kv('account'), await kv('positions'), await kv('universe'), await kv('guard'), await kv('strategyResults'), await kv('strategyModes')];
     const state = {
       updatedAt: new Date(this.now()).toISOString(), account, positions, risk: this.risk || null,
       universe: universe ? { ts: universe.ts, source: universe.source, coins: universe.coins.map((c) => c.coin) } : null,
       guard: guard ? { ts: guard.ts, notTradable: Object.entries(guard.coins || {}).filter(([, v]) => !v.tradable).map(([k, v]) => `${k}: ${v.reasons.join(',')}`) } : null,
-      agents: this.hb, strategyResults: results,
+      agents: this.hb, strategyResults: results, strategyModes: strategyModes || {},
     };
     writeAtomic(path.join(this.dir, 'state.json'), JSON.stringify(state, null, 1));
     writeAtomic(path.join(this.dir, 'ideas.jsonl'), this.ideas.map((i) => JSON.stringify(i)).join('\n') + '\n');

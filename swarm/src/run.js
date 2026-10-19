@@ -22,7 +22,7 @@ const REGISTRY = {
   events: () => require('./agents/event_calendar').EventCalendar,
   brain: () => require('./agents/brain').Brain,
   coordinator: () => require('./decision/coordinator').Coordinator,
-  trader: () => require('./exec/trader').Trader,
+  trader: (cfg) => ((cfg.trading || {}).account === 'demo' ? require('./exec/demo_trader').DemoTrader : require('./exec/trader').Trader),
   accountant: () => require('./exec/accountant').Accountant,
   herald: () => require('./ops/herald').Herald,
   watchdog: () => require('./ops/watchdog').Watchdog,
@@ -60,7 +60,7 @@ async function main() {
   const bus = await createBus({ kind: busKind, url: A.redis || process.env.SWARM_REDIS || cfg.bus.url, prefix: cfg.bus.prefix });
   const ctx = { bus, cfg, dataDir };
   const agents = [];
-  for (const n of names) { const C = REGISTRY[n](); const a = new C(ctx, { name: n }); await a.start(); agents.push(a); }
+  for (const n of names) { const C = REGISTRY[n](cfg); const a = new C(ctx, { name: n }); await a.start(); agents.push(a); }
   log.info(`running ${names.join(', ')} on the ${busKind} bus, data in ${dataDir}`);
   let stopping = false;
   const stop = async (why) => {

@@ -116,6 +116,11 @@ function createClient(opts) {
     pendingOrders: (after) => get('/api/v1/trade/orders-pending', { limit: 100, after }, true, true),
     orderDetail: (instId, ids) => get('/api/v1/trade/order-detail', Object.assign({ instId }, ids), true, true),
     orderHistory: (instId) => get('/api/v1/trade/orders-history', { instId, limit: 100 }, true, true),
+    // exchange-side take-profit / stop-loss for a position (prices as strings; order price '-1' = market)
+    placeTpsl: (o) => post('/api/v1/trade/order-tpsl', o),
+    cancelTpsl: (list) => post('/api/v1/trade/cancel-tpsl', list),
+    pendingTpsl: (instId) => get('/api/v1/trade/orders-tpsl-pending', instId ? { instId, limit: 100 } : { limit: 100 }, true, true),
+    closePosition: (instId, marginMode, clientOrderId) => post('/api/v1/trade/close-position', { instId, marginMode, positionSide: 'net', clientOrderId }),
   };
 }
 

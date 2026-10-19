@@ -1,0 +1,49 @@
+name: Swarm factory (tester + promotion gate)
+
+# Backtests every configured strategy and every candidate in swarm/factory/candidates on the swarm dataset, logs
+# each try (the multiple-testing count), applies the backtest gate, then combines it with live shadow evidence from
+# the swarm-state branch and writes strategy-mode changes to swarm-state/control.json (paper/demo only).
+# Results go to the swarm-factory branch.
+
+on:
+  push:
+    branches: [swarm]
+    paths: ["swarm/factory/candidates/**", "swarm/src/strategies/**", "swarm/src/analysis/**", "swarm/src/backtest/**", "swarm/src/factory/**", ".github/workflows/swarm-factory.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: swarm-factory
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Fetch data, factory log and live state
+        run: |
+          R="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git clone -q --depth 1 --branch swarm-data "$R" data
+          git clone -q --depth 1 --branch swarm-factory "$R" factory 2>/dev/null || { mkdir factory && git -C factory init -q -b swarm-factory && git -C factory remote add origin "$R"; }
+          git clone -q --depth 1 --branch swarm-state "$R" state 2>/dev/null || echo "no swarm-state branch yet (home PC not running)"
+      - name: Test strategies and candidates
+        run: node --max-old-space-size=6000 swarm/src/factory/test_candidates.js --data data --out factory --split "$(date -u -d '45 days ago' +%F)"
+      - name: Publish results
+        run: |
+          cd factory && git config user.name "swarm tester" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "factory test $(date -u +%FT%TZ) for ${{ github.sha }}" && git push -q origin HEAD:swarm-factory || echo "nothing new"
+      - name: Promotion gate
+        if: hashFiles('state/state.json') != ''
+        run: |
+          node swarm/src/factory/promote.js --factory factory --state state --write
+          cd state && git config user.name "swarm promotion gate" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- control.json 2>/dev/null || [ -n "$(git ls-files --others control.json)" ]; then
+            git add control.json && git commit -q -m "promotion gate $(date -u +%FT%TZ)"
+            for i in 1 2 3; do git pull -q --rebase origin swarm-state && git push -q origin HEAD:swarm-state && break; sleep 5; done
+          fi
