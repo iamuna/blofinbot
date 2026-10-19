@@ -19,7 +19,7 @@ module.exports = {
     const stop = side > 0 ? bar.l - p.stopPadAtr * f.atr : bar.h + p.stopPadAtr * f.atr;
     if (Math.abs(px - stop) > p.maxRiskAtr * f.atr) return null;
     return {
-      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel' }, stop, target: null,
+      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel', chase: true }, stop, target: null,
       trail: { dist: p.trailAtr * f.atr, afterR: p.trailAfterR }, timeStopMin: p.holdMin,
       why: `${['Asia', 'Europe', 'US'][p.opens.indexOf(m)]} open drive ${(move / f.atr).toFixed(1)} ATR, volZ ${f.volZ.toFixed(1)}`,
     };

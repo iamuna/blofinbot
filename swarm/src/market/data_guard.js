@@ -28,11 +28,11 @@ class DataGuard extends Agent {
   onData(m) {
     const t = this.now(), d = m.data;
     switch (m.type) {
-      case 'md.book': { const s = this.st(d.coin); s.bf = t; s.mid = d.mid; s.spread = d.spreadBps; this.sampleSpread(s, t, d.spreadBps); break; }
-      case 'md.ticker': { const s = this.st(d.coin); s.bf = t; if (!s.mid) s.mid = (d.bid + d.ask) / 2; this.lag(t - d.ts); break; }
+      case 'md.book': { const s = this.st(d.coin); s.bf = t; s.mid = d.mid; s.spread = d.spreadBps; this.sampleSpread(s, t, d.spreadBps); if (d.coin === 'BTC') this.lag(t - d.ts); break; } // books are stamped when BloFin builds them; we publish them ≤ 1 s later
+      case 'md.ticker': { const s = this.st(d.coin); s.bf = t; if (!s.mid) s.mid = (d.bid + d.ask) / 2; break; } // ticker ts = last trade time, not a latency clock
       case 'md.trade': { const s = this.st(d.coin); s.bf = t; break; }
       case 'md.bar': { const s = this.st(d.coin); if (d.t > s.bar) s.bar = d.t; break; }
-      case 'ref.flow': for (const [coin, f] of Object.entries(d.coins)) { const s = this.st(coin); s.ref = t; s.refPx = f.last; } this.lag(t - (d.ts + 1000)); break;
+      case 'ref.flow': for (const [coin, f] of Object.entries(d.coins)) { const s = this.st(coin); s.ref = t; s.refPx = f.last; } break;
       case 'ref.mark': for (const [coin, x] of Object.entries(d.coins)) { const s = this.st(coin); s.ref = Math.max(s.ref, t - 10000); if (!s.refPx) s.refPx = x.mark; } break;
       case 'ref.bar': { const s = this.st(d.coin); s.ref = Math.max(s.ref, t - 30000); s.refPx = s.refPx || d.c; break; }
     }

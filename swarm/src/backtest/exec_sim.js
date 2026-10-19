@@ -33,8 +33,11 @@ class ExecSim {
       if (i.coin !== coin || bar.t < i.t) continue;
       const side = i.side;
       if (i.entry.kind === 'taker') { this.pending.delete(id); this.fill(i, bar.o, 'taker', bar); continue; }
-      const L = i.entry.px, through = side > 0 ? bar.l <= L * (1 - this.thru / 1e4) : bar.h >= L * (1 + this.thru / 1e4);
+      // chase: the order sits at the best price, re-posted at each bar's close (the price at the last decision)
+      const L = i.entry.chase ? (p.chasePx || i.entry.px) : i.entry.px;
+      const through = side > 0 ? bar.l <= L * (1 - this.thru / 1e4) : bar.h >= L * (1 + this.thru / 1e4);
       if (through) { this.pending.delete(id); this.fill(i, side > 0 ? Math.min(L, bar.o) : Math.max(L, bar.o), 'maker', bar); continue; }
+      if (i.entry.chase) p.chasePx = bar.c;
       if (bar.t + MIN >= p.until) {
         this.pending.delete(id);
         if (i.entry.fallback === 'taker') this.fill(i, bar.c, 'taker', bar, true);

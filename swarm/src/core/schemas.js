@@ -31,6 +31,16 @@ const TYPES = {
   'idea': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', side: 'n', entry: 'o', stop: 'n', timeStopMin: 'n', t: 'n', mode: 's', riskPct: 'n' } },
   'shadow.trade': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', side: 'n', entryT: 'n', exitT: 'n', netBps: 'n', r: 'n', reason: 's' } },
   'shadow.end': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', outcome: 's' } }, // an idea that never filled
+  // ── decisions, orders, positions, accounts
+  'intent': { keep: 50000, req: { id: 's', coin: 's', side: 'n', entry: 'o', stop: 'n', riskPct: 'n', qty: 'n', strategies: 'a' } },
+  'risk.decision': { keep: 50000, req: { id: 's', coin: 's', verdict: 's', qty: 'n', reasons: 'a' } },
+  'risk.state': { keep: 20000, req: { ts: 'n', mode: 's', budgetScale: 'n', reasons: 'a' } },
+  'order': { keep: 50000, req: { id: 's', coin: 's', side: 'n', qty: 'n', entry: 'o', stop: 'n', timeStopMin: 'n', strategies: 'a' } },
+  'order.end': { keep: 50000, req: { id: 's', coin: 's', outcome: 's' } }, // an order that ended without a position
+  'exec.fill': { keep: 100000, req: { orderId: 's', coin: 's', side: 'n', qty: 'n', px: 'n', feeUsd: 'n', kind: 's', role: 's', ts: 'n' } },
+  'positions': { keep: 20000, req: { ts: 'n', open: 'a', working: 'a' } },
+  'trade.closed': { keep: 50000, req: { orderId: 's', coin: 's', side: 'n', qty: 'n', entry: 'n', exit: 'n', netUsd: 'n', r: 'n', reason: 's', strategies: 'a' } },
+  'account': { keep: 50000, req: { ts: 'n', equity: 'n', cash: 'n', upl: 'n', peak: 'n', dayStart: 'n', mode: 's' } },
   // ── system
   'sys.heartbeat': { keep: 50000, req: { agent: 's', pid: 'n', status: 's', startedAt: 'n', metrics: 'o' } },
   'sys.log': { keep: 50000, req: { agent: 's', level: 's', msg: 's' } },

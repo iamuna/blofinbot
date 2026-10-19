@@ -20,7 +20,7 @@ module.exports = {
     if (!broke || (f.flowZ != null && side * f.flowZ < 0.5)) return null;
     const px = bar.c;
     return {
-      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel' },
+      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel', chase: true },
       stop: px - side * p.stopAtr * f.atr, target: px + side * p.targetAtr * f.atr, trail: null, timeStopMin: p.holdMin,
       why: `funding ${(x.funding * 100).toFixed(3)}%/8h (${crowd > 0 ? 'longs' : 'shorts'} crowded), OI +${(oi * 100).toFixed(1)}%/${p.oiMin}m, ${ev.tf}m break`,
     };

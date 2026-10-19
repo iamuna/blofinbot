@@ -21,6 +21,9 @@ const REGISTRY = {
   recorder: () => require('./market/recorder').Recorder,
   events: () => require('./agents/event_calendar').EventCalendar,
   brain: () => require('./agents/brain').Brain,
+  coordinator: () => require('./decision/coordinator').Coordinator,
+  trader: () => require('./exec/trader').Trader,
+  accountant: () => require('./exec/accountant').Accountant,
 };
 
 function args(argv) {

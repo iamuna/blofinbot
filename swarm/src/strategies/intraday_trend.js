@@ -20,7 +20,7 @@ module.exports = {
     if (rg.warm && rg.bias * side < p.againstBias) return null;
     const px = bar.c;
     return {
-      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel' },
+      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel', chase: true },
       stop: px - side * p.stopAtr * f.atr, target: null, trail: { dist: p.trailAtr * f.atr, afterR: p.trailAfterR },
       timeStopMin: p.holdBars * tf,
       why: `${tf}m breakout ${Math.max(up, dn)}/3, volZ ${f.volZ.toFixed(1)}, er ${f.er20.toFixed(2)}, bias ${rg.bias.toFixed(2)}`,

@@ -1,0 +1,20 @@
+{
+  "_note": "Hard limits. Only Ibrahim changes this file: edit it, then run `sudo swarm-sign-risk` on the home PC. The guardian halts trading if the file no longer matches its signature.",
+  "liveEnabled": false,
+  "startTradeRiskPct": 0.0025,
+  "maxTradeRiskPct": 0.01,
+  "liveFirstMonthCapPct": 0.005,
+  "maxOpenRiskPct": 0.06,
+  "maxCoinNotionalX": 1.0,
+  "maxGrossX": 4.0,
+  "maxBtcBetaX": 2.0,
+  "exchangeLeverage": 5,
+  "dayStopPct": 0.03,
+  "dayFlattenPct": 0.05,
+  "ddHalvePct": 0.10,
+  "ddProvenOnlyPct": 0.15,
+  "ddHaltPct": 0.20,
+  "maxSpreadBps": 10,
+  "maxBookFrac": 0.10,
+  "minOrderUsd": 5
+}

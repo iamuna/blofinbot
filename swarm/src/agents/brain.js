@@ -49,6 +49,7 @@ class Brain extends Agent {
     this.subscribe(['md.funding', 'ref.oi', 'ref.liq', 'md.book'], (m) => this.onContext(m));
     this.every(1000, () => this.flushDue());
     this.every(10000, () => this.strategyHeartbeats());
+    this.every(15 * 60000, () => this.publishBetas());
   }
 
   tradable(coin, s) {
@@ -153,6 +154,10 @@ class Brain extends Agent {
     }
   }
 
+  async publishBetas() { // for the risk agent's BTC-exposure limit
+    const b = {}; for (const c of this.coins.keys()) { const x = this.fs.beta(c); if (Number.isFinite(x)) b[c] = +x.toFixed(3); }
+    await this.bus.kv.set('betas', b);
+  }
   async publishRegime(ts) {
     const coins = {}; for (const c of this.coins.keys()) coins[c] = this.regime.get(c, ts);
     await this.publish('regime.state', { ts, coins });

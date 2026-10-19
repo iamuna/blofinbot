@@ -19,7 +19,7 @@ module.exports = {
     if (f.flowZ != null && side * f.flowZ < -3) return null; // a selling (buying) flood: wait
     const px = bar.c - side * p.limitAtr * f.atr, stop = px - side * p.stopAtr * f.atr;
     return {
-      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel' },
+      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel', chase: false },
       stop, target: px + side * p.targetR * Math.abs(px - stop), trail: null, timeStopMin: p.holdMin,
       why: `bias ${rg.bias.toFixed(2)}, ${ev.tf}m dip ${((bar.c - f.ema20) / f.atr).toFixed(1)} ATR from ema20`,
     };

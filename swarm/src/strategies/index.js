@@ -7,6 +7,7 @@ const all = [
   require('./overshoot_fade'),
   require('./leader_follow'),
   require('./crowd_squeeze'),
+  require('./noise_breakout'),
 ];
 const byName = Object.fromEntries(all.map((s) => [s.name, s]));
 module.exports = { all, byName };

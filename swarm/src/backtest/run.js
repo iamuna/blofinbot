@@ -31,7 +31,9 @@ async function backtest(o) {
   if (o.coins) coins = coins.filter((c) => o.coins.includes(c));
   coins.sort((a, b) => (a === 'BTC' ? -1 : b === 'BTC' ? 1 : a.localeCompare(b))); // BTC first in every minute
   const months = [...new Set([...man.months, ...(man.currentMonthDays || []).map((d) => d.slice(0, 7))])].sort();
-  const plugins = o.strategies ? o.strategies.map((n) => strategies.byName[n]).filter(Boolean) : strategies.all;
+  // variants: [{name, base, params}] — several parameter sets of the same plugin share one pass over the data
+  const plugins = o.variants ? o.variants.map((v) => Object.assign({}, strategies.byName[v.base], { name: v.name, variantParams: v.params || {} }))
+    : (o.strategies ? o.strategies.map((n) => strategies.byName[n]).filter(Boolean) : strategies.all);
   const fsx = new FeatureState(), regime = new RegimeState();
   const funding = {}, oi = {};
   for (const c of coins) { funding[c] = (readCsvGz(path.join(o.data, c, 'funding.csv.gz')) || []).map((r) => [r.t, r.rate]); oi[c] = []; }
@@ -40,7 +42,7 @@ async function backtest(o) {
   for (const s of plugins) {
     const sim = new ExecSim({ funding, slipBps: o.slip, onClose: (idea, res) => hosts[s.name].onClose(idea.coin, idea.id, res) });
     sims[s.name] = sim;
-    hosts[s.name] = new StrategyHost(s, { fs: fsx, regime, params: (o.params || {})[s.name] });
+    hosts[s.name] = new StrategyHost(s, { fs: fsx, regime, params: Object.assign({}, s.variantParams, (o.params || {})[s.name]) });
   }
   const fptr = {}, optr = {}; for (const c of coins) { fptr[c] = 0; optr[c] = 0; }
   let minutes = 0, firstT = null, lastT = 0;
@@ -79,18 +81,26 @@ async function backtest(o) {
   for (const s of plugins) {
     const trades = sims[s.name].trades.filter((t) => t.entryT >= from);
     const ideas = hosts[s.name].stats;
-    out.strategies[s.name] = { params: hosts[s.name].p, ideas, unfilled: sims[s.name].unfilled, all: summarize(trades), cost15: summarize(trades, { costMult: 1.5 }), cost2: summarize(trades, { costMult: 2 }), ...breakdown(trades), trades };
+    const split = o.split || null;
+    out.strategies[s.name] = {
+      base: s.variantParams ? (o.variants.find((v) => v.name === s.name) || {}).base : s.name, params: hosts[s.name].p, ideas, unfilled: sims[s.name].unfilled,
+      all: summarize(trades), cost15: summarize(trades, { costMult: 1.5 }), cost2: summarize(trades, { costMult: 2 }),
+      train: split ? summarize(trades.filter((t) => t.entryT < split)) : null, test: split ? summarize(trades.filter((t) => t.entryT >= split)) : null,
+      test15: split ? summarize(trades.filter((t) => t.entryT >= split), { costMult: 1.5 }) : null,
+      ...breakdown(trades), trades,
+    };
   }
   return out;
 }
 
 function report(r) {
   const L = [`# Swarm backtest`, '', `Data ${r.data.from.slice(0, 10)} → ${r.data.to.slice(0, 10)}, ${r.data.coins} coins; trades counted from ${r.evalFrom.slice(0, 10)}. Costs: maker ${r.costs.makerBps} bps, taker ${r.costs.takerBps} bps, slippage ${r.costs.slipBps} bps per taker side, funding charged.`, ''];
-  L.push('| Strategy | Trades | Per day | Win rate | Avg net bps | Avg R | t-stat | PF | Max DD (R) | Sharpe | Avg R at 1.5× costs | Thirds (sum R) |', '|---|---|---|---|---|---|---|---|---|---|---|---|');
+  L.push('| Strategy | Trades | Per day | Win rate | Avg net bps | Avg R | t-stat | PF | Max DD (R) | Sharpe | Avg R at 1.5× costs | Thirds (sum R) | Test: n / avg R / t |', '|---|---|---|---|---|---|---|---|---|---|---|---|---|');
   for (const [k, v] of Object.entries(r.strategies)) {
     const a = v.all;
-    if (!a.n) { L.push(`| ${k} | 0 | | | | | | | | | | |`); continue; }
-    L.push(`| ${k} | ${a.n} | ${a.perDay} | ${(a.winRate * 100).toFixed(0)}% | ${a.avgNetBps} | ${a.avgR} | ${a.tStat} | ${a.pf} | ${a.maxDDR} | ${a.sharpe} | ${v.cost15.avgR} | ${v.thirds.map((x) => (x.n ? x.sumR : 0)).join(' / ')} |`);
+    if (!a.n) { L.push(`| ${k} | 0 | | | | | | | | | | | |`); continue; }
+    const te = v.test && v.test.n ? `${v.test.n} / ${v.test.avgR} / ${v.test.tStat}` : '—';
+    L.push(`| ${k} | ${a.n} | ${a.perDay} | ${(a.winRate * 100).toFixed(0)}% | ${a.avgNetBps} | ${a.avgR} | ${a.tStat} | ${a.pf} | ${a.maxDDR} | ${a.sharpe} | ${v.cost15.avgR} | ${v.thirds.map((x) => (x.n ? x.sumR : 0)).join(' / ')} | ${te} |`);
   }
   return L.join('\n') + '\n';
 }
@@ -102,6 +112,7 @@ async function main() {
     data: path.resolve(A.data), strategies: A.strategies ? A.strategies.split(',') : null, coins: A.coins ? A.coins.split(',') : null,
     from: A.from ? Date.parse(A.from) : null, to: A.to ? Date.parse(A.to) : null, warmupDays: A['warmup-days'] == null ? 21 : +A['warmup-days'],
     slip: A.slip == null ? undefined : +A.slip, params: A.params ? JSON.parse(A.params) : {}, progress: (m, n) => console.error(`month ${m} done, ${n} minutes`),
+    variants: A.variants ? JSON.parse(fs.readFileSync(A.variants, 'utf8')) : null, split: A.split ? Date.parse(A.split) : null,
   });
   const out = path.resolve(A.out || 'swarm-backtest');
   fs.mkdirSync(out, { recursive: true });

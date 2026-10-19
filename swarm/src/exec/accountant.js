@@ -1,0 +1,62 @@
+/* Accountant: the account's money, and each strategy's results.
+ *
+ * equity = cash (start + closed trades' net) + open positions marked to the last BloFin price.
+ * Keeps the peak and the UTC day's starting equity (the risk ladders use both), per-strategy results in R
+ * (kv 'strategyResults' — the allocator's input) and totals of fees and funding.
+ * Publishes account every 5 s (and kv 'account'). State in <dataDir>/state/accountant.json.
+ */
+'use strict';
+const path = require('path');
+const { Agent } = require('../core/agent');
+const { readJSON, writeAtomic } = require('../core/fsx');
+
+const DAY = 86400000;
+
+class Accountant extends Agent {
+  static agentName = 'accountant';
+  async onStart() {
+    this.X = Object.assign({ account: 'paper', paperEquity: 10000 }, this.cfg.trading || {});
+    this.file = path.join(this.ctx.dataDir, 'state', 'accountant.json');
+    const e0 = this.X.paperEquity;
+    this.A = readJSON(this.file, { equity0: e0, cash: e0, peak: e0, dayStart: e0, day: Math.floor(this.now() / DAY), fees: 0, funding: 0, trades: 0, wins: 0, results: {}, byStrategy: {} });
+    this.open = []; this.last = new Map();
+    const pos = await this.bus.kv.get('positions'); if (pos) this.open = pos.open;
+    this.subscribe('trade.closed', (m) => this.onTrade(m.data), { durable: true });
+    this.subscribe('positions', (m) => { this.open = m.data.open; });
+    this.subscribe('md.ticker', (m) => this.last.set(m.data.coin, m.data.last));
+    this.every(5000, () => this.snapshot());
+    await this.snapshot();
+  }
+  save() { writeAtomic(this.file, JSON.stringify(this.A)); }
+  async onTrade(t) {
+    const A = this.A;
+    A.cash += t.netUsd; A.fees += t.feeUsd; A.funding += t.fundUsd || 0; A.trades++; if (t.netUsd > 0) A.wins++;
+    for (const s of t.strategies || []) {
+      const r = (A.results[s.name] = A.results[s.name] || []); r.push(+t.r.toFixed(4)); if (r.length > 300) r.splice(0, r.length - 300);
+      const b = (A.byStrategy[s.name] = A.byStrategy[s.name] || { trades: 0, netUsd: 0, sumR: 0, wins: 0 });
+      b.trades++; b.netUsd += t.netUsd / t.strategies.length; b.sumR += t.r; if (t.netUsd > 0) b.wins++;
+    }
+    this.save();
+    await this.bus.kv.set('strategyResults', A.results);
+    await this.snapshot();
+  }
+  async snapshot() {
+    const A = this.A, now = this.now();
+    let upl = 0, gross = 0, openRisk = 0;
+    for (const p of this.open) { const px = this.last.get(p.coin) || p.last || p.entry; upl += p.side * (px - p.entry) * p.qty; gross += p.qty * px; openRisk += p.qty * Math.abs(px - p.stop); }
+    const equity = A.cash + upl;
+    const day = Math.floor(now / DAY);
+    if (day !== A.day) { A.day = day; A.dayStart = equity; this.save(); }
+    if (equity > A.peak) { A.peak = equity; this.save(); }
+    const acct = {
+      ts: now, mode: this.X.account, equity: +equity.toFixed(2), cash: +A.cash.toFixed(2), upl: +upl.toFixed(2), peak: +A.peak.toFixed(2), dayStart: +A.dayStart.toFixed(2),
+      dd: +(1 - equity / A.peak).toFixed(4), dayPnlPct: +(equity / A.dayStart - 1).toFixed(4), gross: +gross.toFixed(2), grossX: +(gross / equity).toFixed(3), openRiskPct: +(openRisk / equity).toFixed(4),
+      positions: this.open.length, trades: A.trades, winRate: A.trades ? +(A.wins / A.trades).toFixed(3) : null, fees: +A.fees.toFixed(2), funding: +A.funding.toFixed(2), equity0: A.equity0, byStrategy: A.byStrategy,
+    };
+    await this.bus.kv.set('account', acct);
+    await this.publish('account', acct);
+    this.gauge('equity', acct.equity); this.gauge('positions', acct.positions);
+  }
+}
+
+module.exports = { Accountant };

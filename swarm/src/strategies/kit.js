@@ -7,7 +7,8 @@
  * api = { p (params), now (close time ms), fs (FeatureState), regime(coin), hist(coin, tf) (Ring of bars, newest
  *         first), ctx(coin) (funding, OI, liquidations, book), state(coin) (the strategy's own per-coin memory),
  *         tradable(coin), coins() }
- * An idea: {coin, side: +1 long | −1 short, entry: {kind: 'maker'|'taker', px, waitMin, fallback: 'taker'|'cancel'},
+ * An idea: {coin, side: +1 long | −1 short, entry: {kind: 'maker'|'taker', px, waitMin, fallback: 'taker'|'cancel', chase},
+ *           (chase: the maker order follows the best price until it fills or the wait ends; else it rests at px)
  *           stop, target (or null), trail: {atr, afterR} (or null), timeStopMin, why}
  * The host adds strategy/version/tf/t/id, checks the levels make sense, and enforces one open idea per coin
  * (a strategy is told when its trade ends through onClose and can set its own cooldowns).
@@ -32,6 +33,9 @@ class StrategyHost {
   state(coin) { let x = this.states.get(coin); if (!x) this.states.set(coin, (x = {})); return x; }
   onEvent(ev) {
     if (!this.tfs.has(ev.tf) || ev.f.partial) return [];
+    // generic filters any variant may set: onlyTfs, coins (whitelist), sides ([1] long only, [-1] short only)
+    if (this.p.onlyTfs && !this.p.onlyTfs.includes(ev.tf)) return [];
+    if (this.p.coins && !this.p.coins.includes(ev.coin)) return [];
     const now = ev.t + ev.tf * 60000;
     const api = {
       p: this.p, now, fs: this.fs, coins: () => [...this.fs.coins.keys()],
@@ -44,7 +48,7 @@ class StrategyHost {
     if (!out) return [];
     const ideas = [];
     for (const i of [].concat(out)) {
-      if (this.open.has(i.coin)) continue;
+      if (this.open.has(i.coin) || (this.p.sides && !this.p.sides.includes(i.side))) continue;
       if (!api.tradable(i.coin)) { this.stats.rejected++; continue; }
       const bad = validIdea(i);
       if (bad) { this.stats.rejected++; this.lastError = `${i.coin}: ${bad}`; continue; }

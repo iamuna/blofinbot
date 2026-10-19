@@ -21,7 +21,7 @@ module.exports = {
     const target = px + side * p.targetFrac * range;
     const liq = api.liqSum(coin, 5), forced = dir < 0 ? liq.long : liq.short;
     return {
-      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel' }, stop, target, trail: null, timeStopMin: p.holdMin,
+      coin, side, entry: { kind: 'maker', px, waitMin: p.waitMin, fallback: 'cancel', chase: false }, stop, target, trail: null, timeStopMin: p.holdMin,
       why: `${ev.tf}m ${dir > 0 ? 'spike' : 'flush'} ${(f.ret * 1e4).toFixed(0)} bps (z ${f.retZ.toFixed(1)}, flow z ${f.flowZ.toFixed(1)})${forced ? `, $${Math.round(forced / 1000)}k liquidated` : ''}`,
     };
   },

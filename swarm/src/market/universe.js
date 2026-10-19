@@ -123,7 +123,8 @@ class UniverseAgent extends Agent {
   async volumesFromApi(inst, tick, prev) {
     const N = this.N, U = this.U;
     const info = await this.http.getJSON(`${N.rest}/fapi/v1/exchangeInfo`, { retries: 1 });
-    const live = new Set((info.symbols || []).filter((s) => s.status === 'TRADING' && s.contractType === 'PERPETUAL' && s.quoteAsset === 'USDT').map((s) => s.symbol));
+    // crypto only: Binance tags stock and commodity perpetuals with another underlyingType than COIN
+    const live = new Set((info.symbols || []).filter((s) => s.status === 'TRADING' && s.contractType === 'PERPETUAL' && s.quoteAsset === 'USDT' && (!s.underlyingType || s.underlyingType === 'COIN')).map((s) => s.symbol));
     const t24 = {};
     for (const t of await this.http.getJSON(`${N.rest}/fapi/v1/ticker/24hr`, { retries: 1 })) t24[t.symbol] = { last: +t.lastPrice, qv: +t.quoteVolume };
     const out = {}, today0 = Math.floor(this.now() / DAY) * DAY;
