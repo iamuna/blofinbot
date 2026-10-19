@@ -1,0 +1,68 @@
+name: Swarm CI (tests + live data smoke run)
+
+# Tests the multi-agent swarm on every push to the swarm branch: unit tests (with a real Redis), then a short
+# live run of the market-data agents against BloFin's public feed, summarised from the recording.
+# Binance usually refuses US-based runners, so here the universe comes from Binance's public archive and the
+# Binance feed is expected to report itself degraded. No keys, no orders.
+
+on:
+  push:
+    branches: [swarm]
+    paths: ["swarm/**", ".github/workflows/swarm-ci.yml"]
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "Smoke run length (minutes)"
+        default: "4"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: swarm-ci
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      redis:
+        image: redis:7
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Unit tests
+        working-directory: swarm
+        env: { REDIS_URL: "redis://127.0.0.1:6379" }
+        run: npm test
+
+  smoke:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Live market-data run
+        run: |
+          node swarm/src/run.js --group market --bus memory --data-dir /tmp/sw --minutes "${{ github.event.inputs.minutes || '4' }}" --log-samples > /tmp/sw-run.log 2>&1 || true
+          tail -n 60 /tmp/sw-run.log
+      - name: Report
+        run: |
+          node swarm/src/tools/smoke_report.js /tmp/sw | tee /tmp/sw-report.md
+          cat /tmp/sw-report.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Keep the recording
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: swarm-smoke
+          path: |
+            /tmp/sw-run.log
+            /tmp/sw-report.md
+            /tmp/sw/state
+            /tmp/sw/rec
+          retention-days: 7

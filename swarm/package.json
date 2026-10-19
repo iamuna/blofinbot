@@ -1,0 +1,12 @@
+{
+  "name": "blofin-swarm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Multi-agent 1-45 minute trading system for BloFin perpetuals (paper first). No dependencies: Node 22 + Redis.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "market": "node src/run.js --group market"
+  },
+  "license": "UNLICENSED"
+}

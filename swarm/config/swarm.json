@@ -1,0 +1,61 @@
+{
+  "bus": { "kind": "redis", "url": "redis://127.0.0.1:6379", "prefix": "sw" },
+  "dataDir": "/var/lib/swarm",
+  "heartbeatMs": 10000,
+  "groups": {
+    "market": ["universe", "blofin-feed", "binance-feed", "guard", "recorder"]
+  },
+  "universe": {
+    "enterVolQ": 20000000,
+    "exitVolQ": 14000000,
+    "days": 7,
+    "enterSpreadBps": 5,
+    "exitSpreadBps": 10,
+    "refreshMin": 60,
+    "maxCoins": 80,
+    "prefilterVolQ": 5000000,
+    "archivePrefilterBlofinVolQ": 300000,
+    "exclude": [
+      "USDC", "FDUSD", "TUSD", "DAI", "USDE", "USD1", "PYUSD", "BUSD", "USDP",
+      "SNDK", "SKHYNIX", "SKHY", "SAMSUNG", "TSLA", "NVDA", "AAPL", "AMZN", "GOOGL", "GOOG", "META", "MSFT", "NFLX", "AMD", "INTC",
+      "MSTR", "COIN", "HOOD", "CRCL", "PLTR", "BABA", "TSM", "AVGO", "ORCL", "MU", "SPY", "QQQ", "SPX", "NDX", "DJI", "SOXL", "SPCX",
+      "XAU", "XAG", "XAUT", "PAXG", "GOLD", "SILVER", "OIL", "WTI", "BRENT", "USO", "NATGAS", "COPPER", "CL", "BZ", "EUR", "JPY", "GBP"
+    ],
+    "fallback": ["BTC", "ETH", "SOL", "ZEC", "NEAR", "XRP", "HYPE", "DOGE", "BNB", "SUI", "UNI", "Q", "PUMP", "PEPE", "ADA", "AVAX", "INJ", "LINK", "QNT", "ARB", "AAVE", "LTC", "BCH", "DOT", "SAND", "XLM", "HBAR", "ICP", "CRV", "XMR", "ALGO"]
+  },
+  "blofin": {
+    "rest": "https://openapi.blofin.com",
+    "ws": "wss://openapi.blofin.com/ws/public",
+    "coinsPerConn": 12,
+    "tradeBatchMs": 250,
+    "bookPublishMs": 1000,
+    "tickerPublishMs": 2000,
+    "fundingPublishMs": 600000,
+    "logSamples": false
+  },
+  "binance": {
+    "rest": "https://fapi.binance.com",
+    "ws": "wss://fstream.binance.com/market/stream",
+    "archive": "https://data.binance.vision/data/futures/um/daily/klines",
+    "streamsPerConn": 80,
+    "markPublishMs": 10000,
+    "oiEveryMin": 5
+  },
+  "guard": {
+    "evalMs": 5000,
+    "publishEveryMs": 30000,
+    "blofinStaleMs": 30000,
+    "barLateMs": 150000,
+    "refStaleMs": 30000,
+    "pauseSpreadBps": 10,
+    "divergencePct": 0.5,
+    "spreadWindowMin": 60,
+    "maxLagMs": 3000
+  },
+  "recorder": {
+    "types": ["md.*", "ref.*", "uni.list", "guard.status", "sys.log", "sys.dead"],
+    "flushMs": 1000,
+    "compressAfterMin": 10,
+    "keepDays": 60
+  }
+}
