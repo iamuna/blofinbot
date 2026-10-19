@@ -1,36 +1,37 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-19T22:15:09Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-19T22:20:05Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
-| $10,075.25 | 0.75% | 0% | 0.21% | 23 | $0.47 | $0.62 |
+| $10,076.79 | 0.77% | 0% | 0.19% | 23 | $0.47 | $0.62 |
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
-| XMR | 606.65 | 4.33% | 3.65% | 0.98 | 0.73 | 0.79 | within band |
-| INJ | 8.5250 | 1.64% | 1.7% | 0.76 | 0.37 | 0.68 | within band |
-| 1000BONK | 0.0029470 | -1.46% | -1.26% | -0.77 | 0 | -1 | within band |
-| NEAR | 4.9530 | 1.31% | 1.22% | 0.86 | 0.23 | 0.89 | within band |
-| Q | 0.13831 | 1.08% | 0.91% | 0.77 | 0.83 | 1 | within band |
-| BTC | 82,107.5 | 0.9% | 1.2% | 0.23 | 0.17 | 0.37 | within band |
-| DOGE | 0.079880 | -0.84% | -0.7% | -0.28 | 0.07 | -0.89 | within band |
-| ZEC | 1,158.63 | 0.64% | 0.79% | 0.59 | 0.13 | 0.47 | within band |
-| HYPE | 79.1640 | 0.61% | 0.6% | 0.57 | 0 | -0.05 | within band |
-| XLM | 0.17743 | -0.45% | 0% | -0.04 | 0 | -0.79 | within band |
-| LTC | 59.6600 | 0.44% | 0% | 0.23 | 0.17 | -0.26 | within band |
-| LINK | 12.0240 | 0.43% | 0.76% | 0.35 | 0 | 0.16 | within band |
-| PUMP | 0.0045240 | 0.42% | 0.64% | 0.44 | 0.07 | 0.58 | within band |
-| TAO | 267.97 | 0.41% | 0.5% | 0.29 | 0 | 0.05 | within band |
-| PEPE | 0.0000041460 | 0.38% | 0% | 0.22 | 0.3 | -0.37 | within band |
-| SUI | 0.99810 | 0.31% | 0% | 0.16 | 0.23 | 0.26 | within band |
-| SOL | 105.16 | 0.29% | 0.09% | 0.11 | 0.17 | -0.16 | within band |
-| ETH | 2,409.94 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
-| XRP | 1.3076 | 0.06% | 0% | 0.07 | 0.17 | -0.68 | within band |
-| HBAR | 0.082750 | 0% | 0% | 0.13 | 0 | -0.47 | within band |
+| XMR | 605.87 | 4.33% | 3.64% | 0.98 | 0.73 | 0.79 | within band |
+| INJ | 8.5950 | 1.64% | 1.71% | 0.76 | 0.37 | 0.68 | within band |
+| 1000BONK | 0.0029550 | -1.46% | -1.26% | -0.77 | 0 | -1 | within band |
+| NEAR | 4.9630 | 1.31% | 1.23% | 0.86 | 0.23 | 0.89 | within band |
+| Q | 0.13723 | 1.08% | 0.9% | 0.77 | 0.83 | 1 | within band |
+| BTC | 82,172.4 | 0.9% | 1.2% | 0.23 | 0.17 | 0.37 | within band |
+| DOGE | 0.079970 | -0.84% | -0.7% | -0.28 | 0.07 | -0.89 | within band |
+| ZEC | 1,165.27 | 0.64% | 0.79% | 0.59 | 0.13 | 0.47 | within band |
+| HYPE | 79.3670 | 0.61% | 0.6% | 0.57 | 0 | -0.05 | within band |
+| XLM | 0.17801 | -0.45% | 0% | -0.04 | 0 | -0.79 | within band |
+| LTC | 59.8700 | 0.44% | 0% | 0.23 | 0.17 | -0.26 | within band |
+| LINK | 12.0510 | 0.43% | 0.76% | 0.35 | 0 | 0.16 | within band |
+| PUMP | 0.0045510 | 0.42% | 0.64% | 0.44 | 0.07 | 0.58 | within band |
+| TAO | 269.1 | 0.41% | 0.5% | 0.29 | 0 | 0.05 | within band |
+| PEPE | 0.0000041540 | 0.38% | 0% | 0.22 | 0.3 | -0.37 | within band |
+| SUI | 1.0043 | 0.31% | 0% | 0.16 | 0.23 | 0.26 | within band |
+| SOL | 105.45 | 0.29% | 0.09% | 0.11 | 0.17 | -0.16 | within band |
+| ETH | 2,413.36 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
+| XRP | 1.3098 | 0.06% | 0% | 0.07 | 0.17 | -0.68 | within band |
+| HBAR | 0.083100 | 0% | 0% | 0.13 | 0 | -0.47 | within band |
 
 ## Recent events
 
+- `2026-10-19T22:20:05Z` Run 39241684536 ending after 341 minutes; the next run continues from this state.
 - `2026-10-19T16:39:24Z` Bot started (run 39241684536): 20 coins (research-data universe 2026-10-19), mode PAPER, checking every minute.
 - `2026-10-19T16:39:23Z` Removed from the universe: QNT
 - `2026-10-19T16:39:05Z` Run 39204589173 ending after 341 minutes; the next run continues from this state.
@@ -50,4 +51,3 @@ Updated 2026-10-19T22:15:09Z · 20 coins · mode: **PAPER** · risk governor: no
 - `2026-10-19T05:17:18Z` Bot started (run 39181392082): 20 coins (research-data universe 2026-10-18), mode PAPER, checking every minute.
 - `2026-10-19T05:17:05Z` Run 39173275798 ending after 341 minutes; the next run continues from this state.
 - `2026-10-19T05:03:06Z` Q sold 296.4 at 0.17300 (limit, maker fee) — target 1.1% of equity (was 1.6%)
-- `2026-10-19T05:01:11Z` Q: sell 296.4 (~$51.27) — target 1.1% of equity (was 1.6%)
