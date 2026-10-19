@@ -1,36 +1,37 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-19T02:52:09Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-19T03:02:09Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
-| $10,034.43 | 0.34% | 14% | -0.02% | 19 | $0.42 | $0.30 |
+| $10,043.20 | 0.43% | 14% | 0.01% | 19 | $0.42 | $0.30 |
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
-| XMR | 597.48 | 4.12% | 3.61% | 0.98 | 0.73 | 0.68 | within band |
-| INJ | 8.4870 | 1.55% | 1.7% | 0.76 | 0.37 | 0.58 | within band |
-| 1000BONK | 0.0029570 | -1.44% | -1.27% | -0.77 | 0 | -1 | within band |
-| NEAR | 5.0410 | 1.32% | 1.25% | 0.86 | 0.3 | 0.79 | within band |
-| Q | 0.11125 | 1.07% | 1.07% | 0.77 | 0.87 | 1 | within band |
-| BTC | 82,775 | 1.03% | 0.68% | 0.23 | 0.23 | 0.26 | within band |
-| DOGE | 0.080140 | -0.96% | -0.71% | -0.28 | 0 | -0.89 | within band |
-| QNT | 192.49 | 0.75% | 0.77% | 0.87 | 0.13 | 0.89 | within band |
-| HYPE | 79.4180 | 0.6% | 0.6% | 0.57 | 0 | -0.05 | within band |
-| ZEC | 1,179.51 | 0.6% | 0.81% | 0.59 | 0.13 | 0.37 | within band |
-| LINK | 12.2260 | 0.49% | 0.78% | 0.35 | 0.07 | 0.05 | within band |
-| BCH | 277.59 | -0.39% | 0% | -0.33 | 0.07 | -0.68 | within band |
-| PUMP | 0.0044440 | 0.34% | 0.63% | 0.44 | 0 | 0.47 | within band |
-| PEPE | 0.0000040760 | 0.33% | 0% | 0.22 | 0.23 | -0.37 | within band |
-| LTC | 59.6400 | 0.25% | 0% | 0.23 | 0 | -0.26 | within band |
-| SUI | 1.0077 | 0.21% | 0% | 0.16 | 0.13 | 0.16 | within band |
-| SOL | 105.62 | 0.19% | 0.09% | 0.11 | 0.07 | -0.16 | within band |
-| ETH | 2,430.82 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
-| XRP | 1.3135 | 0.06% | 0% | 0.07 | 0.17 | -0.79 | within band |
-| HBAR | 0.084480 | 0% | 0% | 0.13 | 0 | -0.47 | within band |
+| XMR | 600.3 | 4.12% | 3.62% | 0.98 | 0.73 | 0.68 | within band |
+| INJ | 8.4250 | 1.56% | 1.69% | 0.76 | 0.37 | 0.58 | within band |
+| 1000BONK | 0.0029520 | -1.44% | -1.27% | -0.77 | 0 | -1 | within band |
+| NEAR | 5.0380 | 1.32% | 1.25% | 0.86 | 0.3 | 0.79 | within band |
+| BTC | 82,668.5 | 1.21% | 0.68% | 0.23 | 0.3 | 0.26 | order working |
+| Q | 0.12037 | 1.07% | 1.15% | 0.77 | 0.87 | 1 | within band |
+| DOGE | 0.080010 | -0.83% | -0.7% | -0.28 | 0.07 | -0.89 | within band |
+| QNT | 192.12 | 0.75% | 0.77% | 0.87 | 0.13 | 0.89 | within band |
+| HYPE | 79.4420 | 0.68% | 0.6% | 0.57 | 0.07 | -0.05 | within band |
+| ZEC | 1,175.48 | 0.6% | 0.8% | 0.59 | 0.13 | 0.37 | within band |
+| LINK | 12.2030 | 0.49% | 0.78% | 0.35 | 0.07 | 0.05 | within band |
+| PUMP | 0.0044400 | 0.4% | 0.63% | 0.44 | 0.07 | 0.47 | within band |
+| BCH | 277.48 | -0.39% | 0% | -0.33 | 0.07 | -0.68 | within band |
+| PEPE | 0.0000040530 | 0.33% | 0% | 0.22 | 0.23 | -0.37 | within band |
+| LTC | 59.6500 | 0.25% | 0% | 0.23 | 0 | -0.26 | within band |
+| SUI | 1.0067 | 0.21% | 0% | 0.16 | 0.13 | 0.16 | within band |
+| SOL | 105.4 | 0.19% | 0.09% | 0.11 | 0.07 | -0.16 | within band |
+| XRP | 1.3123 | 0.06% | 0% | 0.07 | 0.17 | -0.79 | within band |
+| ETH | 2,425.29 | 0.01% | 0% | 0.07 | 0.07 | -0.58 | within band |
+| HBAR | 0.084500 | 0% | 0% | 0.13 | 0 | -0.47 | within band |
 
 ## Recent events
 
+- `2026-10-19T03:01:11Z` BTC: buy 0.0006473 (~$53.51) — target 1.2% of equity (was 0.7%)
 - `2026-10-19T00:04:05Z` SOL sold 0.4960 at 104.02 (limit, maker fee) — target 0.1% of equity (was 0.6%)
 - `2026-10-19T00:03:07Z` HYPE sold 0.7010 at 78.9220 (limit, maker fee) — target 0.6% of equity (was 1.2%)
 - `2026-10-19T00:03:05Z` BTC sold 0.0007348 at 82,039.2 (limit, maker fee) — target 0.7% of equity (was 1.3%)
@@ -50,4 +51,3 @@ Updated 2026-10-19T02:52:09Z · 20 coins · mode: **PAPER** · risk governor: no
 - `2026-10-18T17:00:19Z` XMR: sell 0.1563 (~$92.61) — target 3.6% of equity (was 4.5%)
 - `2026-10-18T16:26:19Z` Bot started (run 39144871438): 20 coins (research-data universe 2026-10-18), mode PAPER, checking every minute.
 - `2026-10-18T16:26:19Z` QNT: loaded 11520 older hourly candles from BloFin
-- `2026-10-18T16:26:16Z` BCH: seeded 11983 hourly candles from research history
