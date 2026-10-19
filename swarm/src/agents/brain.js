@@ -28,7 +28,8 @@ class Brain extends Agent {
     this.fs = new FeatureState(); this.regime = new RegimeState();
     this.coins = new Map(); this.guard = {}; this.events = []; this.batches = new Map(); this.flow = new Map(); this.warmed = new Set(); this.warming = false;
     this.hosts = new Map(); this.shadow = new Map(); this.mode = {};
-    for (const s of this.ctx.strategies || strategies.all) {
+    const list = this.ctx.strategies || strategies.all.concat((this.cfg.extraStrategies || []).map((n) => require(`../strategies/${n}`)));
+    for (const s of list) {
       const sc = this.S[s.name] || {};
       if (sc.enabled === false || sc.mode === 'off') continue;
       this.mode[s.name] = sc.mode || 'shadow';
@@ -38,6 +39,8 @@ class Brain extends Agent {
         onClose: (idea, res) => { host.onClose(idea.coin, idea.id, res); this.onShadowClose(s.name, idea, res); },
       }));
     }
+    Object.assign(this.mode, Object.fromEntries(Object.entries((await this.bus.kv.get('strategyModes')) || {}).filter(([k]) => this.hosts.has(k))));
+    this.subscribe('sys.command', (m) => { const c = m.data; if (c.cmd === 'strategy-mode' && this.hosts.has(c.strategy) && (m.src === 'herald' || m.src === 'state-sync')) this.mode[c.strategy] = c.mode; });
     const u = await this.bus.kv.get('universe'); if (u) await this.onUniverse(u);
     const g = await this.bus.kv.get('guard'); if (g) this.guard = g.coins || {};
     const ev = await this.bus.kv.get('events'); if (ev) this.events = ev.windows || [];

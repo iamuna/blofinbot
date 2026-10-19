@@ -24,6 +24,10 @@ const REGISTRY = {
   coordinator: () => require('./decision/coordinator').Coordinator,
   trader: () => require('./exec/trader').Trader,
   accountant: () => require('./exec/accountant').Accountant,
+  herald: () => require('./ops/herald').Herald,
+  watchdog: () => require('./ops/watchdog').Watchdog,
+  guardian: () => require('./ops/guardian').Guardian,
+  'state-sync': () => require('./ops/state_sync').StateSync,
 };
 
 function args(argv) {
@@ -33,8 +37,10 @@ function args(argv) {
 }
 function loadConfig(file) {
   const cfg = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const local = file.replace(/\.json$/, '.local.json'); // machine-specific overrides, not in git
-  if (fs.existsSync(local)) deepMerge(cfg, JSON.parse(fs.readFileSync(local, 'utf8')));
+  // machine-specific overrides, not in git: next to the config, or SWARM_LOCAL_CONFIG (/etc/swarm/swarm.local.json)
+  for (const local of [file.replace(/\.json$/, '.local.json'), process.env.SWARM_LOCAL_CONFIG].filter(Boolean)) {
+    if (fs.existsSync(local)) deepMerge(cfg, JSON.parse(fs.readFileSync(local, 'utf8')));
+  }
   return cfg;
 }
 function deepMerge(a, b) { for (const [k, v] of Object.entries(b)) { if (v && typeof v === 'object' && !Array.isArray(v) && a[k] && typeof a[k] === 'object') deepMerge(a[k], v); else a[k] = v; } return a; }

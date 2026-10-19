@@ -30,6 +30,7 @@ class Coordinator extends Agent {
     const saved = readJSON(this.stateFile, {});
     this.halted = !!saved.halted; this.paused = !!saved.paused; this.lastMode = saved.lastMode || 'normal';
     this.modes = {}; for (const [k, v] of Object.entries(this.cfg.strategies || {})) this.modes[k] = v.enabled === false ? 'off' : v.mode || 'shadow';
+    Object.assign(this.modes, (await this.bus.kv.get('strategyModes')) || {}, saved.modes || {});
     this.queue = []; this.timer = null; this.books = new Map();
     this.account = await this.bus.kv.get('account'); this.positions = (await this.bus.kv.get('positions')) || { open: [], working: [] };
     this.guard = ((await this.bus.kv.get('guard')) || {}).coins || {}; this.events = ((await this.bus.kv.get('events')) || {}).windows || [];
@@ -48,7 +49,7 @@ class Coordinator extends Agent {
     this.every(60000, async () => { this.betas = (await this.bus.kv.get('betas')) || this.betas; });
     this.log.info(`risk limits sha256 ${this.riskHash.slice(0, 16)}…`);
   }
-  save() { writeAtomic(this.stateFile, JSON.stringify({ halted: this.halted, paused: this.paused, lastMode: this.lastMode })); }
+  save() { writeAtomic(this.stateFile, JSON.stringify({ halted: this.halted, paused: this.paused, lastMode: this.lastMode, modes: this.modes })); }
 
   onIdea(idea) {
     if (this.modes[idea.strategy] !== 'trade') { this.count('ideasShadow'); return; }
@@ -107,6 +108,14 @@ class Coordinator extends Agent {
   async onCommand(c, src) {
     // only Ibrahim (through the Herald) can resume after a pause or a halt
     if ((c.cmd === 'resume' || c.cmd === 'unhalt') && !(src === 'herald' && c.by === 'ibrahim')) { this.warn(`ignored ${c.cmd} from ${src}/${c.by}: only Ibrahim can resume`); return; }
+    if (c.cmd === 'strategy-mode') {
+      // Ibrahim may set any mode; the supervisor/promotion gate (through state-sync) only off/shadow/trade on paper or demo
+      const ok = src === 'herald' || (src === 'state-sync' && (this.T.account || 'paper') !== 'live');
+      if (!ok || !['off', 'shadow', 'trade'].includes(c.mode)) { this.warn(`ignored strategy-mode ${c.strategy}=${c.mode} from ${src}`); return; }
+      this.modes[c.strategy] = c.mode; this.save(); await this.bus.kv.set('strategyModes', this.modes);
+      this.log.info(`${c.strategy} → ${c.mode} (by ${c.by} via ${src})`);
+      return;
+    }
     if (c.cmd === 'pause') this.paused = true;
     if (c.cmd === 'resume' || c.cmd === 'unhalt') { this.paused = false; this.halted = false; }
     this.save();

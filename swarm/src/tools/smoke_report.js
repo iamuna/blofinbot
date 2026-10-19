@@ -11,7 +11,7 @@ async function main() {
   const dir = process.argv[2];
   if (!dir) { console.error('usage: smoke_report.js <dataDir>'); process.exit(2); }
   const byType = {}, coins = {}, logs = [], hb = {}, feats = {}, ideas = {}, shadow = {}, ends = {};
-  let uni = null, guard = null, first = Infinity, last = 0, events = null;
+  let uni = null, guard = null, first = Infinity, last = 0, events = null, account = null; const trade = {};
   const C = (c) => coins[c] || (coins[c] = { bars: 0, books: 0, trades: 0, tickers: 0, spread: [], refBars: 0, flow: 0, liqs: 0 });
   for await (const m of readRecording(dir)) {
     byType[m.type] = (byType[m.type] || 0) + 1; first = Math.min(first, m.ts); last = Math.max(last, m.ts);
@@ -32,6 +32,8 @@ async function main() {
     else if (m.type === 'shadow.trade') (shadow[d.strategy] = shadow[d.strategy] || []).push(d.r);
     else if (m.type === 'shadow.end') ends[d.strategy] = (ends[d.strategy] || 0) + 1;
     else if (m.type === 'event.window') events = d.windows;
+    else if (['order', 'exec.fill', 'trade.closed', 'risk.decision', 'order.end'].includes(m.type)) (trade[m.type] = trade[m.type] || []).push(d);
+    else if (m.type === 'account') account = d;
   }
   const mins = (last - first) / 60000;
   console.log(`# Swarm smoke run\n\nRecorded ${mins.toFixed(1)} minutes (${new Date(first).toISOString()} → ${new Date(last).toISOString()}).\n`);
@@ -50,6 +52,11 @@ async function main() {
   if (Object.keys(feats).length) console.log(`\nFeature bars: ${Object.entries(feats).sort().map(([k, v]) => `${k} ${v}`).join(', ')}`);
   if (Object.keys(ideas).length || Object.keys(shadow).length) console.log(`Ideas: ${JSON.stringify(ideas)}; shadow trades: ${JSON.stringify(Object.fromEntries(Object.entries(shadow).map(([k, v]) => [k, `${v.length} (sum R ${v.reduce((a, b) => a + b, 0).toFixed(2)})`])))}; unfilled: ${JSON.stringify(ends)}`);
   if (events) console.log(`Event windows: ${events.length ? events.map((w) => `${new Date(w.start).toISOString().slice(0, 16)} ${w.title}`).join('; ') : 'none this week'}`);
+  if (Object.keys(trade).length || account) {
+    const n = (k) => (trade[k] || []).length;
+    console.log(`\nTrade path (paper): ${n('risk.decision')} risk decisions (${(trade['risk.decision'] || []).map((d) => d.verdict).join(',') || '—'}), ${n('order')} orders, ${n('exec.fill')} fills, ${n('trade.closed')} closed trades (${(trade['trade.closed'] || []).map((t) => `${t.reason} ${t.r.toFixed(2)}R`).join(', ') || '—'}), ${n('order.end')} ended unfilled`);
+    if (account) console.log(`Account: equity $${account.equity}, ${account.trades} trades, fees $${account.fees}`);
+  }
   if (logs.length) { console.log('\nWarnings and errors:'); for (const l of [...new Set(logs)].slice(0, 40)) console.log('- ' + l); }
   const universe = uni ? uni.coins.map((c) => c.coin) : Object.keys(coins);
   const good = universe.filter((c) => coins[c] && coins[c].bars >= 1 && coins[c].books >= 10).length;

@@ -24,6 +24,12 @@
     "trader": [
       "trader",
       "accountant"
+    ],
+    "ops": [
+      "watchdog",
+      "guardian",
+      "herald",
+      "state-sync"
     ]
   },
   "universe": {
@@ -241,7 +247,16 @@
       "idea",
       "shadow.*",
       "event.window",
-      "sys.heartbeat"
+      "sys.heartbeat",
+      "intent",
+      "risk.decision",
+      "order",
+      "order.end",
+      "exec.fill",
+      "trade.closed",
+      "account",
+      "risk.state",
+      "sys.alert"
     ],
     "flushMs": 1000,
     "compressAfterMin": 10,
@@ -307,5 +322,13 @@
     "slipBps": 1.5,
     "breakevenR": 1.0,
     "staleBookMs": 10000
+  },
+  "watch": {
+    "silentMs": 90000,
+    "diskMinFreePct": 10,
+    "memMinFreeMb": 300
+  },
+  "stateSync": {
+    "everyMin": 10
   }
 }

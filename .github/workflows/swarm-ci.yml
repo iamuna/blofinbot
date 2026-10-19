@@ -49,7 +49,9 @@ jobs:
         with: { node-version: "22" }
       - name: Live market-data run
         run: |
-          node swarm/src/run.js --agents universe,blofin-feed,binance-feed,guard,recorder,events,brain --bus memory --data-dir /tmp/sw --minutes "${{ github.event.inputs.minutes || '6' }}" --log-samples > /tmp/sw-run.log 2>&1 || true
+          # the whole swarm in one process; the probe strategy trades tiny on the paper account to exercise the trade path
+          echo '{"extraStrategies":["probe"],"strategies":{"probe":{"mode":"trade"}},"trading":{"account":"paper"}}' > /tmp/sw-local.json
+          SWARM_LOCAL_CONFIG=/tmp/sw-local.json node swarm/src/run.js --agents universe,blofin-feed,binance-feed,guard,recorder,events,brain,coordinator,trader,accountant,watchdog,guardian,herald,state-sync --bus memory --data-dir /tmp/sw --minutes "${{ github.event.inputs.minutes || '8' }}" --log-samples > /tmp/sw-run.log 2>&1 || true
           tail -n 60 /tmp/sw-run.log
       - name: Report
         run: |

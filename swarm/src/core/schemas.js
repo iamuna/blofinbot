@@ -45,7 +45,8 @@ const TYPES = {
   'sys.heartbeat': { keep: 50000, req: { agent: 's', pid: 'n', status: 's', startedAt: 'n', metrics: 'o' } },
   'sys.log': { keep: 50000, req: { agent: 's', level: 's', msg: 's' } },
   'sys.dead': { keep: 10000, req: { agent: 's', type: 's', id: 's', error: 's' } }, // a message a handler failed on
-  'sys.command': { keep: 5000, req: { cmd: 's', by: 's' } }, // pause | resume | flatten | reload …
+  'sys.command': { keep: 5000, req: { cmd: 's', by: 's' } }, // pause | resume | flatten | strategy-mode …
+  'sys.alert': { keep: 5000, req: { text: 's' } }, // for Ibrahim (the Herald sends it on)
 };
 
 const KIND = { s: 'string', n: 'number', a: 'array', o: 'object', b: 'boolean' };
