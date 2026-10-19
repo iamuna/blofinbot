@@ -1,0 +1,42 @@
+name: Swarm dataset (Binance 1m + open interest, last 6 months)
+
+# Builds the swarm's backtest data from Binance's public archive and force-pushes it to the orphan branch
+# `swarm-data` (one commit, replaced each run). Runs when the builder changes, or by hand.
+
+on:
+  push:
+    branches: [swarm]
+    paths: ["swarm/tools/build_dataset.js", ".github/workflows/swarm-data.yml"]
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "Complete months of history"
+        default: "6"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: swarm-data
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Build
+        run: node swarm/tools/build_dataset.js /tmp/swarm-data --months "${{ github.event.inputs.months || '6' }}" --parallel 6
+      - name: Push to swarm-data
+        run: |
+          cd /tmp/swarm-data
+          du -sh .
+          git init -q -b swarm-data
+          git config user.name "swarm dataset builder"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Swarm dataset $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" swarm-data
