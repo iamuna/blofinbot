@@ -16,7 +16,7 @@ on:
         default: "4"
 
 permissions:
-  contents: read
+  contents: write   # the smoke job publishes its report to the swarm-reports branch
 
 concurrency:
   group: swarm-ci
@@ -42,19 +42,35 @@ jobs:
   smoke:
     needs: test
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
       - name: Live market-data run
         run: |
-          node swarm/src/run.js --group market --bus memory --data-dir /tmp/sw --minutes "${{ github.event.inputs.minutes || '4' }}" --log-samples > /tmp/sw-run.log 2>&1 || true
+          node swarm/src/run.js --agents universe,blofin-feed,binance-feed,guard,recorder,events,brain --bus memory --data-dir /tmp/sw --minutes "${{ github.event.inputs.minutes || '6' }}" --log-samples > /tmp/sw-run.log 2>&1 || true
           tail -n 60 /tmp/sw-run.log
       - name: Report
         run: |
-          node swarm/src/tools/smoke_report.js /tmp/sw | tee /tmp/sw-report.md
-          cat /tmp/sw-report.md >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          node swarm/src/tools/smoke_report.js /tmp/sw > /tmp/sw-report.md; code=$?
+          cat /tmp/sw-report.md; cat /tmp/sw-report.md >> "$GITHUB_STEP_SUMMARY"
+          echo "$code" > /tmp/sw-code
+      - name: Publish report to swarm-reports
+        if: always()
+        run: |
+          R="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git clone -q --depth 1 --branch swarm-reports "$R" rep 2>/dev/null || { mkdir rep && git -C rep init -q -b swarm-reports && git -C rep remote add origin "$R"; }
+          mkdir -p rep/smoke
+          cp /tmp/sw-report.md rep/smoke/latest.md || true
+          grep -v '"level":"debug"' /tmp/sw-run.log | tail -n 400 > rep/smoke/latest-log.txt || true
+          cp /tmp/sw/state/universe.json rep/smoke/universe.json 2>/dev/null || true
+          echo "${{ github.sha }} run ${{ github.run_id }} $(date -u +%FT%TZ)" > rep/smoke/latest-run.txt
+          cd rep && git config user.name "swarm ci" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "smoke report ${{ github.run_id }}" && git push -q origin HEAD:swarm-reports
+      - name: Fail if the BloFin data path is broken
+        run: exit "$(cat /tmp/sw-code)"
       - name: Keep the recording
         if: always()
         uses: actions/upload-artifact@v4

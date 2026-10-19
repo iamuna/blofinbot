@@ -1,9 +1,23 @@
 {
-  "bus": { "kind": "redis", "url": "redis://127.0.0.1:6379", "prefix": "sw" },
+  "bus": {
+    "kind": "redis",
+    "url": "redis://127.0.0.1:6379",
+    "prefix": "sw"
+  },
   "dataDir": "/var/lib/swarm",
   "heartbeatMs": 10000,
   "groups": {
-    "market": ["universe", "blofin-feed", "binance-feed", "guard", "recorder"]
+    "market": [
+      "universe",
+      "blofin-feed",
+      "binance-feed",
+      "guard",
+      "recorder"
+    ],
+    "brain": [
+      "events",
+      "brain"
+    ]
   },
   "universe": {
     "enterVolQ": 20000000,
@@ -16,12 +30,98 @@
     "prefilterVolQ": 5000000,
     "archivePrefilterBlofinVolQ": 300000,
     "exclude": [
-      "USDC", "FDUSD", "TUSD", "DAI", "USDE", "USD1", "PYUSD", "BUSD", "USDP",
-      "SNDK", "SKHYNIX", "SKHY", "SAMSUNG", "TSLA", "NVDA", "AAPL", "AMZN", "GOOGL", "GOOG", "META", "MSFT", "NFLX", "AMD", "INTC",
-      "MSTR", "COIN", "HOOD", "CRCL", "PLTR", "BABA", "TSM", "AVGO", "ORCL", "MU", "SPY", "QQQ", "SPX", "NDX", "DJI", "SOXL", "SPCX",
-      "XAU", "XAG", "XAUT", "PAXG", "GOLD", "SILVER", "OIL", "WTI", "BRENT", "USO", "NATGAS", "COPPER", "CL", "BZ", "EUR", "JPY", "GBP"
+      "USDC",
+      "FDUSD",
+      "TUSD",
+      "DAI",
+      "USDE",
+      "USD1",
+      "PYUSD",
+      "BUSD",
+      "USDP",
+      "SNDK",
+      "SKHYNIX",
+      "SKHY",
+      "SAMSUNG",
+      "TSLA",
+      "NVDA",
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "GOOG",
+      "META",
+      "MSFT",
+      "NFLX",
+      "AMD",
+      "INTC",
+      "MSTR",
+      "COIN",
+      "HOOD",
+      "CRCL",
+      "PLTR",
+      "BABA",
+      "TSM",
+      "AVGO",
+      "ORCL",
+      "MU",
+      "SPY",
+      "QQQ",
+      "SPX",
+      "NDX",
+      "DJI",
+      "SOXL",
+      "SPCX",
+      "XAU",
+      "XAG",
+      "XAUT",
+      "PAXG",
+      "GOLD",
+      "SILVER",
+      "OIL",
+      "WTI",
+      "BRENT",
+      "USO",
+      "NATGAS",
+      "COPPER",
+      "CL",
+      "BZ",
+      "EUR",
+      "JPY",
+      "GBP"
     ],
-    "fallback": ["BTC", "ETH", "SOL", "ZEC", "NEAR", "XRP", "HYPE", "DOGE", "BNB", "SUI", "UNI", "Q", "PUMP", "PEPE", "ADA", "AVAX", "INJ", "LINK", "QNT", "ARB", "AAVE", "LTC", "BCH", "DOT", "SAND", "XLM", "HBAR", "ICP", "CRV", "XMR", "ALGO"]
+    "fallback": [
+      "BTC",
+      "ETH",
+      "SOL",
+      "ZEC",
+      "NEAR",
+      "XRP",
+      "HYPE",
+      "DOGE",
+      "BNB",
+      "SUI",
+      "UNI",
+      "Q",
+      "PUMP",
+      "PEPE",
+      "ADA",
+      "AVAX",
+      "INJ",
+      "LINK",
+      "QNT",
+      "ARB",
+      "AAVE",
+      "LTC",
+      "BCH",
+      "DOT",
+      "SAND",
+      "XLM",
+      "HBAR",
+      "ICP",
+      "CRV",
+      "XMR",
+      "ALGO"
+    ]
   },
   "blofin": {
     "rest": "https://openapi.blofin.com",
@@ -53,9 +153,72 @@
     "maxLagMs": 3000
   },
   "recorder": {
-    "types": ["md.*", "ref.*", "uni.list", "guard.status", "sys.log", "sys.dead"],
+    "types": [
+      "md.*",
+      "ref.*",
+      "uni.list",
+      "guard.status",
+      "sys.log",
+      "sys.dead",
+      "feat.bar",
+      "regime.state",
+      "idea",
+      "shadow.*",
+      "event.window",
+      "sys.heartbeat"
+    ],
     "flushMs": 1000,
     "compressAfterMin": 10,
     "keepDays": 60
+  },
+  "brain": {
+    "warmup": true,
+    "warmupDays": 7,
+    "batchWaitMs": 6000
+  },
+  "events": {
+    "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
+    "countries": [
+      "USD"
+    ],
+    "impact": [
+      "High"
+    ],
+    "beforeMin": 5,
+    "afterMin": 10,
+    "refreshMin": 60,
+    "manual": []
+  },
+  "strategies": {
+    "intraday-trend": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {}
+    },
+    "trend-pullback": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {}
+    },
+    "session-drive": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {}
+    },
+    "overshoot-fade": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {}
+    },
+    "leader-follow": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {}
+    },
+    "crowd-squeeze": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {}
+    }
   }
 }

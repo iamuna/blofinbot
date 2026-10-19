@@ -19,6 +19,8 @@ const REGISTRY = {
   'binance-feed': () => require('./market/binance_feed').BinanceFeed,
   guard: () => require('./market/data_guard').DataGuard,
   recorder: () => require('./market/recorder').Recorder,
+  events: () => require('./agents/event_calendar').EventCalendar,
+  brain: () => require('./agents/brain').Brain,
 };
 
 function args(argv) {

@@ -24,6 +24,13 @@ const TYPES = {
   // ── universe and data health
   'uni.list': { keep: 1000, req: { ts: 'n', coins: 'a', added: 'a', removed: 'a', stale: 'b', source: 's' } },
   'guard.status': { keep: 20000, req: { ts: 'n', coins: 'o' } }, // {coin: {tradable, refOk, reasons[]}}
+  // ── analysis and strategies
+  'feat.bar': { keep: 100000, req: { coin: 's', tf: 'n', t: 'n', bar: 'o', f: 'o', src: 's' } }, // closed bar + features (src: binance | blofin)
+  'regime.state': { keep: 5000, req: { ts: 'n', coins: 'o' } }, // {coin: {bias, state, er, volPct, session, warm}}
+  'event.window': { keep: 2000, req: { ts: 'n', windows: 'a' } }, // [{start, end, title, impact}] no-new-risk windows
+  'idea': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', side: 'n', entry: 'o', stop: 'n', timeStopMin: 'n', t: 'n', mode: 's', riskPct: 'n' } },
+  'shadow.trade': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', side: 'n', entryT: 'n', exitT: 'n', netBps: 'n', r: 'n', reason: 's' } },
+  'shadow.end': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', outcome: 's' } }, // an idea that never filled
   // ── system
   'sys.heartbeat': { keep: 50000, req: { agent: 's', pid: 'n', status: 's', startedAt: 'n', metrics: 'o' } },
   'sys.log': { keep: 50000, req: { agent: 's', level: 's', msg: 's' } },
