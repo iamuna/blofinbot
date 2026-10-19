@@ -1,0 +1,448 @@
+{
+ "generated_at_utc": "2026-10-19T10:18:33.760049+00:00",
+ "top_n": 20,
+ "blofin_usdt_perps": 472,
+ "coins": [
+  {
+   "coin": "BTC",
+   "blofin": "BTC-USDT",
+   "quoteVol24h": 191008569.12,
+   "binance_market": "futures/um",
+   "binance_symbol": "BTCUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59592,
+    "first": 1577836800000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7395,
+   "status": "ok"
+  },
+  {
+   "coin": "ETH",
+   "blofin": "ETH-USDT",
+   "quoteVol24h": 59444575.47,
+   "binance_market": "futures/um",
+   "binance_symbol": "ETHUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59592,
+    "first": 1577836800000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7395,
+   "status": "ok"
+  },
+  {
+   "coin": "ZEC",
+   "blofin": "ZEC-USDT",
+   "quoteVol24h": 72838075.29,
+   "binance_market": "futures/um",
+   "binance_symbol": "ZECUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 58624,
+    "first": 1580889600000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7292,
+   "status": "ok"
+  },
+  {
+   "coin": "SOL",
+   "blofin": "SOL-USDT",
+   "quoteVol24h": 30495649.46,
+   "binance_market": "futures/um",
+   "binance_symbol": "SOLUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 53297,
+    "first": 1600066800000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 6700,
+   "status": "ok"
+  },
+  {
+   "coin": "XRP",
+   "blofin": "XRP-USDT",
+   "quoteVol24h": 20816867.46,
+   "binance_market": "futures/um",
+   "binance_symbol": "XRPUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59344,
+    "first": 1578297600000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7379,
+   "status": "ok"
+  },
+  {
+   "coin": "NEAR",
+   "blofin": "NEAR-USDT",
+   "quoteVol24h": 14263693.95,
+   "binance_market": "futures/um",
+   "binance_symbol": "NEARUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 52552,
+    "first": 1602748800000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 6532,
+   "status": "ok"
+  },
+  {
+   "coin": "HYPE",
+   "blofin": "HYPE-USDT",
+   "quoteVol24h": 8350079.11,
+   "binance_market": "futures/um",
+   "binance_symbol": "HYPEUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 12158,
+    "first": 1748599200000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 145890,
+    "first": 1748601000000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 2930,
+   "status": "ok"
+  },
+  {
+   "coin": "XMR",
+   "blofin": "XMR-USDT",
+   "quoteVol24h": 7889541.38,
+   "binance_market": "futures/um",
+   "binance_symbol": "XMRUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 58792,
+    "first": 1580716800000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7302,
+   "status": "ok"
+  },
+  {
+   "coin": "SUI",
+   "blofin": "SUI-USDT",
+   "quoteVol24h": 7610551.23,
+   "binance_market": "futures/um",
+   "binance_symbol": "SUIUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 30344,
+    "first": 1683129600000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 3739,
+   "status": "ok"
+  },
+  {
+   "coin": "DOGE",
+   "blofin": "DOGE-USDT",
+   "quoteVol24h": 7335490.06,
+   "binance_market": "futures/um",
+   "binance_symbol": "DOGEUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 54999,
+    "first": 1594371600000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 6821,
+   "status": "ok"
+  },
+  {
+   "coin": "INJ",
+   "blofin": "INJ-USDT",
+   "quoteVol24h": 6741971.29,
+   "binance_market": "futures/um",
+   "binance_symbol": "INJUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 36574,
+    "first": 1660701600000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 4519,
+   "status": "ok"
+  },
+  {
+   "coin": "1000BONK",
+   "blofin": "1000BONK-USDT",
+   "quoteVol24h": 5248908.33,
+   "binance_market": "futures/um",
+   "binance_symbol": "1000BONKUSDT",
+   "price_scale": 1000,
+   "1h": {
+    "rows": 25474,
+    "first": 1700661600000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 6259,
+   "status": "ok"
+  },
+  {
+   "coin": "HBAR",
+   "blofin": "HBAR-USDT",
+   "quoteVol24h": 4985116.68,
+   "binance_market": "futures/um",
+   "binance_symbol": "HBARUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 48881,
+    "first": 1615964400000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 6071,
+   "status": "ok"
+  },
+  {
+   "coin": "PUMP",
+   "blofin": "PUMP-USDT",
+   "quoteVol24h": 4742793.1,
+   "binance_market": "futures/um",
+   "binance_symbol": "PUMPUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 13299,
+    "first": 1744466400000,
+    "last": 1792364400000,
+    "gaps": 1
+   },
+   "5m": {
+    "rows": 159576,
+    "first": 1744468200000,
+    "last": 1792367700000,
+    "gaps": 1
+   },
+   "funding_rows": 3092,
+   "status": "ok"
+  },
+  {
+   "coin": "LTC",
+   "blofin": "LTC-USDT",
+   "quoteVol24h": 4672515.7,
+   "binance_market": "futures/um",
+   "binance_symbol": "LTCUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59272,
+    "first": 1578556800000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7370,
+   "status": "ok"
+  },
+  {
+   "coin": "Q",
+   "blofin": "Q-USDT",
+   "quoteVol24h": 4666454.54,
+   "binance_market": "futures/um",
+   "binance_symbol": "QUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 9881,
+    "first": 1756796400000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 118566,
+    "first": 1756798200000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 2361,
+   "status": "ok"
+  },
+  {
+   "coin": "XLM",
+   "blofin": "XLM-USDT",
+   "quoteVol24h": 3990163.7,
+   "binance_market": "futures/um",
+   "binance_symbol": "XLMUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59008,
+    "first": 1579507200000,
+    "last": 1792364400000,
+    "gaps": 2
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7339,
+   "status": "ok"
+  },
+  {
+   "coin": "PEPE",
+   "blofin": "PEPE-USDT",
+   "quoteVol24h": 3982747.64,
+   "binance_market": "futures/um",
+   "binance_symbol": "1000PEPEUSDT",
+   "price_scale": 1000,
+   "1h": {
+    "rows": 30296,
+    "first": 1683302400000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 3733,
+   "status": "ok"
+  },
+  {
+   "coin": "LINK",
+   "blofin": "LINK-USDT",
+   "quoteVol24h": 3423393.93,
+   "binance_market": "futures/um",
+   "binance_symbol": "LINKUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 59200,
+    "first": 1579248000000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 7346,
+   "status": "ok"
+  },
+  {
+   "coin": "TAO",
+   "blofin": "TAO-USDT",
+   "quoteVol24h": 3051813.14,
+   "binance_market": "futures/um",
+   "binance_symbol": "TAOUSDT",
+   "price_scale": 1,
+   "1h": {
+    "rows": 22090,
+    "first": 1712844000000,
+    "last": 1792364400000,
+    "gaps": 0
+   },
+   "5m": {
+    "rows": 224064,
+    "first": 1725148800000,
+    "last": 1792367700000,
+    "gaps": 0
+   },
+   "funding_rows": 5413,
+   "status": "ok"
+  }
+ ],
+ "status": "ok"
+}
