@@ -28,7 +28,9 @@ class Brain extends Agent {
     this.fs = new FeatureState(); this.regime = new RegimeState();
     this.coins = new Map(); this.guard = {}; this.events = []; this.batches = new Map(); this.flow = new Map(); this.warmed = new Set(); this.warming = false;
     this.hosts = new Map(); this.shadow = new Map(); this.mode = {};
-    const list = this.ctx.strategies || strategies.all.concat((this.cfg.extraStrategies || []).map((n) => require(`../strategies/${n}`)));
+    // plugins, extra (test) plugins, and configured variants {name: {base, params}} of a plugin
+    const variants = Object.entries(this.S).filter(([n, v]) => v.base && strategies.byName[v.base] && !strategies.byName[n]).map(([n, v]) => Object.assign({}, strategies.byName[v.base], { name: n }));
+    const list = this.ctx.strategies || strategies.all.concat((this.cfg.extraStrategies || []).map((n) => require(`../strategies/${n}`)), variants);
     for (const s of list) {
       const sc = this.S[s.name] || {};
       if (sc.enabled === false || sc.mode === 'off') continue;
