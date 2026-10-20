@@ -55,7 +55,8 @@ function Account {
 function Start-Swarm {
   $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
   $out = Join-Path $Logs "swarm-$stamp.log"; $err = Join-Path $Logs "swarm-$stamp.err.log"
-  $argList = @("`"$App\swarm\src\run.js`"", '--agents', $Agents, '--bus', 'memory', '--data-dir', "`"$Data`"")
+  # heap capped at 1 GB: the PC has 4 GB (Windows needs about 2.5 of it); V8 collects garbage sooner instead of growing
+  $argList = @('--max-old-space-size=1024', "`"$App\swarm\src\run.js`"", '--agents', $Agents, '--bus', 'memory', '--data-dir', "`"$Data`"")
   $p = Start-Process -FilePath 'node' -ArgumentList $argList -WorkingDirectory $App -RedirectStandardOutput $out -RedirectStandardError $err -WindowStyle Hidden -PassThru
   $null = $p.Handle   # keeps the exit code readable after the process ends
   Write-Log "started node pid $($p.Id) at $(& git -C $App rev-parse --short HEAD) ($(Account) account)"

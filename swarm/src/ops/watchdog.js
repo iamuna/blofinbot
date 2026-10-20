@@ -32,7 +32,7 @@ class Watchdog extends Agent {
       this.gauge('diskFreePct', +freePct.toFixed(1));
       if (freePct < this.W.diskMinFreePct) await this.publish('sys.alert', { text: `disk ${freePct.toFixed(1)}% free on the data drive`, key: 'disk', everyMs: 3600000 });
     } catch (e) { /* statfs not available */ }
-    const freeMb = os.freemem() / 1048576; this.gauge('memFreeMb', Math.round(freeMb));
+    const freeMb = os.freemem() / 1048576; this.gauge('memFreeMb', Math.round(freeMb)); this.gauge('memTotalMb', Math.round(os.totalmem() / 1048576)); this.gauge('rssMb', Math.round(process.memoryUsage().rss / 1048576)); // rss: this process (on Windows, the whole swarm)
     if (freeMb < this.W.memMinFreeMb) await this.publish('sys.alert', { text: `only ${Math.round(freeMb)} MB of memory free`, key: 'mem', everyMs: 3600000 });
     this.gauge('down', [...this.down].join(',') || 'none');
   }
