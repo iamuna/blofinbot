@@ -13,5 +13,6 @@ const PLUGINS = [
   'dip_reversal',
   'squeeze_ride',
   'rsi_macd',
+  'harmonic',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);
