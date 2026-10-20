@@ -1,6 +1,6 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-20T03:56:09Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-20T04:01:05Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
@@ -8,29 +8,30 @@ Updated 2026-10-20T03:56:09Z · 20 coins · mode: **PAPER** · risk governor: no
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
-| XMR | 605.89 | 4.76% | 3.65% | 0.98 | 0.9 | 0.79 | within band |
-| INJ | 8.6340 | 1.57% | 1.72% | 0.76 | 0.3 | 0.68 | within band |
-| 1000BONK | 0.0029570 | -1.48% | -1.27% | -0.77 | 0 | -1 | within band |
-| NEAR | 4.8560 | 1.32% | 1.2% | 0.86 | 0.23 | 0.89 | within band |
-| Q | 0.12158 | 1.08% | 0.8% | 0.77 | 0.83 | 1 | within band |
-| DOGE | 0.079770 | -0.95% | -0.7% | -0.28 | 0 | -0.79 | within band |
-| BTC | 82,073.4 | 0.9% | 1.2% | 0.25 | 0.07 | 0.37 | within band |
-| HYPE | 79.5480 | 0.69% | 0.6% | 0.57 | 0 | 0.16 | within band |
-| ZEC | 1,148.91 | 0.58% | 0.78% | 0.59 | 0.07 | 0.47 | within band |
-| PEPE | 0.0000041830 | 0.48% | 0% | 0.27 | 0.3 | -0.37 | within band |
-| XLM | 0.17802 | -0.47% | 0% | -0.04 | 0 | -0.89 | within band |
-| PUMP | 0.0044580 | 0.47% | 0.63% | 0.46 | 0.07 | 0.58 | within band |
-| LINK | 12.0950 | 0.46% | 0.77% | 0.35 | 0 | 0.26 | within band |
-| LTC | 59.7200 | 0.37% | 0% | 0.23 | 0.1 | -0.16 | within band |
-| SOL | 105.18 | 0.3% | 0.09% | 0.13 | 0.1 | -0.05 | within band |
-| TAO | 269.26 | 0.23% | 0.5% | 0.25 | 0 | -0.26 | within band |
-| SUI | 1.0005 | 0.21% | 0% | 0.16 | 0.17 | 0.05 | within band |
-| ETH | 2,412.77 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
+| XMR | 606.12 | 4.76% | 3.65% | 0.98 | 0.9 | 0.79 | within band |
+| INJ | 8.6460 | 1.57% | 1.73% | 0.76 | 0.3 | 0.68 | within band |
+| 1000BONK | 0.0029600 | -1.48% | -1.27% | -0.77 | 0 | -1 | within band |
+| NEAR | 4.8590 | 1.32% | 1.2% | 0.86 | 0.23 | 0.89 | within band |
+| Q | 0.12120 | 1.08% | 0.8% | 0.77 | 0.83 | 1 | within band |
+| DOGE | 0.079720 | -0.95% | -0.7% | -0.28 | 0 | -0.79 | within band |
+| BTC | 82,099.1 | 0.9% | 1.2% | 0.25 | 0.07 | 0.37 | within band |
+| HYPE | 79.5100 | 0.69% | 0.6% | 0.57 | 0 | 0.16 | within band |
+| ZEC | 1,148.86 | 0.58% | 0.78% | 0.59 | 0.07 | 0.47 | within band |
+| PEPE | 0.0000042160 | 0.48% | 0% | 0.27 | 0.3 | -0.37 | within band |
+| XLM | 0.17794 | -0.47% | 0% | -0.04 | 0 | -0.89 | within band |
+| PUMP | 0.0044550 | 0.47% | 0.63% | 0.46 | 0.07 | 0.58 | within band |
+| LINK | 12.1030 | 0.46% | 0.77% | 0.35 | 0 | 0.26 | within band |
+| LTC | 59.7900 | 0.37% | 0% | 0.23 | 0.1 | -0.16 | within band |
+| SOL | 105.26 | 0.3% | 0.09% | 0.13 | 0.1 | -0.05 | within band |
+| TAO | 268.49 | 0.23% | 0.5% | 0.25 | 0 | -0.26 | within band |
+| SUI | 1.0016 | 0.21% | 0% | 0.16 | 0.17 | 0.05 | within band |
+| ETH | 2,413.99 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
 | HBAR | 0.083600 | -0.08% | 0% | 0.11 | 0 | -0.47 | within band |
-| XRP | 1.3066 | 0% | 0% | 0.07 | 0.1 | -0.68 | within band |
+| XRP | 1.3063 | 0% | 0% | 0.07 | 0.1 | -0.68 | within band |
 
 ## Recent events
 
+- `2026-10-20T04:01:05Z` Run 39330426493 ending after 341 minutes; the next run continues from this state.
 - `2026-10-19T22:20:20Z` Bot started (run 39330426493): 20 coins (research-data universe 2026-10-19), mode PAPER, checking every minute.
 - `2026-10-19T22:20:20Z` Removed from the universe: QNT
 - `2026-10-19T22:20:05Z` Run 39241684536 ending after 341 minutes; the next run continues from this state.
@@ -50,4 +51,3 @@ Updated 2026-10-20T03:56:09Z · 20 coins · mode: **PAPER** · risk governor: no
 - `2026-10-19T10:58:19Z` Removed from the universe: BCH
 - `2026-10-19T10:58:19Z` Universe update (research-data universe 2026-10-19): added XLM, TAO
 - `2026-10-19T10:58:05Z` Run 39181392082 ending after 341 minutes; the next run continues from this state.
-- `2026-10-19T05:17:18Z` Bot started (run 39181392082): 20 coins (research-data universe 2026-10-18), mode PAPER, checking every minute.
