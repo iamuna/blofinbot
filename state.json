@@ -1,7 +1,7 @@
 {
- "updatedAt": "2026-10-20T13:28:20.200Z",
+ "updatedAt": "2026-10-20T13:38:20.210Z",
  "account": {
-  "ts": 1792502899224,
+  "ts": 1792503499385,
   "mode": "paper",
   "equity": 10000,
   "cash": 10000,
@@ -22,14 +22,14 @@
   "byStrategy": {}
  },
  "positions": {
-  "ts": 1792502895757,
+  "ts": 1792503495684,
   "open": [],
   "working": [],
   "paused": false,
   "account": "paper"
  },
  "risk": {
-  "ts": 1792502898277,
+  "ts": 1792503498091,
   "mode": "normal",
   "budgetScale": 1,
   "provenOnly": false,
@@ -39,7 +39,7 @@
   "limitsHash": "00fb82bc38ee8f7f"
  },
  "universe": {
-  "ts": 1792499346956,
+  "ts": 1792502946991,
   "source": "binance api",
   "coins": [
    "BTC",
@@ -117,32 +117,29 @@
   ]
  },
  "guard": {
-  "ts": 1792502899143,
+  "ts": 1792503499341,
   "notTradable": [
-   "OP: wide-spread",
-   "ZRO: wide-spread",
+   "ADA: wide-spread",
    "PONS: wide-spread",
    "ARC: wide-spread",
-   "CRV: wide-spread",
    "ICP: wide-spread",
-   "STBL: wide-spread",
    "EIGEN: wide-spread"
   ]
  },
  "agents": {
   "state-sync": {
-   "at": 1792502895462,
+   "at": 1792503495588,
    "agent": "state-sync",
    "pid": 11636,
    "status": "ok",
    "why": "",
    "startedAt": 1792477700172,
    "metrics": {
-    "pushes": 41
+    "pushes": 42
    }
   },
   "universe": {
-   "at": 1792502899155,
+   "at": 1792503499263,
    "agent": "universe",
    "pid": 11636,
    "status": "ok",
@@ -154,26 +151,26 @@
    }
   },
   "blofin-feed": {
-   "at": 1792502895253,
+   "at": 1792503495340,
    "agent": "blofin-feed",
    "pid": 11636,
    "status": "ok",
    "why": "",
    "startedAt": 1792477699468,
    "metrics": {
-    "opens": 456,
-    "msgs": 21848463,
-    "trades": 145072,
+    "opens": 466,
+    "msgs": 22400172,
+    "trades": 150354,
     "coins": 72,
     "sockets": "6/6",
-    "lastMsgAgeMs": 8,
-    "bars": 29557,
-    "closes": 432,
-    "restBars": 946
+    "lastMsgAgeMs": 7,
+    "bars": 30271,
+    "closes": 442,
+    "restBars": 980
    }
   },
   "binance-feed": {
-   "at": 1792502895321,
+   "at": 1792503495389,
    "agent": "binance-feed",
    "pid": 11636,
    "status": "ok",
@@ -181,43 +178,43 @@
    "startedAt": 1792477699499,
    "metrics": {
     "opens": 8,
-    "msgs": 6397051,
-    "flowMsgs": 24989,
-    "liqOther": 6324,
-    "lastMsgAgeMs": 12,
+    "msgs": 6639658,
+    "flowMsgs": 25585,
+    "liqOther": 6637,
+    "lastMsgAgeMs": 2,
     "coins": 72,
     "sockets": "2/2",
-    "liqs": 2239,
-    "bars": 29756
+    "liqs": 2345,
+    "bars": 30476
    }
   },
   "guard": {
-   "at": 1792502895321,
+   "at": 1792503495389,
    "agent": "guard",
    "pid": 11636,
    "status": "ok",
    "why": "",
    "startedAt": 1792477699523,
    "metrics": {
-    "lagMedMs": 491,
-    "tradable": "64/72"
+    "lagMedMs": 351,
+    "tradable": "67/72"
    }
   },
   "recorder": {
-   "at": 1792502895321,
+   "at": 1792503495390,
    "agent": "recorder",
    "pid": 11636,
    "status": "ok",
    "why": "",
    "startedAt": 1792477699548,
    "metrics": {
-    "lines": 2710338,
-    "bytes": 836178533,
+    "lines": 2779394,
+    "bytes": 857852620,
     "compressed": 139
    }
   },
   "events": {
-   "at": 1792502895330,
+   "at": 1792503495445,
    "agent": "events",
    "pid": 11636,
    "status": "ok",
@@ -228,7 +225,7 @@
    }
   },
   "strategy:intraday-trend": {
-   "at": 1792502895330,
+   "at": 1792503495445,
    "agent": "strategy:intraday-trend",
    "pid": 11636,
    "status": "ok",
@@ -247,7 +244,7 @@
    }
   },
   "strategy:trend-pullback": {
-   "at": 1792502895330,
+   "at": 1792503495445,
    "agent": "strategy:trend-pullback",
    "pid": 11636,
    "status": "ok",
@@ -255,18 +252,18 @@
    "startedAt": 1792477699956,
    "metrics": {
     "mode": "shadow",
-    "ideas": 45,
+    "ideas": 46,
     "rejected": 0,
     "errors": 0,
-    "open": 14,
-    "pending": 1,
-    "shadowTrades": 26,
-    "shadowSumR": -14.64,
-    "unfilled": 4
+    "open": 10,
+    "pending": 0,
+    "shadowTrades": 31,
+    "shadowSumR": -17.89,
+    "unfilled": 5
    }
   },
   "strategy:session-drive": {
-   "at": 1792502895330,
+   "at": 1792503495445,
    "agent": "strategy:session-drive",
    "pid": 11636,
    "status": "ok",
@@ -285,7 +282,7 @@
    }
   },
   "strategy:overshoot-fade": {
-   "at": 1792502895330,
+   "at": 1792503495445,
    "agent": "strategy:overshoot-fade",
    "pid": 11636,
    "status": "ok",
@@ -293,18 +290,18 @@
    "startedAt": 1792477699956,
    "metrics": {
     "mode": "shadow",
-    "ideas": 12,
+    "ideas": 18,
     "rejected": 2,
     "errors": 0,
-    "open": 0,
+    "open": 2,
     "pending": 0,
-    "shadowTrades": 12,
-    "shadowSumR": -7.91,
+    "shadowTrades": 16,
+    "shadowSumR": -11.6,
     "unfilled": 0
    }
   },
   "strategy:leader-follow": {
-   "at": 1792502895331,
+   "at": 1792503495445,
    "agent": "strategy:leader-follow",
    "pid": 11636,
    "status": "ok",
@@ -312,10 +309,10 @@
    "startedAt": 1792477699956,
    "metrics": {
     "mode": "shadow",
-    "ideas": 0,
+    "ideas": 2,
     "rejected": 0,
     "errors": 0,
-    "open": 0,
+    "open": 2,
     "pending": 0,
     "shadowTrades": 0,
     "shadowSumR": 0,
@@ -323,7 +320,7 @@
    }
   },
   "strategy:crowd-squeeze": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:crowd-squeeze",
    "pid": 11636,
    "status": "ok",
@@ -342,7 +339,7 @@
    }
   },
   "strategy:noise-breakout": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:noise-breakout",
    "pid": 11636,
    "status": "ok",
@@ -361,7 +358,7 @@
    }
   },
   "strategy:dip-reversal": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:dip-reversal",
    "pid": 11636,
    "status": "ok",
@@ -380,7 +377,7 @@
    }
   },
   "strategy:squeeze-ride": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:squeeze-ride",
    "pid": 11636,
    "status": "ok",
@@ -399,7 +396,7 @@
    }
   },
   "strategy:it-45-long": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:it-45-long",
    "pid": 11636,
    "status": "ok",
@@ -418,7 +415,7 @@
    }
   },
   "strategy:it-45-hold32": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:it-45-hold32",
    "pid": 11636,
    "status": "ok",
@@ -437,7 +434,7 @@
    }
   },
   "strategy:it-45-hold16": {
-   "at": 1792502895331,
+   "at": 1792503495446,
    "agent": "strategy:it-45-hold16",
    "pid": 11636,
    "status": "ok",
@@ -456,7 +453,7 @@
    }
   },
   "brain": {
-   "at": 1792502895354,
+   "at": 1792503495446,
    "agent": "brain",
    "pid": 11636,
    "status": "ok",
@@ -465,17 +462,18 @@
    "metrics": {
     "coins": 72,
     "warmedCoins": 73,
-    "bars_binance": 29756,
-    "ideas_trend-pullback": 45,
+    "bars_binance": 30476,
+    "ideas_trend-pullback": 46,
     "ideas_intraday-trend": 7,
-    "ideas_overshoot-fade": 12,
+    "ideas_overshoot-fade": 18,
     "ideas_it-45-long": 1,
     "ideas_it-45-hold32": 1,
-    "ideas_it-45-hold16": 1
+    "ideas_it-45-hold16": 1,
+    "ideas_leader-follow": 2
    }
   },
   "coordinator": {
-   "at": 1792502895395,
+   "at": 1792503495488,
    "agent": "coordinator",
    "pid": 11636,
    "status": "ok",
@@ -484,11 +482,11 @@
    "metrics": {
     "riskMode": "normal",
     "budgetScale": 1,
-    "ideasShadow": 67
+    "ideasShadow": 76
    }
   },
   "trader": {
-   "at": 1792502895396,
+   "at": 1792503495525,
    "agent": "trader",
    "pid": 11636,
    "status": "ok",
@@ -497,7 +495,7 @@
    "metrics": {}
   },
   "accountant": {
-   "at": 1792502895396,
+   "at": 1792503495529,
    "agent": "accountant",
    "pid": 11636,
    "status": "ok",
@@ -509,7 +507,7 @@
    }
   },
   "watchdog": {
-   "at": 1792502895396,
+   "at": 1792503495529,
    "agent": "watchdog",
    "pid": 11636,
    "status": "ok",
@@ -517,12 +515,12 @@
    "startedAt": 1792477700106,
    "metrics": {
     "diskFreePct": 65.4,
-    "memFreeMb": 1134,
+    "memFreeMb": 1156,
     "down": "none"
    }
   },
   "guardian": {
-   "at": 1792502895461,
+   "at": 1792503495578,
    "agent": "guardian",
    "pid": 11636,
    "status": "ok",
@@ -535,7 +533,7 @@
    }
   },
   "herald": {
-   "at": 1792502895462,
+   "at": 1792503495578,
    "agent": "herald",
    "pid": 11636,
    "status": "ok",
