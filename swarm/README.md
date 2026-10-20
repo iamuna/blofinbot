@@ -5,6 +5,16 @@ decisions and orders every minute; slow agents (Claude) research, build, test an
 Every agent talks through one message bus. Design: the "BloFin Swarm" doc; status: [PROGRESS.md](PROGRESS.md).
 
 **PAPER first.** No keys in this folder; demo and live come later, each behind its own gate.
+Launch on the home PC: [docs/LAUNCH.md](docs/LAUNCH.md). What the scheduled Claude agents do: [docs/CLAUDE_AGENTS.md](docs/CLAUDE_AGENTS.md).
+
+## Who may change what
+
+- Strategy plugins are pure functions of the bars they get (checked by `src/factory/plugin_check.js` before they are
+  loaded) and run in the brain group, as their own user, without keys.
+- Orders, commands and account updates are signed with a key only the trusted groups hold (`src/core/auth.js`).
+- The home PC installs new strategies and shadow-mode settings on its own after the tests pass; changes to risk,
+  execution, the guardian, the bus or the installer wait for Ibrahim (`sudo swarm-approve`; `src/tools/update_gate.js`).
+- Live money needs the live gate on the demo record, a live key, signed limits and Ibrahim's /mode — all his.
 
 ## Run
 

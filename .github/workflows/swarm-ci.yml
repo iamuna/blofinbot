@@ -32,6 +32,7 @@ jobs:
         ports: ["6379:6379"]
     steps:
       - uses: actions/checkout@v4
+        with: { persist-credentials: false }   # the swarm's code runs here; no token on disk
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
       - name: Unit tests
@@ -45,6 +46,7 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with: { persist-credentials: false }   # the swarm's code runs here; no token on disk
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
       - name: Live market-data run

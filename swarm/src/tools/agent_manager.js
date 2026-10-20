@@ -61,7 +61,7 @@ function main() {
   const state = S && fs.existsSync(path.join(S, 'state.json')) ? JSON.parse(fs.readFileSync(path.join(S, 'state.json'), 'utf8')) : {};
   const flags = S && fs.existsSync(path.join(S, 'state.json')) ? review(S, { now, factory: F }).flags : [];
   const ps = propose({ cfg, latest, state, shadow: S ? jsonl(path.join(S, 'shadow.jsonl')) : [], ideas: S ? jsonl(path.join(S, 'ideas.jsonl')) : [], flags, now });
-  const L = ['# Agent manager — proposals', '', ps.length ? '' : 'Nothing to propose.'];
+  const L = ['# Agent manager — proposals', ''].concat(ps.length ? [] : ['Nothing to propose.']);
   for (const p of ps) L.push(`- **${p.kind}** ${p.strategy || p.agent}${p.auto ? ' (self-service)' : ''}: ${p.why}`);
   if (A.apply) { const done = apply(cfgFile, ps); L.push('', done.length ? `Applied: retired ${done.join(', ')} in config/swarm.json.` : 'Applied: nothing.'); }
   console.log(L.join('\n'));

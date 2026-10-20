@@ -23,12 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
+      # strategy plugins (agent-written code) run in the test step: no credentials are left on disk for them —
+      # the token appears only in the steps that fetch and publish
       - uses: actions/checkout@v4
+        with: { persist-credentials: false }
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
       - name: Fetch data, factory log and live state
         run: |
-          R="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          R="https://github.com/${{ github.repository }}.git"
           git clone -q --depth 1 --branch swarm-data "$R" data
           git clone -q --depth 1 --branch swarm-factory "$R" factory 2>/dev/null || { mkdir factory && git -C factory init -q -b swarm-factory && git -C factory remote add origin "$R"; }
           git clone -q --depth 1 --branch swarm-state "$R" state 2>/dev/null || echo "no swarm-state branch yet (home PC not running)"
@@ -37,7 +40,10 @@ jobs:
       - name: Publish results
         run: |
           cd factory && git config user.name "swarm tester" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A && git commit -q -m "factory test $(date -u +%FT%TZ) for ${{ github.sha }}" && git push -q origin HEAD:swarm-factory || echo "nothing new"
+          git add -A && git commit -q -m "factory test $(date -u +%FT%TZ) for ${{ github.sha }}" || { echo "nothing new"; exit 0; }
+          # others append to trials.jsonl too (log_tries.js): rebase onto them before pushing
+          W="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          for i in 1 2 3; do git pull -q --rebase "$W" swarm-factory && git push -q "$W" HEAD:swarm-factory && exit 0; sleep 5; done; exit 1
       - name: Promotion gate
         if: hashFiles('state/state.json') != ''
         run: |
@@ -45,5 +51,6 @@ jobs:
           cd state && git config user.name "swarm promotion gate" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet -- control.json 2>/dev/null || [ -n "$(git ls-files --others control.json)" ]; then
             git add control.json && git commit -q -m "promotion gate $(date -u +%FT%TZ)"
-            for i in 1 2 3; do git pull -q --rebase origin swarm-state && git push -q origin HEAD:swarm-state && break; sleep 5; done
+            W="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+            for i in 1 2 3; do git pull -q --rebase "$W" swarm-state && git push -q "$W" HEAD:swarm-state && break; sleep 5; done
           fi

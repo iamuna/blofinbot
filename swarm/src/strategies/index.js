@@ -10,5 +10,7 @@ const PLUGINS = [
   'leader_follow',
   'crowd_squeeze',
   'noise_breakout',
+  'dip_reversal',
+  'squeeze_ride',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

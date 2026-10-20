@@ -366,6 +366,12 @@
         "er": 0.4,
         "againstBias": 0.2
       }
+    },
+    "squeeze-ride": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {},
+      "note": "watch (2026-10-20): +0.22 R, t 2.8 over 104 backtest trades, positive in every third, but fewer than 300 trades and below the multiple-testing bar; trades only if its live shadow record earns it (out-of-sample route)"
     }
   },
   "trading": {

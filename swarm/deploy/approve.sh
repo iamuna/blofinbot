@@ -21,3 +21,8 @@ echo; read -r -p "Install ${NEW:0:12}? Its tests run first; it rolls back if the
 [ "$A" = "yes" ] || { echo "Not approved."; exit 1; }
 mkdir -p "$APPROVED"; touch "$APPROVED/$NEW"
 /usr/local/bin/swarm-update
+# new risk limits: the guardian halts trading until they are signed, so sign them now (you just read them above)
+if [ "$(git -C "$APP" rev-parse HEAD)" = "$NEW" ] && ! git -C "$APP" diff --quiet "$OLD" "$NEW" -- swarm/config/risk.json; then
+  echo; echo "The risk limits changed in this update:"; git -C "$APP" diff "$OLD" "$NEW" -- swarm/config/risk.json | tail -n +5
+  /usr/local/bin/swarm-sign-risk && echo "If the guardian paused trading meanwhile, send /resume on Telegram."
+fi

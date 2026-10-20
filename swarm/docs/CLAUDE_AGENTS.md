@@ -35,7 +35,11 @@ Goal: find 1–45 minute edges that survive costs, without fooling ourselves. At
    a candidate file. Run `npm test` and `node src/factory/plugin_check.js src/strategies/<name>.js` in `swarm/`.
 5. Commit to `swarm`: the factory workflow backtests it on 6.5 months × 31 coins and applies the gate.
 6. A candidate that passes the backtest gate: add it to `config/swarm.json` → `strategies` with `"mode": "shadow"`.
-   It gathers live evidence; the promotion gate decides about trade.
+   It gathers live evidence; the promotion gate decides about trade. A candidate that misses the gate only on the
+   number of trades or the t-stat bar, but is positive at 1.5× costs and in every third, may also go to shadow as
+   a **watch** strategy (say so in a `"note"`): shadow costs nothing, and it can only trade through the
+   out-of-sample route (150 live shadow trades, t ≥ 2).
+7. Move rejected candidate files to `swarm/factory/rejected/` (the tester ignores them) after recording them.
 
 ## 2. Daily review: reviewer, agent manager, central — daily, after the morning factory run
 
