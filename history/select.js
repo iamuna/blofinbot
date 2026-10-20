@@ -9,12 +9,12 @@
  * data: 12-month window, top 5, quarterly. Other settings are shown only as a robustness check.
  * Also shown: each variant's full-period numbers, the best in hindsight (what you would believe if you picked the
  * winner after the fact — the gap to the walk-forward is luck), and every variant traded together.
- * R: profit in units of the amount risked; daily R sums all trades closing that day. % figures assume 0.5% of the
- * account risked per trade, no compounding.
+ * R: profit in units of the amount risked (at least 10 bps); daily R sums all trades closing that day. % figures:
+ * the R series scaled so its worst drawdown is 20% of the account, no compounding.
  */
 'use strict';
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
-const DAY = 86400000, RISK = 0.5;
+const DAY = 86400000, DD_PCT = 20;
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }
 const ymd = (t) => new Date(t).toISOString().slice(0, 10);
 
@@ -26,7 +26,7 @@ function load(dir) {
       const x = JSON.parse(line);
       let v = V.get(x.name);
       if (!v) V.set(x.name, (v = { name: x.name, group: x.group, base: x.base, tf: x.tf, params: x.params, daily: {} }));
-      for (const [d, a] of Object.entries(x.daily)) { const y = (v.daily[d] = v.daily[d] || [0, 0, 0, 0]); for (let k = 0; k < 4; k++) y[k] += a[k]; }
+      for (const [d, a] of Object.entries(x.daily)) { const y = (v.daily[d] = v.daily[d] || [0, 0, 0, 0, 0, 0]); for (let k = 0; k < 6; k++) y[k] += a[k] || 0; }
     }
   }
   return [...V.values()];
@@ -63,7 +63,7 @@ function main() {
   const from = A.from || '2021-10-01', to = A.to || '2026-09-30', days = [];
   for (let t = Date.parse(from); t <= Date.parse(to); t += DAY) days.push(ymd(t));
   for (const v of V) {
-    v.R = days.map((d) => (v.daily[d] ? v.daily[d][0] : 0)); v.R15 = days.map((d) => (v.daily[d] ? v.daily[d][1] : 0)); v.N = days.map((d) => (v.daily[d] ? v.daily[d][2] : 0));
+    v.R = days.map((d) => (v.daily[d] ? v.daily[d][0] : 0)); v.R15 = days.map((d) => (v.daily[d] ? v.daily[d][1] : 0)); v.N = days.map((d) => (v.daily[d] ? v.daily[d][2] : 0)); v.RL = days.map((d) => (v.daily[d] ? v.daily[d][4] : 0)); v.NL = days.map((d) => (v.daily[d] ? v.daily[d][5] : 0));
     v.full = stats(v, 0, days.length);
     v.years = {}; for (const y of [...new Set(days.map((d) => d.slice(0, 4)))]) { const a = days.findIndex((d) => d.startsWith(y)), b = days.length - [...days].reverse().findIndex((d) => d.startsWith(y)); v.years[y] = stats(v, a, b).sumR; }
   }
@@ -83,12 +83,14 @@ function main() {
   const groups = [...new Set(V.map((v) => v.group === 'native' ? v.name.split('@')[0] : v.group))], frames = [...new Set(V.map((v) => v.tf))].sort((x, y) => x - y);
   const cell = (g, tf) => V.find((v) => (v.group === 'native' ? v.name.split('@')[0] : v.group) === g && v.tf === tf);
   const fmtTf = (tf) => (tf >= 1440 ? `${tf / 1440}d` : tf >= 60 ? `${tf / 60}h` : `${tf}m`);
-  const pct = (r) => `${r >= 0 ? '+' : ''}${(r * RISK).toFixed(1)}%`;
+  const scale = primary.st.maxDD > 0 ? DD_PCT / primary.st.maxDD : 0; // % per R, sized so the walk-forward's worst drawdown is 20%
+  const pct = (r) => `${r >= 0 ? '+' : ''}${(r * scale).toFixed(1)}%`;
+  const years = (days.length - primary.fromIdx) / 365;
 
   const L = [`# 5-year sweep: every strategy × every timeframe, walk-forward selection`, '',
-    `Data ${days[0]} → ${days[days.length - 1]}, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). ${V.length} variants. R = profit in units of the amount risked; % = at ${RISK}% of the account risked per trade, no compounding.`, '',
+    `Data ${days[0]} → ${days[days.length - 1]}, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). ${V.length} variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is ${DD_PCT}% of the account, no compounding.`, '',
     `## The honest result: walk-forward (12-month window, top 5, re-picked every quarter)`, '',
-    `Out-of-sample ${primary.from} → ${days[days.length - 1]}: **${primary.st.sumR} R (${pct(primary.st.sumR)})**, Sharpe ${primary.st.sharpe}, max drawdown ${primary.st.maxDD} R (${(primary.st.maxDD * RISK).toFixed(1)}%), t ${primary.st.t}.`, '',
+    `Out-of-sample ${primary.from} → ${days[days.length - 1]}: **${primary.st.sumR} R, Sharpe ${primary.st.sharpe}, t ${primary.st.t}**, max drawdown ${primary.st.maxDD} R. Sized for a ${DD_PCT}% worst drawdown: **${pct(primary.st.sumR)} in ${years.toFixed(1)} years** (≈ ${(primary.st.sumR * scale / years).toFixed(1)}% a year).`, '',
     '| Year | R | % | Sharpe | Max DD (R) |', '|---|---|---|---|---|',
     ...Object.entries(wfYears).map(([y, s]) => `| ${y} | ${s.sumR} | ${pct(s.sumR)} | ${s.sharpe} | ${s.maxDD} |`), '',
     `Compare over the same period: the best 5 in hindsight ${seriesStats(hind5, a, b).sumR} R (Sharpe ${seriesStats(hind5, a, b).sharpe}) — the gap is luck; all ${V.length} variants together (scaled to 5 slots) ${seriesStats(allR, a, b).sumR} R (Sharpe ${seriesStats(allR, a, b).sharpe}).`, '',
@@ -99,8 +101,8 @@ function main() {
     `## Every strategy on every timeframe (full period, Sharpe of daily R / average R per trade)`, '',
     `| Strategy | ${frames.map(fmtTf).join(' | ')} |`, `|---|${frames.map(() => '---').join('|')}|`,
     ...groups.map((g) => `| ${g} | ${frames.map((tf) => { const v = cell(g, tf); return v ? (v.full.n ? `${v.full.sharpe} / ${v.full.avgR} (${v.full.n})` : '0 trades') : ''; }).join(' | ')} |`), '',
-    '## Best 15 in hindsight (same out-of-sample period; for reference, not a result)', '', '| Variant | Trades | Avg R | Sum R | Sum R at 1.5× costs | Sharpe | Max DD | By year |', '|---|---|---|---|---|---|---|---|',
-    ...hind.slice(0, 15).map(({ v, st }) => `| ${v.name} | ${st.n} | ${st.avgR} | ${st.sumR} | ${st.sumR15} | ${st.sharpe} | ${st.maxDD} | ${Object.entries(v.years).map(([y, r]) => `${y}: ${r.toFixed(0)}`).join(', ')} |`), ''];
+    '## Best 15 in hindsight (same out-of-sample period; for reference, not a result)', '', '| Variant | Trades | Avg R | Sum R | Sum R at 1.5× costs | Long / short R | Sharpe | Max DD | By year |', '|---|---|---|---|---|---|---|---|---|',
+    ...hind.slice(0, 15).map(({ v, st }) => `| ${v.name} | ${st.n} | ${st.avgR} | ${st.sumR} | ${st.sumR15} | ${(() => { let l = 0; for (let i = a; i < b; i++) l += v.RL[i]; return `${l.toFixed(0)} / ${(st.sumR - l).toFixed(0)}`; })()} | ${st.sharpe} | ${st.maxDD} | ${Object.entries(v.years).map(([y, r]) => `${y}: ${r.toFixed(0)}`).join(', ')} |`), ''];
   fs.writeFileSync(path.join(out, 'REPORT.md'), L.join('\n'));
   fs.writeFileSync(path.join(out, 'results.json'), JSON.stringify({ generated: new Date().toISOString(), days: [days[0], days[days.length - 1]], primary: { from: primary.from, ...primary.st, years: wfYears, picks: primary.picksLog, timeframes: tfUse }, robust,
     variants: V.map((v) => ({ name: v.name, group: v.group, base: v.base, tf: v.tf, params: v.params, full: v.full, years: v.years })) }, null, 1));

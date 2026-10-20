@@ -8,12 +8,13 @@
  * --shard i/n: trade only the i-th of n coin groups (BTC's data is always read: other coins' features use it).
  * --print-coins: print the coins a shard reads (to download only those) and stop. The data dir then needs only
  * universe.json and manifest.json.
- * Writes <out>/trades-<i>.jsonl.gz (one line per variant: daily sums by exit day [R, R at 1.5× costs, trades, net bps],
+ * Writes <out>/trades-<i>.jsonl.gz (one line per variant: daily sums by exit day [R, R at 1.5× costs, trades, net bps, long R, long trades],
  * and the trades for timeframes ≥ 30 minutes) and <out>/summary-<i>.json.
  */
 'use strict';
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
 const FRAMES = [1, 3, 5, 15, 30, 60, 120, 240, 720, 1440];
+const MIN_RISK_BPS = 10;
 
 // the variant groups: [group, plugin, frames, params(tf), scaleMinutes]
 const GROUPS = [
@@ -96,14 +97,19 @@ async function main() {
   for (const v of V) {
     const s = r.strategies[v.name], daily = {};
     const mine = s.trades.filter((t) => trade.has(t.coin));
+    let tiny = 0;
     for (const t of mine) {
-      const d = ymd(t.exitT), x = (daily[d] = daily[d] || [0, 0, 0, 0]);
-      x[0] += t.r; x[1] += t.r - 0.5 * (t.feeBps + t.slipBps) / t.riskBps; x[2]++; x[3] += t.netBps;
+      // R against at least MIN_RISK_BPS: a limit order filled at (or past) its stop has ~zero risk distance, and
+      // net/risk would explode (seen in the first run: noise-breakout, leader-follow)
+      const risk = Math.max(t.riskBps, MIN_RISK_BPS); if (t.riskBps < MIN_RISK_BPS) tiny++;
+      const d = ymd(t.exitT), x = (daily[d] = daily[d] || [0, 0, 0, 0, 0, 0]);
+      x[0] += t.netBps / risk; x[1] += (t.netBps - 0.5 * (t.feeBps + t.slipBps)) / risk; x[2]++; x[3] += t.netBps;
+      if (t.side > 0) { x[4] += t.netBps / risk; x[5]++; } // the long side alone (is it just riding a rising market?)
     }
-    for (const x of Object.values(daily)) for (const k of [0, 1, 3]) x[k] = +x[k].toFixed(4);
+    for (const x of Object.values(daily)) for (const k of [0, 1, 3, 4]) x[k] = +x[k].toFixed(4);
     const trades = v.tf >= 30 ? mine.map((t) => cols.map((c) => (typeof t[c] === 'number' ? +t[c].toFixed(4) : t[c]))) : null;
     lines.push(JSON.stringify({ name: v.name, group: v.group, base: v.base, tf: v.tf, params: v.params, daily, cols: trades ? cols : null, trades }));
-    summary.variants[v.name] = { n: mine.length, ideas: s.ideas, unfilled: s.unfilled };
+    summary.variants[v.name] = { n: mine.length, tinyRisk: tiny, ideas: s.ideas, unfilled: s.unfilled };
   }
   fs.writeFileSync(path.join(out, `trades-${si}.jsonl.gz`), zlib.gzipSync(lines.join('\n') + '\n'));
   fs.writeFileSync(path.join(out, `summary-${si}.json`), JSON.stringify(summary, null, 1));

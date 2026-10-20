@@ -3,19 +3,26 @@
 Living log for the multi-agent 1–45 minute bot (branch `swarm`). Newest first. Times Europe/Amsterdam.
 Design doc: "BloFin Swarm — multi-agent 1–45 min bot design" (claude.ai doc). The existing trend bot on `main` keeps running untouched.
 
-## Now — resume here (updated 2026-10-20 12:45)
+## Now — resume here (updated 2026-10-20 14:15)
 
 **Running: the 5-year sweep** (Ibrahim 10:56: "rethink timeframe selection, only the highest-ROI actions, test on
 3–5 years"; his answers: **all timeframes 1m–1d**, rank by **return per risk, out-of-sample**). Code in `history/`
 (README there), workflow `.github/workflows/swarm-history.yml`. First run 39398715406 built the data (one build
 job failed on two coins with Chinese names — left out now; builds are resumable). **Current run 39409051537** on
-commit aa7a325, started 12:40: data reused, sweep running.
+commit aa7a325, started 12:40: data reused, finished 14:00 — report on `swarm-reports` history/2026-10-20/.
+**That report has a bug**: R = net / (fill-to-stop distance); a limit order filled at its stop gives ~0 risk and
+absurd R (noise-breakout, leader-follow: avg R in the millions). Fixed in the sweep (R against ≥ 10 bps; long/short
+split added; % now sized to a 20% worst drawdown) → **rerun pushed 14:15** (data reused, ~1.5 h). The same issue
+exists in `swarm/src/backtest/exec_sim.js` (factory + live shadow): fix there later (protected → approve.ps1).
+Preliminary (first run, before the fix): walk-forward 2022-10 → 2026-09 +679 R, Sharpe 0.49, t 0.97 (not
+significant); best in hindsight Sharpe 0.92 (luck gap). Every 1m–30m variant loses; edges only at 2h–1d. Best
+single: ma-retest@12h (Ibrahim's 21/200 retest), Sharpe 1.33, positive every year 2022–2026, +0.14 R a trade.
 
 | Stage | State | Output |
 |---|---|---|
 | plan (universe from Binance's archive) | done 11:14 — 668 coins ever in the top-80 ≥ $20M, 80 coins on almost every day, 18,593 coin-months (incl. 7 warm-up months per coin) | release `swarm-history-v1`: universe.json, plan.json |
 | build (8 shards, 1m + OI + funding) | done 12:35 — 665 coins, 19.4 GB | release assets `<coin>.tar` (a rerun builds only missing coins) |
-| sweep (10 jobs × 4 processes = 40 coin shards, 101 variants: 13 strategies × 1m…1d) | running since 12:42 (~1.5–2 h) | artifacts `sweep-<job>` (daily R per variant; trades for ≥ 30m) |
+| sweep (10 jobs × 4 processes = 40 coin shards, 101 variants: 13 strategies × 1m…1d) | first run done 14:00 (R bug, see above); rerun from 14:15 | artifacts `sweep-<job>` (daily R per variant; trades for ≥ 30m) |
 | select (walk-forward: 12-month window, top 5, quarterly — declared before the data) | waiting | branch `swarm-reports`: `history/<date>/REPORT.md`, `history/LATEST.md` |
 
 - Check: `gh api repos/iamuna/blofinbot/actions/runs/39409051537/jobs --jq '.jobs[]|"\(.name) \(.status) \(.conclusion)"'`.
