@@ -14,5 +14,6 @@ const PLUGINS = [
   'squeeze_ride',
   'rsi_macd',
   'harmonic',
+  'ma_21_200',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

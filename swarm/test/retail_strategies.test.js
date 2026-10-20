@@ -56,3 +56,15 @@ test('harmonic confirm mode: no order at D; buys only after price touches D and 
   for (const px of path([104, 100, 110, 105.5, 108.5, 99, 101], 0.25)) r2.step(px, 15);
   assert.strictEqual(r2.out.length, 0);
 });
+
+const ma = require('../src/strategies/ma_21_200');
+test('ma-21-200 retest: after the 21 crosses above the 200, a pull-back to the 21 that holds gives a long', () => {
+  const r = runner(ma, { tf: 15, slow: 50, fast: 10, holdBars: 10 });
+  for (const px of path([110, 100], 0.05)) r.step(px, 15);           // a long fall: fast below slow
+  for (const px of path([100, 108], 0.3)) r.step(px, 15);            // rally: the fast line crosses above
+  const before = r.out.length;
+  for (const px of path([108, 106, 108], 0.1)) r.step(px, 15);       // pull back to the fast line and turn up
+  assert.ok(r.out.length > before, 'a long after the retest');
+  const i = r.out[r.out.length - 1];
+  assert.strictEqual(i.side, 1); assert.match(i.why, /retest/); assert.ok(i.stop < i.entry.px && i.target > i.entry.px);
+});
