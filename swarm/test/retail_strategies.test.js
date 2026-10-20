@@ -42,3 +42,17 @@ test('rsi-macd: an oversold dip followed by a MACD turn up gives a long', () => 
   assert.ok(r.out.length >= 1);
   assert.strictEqual(r.out[0].side, 1); assert.match(r.out[0].why, /MACD cross up/);
 });
+
+test('harmonic confirm mode: no order at D; buys only after price touches D and turns back up', () => {
+  const r = runner(harmonic, { tf: 15, confirmAtr: 1, waitBars: 48 });
+  for (const px of path([104, 100, 110, 105.5, 108.5, 101.5], 0.25)) r.step(px, 15); // not at D (101.14) yet
+  assert.strictEqual(r.out.length, 0);
+  for (const px of path([101.5, 100.9, 101.6], 0.1)) r.step(px, 15);
+  assert.strictEqual(r.out.length, 1);
+  const i = r.out[0];
+  assert.strictEqual(i.side, 1); assert.match(i.why, /confirmed/);
+  assert.ok(i.entry.px >= 100.9 + 0.5 - 1e-9 && i.stop < 100.9);
+  const r2 = runner(harmonic, { tf: 15, confirmAtr: 1, waitBars: 48 }); // straight through the stop: nothing
+  for (const px of path([104, 100, 110, 105.5, 108.5, 99, 101], 0.25)) r2.step(px, 15);
+  assert.strictEqual(r2.out.length, 0);
+});

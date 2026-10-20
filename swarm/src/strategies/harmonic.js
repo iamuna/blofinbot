@@ -6,6 +6,8 @@
  * waits at D (the Potential Reversal Zone) for waitBars bars; bullish patterns buy, bearish ones sell.
  * Stop stopXA × |XA| beyond D (at least minStopAtr × ATR); target tgt × AD back from D (Carney's 0.382 / 0.618;
  * tgt 0 = no target); optional trailing stop trailAtr × ATR once the trade is trailAfterR up.
+ * confirmAtr > 0: no limit at D; wait until price has touched D and a bar closes confirmAtr × ATR back off its
+ * extreme, then enter (same stop and target), so a crash straight through the zone is not caught.
  */
 'use strict';
 const PATTERNS = [
@@ -17,7 +19,7 @@ const PATTERNS = [
 
 module.exports = {
   name: 'harmonic', version: 1, tfs: [5, 15, 30], needsRef: false,
-  params: { tf: 15, patterns: ['gartley', 'bat', 'butterfly', 'crab'], devAtr: 2.5, minLegAtr: 4, c: [0.382, 0.886], bcTol: 0.05, stopXA: 0.13, minStopAtr: 1, tgt: 0.382, trailAtr: 0, trailAfterR: 1, waitBars: 12, holdBars: 24, minBars: 50 },
+  params: { tf: 15, patterns: ['gartley', 'bat', 'butterfly', 'crab'], devAtr: 2.5, minLegAtr: 4, c: [0.382, 0.886], bcTol: 0.05, stopXA: 0.13, minStopAtr: 1, tgt: 0.382, trailAtr: 0, trailAfterR: 1, confirmAtr: 0, waitBars: 12, holdBars: 24, minBars: 50 },
   bounds: { devAtr: [1.5, 5], stopXA: [0.05, 0.3], tgt: [0.236, 1], waitBars: [4, 48], holdBars: [8, 96] },
   onBar(ev, api) {
     const { coin, tf, bar, f } = ev, p = api.p;
@@ -39,6 +41,19 @@ module.exports = {
       else if (z.hi - bar.l >= thr) { z.piv.push({ px: z.hi, hi: true }); z.dir = -1; z.ext = bar.l; }
     }
     if (z.piv.length > 6) z.piv.shift();
+    const trail = p.trailAtr > 0 ? { dist: p.trailAtr * f.atr, afterR: p.trailAfterR } : null;
+    // confirm mode: wait for price to reach D, then enter only once a bar closes confirmAtr × ATR back from the low
+    const w = st.w;
+    if (w && !newPivot) {
+      if (api.now > w.until || (st.until || 0) > api.now) { st.w = null; return null; }
+      if (w.side * (bar.c - w.stop) <= 0 || w.side * (w.ext - w.stop) <= 0) { st.w = null; return null; } // through the stop: failed
+      if (w.side * (w.D - (w.side > 0 ? bar.l : bar.h)) >= 0) { w.touched = true; w.ext = w.side > 0 ? Math.min(w.ext, bar.l) : Math.max(w.ext, bar.h); }
+      if (!w.touched || w.side * (bar.c - w.ext) < p.confirmAtr * f.atr) return null;
+      st.w = null;
+      if (w.target != null && w.side * (w.target - bar.c) <= 0) return null; // the bounce already reached the target
+      return { coin, side: w.side, entry: { kind: 'maker', px: bar.c, waitMin: 3, fallback: 'cancel', chase: true }, stop: w.stop, target: w.target, trail,
+        timeStopMin: p.holdBars * tf, why: `${w.why}, confirmed ${(w.side * (bar.c - w.ext) / f.atr).toFixed(1)} ATR off the zone` };
+    }
     if (!newPivot || z.piv.length < 4 || f.bars < p.minBars || (st.until || 0) > api.now) return null;
     const [X, A, B, C] = z.piv.slice(-4);
     const side = C.hi ? 1 : -1; // C a high → bullish pattern (D below), C a low → bearish
@@ -54,8 +69,10 @@ module.exports = {
       if (!(D > 0) || side * (bar.c - D) <= 0) return null; // already through D: the zone is gone
       const risk = Math.max(p.stopXA * Math.abs(xa), p.minStopAtr * f.atr);
       const target = p.tgt > 0 ? D + side * p.tgt * Math.abs(A.px - D) : null;
-      return { coin, side, entry: { kind: 'maker', px: D, waitMin: p.waitBars * tf, fallback: 'cancel' }, stop: D - side * risk, target, trail: p.trailAtr > 0 ? { dist: p.trailAtr * f.atr, afterR: p.trailAfterR } : null,
-        timeStopMin: p.holdBars * tf, why: `${side > 0 ? 'bullish' : 'bearish'} ${P.name} ${tf}m: B ${bR.toFixed(2)} XA, C ${cR.toFixed(2)} AB, D at ${P.d} XA` };
+      const why = `${side > 0 ? 'bullish' : 'bearish'} ${P.name} ${tf}m: B ${bR.toFixed(2)} XA, C ${cR.toFixed(2)} AB, D at ${P.d} XA`;
+      if (p.confirmAtr > 0) { st.w = { side, D, stop: D - side * risk, target, why, ext: D, touched: false, until: api.now + p.waitBars * tf * 60000 }; return null; }
+      return { coin, side, entry: { kind: 'maker', px: D, waitMin: p.waitBars * tf, fallback: 'cancel' }, stop: D - side * risk, target, trail,
+        timeStopMin: p.holdBars * tf, why };
     }
     return null;
   },
