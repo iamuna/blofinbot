@@ -1,91 +1,93 @@
 # Swarm smoke run
 
-Recorded 8.0 minutes (2026-10-20T04:21:52.260Z → 2026-10-20T04:29:52.369Z).
+Recorded 8.0 minutes (2026-10-20T04:37:41.747Z → 2026-10-20T04:45:42.032Z).
 
 | Type | Messages |
 |---|---|
 | account | 98 |
 | event.window | 1 |
-| exec.fill | 5 |
-| feat.bar | 41 |
-| guard.status | 35 |
-| idea | 3 |
-| intent | 3 |
+| exec.fill | 4 |
+| feat.bar | 123 |
+| guard.status | 41 |
+| idea | 2 |
+| intent | 2 |
 | md.bar | 328 |
-| md.book | 17270 |
-| md.funding | 218 |
-| md.ticker | 8520 |
-| md.trade | 1437 |
-| order | 3 |
+| md.book | 18394 |
+| md.funding | 213 |
+| md.ticker | 8564 |
+| md.trade | 1421 |
+| order | 2 |
 | ref.bar | 328 |
-| ref.flow | 475 |
-| ref.liq | 20 |
+| ref.flow | 477 |
+| ref.liq | 31 |
 | ref.mark | 48 |
-| risk.decision | 3 |
+| regime.state | 1 |
+| risk.decision | 2 |
 | risk.state | 158 |
 | shadow.trade | 2 |
 | sys.alert | 32 |
-| sys.heartbeat | 1206 |
+| sys.heartbeat | 1281 |
 | trade.closed | 2 |
 
 | Coin | BloFin bars | books | trades | tickers | median spread bps | Binance bars | flow secs | liqs | guard |
 |---|---|---|---|---|---|---|---|---|---|
-| AAVE | 8 | 340 | 38 | 207 | 1.32 | 8 | 281 | 0 | tradable |
-| AERO | 8 | 469 | 9 | 208 | 1.24 | 8 | 199 | 0 | tradable |
-| ARB | 8 | 472 | 29 | 207 | 1.00 | 8 | 381 | 0 | wide-spread |
-| ASTER | 8 | 469 | 19 | 210 | 1.41 | 8 | 161 | 0 | tradable |
-| AVAX | 8 | 340 | 32 | 207 | 2.08 | 8 | 231 | 0 | tradable |
-| BCH | 8 | 469 | 42 | 208 | 0.36 | 8 | 177 | 0 | tradable |
-| BNB | 8 | 380 | 19 | 209 | 0.14 | 8 | 282 | 0 | tradable |
-| BTC | 8 | 473 | 283 | 207 | 0.02 | 8 | 456 | 4 | tradable |
-| DASH | 8 | 469 | 21 | 208 | 3.97 | 8 | 178 | 0 | tradable |
-| DOGE | 8 | 380 | 91 | 206 | 2.51 | 8 | 220 | 0 | tradable |
-| ENA | 8 | 473 | 30 | 206 | 1.05 | 8 | 335 | 1 | tradable |
-| ETH | 8 | 210 | 126 | 208 | 0.08 | 8 | 456 | 3 | tradable |
-| ETHFI | 8 | 169 | 13 | 205 | 2.90 | 8 | 153 | 0 | tradable |
-| HBAR | 8 | 469 | 34 | 208 | 2.38 | 8 | 189 | 0 | tradable |
-| HYPE | 8 | 473 | 48 | 207 | 0.25 | 8 | 475 | 0 | tradable |
-| INJ | 8 | 472 | 54 | 208 | 2.32 | 8 | 366 | 2 | tradable |
-| LINK | 8 | 420 | 34 | 209 | 1.66 | 8 | 206 | 0 | tradable |
-| LIT | 8 | 470 | 42 | 209 | 0.63 | 8 | 262 | 0 | tradable |
-| LTC | 8 | 469 | 36 | 209 | 3.34 | 8 | 118 | 0 | tradable |
-| MARSCOIN | 8 | 254 | 38 | 208 | 7.69 | 8 | 175 | 0 | tradable |
-| NIL | 8 | 345 | 5 | 207 | 3.49 | 8 | 326 | 0 | tradable |
-| ONDO | 8 | 340 | 31 | 208 | 6.76 | 8 | 219 | 1 | tradable |
-| PENGU | 8 | 469 | 11 | 207 | 2.63 | 8 | 205 | 0 | tradable |
-| PEPE | 8 | 472 | 42 | 208 | 4.76 | 8 | 385 | 0 | tradable |
-| Q | 8 | 473 | 125 | 209 | 1.92 | 8 | 471 | 1 | tradable |
-| QNT | 8 | 472 | 38 | 207 | 1.51 | 8 | 255 | 2 | tradable |
-| SAND | 8 | 441 | 10 | 209 | 5.19 | 8 | 270 | 2 | tradable |
-| SOL | 8 | 465 | 47 | 207 | 1.90 | 8 | 345 | 0 | tradable |
-| STRK | 8 | 473 | 16 | 208 | 5.24 | 8 | 326 | 0 | tradable |
-| SUI | 8 | 380 | 41 | 208 | 2.00 | 8 | 319 | 1 | tradable |
-| TAO | 8 | 472 | 61 | 210 | 0.75 | 8 | 260 | 0 | tradable |
-| TIA | 8 | 472 | 16 | 209 | 3.25 | 8 | 366 | 0 | tradable |
-| TRX | 8 | 469 | 11 | 208 | 0.60 | 8 | 145 | 0 | tradable |
-| UNI | 8 | 465 | 39 | 207 | 2.74 | 8 | 251 | 1 | tradable |
-| USELESS | 8 | 469 | 26 | 206 | 2.77 | 8 | 236 | 0 | tradable |
-| VVV | 8 | 469 | 34 | 207 | 0.81 | 8 | 251 | 0 | tradable |
-| XLM | 8 | 469 | 34 | 209 | 0.56 | 8 | 167 | 0 | tradable |
-| XMR | 8 | 469 | 65 | 209 | 0.66 | 8 | 308 | 0 | tradable |
-| XRP | 8 | 380 | 67 | 208 | 1.53 | 8 | 305 | 0 | tradable |
-| ZEC | 8 | 326 | 80 | 208 | 0.17 | 8 | 458 | 2 | tradable |
-| ZRO | 8 | 340 | 16 | 207 | 1.61 | 8 | 365 | 0 | tradable |
+| AAVE | 8 | 474 | 42 | 209 | 1.32 | 8 | 209 | 0 | tradable |
+| ARB | 8 | 473 | 20 | 209 | 1.00 | 8 | 348 | 0 | tradable |
+| ASTER | 8 | 172 | 17 | 211 | 5.62 | 8 | 185 | 0 | tradable |
+| AVAX | 8 | 473 | 25 | 209 | 1.04 | 8 | 214 | 0 | tradable |
+| BCH | 8 | 472 | 33 | 209 | 0.36 | 8 | 122 | 0 | tradable |
+| BNB | 8 | 474 | 18 | 209 | 0.27 | 8 | 341 | 0 | tradable |
+| BTC | 8 | 474 | 187 | 209 | 0.02 | 8 | 459 | 0 | tradable |
+| CRV | 8 | 472 | 52 | 209 | 2.69 | 8 | 159 | 0 | tradable |
+| DASH | 8 | 379 | 24 | 205 | 3.97 | 8 | 145 | 0 | tradable |
+| DOGE | 8 | 474 | 61 | 209 | 2.51 | 8 | 224 | 0 | tradable |
+| DOT | 8 | 472 | 21 | 211 | 1.74 | 8 | 340 | 0 | tradable |
+| ENA | 8 | 474 | 43 | 210 | 1.05 | 8 | 302 | 0 | tradable |
+| ETH | 8 | 474 | 57 | 209 | 0.08 | 8 | 414 | 0 | tradable |
+| ETHFI | 8 | 446 | 15 | 205 | 2.91 | 8 | 176 | 0 | tradable |
+| HBAR | 8 | 472 | 38 | 208 | 2.38 | 8 | 163 | 0 | tradable |
+| HYPE | 8 | 474 | 60 | 210 | 0.25 | 8 | 476 | 0 | tradable |
+| ICP | 8 | 379 | 23 | 204 | 6.97 | 8 | 132 | 0 | tradable |
+| INJ | 8 | 353 | 51 | 210 | 2.33 | 8 | 318 | 0 | tradable |
+| LINK | 8 | 473 | 31 | 210 | 0.83 | 8 | 156 | 0 | tradable |
+| LIT | 8 | 472 | 52 | 209 | 0.62 | 8 | 279 | 0 | tradable |
+| LTC | 8 | 472 | 26 | 208 | 3.33 | 8 | 145 | 0 | tradable |
+| NEAR | 8 | 474 | 37 | 208 | 4.15 | 8 | 321 | 0 | tradable |
+| NIL | 8 | 470 | 8 | 205 | 3.50 | 8 | 252 | 0 | tradable |
+| ONDO | 8 | 473 | 17 | 209 | 2.27 | 8 | 235 | 0 | tradable |
+| PENGU | 8 | 472 | 14 | 210 | 1.32 | 8 | 150 | 0 | tradable |
+| PUMP | 8 | 353 | 58 | 210 | 4.50 | 8 | 273 | 1 | tradable |
+| Q | 8 | 474 | 357 | 210 | 0.85 | 8 | 477 | 29 | tradable |
+| QNT | 8 | 473 | 38 | 212 | 1.02 | 8 | 242 | 0 | tradable |
+| SAND | 8 | 353 | 6 | 211 | 3.48 | 8 | 234 | 0 | tradable |
+| SOL | 8 | 474 | 31 | 209 | 1.90 | 8 | 315 | 0 | tradable |
+| STRK | 8 | 474 | 17 | 208 | 3.51 | 8 | 377 | 0 | tradable |
+| SUI | 8 | 474 | 28 | 211 | 1.00 | 8 | 227 | 0 | tradable |
+| TAO | 8 | 473 | 47 | 209 | 0.75 | 8 | 241 | 0 | tradable |
+| TIA | 8 | 353 | 23 | 209 | 3.23 | 8 | 306 | 0 | tradable |
+| TRX | 8 | 472 | 18 | 209 | 0.30 | 8 | 162 | 0 | tradable |
+| USELESS | 8 | 470 | 34 | 205 | 2.07 | 8 | 206 | 0 | tradable |
+| VVV | 8 | 472 | 34 | 209 | 0.81 | 8 | 209 | 0 | tradable |
+| XLM | 8 | 472 | 28 | 211 | 0.56 | 8 | 162 | 0 | tradable |
+| XMR | 8 | 472 | 49 | 209 | 0.50 | 8 | 266 | 0 | tradable |
+| XRP | 8 | 474 | 47 | 209 | 1.53 | 8 | 298 | 1 | tradable |
+| ZEC | 8 | 474 | 88 | 209 | 0.17 | 8 | 455 | 0 | tradable |
 
 | Agent | Status | Why | Metrics |
 |---|---|---|---|
-| accountant | ok |  | {"equity":9996.51,"positions":1} |
-| binance-feed | ok |  | {"opens":2,"msgs":76879,"flowMsgs":475,"bars":328,"lastMsgAgeMs":6,"coins":41,"sockets":"2/2","liqs":20,"liqOther":119,"oiErrors":1} |
-| blofin-feed | ok |  | {"opens":8,"msgs":235894,"trades":1853,"coins":41,"sockets":"4/4","lastMsgAgeMs":1,"bars":328,"closes":4} |
-| brain | ok |  | {"coins":41,"warmedCoins":41,"bars_binance":328,"ideas_probe":3} |
-| coordinator | ok |  | {"riskMode":"normal","budgetScale":1,"risk_approve":2,"orders":3,"lastCycleMs":3,"risk_trim":1} |
+| accountant | ok |  | {"equity":9982.61,"positions":0} |
+| binance-feed | ok |  | {"opens":2,"msgs":85385,"liqOther":127,"flowMsgs":468,"lastMsgAgeMs":2,"coins":41,"sockets":"2/2","bars":328,"liqs":31,"oiErrors":1} |
+| blofin-feed | ok |  | {"opens":8,"msgs":246498,"trades":1873,"coins":41,"sockets":"4/4","lastMsgAgeMs":7,"bars":328,"closes":4} |
+| brain | ok |  | {"coins":41,"warmedCoins":41,"bars_binance":328,"ideas_probe":2} |
+| coordinator | ok |  | {"riskMode":"normal","budgetScale":1,"risk_approve":2,"orders":2,"lastCycleMs":2} |
 | events | ok |  | {"windows":0} |
-| guard | ok |  | {"lagMedMs":406,"tradable":"41/41"} |
+| guard | ok |  | {"lagMedMs":418,"tradable":"41/41"} |
 | guardian | ok |  | {"riskHash":"00fb82bc38ee8f7f","signed":"unsigned","account":"paper"} |
 | herald | degraded | no Telegram token/chat id: messages are only logged | {"messages":1} |
-| recorder | ok |  | {"lines":30209,"bytes":9043575} |
+| recorder | ok |  | {"lines":30956,"bytes":9236799} |
 | state-sync | ok |  | {} |
 | strategy:crowd-squeeze | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
+| strategy:dip-reversal | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
 | strategy:intraday-trend | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
 | strategy:it-45-hold16 | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
 | strategy:it-45-hold32 | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
@@ -93,18 +95,20 @@ Recorded 8.0 minutes (2026-10-20T04:21:52.260Z → 2026-10-20T04:29:52.369Z).
 | strategy:leader-follow | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
 | strategy:noise-breakout | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
 | strategy:overshoot-fade | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
-| strategy:probe | ok |  | {"mode":"trade","ideas":3,"rejected":0,"errors":0,"open":1,"pending":0,"shadowTrades":2,"shadowSumR":-0.52,"unfilled":0} |
+| strategy:probe | ok |  | {"mode":"trade","ideas":2,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":2,"shadowSumR":-0.7,"unfilled":0} |
 | strategy:session-drive | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
+| strategy:squeeze-ride | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
 | strategy:trend-pullback | ok |  | {"mode":"shadow","ideas":0,"rejected":0,"errors":0,"open":0,"pending":0,"shadowTrades":0,"shadowSumR":0,"unfilled":0} |
-| trader | ok |  | {"orders":3,"entries":3,"exit_target":1,"exit_time":1} |
+| trader | ok |  | {"orders":2,"entries":2,"exit_time":2} |
 | universe | ok |  | {"coins":41,"source":"binance archive (API unreachable)"} |
-| watchdog | ok |  | {"diskFreePct":59.5,"memFreeMb":14928,"down":"none"} |
+| watchdog | ok |  | {"diskFreePct":59.5,"memFreeMb":14957,"down":"none"} |
 
-Feature bars: 5m binance 41
-Ideas: {"probe":3}; shadow trades: {"probe":"2 (sum R -0.52)"}; unfilled: {}
+Feature bars: 15m binance 41, 5m binance 82
+Ideas: {"probe":2}; shadow trades: {"probe":"2 (sum R -0.70)"}; unfilled: {}
 Event windows: none this week
 
-Trade path (paper): 3 risk decisions (approve,trim,approve), 3 orders, 5 fills, 2 closed trades (target -0.09R, time -0.37R), 0 ended unfilled
-Account: equity $9996.51, 2 trades, fees $4.07
+Trade path (paper): 2 risk decisions (approve,approve), 2 orders, 4 fills, 2 closed trades (time -0.27R, time -0.40R), 0 ended unfilled
+Account: equity $9982.61, 2 trades, fees $11.99
 
 BloFin data check: 41/41 coins produced bars and books (need 21).
+Trade path check: 2 probe ideas → 4 fills; 0 unsigned messages dropped.
