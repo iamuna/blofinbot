@@ -11,11 +11,14 @@ on 1h–1d; walk-forward picker Sharpe 0.49 (not significant); best single ma-re
 year, mostly from shorts. Code: `history/` (README). Data stays in release `swarm-history-v1` (19.4 GB, 665 coins);
 sweep artifacts kept 90 days (not downloadable from Claude's workspace — the report and results.json are).
 
-**Waiting for Ibrahim** (asked 15:50): put the slow candidates in shadow on the PC (ma-retest 12h and 1d,
-intraday-trend 4h, rsi-macd-trend 12h, trend-pullback 1h). Needs protected changes → approve.ps1: live timeframes
-60/120/240/720/1440 in swarm/src/analysis/features.js TFS, brain warm-up of 12h/1d history from BloFin REST
-(200+ bars), plugin tfs; then config/swarm.json strategies in shadow. Also due: exec_sim R floor (same bug as the
-sweep had), update the scheduled researcher/review prompts (they still say 1–45 minutes).
+**Ibrahim approved (18:01) → commit 956ae84 pushed 18:10**: live features 1h/2h/4h/12h/1d, seeded at start-up from
+BloFin (1h, 2h, 4h bars; 12h and 1d built from 4h in UTC; brain metric `seededBars`), plugins ma-21-200 and rsi-macd
+start from that history, `onlyTfs` sets a variant's timeframes, R against ≥ 10 bps of risk (exec_sim, paper and
+demo trader). Shadow now: ma-retest-12h, ma-retest-1d, it-4h, rsi-macd-trend-12h, trend-pullback-1h; every
+1–45 minute strategy disabled (5-year sweep). Protected → on the PC: Telegram asks, Ibrahim runs
+`powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\approve.ps1`, installed within 10 min.
+Check after: swarm-state agents.brain.metrics.seededBars > 0, strategy:ma-retest-12h etc. present. Scheduled
+researcher and daily review prompts updated for the new timeframes (18:08).
 
 **Home PC (Windows, DESKTOP-4CJV8JF)**: running since 08:27 on paper, all agents OK (state on `swarm-state` every
 10 min since 11:18): 72 coins, guard lag 0.7 s (the clock fix worked), recorder ~370 MB raw in 3 h (gzipped hourly,

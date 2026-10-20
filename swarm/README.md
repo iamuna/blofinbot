@@ -1,6 +1,7 @@
-# Swarm — multi-agent 1–45 minute bot for BloFin
+# Swarm — multi-agent bot for BloFin
 
-A team of agents that trades BloFin USDT perpetuals on 1–45 minute horizons. Fast agents (code) handle data,
+A team of agents that trades BloFin USDT perpetuals. Built for 1–45 minute horizons; the 5-year sweep (2026-10-20,
+`../history/`) moved it to 1h–1d bars, the only ones with an edge after costs. Fast agents (code) handle data,
 decisions and orders every minute; slow agents (Claude) research, build, test and review strategies and agents.
 Every agent talks through one message bus. Design: the "BloFin Swarm" doc; status: [PROGRESS.md](PROGRESS.md).
 

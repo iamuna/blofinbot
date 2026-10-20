@@ -1,6 +1,6 @@
 # The slow agents (Claude)
 
-The fast agents (code, on the home PC) trade every minute. The slow agents are Claude sessions on a schedule: they
+The fast agents (code, on the home PC) watch the market every minute. The slow agents are Claude sessions on a schedule: they
 research and build strategies, review every agent, retire what is useless, set the day's plan, and tell Ibrahim
 what needs him. They never touch the exchange or keys. Everything they change goes through git, the tests and the
 update gate (`src/tools/update_gate.js`):
@@ -21,7 +21,10 @@ else with `node swarm/src/factory/log_tries.js` (the t-stat bar rises with the n
 
 ## 1. Researcher + strategy builder — daily
 
-Goal: find 1–45 minute edges that survive costs, without fooling ourselves. At most two new tries a day.
+Goal: find edges that survive costs, without fooling ourselves. At most two new tries a day.
+Timeframes: the 5-year sweep (2026-10-20, `history/`, report on `swarm-reports` history/) found that every strategy
+loses on 1m–30m bars after costs; the only positive ones are on 1h–1d (best: ma-retest 12h). Look there first,
+and test any new idea on the 5-year history (`history/README.md`) before trusting the 6.5-month factory data.
 
 1. Read: `swarm/docs/RESEARCH_LOG.md` (your notebook), `swarm-factory` `LATEST.md` and the try count,
    `swarm/docs/BACKTEST_*.md`, and — if `swarm-state` exists — the shadow record (`node swarm/src/tools/review.js`).
