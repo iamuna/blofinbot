@@ -4,13 +4,14 @@
  *                    long; mirrored for shorts (cross below, RSI was > 100 − os).
  *   mode 'trend':    MACD crosses above its signal line with RSI above 50 (and MACD above zero if zeroLine) →
  *                    long; mirrored for shorts.
- * Stop stopAtr × ATR, target rr × the risk (the usual 1:2), time stop holdBars bars. Entry taker (as the online
+ * Stop stopAtr × ATR, target rr × the risk (the usual 1:2; rr 0 = no target), optional trailing stop trailAtr × ATR
+ * once the trade is trailAfterR up, time stop holdBars bars. Entry taker (as the online
  * versions do) or maker.
  */
 'use strict';
 module.exports = {
   name: 'rsi-macd', version: 1, tfs: [5, 15, 30], needsRef: false,
-  params: { mode: 'reversal', tf: 15, rsiLen: 14, fast: 12, slow: 26, sig: 9, os: 30, lookBars: 5, zeroLine: false, stopAtr: 1.5, rr: 2, holdBars: 24, entry: 'taker', waitMin: 3, cooldownBars: 3, minBars: 100 },
+  params: { mode: 'reversal', tf: 15, rsiLen: 14, fast: 12, slow: 26, sig: 9, os: 30, lookBars: 5, zeroLine: false, stopAtr: 1.5, rr: 2, trailAtr: 0, trailAfterR: 1, holdBars: 24, entry: 'taker', waitMin: 3, cooldownBars: 3, minBars: 100 },
   bounds: { os: [20, 40], stopAtr: [1, 3], rr: [1, 4], holdBars: [8, 48] },
   onBar(ev, api) {
     const { coin, tf, bar, f } = ev, p = api.p;
@@ -44,7 +45,8 @@ module.exports = {
     if (!side) return null;
     const risk = p.stopAtr * f.atr;
     const entry = p.entry === 'maker' ? { kind: 'maker', px: c, waitMin: p.waitMin, fallback: 'cancel', chase: true } : { kind: 'taker', px: c };
-    return { coin, side, entry, stop: c - side * risk, target: c + side * p.rr * risk, trail: null, timeStopMin: p.holdBars * tf,
+    return { coin, side, entry, stop: c - side * risk, target: p.rr > 0 ? c + side * p.rr * risk : null,
+      trail: p.trailAtr > 0 ? { dist: p.trailAtr * f.atr, afterR: p.trailAfterR } : null, timeStopMin: p.holdBars * tf,
       why: `${tf}m MACD cross ${side > 0 ? 'up' : 'down'}, RSI ${rsi.toFixed(0)} (${p.mode})` };
   },
   onClose(coin, r, k) { k.state(coin).until = r.exitT + k.p.cooldownBars * r.idea.tf * 60000; },

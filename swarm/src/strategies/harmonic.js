@@ -4,7 +4,8 @@
  * Fibonacci ratios (B as a retracement of XA, C of AB); D is the pattern's XA level (0.786 Gartley, 0.886 Bat,
  * 1.27 Butterfly, 1.618 Crab) and must also sit inside the pattern's BC extension range. A resting limit order
  * waits at D (the Potential Reversal Zone) for waitBars bars; bullish patterns buy, bearish ones sell.
- * Stop stopXA × |XA| beyond D (at least minStopAtr × ATR); target tgt × AD back from D (Carney's 0.382 / 0.618).
+ * Stop stopXA × |XA| beyond D (at least minStopAtr × ATR); target tgt × AD back from D (Carney's 0.382 / 0.618;
+ * tgt 0 = no target); optional trailing stop trailAtr × ATR once the trade is trailAfterR up.
  */
 'use strict';
 const PATTERNS = [
@@ -16,7 +17,7 @@ const PATTERNS = [
 
 module.exports = {
   name: 'harmonic', version: 1, tfs: [5, 15, 30], needsRef: false,
-  params: { tf: 15, patterns: ['gartley', 'bat', 'butterfly', 'crab'], devAtr: 2.5, minLegAtr: 4, c: [0.382, 0.886], bcTol: 0.05, stopXA: 0.13, minStopAtr: 1, tgt: 0.382, waitBars: 12, holdBars: 24, minBars: 50 },
+  params: { tf: 15, patterns: ['gartley', 'bat', 'butterfly', 'crab'], devAtr: 2.5, minLegAtr: 4, c: [0.382, 0.886], bcTol: 0.05, stopXA: 0.13, minStopAtr: 1, tgt: 0.382, trailAtr: 0, trailAfterR: 1, waitBars: 12, holdBars: 24, minBars: 50 },
   bounds: { devAtr: [1.5, 5], stopXA: [0.05, 0.3], tgt: [0.236, 1], waitBars: [4, 48], holdBars: [8, 96] },
   onBar(ev, api) {
     const { coin, tf, bar, f } = ev, p = api.p;
@@ -52,8 +53,8 @@ module.exports = {
       if (ext < P.bc[0] * (1 - p.bcTol) || ext > P.bc[1] * (1 + p.bcTol)) continue;
       if (!(D > 0) || side * (bar.c - D) <= 0) return null; // already through D: the zone is gone
       const risk = Math.max(p.stopXA * Math.abs(xa), p.minStopAtr * f.atr);
-      const target = D + side * p.tgt * Math.abs(A.px - D);
-      return { coin, side, entry: { kind: 'maker', px: D, waitMin: p.waitBars * tf, fallback: 'cancel' }, stop: D - side * risk, target, trail: null,
+      const target = p.tgt > 0 ? D + side * p.tgt * Math.abs(A.px - D) : null;
+      return { coin, side, entry: { kind: 'maker', px: D, waitMin: p.waitBars * tf, fallback: 'cancel' }, stop: D - side * risk, target, trail: p.trailAtr > 0 ? { dist: p.trailAtr * f.atr, afterR: p.trailAfterR } : null,
         timeStopMin: p.holdBars * tf, why: `${side > 0 ? 'bullish' : 'bearish'} ${P.name} ${tf}m: B ${bR.toFixed(2)} XA, C ${cR.toFixed(2)} AB, D at ${P.d} XA` };
     }
     return null;
