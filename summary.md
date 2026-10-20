@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-20T10:18:20.312Z · account **PAPER** · risk mode normal
+Updated 2026-10-20T10:28:20.313Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
