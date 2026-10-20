@@ -4,12 +4,13 @@
  *
  *   node swarm/src/factory/promote.js --factory <swarm-factory dir> --state <swarm-state dir> [--write]
  *
- * shadow → trade when the backtest gate AND the shadow gate pass (paper/demo accounts only);
+ * shadow → trade when the backtest gate AND the shadow gate pass, or by the out-of-sample route (150+ shadow trades
+ * of the current version with t ≥ 2) — paper/demo accounts only;
  * trade → shadow when the demotion check fires. Prints the decisions; --write puts them in <state>/control.json.
  */
 'use strict';
 const fs = require('fs'), path = require('path');
-const { backtestGate, shadowGate, demoteCheck } = require('./gate');
+const { backtestGate, shadowGate, oosGate, demoteCheck } = require('./gate');
 
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }
 const jsonl = (f) => (fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch (e) { return null; } }).filter(Boolean) : []);
@@ -20,11 +21,14 @@ function decide({ latest, state, shadow, trades, ideas, now = Date.now() }) {
   const out = [];
   for (const [name, bt] of Object.entries(latest.results || {})) {
     const mode = modes[name] || 'shadow';
-    const sh = shadow.filter((t) => t.strategy === name), id = ideas.filter((i) => i.strategy === name);
+    // shadow evidence of the version being judged (same parameters); records without a version hash count as unknown
+    const sh = shadow.filter((t) => t.strategy === name && (!bt.ph || t.ph === bt.ph)), id = ideas.filter((i) => i.strategy === name && (!bt.ph || !i.ph || i.ph === bt.ph));
     const first = sh.length ? Math.min(...sh.map((t) => t.entryT)) : id.length ? Math.min(...id.map((i) => i.t)) : now;
     if (mode === 'shadow') {
-      const g1 = backtestGate(bt, latest.tries || 1), g2 = shadowGate({ days: (now - first) / 86400000, ideas: Math.max(id.length, sh.length), rs: sh.map((t) => t.r) }, bt, account);
-      out.push({ name, from: 'shadow', to: g1.pass && g2.pass ? 'trade' : 'shadow', why: g1.pass && g2.pass ? ['backtest and shadow gates pass'] : [...g1.why, ...g2.why] });
+      const rs = sh.map((t) => t.r);
+      const g1 = backtestGate(bt, latest.tries || 1), g2 = shadowGate({ days: (now - first) / 86400000, ideas: Math.max(id.length, sh.length), rs }, bt, account), g3 = oosGate({ rs }, bt, account);
+      const pass = (g1.pass && g2.pass) || g3.pass;
+      out.push({ name, from: 'shadow', to: pass ? 'trade' : 'shadow', why: g1.pass && g2.pass ? ['backtest and shadow gates pass'] : g3.pass ? ['out-of-sample route: live shadow record alone is strong enough'] : [...g1.why, ...g2.why, ...g3.why] });
     } else if (mode === 'trade') {
       const d = demoteCheck(trades.filter((t) => (t.strategies || []).some((s) => s.name === name)).map((t) => t.r), bt);
       out.push({ name, from: 'trade', to: d.demote ? 'shadow' : 'trade', why: d.why });

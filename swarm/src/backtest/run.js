@@ -83,7 +83,7 @@ async function backtest(o) {
     const ideas = hosts[s.name].stats;
     const split = o.split || null;
     out.strategies[s.name] = {
-      base: s.variantParams ? (o.variants.find((v) => v.name === s.name) || {}).base : s.name, params: hosts[s.name].p, ideas, unfilled: sims[s.name].unfilled,
+      base: s.variantParams ? (o.variants.find((v) => v.name === s.name) || {}).base : s.name, params: hosts[s.name].p, ph: hosts[s.name].ph, ideas, unfilled: sims[s.name].unfilled,
       all: summarize(trades), cost15: summarize(trades, { costMult: 1.5 }), cost2: summarize(trades, { costMult: 2 }),
       train: split ? summarize(trades.filter((t) => t.entryT < split)) : null, test: split ? summarize(trades.filter((t) => t.entryT >= split)) : null,
       test15: split ? summarize(trades.filter((t) => t.entryT >= split), { costMult: 1.5 }) : null,

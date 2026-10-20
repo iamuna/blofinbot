@@ -43,7 +43,7 @@ async function main() {
   const table = ['| Strategy | Origin | Trades | Avg R | t | Avg R at 1.5× costs | Thirds (sum R) | Backtest gate |', '|---|---|---|---|---|---|---|---|'], latest = {};
   for (const v of variants) {
     const s = r.strategies[v.name], g = backtestGate(s, tries);
-    const row = { name: v.name, base: v.base, params: v.params, origin: v.origin, idea: v.idea || null, source: v.source || null, all: s.all, cost15: s.cost15, thirds: s.thirds, months: s.months, gate: g, testedAt: now, data: r.data };
+    const row = { name: v.name, base: v.base, params: v.params, ph: s.ph, origin: v.origin, idea: v.idea || null, source: v.source || null, all: s.all, cost15: s.cost15, thirds: s.thirds, months: s.months, gate: g, testedAt: now, data: r.data };
     latest[v.name] = row;
     fs.writeFileSync(path.join(out, 'results', `${v.name}.json`), JSON.stringify(row, null, 1));
     table.push(`| ${v.name} | ${v.origin} | ${s.all.n || 0} | ${s.all.avgR ?? '—'} | ${s.all.tStat ?? '—'} | ${s.cost15.avgR ?? '—'} | ${(s.thirds || []).map((x) => (x.n ? x.sumR : 0)).join(' / ')} | ${g.pass ? '**pass**' : g.why.join('; ')} |`);

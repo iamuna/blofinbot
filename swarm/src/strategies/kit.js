@@ -14,6 +14,11 @@
  * (a strategy is told when its trade ends through onClose and can set its own cooldowns).
  */
 'use strict';
+const crypto = require('crypto');
+
+// which version of a strategy produced an idea: plugin version + effective parameters. Shadow evidence only counts
+// for the version being judged (factory/gate.js), so a parameter change starts a fresh out-of-sample record.
+function paramsHash(version, p) { return crypto.createHash('sha256').update(JSON.stringify([version || 1, Object.keys(p || {}).sort().map((k) => [k, p[k]])])).digest('hex').slice(0, 10); }
 
 function validIdea(i) {
   if (!i || (i.side !== 1 && i.side !== -1) || !i.entry || !(i.entry.px > 0) || !(i.stop > 0)) return 'missing side/entry/stop';
@@ -29,6 +34,7 @@ class StrategyHost {
     this.fs = o.fs; this.regimeState = o.regime; this.tradableFn = o.tradable || (() => true);
     this.states = new Map(); this.open = new Map(); this.seq = 0; this.stats = { ideas: 0, rejected: 0, errors: 0 }; this.lastError = null;
     this.tfs = new Set(strategy.tfs);
+    this.ph = paramsHash(strategy.version, this.p);
   }
   state(coin) { let x = this.states.get(coin); if (!x) this.states.set(coin, (x = {})); return x; }
   onEvent(ev) {
@@ -52,7 +58,7 @@ class StrategyHost {
       if (!api.tradable(i.coin)) { this.stats.rejected++; continue; }
       const bad = validIdea(i);
       if (bad) { this.stats.rejected++; this.lastError = `${i.coin}: ${bad}`; continue; }
-      const idea = Object.assign({ id: `${this.name}-${now.toString(36)}-${++this.seq}`, strategy: this.name, version: this.s.version || 1, tf: ev.tf, t: now }, i);
+      const idea = Object.assign({ id: `${this.name}-${now.toString(36)}-${++this.seq}`, strategy: this.name, version: this.s.version || 1, ph: this.ph, tf: ev.tf, t: now }, i);
       idea.entry = Object.assign({ kind: 'maker', waitMin: Math.max(1, Math.min(10, ev.tf)), fallback: 'cancel' }, i.entry);
       idea.riskPct = Math.abs(idea.entry.px - idea.stop) / idea.entry.px;
       this.open.set(i.coin, idea.id);
@@ -73,4 +79,4 @@ const atrOf = (ev) => ev.f.atr;
 const cooldown = (api, coin, now) => (api.state(coin).until || 0) > now;
 const setCooldown = (api, coin, until) => { api.state(coin).until = until; };
 
-module.exports = { StrategyHost, validIdea, atrOf, cooldown, setCooldown };
+module.exports = { StrategyHost, validIdea, atrOf, cooldown, setCooldown, paramsHash };

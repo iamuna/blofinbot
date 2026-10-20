@@ -2,7 +2,7 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs'), path = require('path');
-const { tBar, backtestGate, shadowGate, demoteCheck } = require('../src/factory/gate');
+const { tBar, backtestGate, shadowGate, oosGate, demoteCheck } = require('../src/factory/gate');
 const { decide } = require('../src/factory/promote');
 const { review } = require('../src/tools/review');
 const { tmpDir } = require('./helpers');
@@ -28,6 +28,24 @@ test('gate: shadow must look like the backtest; live promotions are Ibrahim\'s',
   assert.strictEqual(demoteCheck(Array.from({ length: 50 }, () => -1), bt()).demote, false, 'judged only after 100 trades');
 });
 
+test('gate: out-of-sample route — a strategy that missed the multiple-testing bar can earn trade on its live record', () => {
+  const weakBt = bt({ all: { n: 700, avgR: 0.14, tStat: 2.52, maxDDR: 20 } });
+  assert.strictEqual(backtestGate(weakBt, 29).pass, false, 'best of 29 tries: t 2.52 < 2.73');
+  const live = (n, win) => Array.from({ length: n }, (_, k) => (k % 10 < win ? 1.4 : -1));
+  assert.strictEqual(oosGate({ rs: live(160, 6) }, weakBt, 'paper').pass, true, '160 trades, 60% at +1.4R / 40% at −1R: t ≈ 4.5');
+  assert.match(oosGate({ rs: live(100, 6) }, weakBt, 'paper').why.join(), /needs 150/);
+  assert.match(oosGate({ rs: live(200, 4) }, weakBt, 'paper').why.join(), /> 0 R and t ≥ 2/);
+  assert.match(oosGate({ rs: live(200, 6) }, bt({ cost15: { avgR: -0.02 } }), 'paper').why.join(), /1.5× costs/);
+  assert.match(oosGate({ rs: live(200, 6) }, weakBt, 'live').why.join(), /only Ibrahim/);
+  // only the current version's shadow trades count
+  const now = Date.UTC(2026, 10, 30);
+  const shadow = live(200, 6).map((r, k) => ({ strategy: 'it', ph: k < 100 ? 'old' : 'new', entryT: now - 30 * 86400000 + k * 3600000, exitT: now - 86400000, r }));
+  const latest = { tries: 29, results: { it: Object.assign(weakBt, { ph: 'new' }) } };
+  assert.strictEqual(decide({ latest, state: {}, shadow, trades: [], ideas: [], now })[0].to, 'shadow', '100 trades of the new version are not enough');
+  for (const t of shadow) t.ph = 'new';
+  assert.strictEqual(decide({ latest, state: {}, shadow, trades: [], ideas: [], now })[0].to, 'trade');
+});
+
 test('promotion: decisions from factory results and live state', () => {
   const now = Date.UTC(2026, 9, 25);
   const shadow = Array.from({ length: 40 }, (_, k) => ({ strategy: 'good', entryT: now - 5 * 86400000 + k * 1000, exitT: now - 86400000, r: k % 2 ? 1.3 : -1 }));
@@ -47,4 +65,41 @@ test('review: report cards and flags from the published state', () => {
   assert.ok(r.flags.some((f) => /a: no ideas in 7 days/.test(f)));
   assert.ok(r.flags.some((f) => /trader: silent for 60 min/.test(f)));
   assert.ok(r.flags.some((f) => /brain: degraded/.test(f)));
+});
+
+test('live gate: only a strong, long demo record is ready for real money', () => {
+  const { judge } = require('../src/factory/live_gate');
+  const { logTries } = require('../src/factory/log_tries');
+  const mk = (n, win, o = {}) => Array.from({ length: n }, (_, k) => Object.assign({ account: 'demo', strategies: [{ name: 'it' }], exitT: k, qty: 1, entry: 100, feeUsd: 0.08, fundUsd: 0.01, r: k % 10 < win ? 1.4 : -1 }, o));
+  const btRow = { all: { maxDDR: 15, avgCostBps: 9 } };
+  const ok = judge('it', mk(220, 6), btRow);
+  assert.strictEqual(ok.ready, true, ok.why.join('; '));
+  assert.match(judge('it', mk(150, 6), btRow).why.join(), /150 demo trades/);
+  assert.match(judge('it', mk(220, 4), btRow).why.join(), /need > 0 and t ≥ 2/);
+  assert.match(judge('it', mk(220, 6, { feeUsd: 0.2 }), btRow).why.join(), /1.5× the backtest/);
+  assert.strictEqual(judge('it', mk(220, 6, { account: 'paper' }), btRow).trades, 0, 'paper trades do not count');
+  // tries logged outside the factory raise the count once each
+  const d = tmpDir('tries');
+  assert.deepStrictEqual(logTries(d, [{ name: 'a', base: 'x' }, { name: 'b', base: 'x', params: { k: 1 } }], 'n'), { added: 2, total: 2 });
+  assert.deepStrictEqual(logTries(d, [{ name: 'a', base: 'x' }, { name: 'c', base: 'y' }], 'n'), { added: 1, total: 3 });
+});
+
+test('agent manager: retires only decisively negative strategies on its own; the rest are proposals', () => {
+  const { propose, apply } = require('../src/tools/agent_manager');
+  const now = Date.UTC(2026, 10, 1);
+  const cfg = { strategies: { bad: { enabled: true, mode: 'shadow' }, meh: { enabled: true, mode: 'shadow' }, rescued: { enabled: true, mode: 'shadow' }, live: { enabled: true, mode: 'shadow' }, ghost: { enabled: true, mode: 'shadow' } } };
+  const latest = { bad: { ph: 'b', all: { n: 5000, avgR: -0.3, tStat: -20 } }, meh: { ph: 'm', all: { n: 900, avgR: -0.02, tStat: -0.8 } }, rescued: { ph: 'r', all: { n: 900, avgR: -0.1, tStat: -4 } }, live: { ph: 'l', all: { n: 900, avgR: -0.1, tStat: -4 } } };
+  const shadow = Array.from({ length: 120 }, (_, k) => ({ strategy: 'rescued', ph: 'r', r: k % 2 ? 1.2 : -1 }));
+  const ps = propose({ cfg, latest, state: { strategyModes: { live: 'trade' } }, shadow, ideas: [], flags: ['strategy:meh: 3 errors', 'trader: silent for 60 min'], now });
+  const by = (k, n) => ps.filter((p) => p.kind === k && (p.strategy === n || p.agent === n));
+  assert.strictEqual(by('retire', 'bad')[0].auto, true);
+  assert.strictEqual(by('retire', 'meh').length, 0, 'mildly negative: kept in shadow');
+  assert.strictEqual(by('retire', 'rescued').length, 0, 'its live record disagrees with the backtest');
+  assert.strictEqual(by('retire', 'live').length, 0, 'never retire a strategy that is trading');
+  assert.strictEqual(by('retire', 'ghost')[0].auto, false, 'no evidence either way: proposal only');
+  assert.strictEqual(by('fix', 'meh').length, 1); assert.strictEqual(by('fix', 'trader').length, 1);
+  const f = path.join(tmpDir('am'), 'swarm.json'); fs.writeFileSync(f, JSON.stringify(cfg));
+  assert.deepStrictEqual(apply(f, ps), ['bad']);
+  const after = JSON.parse(fs.readFileSync(f, 'utf8')).strategies;
+  assert.strictEqual(after.bad.enabled, false); assert.match(after.bad.retired, /decisively negative/); assert.strictEqual(after.ghost.enabled, true);
 });

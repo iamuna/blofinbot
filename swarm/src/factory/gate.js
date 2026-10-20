@@ -6,6 +6,10 @@
  *   shadow   → trade  : ≥ 3 days and ≥ 150 ideas in shadow on live data; the shadow trades' average R is not
  *                       below the backtest's by more than 2 standard errors (live behaves like the test);
  *                       on paper/demo only — live money is Ibrahim's call
+ *   out-of-sample route: a strategy that missed the backtest bar (usually the multiple-testing t-stat) may still
+ *                       go to trade on its live record alone, because shadow trades happen AFTER it was chosen —
+ *                       a clean holdout: ≥ 150 closed shadow trades of the current version (same parameters),
+ *                       average R > 0 with t ≥ 2 after costs, and the backtest not negative at 1.5× costs.
  *   trade    → shadow : after ≥ 100 trades, average R < 0 with t ≤ −1, or a drawdown > 2× the backtest's
  * The gate never edits code or limits; it returns decisions that the state sync publishes as strategy-mode commands.
  */
@@ -42,6 +46,15 @@ function shadowGate(shadow, bt, account) {
   if (s.n < 20) why.push(`${s.n} shadow trades (need 20 to compare with the backtest)`);
   return { pass: why.length === 0, why, shadow: s };
 }
+// shadow: {rs: [r…] of the CURRENT version only}; bt: backtest row
+function oosGate(shadow, bt, account) {
+  const why = [], s = stats(shadow.rs || []);
+  if (account === 'live') why.push('live money: only Ibrahim promotes');
+  if (s.n < 150) why.push(`${s.n} shadow trades of this version (out-of-sample route needs 150)`);
+  if (!(s.mean > 0) || !(s.t >= 2)) why.push(`shadow ${s.n ? s.mean.toFixed(3) : '—'} R, t ${s.n ? s.t.toFixed(2) : '—'} (out-of-sample route needs > 0 R and t ≥ 2)`);
+  if (!((bt.cost15 || {}).avgR >= 0)) why.push(`backtest ${(bt.cost15 || {}).avgR} R at 1.5× costs (out-of-sample route needs ≥ 0)`);
+  return { pass: why.length === 0, why, shadow: s };
+}
 function demoteCheck(rs, bt) {
   const s = stats(rs);
   if (s.n < 100) return { demote: false, why: [`${s.n} trades (judged after 100)`] };
@@ -52,4 +65,4 @@ function demoteCheck(rs, bt) {
   return { demote: why.length > 0, why };
 }
 
-module.exports = { tBar, stats, backtestGate, shadowGate, demoteCheck, maxDD };
+module.exports = { tBar, stats, backtestGate, shadowGate, oosGate, demoteCheck, maxDD };
