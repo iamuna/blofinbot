@@ -1,31 +1,31 @@
-{"t":"2026-10-20T09:46:26.222Z","level":"info","agent":"universe","msg":"status starting → ok"}
-{"t":"2026-10-20T09:46:26.222Z","level":"info","agent":"universe","msg":"universe: 43 coins (binance archive (API unreachable)) +BTC,ETH,ZEC,SOL,XRP,HYPE,DOGE,BNB,WLD,SUI,STRK,ENA,PUMP,UNI,PEPE,TIA,INJ,ADA,AVAX,TAO,LINK,QNT,ARB,ONDO,AAVE,BCH,ZRO,DOT,XMR,HBAR,PENGU,TRX,ASTER,XLM,CRV,VVV,AERO,NIL,ICP,ETHFI,DASH,USELESS,MARSCOIN"}
-{"t":"2026-10-20T09:46:26.222Z","level":"info","agent":"universe","msg":"started"}
-{"t":"2026-10-20T09:46:26.225Z","level":"info","agent":"blofin-feed","msg":"subscribed 43 coins on 4 connections"}
-{"t":"2026-10-20T09:46:26.226Z","level":"info","agent":"blofin-feed","msg":"started"}
-{"t":"2026-10-20T09:46:26.228Z","level":"info","agent":"binance-feed","msg":"subscribed 43 coins, 88 streams on 2 connections"}
-{"t":"2026-10-20T09:46:26.228Z","level":"info","agent":"binance-feed","msg":"started"}
-{"t":"2026-10-20T09:46:26.229Z","level":"info","agent":"guard","msg":"started"}
-{"t":"2026-10-20T09:46:26.230Z","level":"info","agent":"recorder","msg":"started"}
-{"t":"2026-10-20T09:46:26.278Z","level":"info","agent":"events","msg":"status starting → ok"}
-{"t":"2026-10-20T09:46:26.278Z","level":"info","agent":"events","msg":"started"}
-{"t":"2026-10-20T09:46:26.297Z","level":"info","agent":"brain","msg":"started"}
-{"t":"2026-10-20T09:46:26.299Z","level":"info","agent":"coordinator","msg":"risk limits sha256 00fb82bc38ee8f7f…"}
-{"t":"2026-10-20T09:46:26.299Z","level":"info","agent":"coordinator","msg":"started"}
-{"t":"2026-10-20T09:46:26.300Z","level":"info","agent":"trader","msg":"started"}
-{"t":"2026-10-20T09:46:26.301Z","level":"info","agent":"accountant","msg":"started"}
-{"t":"2026-10-20T09:46:26.302Z","level":"info","agent":"watchdog","msg":"started"}
-{"t":"2026-10-20T09:46:26.303Z","level":"info","agent":"guardian","msg":"status starting → ok"}
-{"t":"2026-10-20T09:46:26.303Z","level":"info","agent":"guardian","msg":"started"}
-{"t":"2026-10-20T09:46:26.303Z","level":"warn","agent":"herald","msg":"status starting → degraded: no Telegram token/chat id: messages are only logged"}
-{"t":"2026-10-20T09:46:26.304Z","level":"info","agent":"herald","msg":"started"}
-{"t":"2026-10-20T09:46:26.322Z","level":"info","agent":"state-sync","msg":"started"}
-{"t":"2026-10-20T09:46:26.322Z","level":"info","agent":"runner","msg":"running universe, blofin-feed, binance-feed, guard, recorder, events, brain, coordinator, trader, accountant, watchdog, guardian, herald, state-sync on the memory bus, data in /tmp/sw, signing and checking authority messages"}
-{"t":"2026-10-20T09:46:27.161Z","level":"info","agent":"blofin-feed","msg":"sample funding-rate","extra":"{\"arg\":{\"channel\":\"funding-rate\",\"instId\":\"BTC-USDT\"},\"data\":[{\"instId\":\"BTC-USDT\",\"fundingRate\":\"0.00012556\",\"fundingTime\":\"1792512000000\"}]}"}
-{"t":"2026-10-20T09:46:27.195Z","level":"info","agent":"blofin-feed","msg":"sample books5","extra":"{\"arg\":{\"channel\":\"books5\",\"instId\":\"ZEC-USDT\"},\"action\":\"snapshot\",\"data\":{\"asks\":[[\"1127.02\",\"1\"],[\"1127.03\",\"156\"],[\"1127.04\",\"6\"],[\"1127.06\",\"33\"],[\"1127.07\",\"13\"]],\"bids\":[[\"1126.8\",\"55\"],[\"1126.79\",\"25\"],[\"1126.76\",\"16\"],[\"1126.75\",\"86\"],[\"1126.73\",\"1820\"]],\"ts\":\"1792489586810\"}}"}
-{"t":"2026-10-20T09:46:27.232Z","level":"info","agent":"blofin-feed","msg":"sample candle1m","extra":"{\"arg\":{\"channel\":\"candle1m\",\"instId\":\"BTC-USDT\"},\"data\":[[\"1792489560000\",\"81355\",\"81355\",\"81350.9\",\"81351\",\"1684.5\",\"1.6845\",\"137035.821\",\"0\"]]}"}
-{"t":"2026-10-20T09:46:27.391Z","level":"info","agent":"blofin-feed","msg":"sample trades","extra":"{\"arg\":{\"channel\":\"trades\",\"instId\":\"XRP-USDT\"},\"data\":[{\"instId\":\"XRP-USDT\",\"tradeId\":\"44174374970\",\"price\":\"1.2906\",\"size\":\"0.01\",\"side\":\"sell\",\"ts\":\"1792489587282\"}]}"}
-{"t":"2026-10-20T09:46:27.504Z","level":"info","agent":"blofin-feed","msg":"sample tickers","extra":"{\"arg\":{\"channel\":\"tickers\",\"instId\":\"DOGE-USDT\"},\"data\":[{\"askPrice\":\"0.07877\",\"askSize\":\"186\",\"bidPrice\":\"0.07875\",\"bidSize\":\"606\",\"high24h\":\"0.08005\",\"instId\":\"DOGE-USDT\",\"last\":\"0.07878\",\"lastSize\":\"9\",\"low24h\":\"0.07837\",\"open24h\":\"0.07987\",\"ts\":\"1792489563205\",\"vol24h\":\"83754.13\",\"volCurrency24h\":\"83754130\"}]}"}
-{"t":"2026-10-20T09:46:41.302Z","level":"info","agent":"herald","msg":"(not sent) 🚨 herald degraded: no Telegram token/chat id: messages are only logged"}
-{"t":"2026-10-20T09:51:26.563Z","level":"warn","agent":"binance-feed","msg":"open interest: HTTP 451 https://fapi.binance.com/fapi/v1/openInterest?symbol=ZECUSDT {\n  \"code\": 0,\n  \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received t"}
-{"t":"2026-10-20T09:54:26.323Z","level":"info","agent":"runner","msg":"stopping (8 minutes done)"}
+{"t":"2026-10-20T10:39:44.036Z","level":"info","agent":"universe","msg":"status starting → ok"}
+{"t":"2026-10-20T10:39:44.036Z","level":"info","agent":"universe","msg":"universe: 46 coins (binance archive (API unreachable)) +BTC,ETH,ZEC,SOL,NEAR,XRP,Q,HYPE,DOGE,BNB,WLD,SUI,STRK,ENA,UNI,PEPE,TIA,INJ,ADA,AVAX,TAO,LINK,QNT,ARB,ONDO,SAND,AAVE,BCH,ZRO,LTC,DOT,XMR,PONS,HBAR,LIT,PENGU,TRX,ASTER,XLM,VVV,AERO,NIL,ETHFI,DASH,USELESS,MARSCOIN"}
+{"t":"2026-10-20T10:39:44.036Z","level":"info","agent":"universe","msg":"started"}
+{"t":"2026-10-20T10:39:44.040Z","level":"info","agent":"blofin-feed","msg":"subscribed 46 coins on 4 connections"}
+{"t":"2026-10-20T10:39:44.041Z","level":"info","agent":"blofin-feed","msg":"started"}
+{"t":"2026-10-20T10:39:44.043Z","level":"info","agent":"binance-feed","msg":"subscribed 46 coins, 94 streams on 2 connections"}
+{"t":"2026-10-20T10:39:44.043Z","level":"info","agent":"binance-feed","msg":"started"}
+{"t":"2026-10-20T10:39:44.044Z","level":"info","agent":"guard","msg":"started"}
+{"t":"2026-10-20T10:39:44.044Z","level":"info","agent":"recorder","msg":"started"}
+{"t":"2026-10-20T10:39:44.084Z","level":"info","agent":"events","msg":"status starting → ok"}
+{"t":"2026-10-20T10:39:44.084Z","level":"info","agent":"events","msg":"started"}
+{"t":"2026-10-20T10:39:44.104Z","level":"info","agent":"brain","msg":"started"}
+{"t":"2026-10-20T10:39:44.106Z","level":"info","agent":"coordinator","msg":"risk limits sha256 00fb82bc38ee8f7f…"}
+{"t":"2026-10-20T10:39:44.106Z","level":"info","agent":"coordinator","msg":"started"}
+{"t":"2026-10-20T10:39:44.107Z","level":"info","agent":"trader","msg":"started"}
+{"t":"2026-10-20T10:39:44.108Z","level":"info","agent":"accountant","msg":"started"}
+{"t":"2026-10-20T10:39:44.109Z","level":"info","agent":"watchdog","msg":"started"}
+{"t":"2026-10-20T10:39:44.109Z","level":"info","agent":"guardian","msg":"status starting → ok"}
+{"t":"2026-10-20T10:39:44.110Z","level":"info","agent":"guardian","msg":"started"}
+{"t":"2026-10-20T10:39:44.111Z","level":"warn","agent":"herald","msg":"status starting → degraded: no Telegram token/chat id: messages are only logged"}
+{"t":"2026-10-20T10:39:44.111Z","level":"info","agent":"herald","msg":"started"}
+{"t":"2026-10-20T10:39:44.125Z","level":"info","agent":"state-sync","msg":"started"}
+{"t":"2026-10-20T10:39:44.125Z","level":"info","agent":"runner","msg":"running universe, blofin-feed, binance-feed, guard, recorder, events, brain, coordinator, trader, accountant, watchdog, guardian, herald, state-sync on the memory bus, data in /tmp/sw, signing and checking authority messages"}
+{"t":"2026-10-20T10:39:44.929Z","level":"info","agent":"blofin-feed","msg":"sample funding-rate","extra":"{\"arg\":{\"channel\":\"funding-rate\",\"instId\":\"BTC-USDT\"},\"data\":[{\"instId\":\"BTC-USDT\",\"fundingRate\":\"0.00008916\",\"fundingTime\":\"1792512000000\"}]}"}
+{"t":"2026-10-20T10:39:44.966Z","level":"info","agent":"blofin-feed","msg":"sample books5","extra":"{\"arg\":{\"channel\":\"books5\",\"instId\":\"HYPE-USDT\"},\"action\":\"snapshot\",\"data\":{\"asks\":[[\"78.296\",\"461\"],[\"78.303\",\"3\"],[\"78.304\",\"29\"],[\"78.305\",\"365\"],[\"78.306\",\"1527\"]],\"bids\":[[\"78.295\",\"1523\"],[\"78.293\",\"141\"],[\"78.292\",\"223\"],[\"78.291\",\"3977\"],[\"78.29\",\"245\"]],\"ts\":\"1792492783914\"}}"}
+{"t":"2026-10-20T10:39:45.210Z","level":"info","agent":"blofin-feed","msg":"sample tickers","extra":"{\"arg\":{\"channel\":\"tickers\",\"instId\":\"ETH-USDT\"},\"data\":[{\"askPrice\":\"2383.47\",\"askSize\":\"11352\",\"bidPrice\":\"2383.45\",\"bidSize\":\"32022\",\"high24h\":\"2428.39\",\"instId\":\"ETH-USDT\",\"last\":\"2383.46\",\"lastSize\":\"131\",\"low24h\":\"2372.63\",\"open24h\":\"2424.37\",\"ts\":\"1792492771998\",\"vol24h\":\"2451262.2\",\"volCurrency24h\":\"24512.622\"}]}"}
+{"t":"2026-10-20T10:39:45.547Z","level":"info","agent":"blofin-feed","msg":"sample trades","extra":"{\"arg\":{\"channel\":\"trades\",\"instId\":\"Q-USDT\"},\"data\":[{\"instId\":\"Q-USDT\",\"tradeId\":\"11586334994\",\"price\":\"0.113336\",\"size\":\"2\",\"side\":\"sell\",\"ts\":\"1792492785453\"}]}"}
+{"t":"2026-10-20T10:39:45.792Z","level":"info","agent":"blofin-feed","msg":"sample candle1m","extra":"{\"arg\":{\"channel\":\"candle1m\",\"instId\":\"BNB-USDT\"},\"data\":[[\"1792492740000\",\"729.28\",\"729.42\",\"729.28\",\"729.42\",\"56\",\"0.56\",\"408.4668\",\"0\"]]}"}
+{"t":"2026-10-20T10:39:59.109Z","level":"info","agent":"herald","msg":"(not sent) 🚨 herald degraded: no Telegram token/chat id: messages are only logged"}
+{"t":"2026-10-20T10:44:44.448Z","level":"warn","agent":"binance-feed","msg":"open interest: HTTP 451 https://fapi.binance.com/fapi/v1/openInterest?symbol=ZECUSDT {\n  \"code\": 0,\n  \"msg\": \"Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received t"}
+{"t":"2026-10-20T10:47:44.125Z","level":"info","agent":"runner","msg":"stopping (8 minutes done)"}
