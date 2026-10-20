@@ -2,10 +2,12 @@ name: Swarm 5-year sweep (every strategy × every timeframe, walk-forward)
 
 # 1. plan:   the point-in-time universe from Binance's archive (daily volumes of every USDT perpetual)
 # 2. build:  1-minute bars, open interest and funding for every coin while it was in the universe (8 shards),
-#            stored as assets of the release "swarm-history-v1" (built once; later runs reuse it)
+#            stored as assets of the release "swarm-history-v1" — one <coin>.tar each; a rerun builds only the
+#            coins not stored yet, so a failed or cancelled build resumes
 # 3. sweep:  every strategy × every timeframe on that history (10 jobs × 4 processes = 40 coin shards)
 # 4. select: walk-forward selection; the report goes to the swarm-reports branch (history/<date>/)
-# Runs on a push that changes history/ or this file, or by hand. history/REBUILD: change it to rebuild the data.
+# Runs on a push that changes history/ or this file, or by hand. history/REBUILD: change it to rebuild the data
+# from scratch (new plan). A push cancels a running sweep (concurrency).
 
 on:
   push:
@@ -30,34 +32,41 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     outputs:
-      built: ${{ steps.check.outputs.built }}
+      build: ${{ steps.need.outputs.build }}
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 2 }
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
-      - name: Is the history already built?
-        env: { GH_TOKEN: "${{ github.token }}" }
+      - name: Plan already in the release?
         id: check
+        env: { GH_TOKEN: "${{ github.token }}" }
         run: |
-          n=$(gh release view "$TAG" -R "${{ github.repository }}" --json assets -q '[.assets[].name | select(test("^manifest-[0-9]+\\.json$"))] | length' 2>/dev/null || echo 0)
-          changed=$(git diff --name-only HEAD~1 HEAD -- history/REBUILD history/build.js | wc -l)
-          if [ "$n" = "$BUILD_SHARDS" ] && [ "$changed" = "0" ]; then echo "built=true" >> "$GITHUB_OUTPUT"; else echo "built=false" >> "$GITHUB_OUTPUT"; fi
-          echo "manifests in release: $n, builder changed: $changed"
+          rebuild=$(git diff --name-only HEAD~1 HEAD -- history/REBUILD | wc -l)
+          mkdir -p data
+          if [ "$rebuild" = "0" ] && gh release download "$TAG" -R "${{ github.repository }}" -p plan.json -D data 2>/dev/null; then echo "fresh=false" >> "$GITHUB_OUTPUT"; else echo "fresh=true" >> "$GITHUB_OUTPUT"; fi
       - name: Plan the universe
-        if: steps.check.outputs.built != 'true'
+        if: steps.check.outputs.fresh == 'true'
         run: node history/build.js plan data --from 2021-10 --to 2026-09 --parallel 32
       - name: Release for the data
+        if: steps.check.outputs.fresh == 'true'
         env: { GH_TOKEN: "${{ github.token }}" }
-        if: steps.check.outputs.built != 'true'
         run: |
           gh release delete "$TAG" -R "${{ github.repository }}" -y --cleanup-tag 2>/dev/null || true
           gh release create "$TAG" -R "${{ github.repository }}" --target "${{ github.sha }}" --title "Swarm 5-year history (data for the sweep)" --notes "Binance USD-M 1m bars, open interest and funding, 2021-10 → 2026-09, point-in-time universe. Built by .github/workflows/swarm-history.yml." --prerelease
           gh release upload "$TAG" -R "${{ github.repository }}" data/universe.json data/plan.json --clobber
+      - name: Coins still to build
+        id: need
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          gh api --paginate "repos/${{ github.repository }}/releases/tags/$TAG" --jq '.id' > /tmp/rid
+          gh api --paginate "repos/${{ github.repository }}/releases/$(cat /tmp/rid)/assets?per_page=100" --jq '.[].name' > data/assets.txt
+          node history/manifest.js data | tee /tmp/m.txt
+          if grep -q "missing:" /tmp/m.txt; then echo "build=true" >> "$GITHUB_OUTPUT"; else echo "build=false" >> "$GITHUB_OUTPUT"; fi
 
   build:
     needs: plan
-    if: needs.plan.outputs.built != 'true'
+    if: needs.plan.outputs.build == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 300
     strategy:
@@ -67,22 +76,27 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "22" }
-      - name: Build shard ${{ matrix.shard }}
+      - name: Build shard ${{ matrix.shard }} (coins not stored yet)
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
           gh release download "$TAG" -R "${{ github.repository }}" -p plan.json -D .
-          node history/build.js coins data --plan plan.json --shard ${{ matrix.shard }}/$BUILD_SHARDS --parallel 8
-      - name: Upload to the release
+          rid=$(gh api "repos/${{ github.repository }}/releases/tags/$TAG" --jq .id)
+          gh api --paginate "repos/${{ github.repository }}/releases/$rid/assets?per_page=100" --jq '.[].name' > have.txt
+          node history/build.js coins data --plan plan.json --have have.txt --shard ${{ matrix.shard }}/$BUILD_SHARDS --parallel 8
+      - name: Upload to the release (each file on its own, three tries)
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
           cd data && du -sh .
-          for c in */; do c=${c%/}; tar -cf "$c.tar" "$c" && rm -rf "$c"; done
-          ls *.tar | xargs -n 20 gh release upload "$TAG" -R "${{ github.repository }}" --clobber
-          gh release upload "$TAG" -R "${{ github.repository }}" manifest-${{ matrix.shard }}.json --clobber
+          failed=0
+          for d in */; do [ -d "$d" ] || continue; c=${d%/}; tar -cf "$c.tar" "$c" && rm -rf "$c"
+            ok=0; for i in 1 2 3; do gh release upload "$TAG" -R "${{ github.repository }}" "$c.tar" --clobber && { ok=1; break; }; sleep $((i * 10)); done
+            [ $ok = 1 ] || { echo "::warning::upload failed: $c"; failed=$((failed + 1)); }; rm -f "$c.tar"
+          done
+          echo "upload failures: $failed"
 
   sweep:
     needs: [plan, build]
-    if: always() && needs.plan.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    if: always() && needs.plan.result == 'success' && needs.build.result != 'cancelled'
     runs-on: ubuntu-latest
     timeout-minutes: 340
     strategy:
@@ -97,7 +111,9 @@ jobs:
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
           mkdir -p data && cd data
-          gh release download "$TAG" -R "${{ github.repository }}" -p 'manifest-*.json' -p universe.json
+          gh release download "$TAG" -R "${{ github.repository }}" -p plan.json -p universe.json
+          rid=$(gh api "repos/${{ github.repository }}/releases/tags/$TAG" --jq .id)
+          gh api --paginate "repos/${{ github.repository }}/releases/$rid/assets?per_page=100" --jq '.[].name' > assets.txt
           node ../history/manifest.js .
           coins=""
           for k in 0 1 2 3; do s=$(( ${{ matrix.job }} * 4 + k )); coins="$coins $(node ../history/sweep.js --data . --shard $s/$SWEEP_SHARDS --print-coins)"; done

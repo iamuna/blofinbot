@@ -5,7 +5,7 @@
  *   node history/build.js plan <outDir> [--from 2021-10] [--to 2026-09] [--parallel 16] [--symbols BTCUSDT,ETHUSDT]
  *       every USDT perpetual in the archive → daily quote volume → the point-in-time universe (the live rules:
  *       7-day average ≥ $20M to enter, < $14M to leave, at most 80 coins) → universe.json + plan.json
- *   node history/build.js coins <outDir> --plan plan.json [--shard 0/8] [--parallel 8] [--no-oi]
+ *   node history/build.js coins <outDir> --plan plan.json [--shard 0/8] [--parallel 8] [--no-oi] [--have names.txt]
  *       per coin in the shard, for every month from --warm-months (7) before its first day in the universe to its last:
  *       <coin>/1m-YYYY-MM.csv.gz, <coin>/oi-YYYY-MM.csv.gz, <coin>/funding.csv.gz (the swarm-data format) and
  *       <outDir>/manifest-<shard>.json
@@ -72,14 +72,17 @@ function coinOf(sym) {
   return { coin: base, scale };
 }
 
-const WARM = +(A['warm-months'] || 7); // history before a coin's first day in the universe: a daily 200-bar average needs ~7 months
+const WARM = +(A['warm-months'] || 7);
+const SAFE = /^[A-Z0-9][A-Z0-9_]*$/; // coin names a release asset can carry (two meme coins have Chinese names: left out) // history before a coin's first day in the universe: a daily 200-bar average needs ~7 months
 
 async function plan() {
   const from = A.from || '2021-10', to = A.to || '2026-09', months = monthsBetween(addMonths(from, -1), to);
   fs.mkdirSync(OUT, { recursive: true });
   let symbols = A.symbols ? A.symbols.split(',') : (await list('data/futures/um/monthly/klines/', true)).map((p) => p.split('/').slice(-2, -1)[0]);
   const meta = {};
-  for (const s of symbols) { const c = coinOf(s); if (c) meta[s] = c; }
+  const skipped = [];
+  for (const s of symbols) { const c = coinOf(s); if (c && SAFE.test(c.coin)) meta[s] = c; else if (c) skipped.push(s); }
+  if (skipped.length) console.log(`left out (names a release asset cannot carry): ${skipped.join(' ')}`);
   symbols = Object.keys(meta);
   console.log(`${symbols.length} USDT perpetual symbols in the archive (after exclusions)`);
   // daily quote volume from the monthly 1d klines
@@ -135,6 +138,9 @@ async function plan() {
 
 async function coins() {
   const P = JSON.parse(fs.readFileSync(path.resolve(A.plan), 'utf8'));
+  // --have <file>: names already stored (one per line, "<coin>.tar") — build only the rest (a rerun resumes)
+  const have = new Set(A.have && fs.existsSync(A.have) ? fs.readFileSync(A.have, 'utf8').split('\n').map((x) => x.trim().replace(/\.tar$/, '')).filter(Boolean) : []);
+  for (const c of Object.keys(P.coins)) if (have.has(c) || !SAFE.test(c)) delete P.coins[c];
   const [si, sn] = String(A.shard || '0/1').split('/').map(Number);
   // greedy balance by months: biggest first, each to the lightest shard
   const loads = Array.from({ length: sn }, () => ({ n: 0, coins: [] }));
