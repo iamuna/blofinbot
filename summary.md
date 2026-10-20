@@ -1,36 +1,37 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-20T07:12:48Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-20T07:13:06Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
-| $10,056.54 | 0.56% | 0% | 0.39% | 25 | $0.50 | $0.80 |
+| $10,057.31 | 0.57% | 16% | 0.39% | 25 | $0.50 | $0.80 |
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
 | XMR | 610.25 | 4.88% | 4.95% | 0.98 | 1 | 0.79 | within band |
 | INJ | 8.5150 | 1.56% | 1.7% | 0.76 | 0.3 | 0.68 | within band |
 | 1000BONK | 0.0029410 | -1.47% | -1.26% | -0.77 | 0 | -1 | within band |
-| NEAR | 4.7860 | 1.31% | 1.19% | 0.86 | 0.23 | 0.89 | within band |
-| Q | 0.11772 | 1.03% | 0.78% | 0.77 | 0.77 | 1 | within band |
+| NEAR | 4.7930 | 1.31% | 1.19% | 0.86 | 0.23 | 0.89 | within band |
+| Q | 0.11860 | 1.03% | 0.78% | 0.77 | 0.77 | 1 | within band |
 | BTC | 81,763 | 0.89% | 1.19% | 0.25 | 0.07 | 0.37 | within band |
 | DOGE | 0.079400 | -0.81% | -0.7% | -0.28 | 0.1 | -0.79 | within band |
 | HYPE | 79.0040 | 0.68% | 0.6% | 0.57 | 0 | 0.16 | within band |
 | ZEC | 1,139.73 | 0.58% | 0.78% | 0.59 | 0.07 | 0.47 | within band |
 | PEPE | 0.0000041830 | 0.57% | 0.57% | 0.27 | 0.47 | -0.37 | within band |
-| XLM | 0.17761 | -0.47% | 0% | -0.04 | 0 | -0.89 | within band |
-| LINK | 12.0010 | 0.45% | 0.76% | 0.35 | 0 | 0.26 | within band |
+| XLM | 0.17775 | -0.47% | 0% | -0.04 | 0 | -0.89 | within band |
+| LINK | 12.0050 | 0.45% | 0.76% | 0.35 | 0 | 0.26 | within band |
 | PUMP | 0.0044430 | 0.41% | 0.63% | 0.46 | 0 | 0.58 | within band |
-| LTC | 59.5400 | 0.37% | 0% | 0.23 | 0.1 | -0.16 | within band |
-| SOL | 104.59 | 0.3% | 0.09% | 0.13 | 0.1 | -0.05 | within band |
-| TAO | 265.54 | 0.23% | 0.5% | 0.25 | 0 | -0.26 | within band |
-| SUI | 0.99470 | 0.21% | 0% | 0.16 | 0.17 | 0.05 | within band |
+| LTC | 59.5500 | 0.37% | 0% | 0.23 | 0.1 | -0.16 | within band |
+| SOL | 104.64 | 0.3% | 0.09% | 0.13 | 0.1 | -0.05 | within band |
+| TAO | 265.46 | 0.23% | 0.5% | 0.25 | 0 | -0.26 | within band |
+| SUI | 0.99560 | 0.21% | 0% | 0.16 | 0.17 | 0.05 | within band |
 | ETH | 2,396.84 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
-| HBAR | 0.083860 | -0.08% | 0% | 0.11 | 0 | -0.47 | within band |
+| HBAR | 0.083910 | -0.08% | 0% | 0.11 | 0 | -0.47 | within band |
 | XRP | 1.3021 | 0% | 0% | 0.07 | 0.1 | -0.68 | within band |
 
 ## Recent events
 
+- `2026-10-20T07:13:01Z` Bot started (run 39385035057): 20 coins (research-data universe 2026-10-19), mode PAPER, checking every minute.
 - `2026-10-20T07:12:48Z` Run 39349644516 stopped (SIGINT) after 191 minutes; state saved, the next run continues from it.
 - `2026-10-20T04:03:09Z` PEPE bought 1.381e+7 at 0.0000042160 (limit, maker fee) — target 0.6% of equity (was 0.0%)
 - `2026-10-20T04:03:06Z` XMR bought 0.2103 at 606.12 (limit, maker fee) — target 4.9% of equity (was 3.7%)
@@ -50,4 +51,3 @@ Updated 2026-10-20T07:12:48Z · 20 coins · mode: **PAPER** · risk governor: no
 - `2026-10-19T11:01:11Z` TAO: buy 0.1876 (~$50.74) — target 0.5% of equity (was 0.0%)
 - `2026-10-19T11:01:11Z` QNT: sell 0.4018 (~$80.96) — target 0.0% of equity (was 0.8%)
 - `2026-10-19T10:58:19Z` Bot started (run 39204589173): 21 coins (research-data universe 2026-10-19), mode PAPER, checking every minute.
-- `2026-10-19T10:58:19Z` Analysed TAO: 91% annual volatility, 1.29× BTC (corr 0.63); trends at 1d, snaps back at 1w/1M; fees are 12% of an hourly candle, 2% of a daily one → signals from 4h and up.
