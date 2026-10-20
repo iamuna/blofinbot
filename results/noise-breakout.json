@@ -2,6 +2,7 @@
  "name": "noise-breakout",
  "base": "noise-breakout",
  "params": {},
+ "ph": "c3516eeda2",
  "origin": "config",
  "idea": null,
  "source": null,
@@ -195,11 +196,11 @@
    "average -0.4171 R at 1.5× costs (need > 0)",
    "newest third -0.2711 R (need > 0)",
    "positive in fewer than 2 of 3 thirds",
-   "t -46.53 < 2.50 (bar for 10 tries)"
+   "t -46.53 < 2.90 (bar for 63 tries)"
   ],
-  "bar": 2.5
+  "bar": 2.899670274726791
  },
- "testedAt": "2026-10-20T04:18:30.291Z",
+ "testedAt": "2026-10-20T04:36:50.206Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-18T23:59:00.000Z",

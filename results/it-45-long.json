@@ -15,6 +15,7 @@
   ],
   "againstBias": 0.3
  },
+ "ph": "c2f1b6fa12",
  "origin": "config",
  "idea": null,
  "source": null,
@@ -203,11 +204,13 @@
   }
  },
  "gate": {
-  "pass": true,
-  "why": [],
-  "bar": 2.5
+  "pass": false,
+  "why": [
+   "t 2.52 < 2.90 (bar for 63 tries)"
+  ],
+  "bar": 2.899670274726791
  },
- "testedAt": "2026-10-20T04:18:30.291Z",
+ "testedAt": "2026-10-20T04:36:50.206Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-18T23:59:00.000Z",

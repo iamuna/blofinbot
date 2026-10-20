@@ -12,6 +12,7 @@
   "er": 0.35,
   "againstBias": 0.2
  },
+ "ph": "9d489bf646",
  "origin": "config",
  "idea": null,
  "source": null,
@@ -203,11 +204,11 @@
   "pass": false,
   "why": [
    "positive in fewer than 2 of 3 thirds",
-   "t 0.61 < 2.50 (bar for 10 tries)"
+   "t 0.61 < 2.90 (bar for 63 tries)"
   ],
-  "bar": 2.5
+  "bar": 2.899670274726791
  },
- "testedAt": "2026-10-20T04:18:30.291Z",
+ "testedAt": "2026-10-20T04:36:50.206Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-18T23:59:00.000Z",
