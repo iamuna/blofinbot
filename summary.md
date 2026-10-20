@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-20T07:18:20.290Z · account **PAPER** · risk mode normal
+Updated 2026-10-20T07:28:20.287Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -35,4 +35,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: TIA: wide-spread; ARC: wide-spread; EPIC: blofin-stale,bars-missing,wide-spread,price-divergence; ETHFI: wide-spread
+Not tradable now: Q: wide-spread; PENGU: wide-spread; ARC: wide-spread; EPIC: blofin-stale,bars-missing,wide-spread,price-divergence
