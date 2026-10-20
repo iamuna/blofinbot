@@ -18,7 +18,9 @@ class Herald extends Agent {
     this.token = process.env.TELEGRAM_BOT_TOKEN || (this.cfg.herald || {}).token; this.chat = String(process.env.TELEGRAM_CHAT_ID || (this.cfg.herald || {}).chatId || '');
     this.fetch = this.ctx.fetch || fetch; this.sent = new Map(); this.offset = 0; this.hourTrades = []; this.lastDaily = '';
     if (!this.token || !this.chat) this.setStatus('degraded', 'no Telegram token/chat id: messages are only logged');
-    this.subscribe('risk.state', (m) => this.onRisk(m.data));
+    this.hb = {}; this.risk = null;
+    this.subscribe('sys.heartbeat', (m) => { this.hb[m.data.agent] = Object.assign({ at: m.ts }, m.data); });
+    this.subscribe('risk.state', (m) => { this.risk = m.data; this.onRisk(m.data); });
     this.subscribe('sys.log', (m) => { if (m.data.level === 'error') this.say(`⚠️ ${m.data.agent}: ${m.data.msg}`, `err:${m.data.agent}:${m.data.msg}`, 600000); });
     this.subscribe('sys.alert', (m) => this.say(`🚨 ${m.data.text}`, `alert:${m.data.key || m.data.text}`, m.data.everyMs || 600000));
     this.subscribe('trade.closed', (m) => this.hourTrades.push(m.data));
@@ -50,10 +52,43 @@ class Herald extends Agent {
     this.say(`Risk mode ${prev || '?'} → ${r.mode}${r.reasons.length ? ': ' + r.reasons.join('; ') : ''}${r.mode === 'halt' ? '\nTrading is stopped. Reply /resume when you have looked at it.' : ''}`);
   }
   async statusText() {
-    const a = (await this.bus.kv.get('account')) || {}, p = (await this.bus.kv.get('positions')) || { open: [] };
-    const L = [`Account (${a.mode || '?'}): $${a.equity} (${a.equity0 ? (((a.equity / a.equity0) - 1) * 100).toFixed(2) : '?'}% since start), today ${a.dayPnlPct != null ? (a.dayPnlPct * 100).toFixed(2) : '?'}%, drawdown ${a.dd != null ? (a.dd * 100).toFixed(1) : '?'}%`];
-    L.push(`${p.open.length} open: ${p.open.map((x) => `${x.side > 0 ? '+' : '−'}${x.coin}`).join(' ') || 'none'} · open risk ${a.openRiskPct != null ? (a.openRiskPct * 100).toFixed(2) : '?'}% · ${a.trades || 0} trades, win rate ${a.winRate != null ? (a.winRate * 100).toFixed(0) + '%' : '—'}`);
-    for (const [k, v] of Object.entries(a.byStrategy || {})) L.push(`  ${k}: ${v.trades} trades, ${v.sumR.toFixed(1)} R, $${v.netUsd.toFixed(2)}`);
+    const kv = (k) => this.bus.kv.get(k).catch(() => null);
+    const [a0, p0, u, g, modes] = await Promise.all([kv('account'), kv('positions'), kv('universe'), kv('guard'), kv('strategyModes')]);
+    const a = a0 || {}, p = p0 || { open: [], working: [] }, r = this.risk || {}, hb = this.hb || {};
+    const now = this.now(), agents = Object.values(hb), bad = agents.filter((x) => x.status !== 'ok');
+    const wd = (hb.watchdog || {}).metrics || {}, feed = (hb['blofin-feed'] || {}).metrics || {}, bf = (hb['binance-feed'] || {}).metrics || {};
+    const pct = (x, d = 2) => (x != null && isFinite(x) ? (x * 100).toFixed(d) + '%' : '—');
+    const usd = (x) => (x != null && isFinite(x) ? (x < 0 ? '−$' : '$') + Math.abs(x).toFixed(2) : '—');
+    const ago = (t) => { if (!t) return '—'; const s = Math.round((now - t) / 1000); return s < 90 ? s + ' s ago' : s < 5400 ? Math.round(s / 60) + ' min ago' : (s / 3600).toFixed(1) + ' h ago'; };
+    const L = [];
+    L.push('📊 Swarm status · ' + new Date(now).toLocaleString('en-GB', { timeZone: 'Europe/Amsterdam' }));
+    L.push('Mode ' + (a.mode || 'paper').toUpperCase() + ' · risk ' + (r.mode || this.riskMode || '?') + (r.budgetScale != null && r.budgetScale !== 1 ? ' (budget ×' + r.budgetScale + ')' : '') + (p.paused ? ' · PAUSED' : ''));
+    if (r.reasons && r.reasons.length) L.push('Risk reasons: ' + r.reasons.join('; '));
+    if (hb.herald && hb.herald.startedAt) L.push('Running for ' + ago(hb.herald.startedAt).replace(' ago', ''));
+    L.push('', '💰 Account');
+    L.push('Equity ' + usd(a.equity) + ' · cash ' + usd(a.cash) + ' · start ' + usd(a.equity0) + (a.equity0 ? ' (' + pct(a.equity / a.equity0 - 1) + ' total)' : ''));
+    L.push('Unrealised ' + usd(a.upl) + ' · peak ' + usd(a.peak) + ' · drawdown ' + pct(a.dd, 1));
+    L.push('Today ' + pct(a.dayPnlPct) + ' (day start ' + usd(a.dayStart) + ') · open risk ' + pct(a.openRiskPct) + ' · gross ' + usd(a.gross) + (a.grossX != null ? ' (' + a.grossX.toFixed(2) + '×)' : ''));
+    L.push('Fees ' + usd(a.fees) + ' · funding ' + usd(a.funding));
+    L.push('Closed trades: ' + (a.trades || 0) + ' · win rate ' + pct(a.winRate, 0));
+    L.push('', '📂 Positions: ' + p.open.length + ' open · ' + (p.working || []).length + ' working orders');
+    for (const x of p.open) L.push('  ' + (x.side > 0 ? 'LONG ' : 'SHORT') + ' ' + x.coin + ' · ' + ((x.strategies || []).join('+') || '?'));
+    L.push('', '🧠 Strategies (mode · results)');
+    const names = [...new Set([...Object.keys(modes || {}), ...Object.keys(a.byStrategy || {})])].sort();
+    if (!names.length) L.push('  none loaded');
+    for (const k of names) { const st = (a.byStrategy || {})[k]; L.push('  ' + k + ': ' + ((modes || {})[k] || 'off') + ' · ' + (st ? st.trades + ' trades, ' + Number(st.sumR).toFixed(1) + ' R, ' + usd(st.netUsd) : 'no trades yet')); }
+    L.push('', '🌐 Market data');
+    L.push('Universe ' + (u && u.coins ? u.coins.length : '?') + ' coins (' + ((u && u.source) || '?') + ', updated ' + ago(u && u.ts) + ')');
+    const nt = Object.entries((g && g.coins) || {}).filter(([, v]) => v && !v.tradable).map(([k, v]) => k + ' (' + (v.reasons || []).join(', ') + ')');
+    L.push('Not tradable now: ' + (nt.length ? nt.join('; ') : 'none'));
+    L.push('BloFin feed: ' + (feed.sockets || '?') + ' sockets, last message ' + (feed.lastMsgAgeMs != null ? feed.lastMsgAgeMs + ' ms' : '—') + ', ' + (feed.msgs || 0) + ' msgs, ' + (feed.trades || 0) + ' trades');
+    L.push('Binance feed: ' + (bf.sockets || '?') + ' sockets' + (bf.msgs ? ', ' + bf.msgs + ' msgs' : ''));
+    L.push('', '🖥 PC');
+    if (wd.memTotalMb) L.push('RAM ' + (wd.memTotalMb - wd.memFreeMb) + ' of ' + wd.memTotalMb + ' MB used, ' + wd.memFreeMb + ' MB free · swarm process ' + (wd.rssMb != null ? wd.rssMb + ' MB' : '?'));
+    else if (wd.memFreeMb != null) L.push('RAM ' + wd.memFreeMb + ' MB free (the swarm memory figure needs the newest update)');
+    else L.push('RAM: no reading yet');
+    L.push('Disk free ' + (wd.diskFreePct != null ? wd.diskFreePct + '%' : '—'));
+    L.push('', '⚙️ Agents: ' + (agents.length - bad.length) + '/' + agents.length + ' ok' + (bad.length ? ' · ' + bad.map((x) => x.agent + ' ' + x.status + (x.why ? ' (' + x.why + ')' : '')).join('; ') : ''));
     return L.join('\n');
   }
   async digest() {
