@@ -19,7 +19,7 @@
   "BOB_BOBUSDT",
   "VELODROME"
  ],
- "minutes": 84,
+ "minutes": 89,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -29,6 +29,7 @@
  "variants": {
   "intraday-trend@1": {
    "n": 61121,
+   "tinyRisk": 256,
    "ideas": {
     "ideas": 61131,
     "rejected": 0,
@@ -38,6 +39,7 @@
   },
   "intraday-trend@3": {
    "n": 20876,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 20878,
     "rejected": 0,
@@ -47,6 +49,7 @@
   },
   "intraday-trend@5": {
    "n": 12815,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 12817,
     "rejected": 0,
@@ -56,6 +59,7 @@
   },
   "intraday-trend@15": {
    "n": 4422,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 4423,
     "rejected": 0,
@@ -65,6 +69,7 @@
   },
   "intraday-trend@30": {
    "n": 2346,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 2346,
     "rejected": 0,
@@ -74,6 +79,7 @@
   },
   "intraday-trend@60": {
    "n": 1245,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1245,
     "rejected": 0,
@@ -83,6 +89,7 @@
   },
   "intraday-trend@120": {
    "n": 618,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 619,
     "rejected": 0,
@@ -92,6 +99,7 @@
   },
   "intraday-trend@240": {
    "n": 286,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 286,
     "rejected": 0,
@@ -101,6 +109,7 @@
   },
   "intraday-trend@720": {
    "n": 95,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 95,
     "rejected": 0,
@@ -110,6 +119,7 @@
   },
   "intraday-trend@1440": {
    "n": 60,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 60,
     "rejected": 0,
@@ -119,6 +129,7 @@
   },
   "trend-pullback@1": {
    "n": 39261,
+   "tinyRisk": 120,
    "ideas": {
     "ideas": 54246,
     "rejected": 0,
@@ -128,6 +139,7 @@
   },
   "trend-pullback@3": {
    "n": 12441,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 16796,
     "rejected": 0,
@@ -137,6 +149,7 @@
   },
   "trend-pullback@5": {
    "n": 7274,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 9712,
     "rejected": 0,
@@ -146,6 +159,7 @@
   },
   "trend-pullback@15": {
    "n": 2249,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 2978,
     "rejected": 0,
@@ -155,6 +169,7 @@
   },
   "trend-pullback@30": {
    "n": 992,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1307,
     "rejected": 0,
@@ -164,6 +179,7 @@
   },
   "trend-pullback@60": {
    "n": 350,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 464,
     "rejected": 0,
@@ -173,6 +189,7 @@
   },
   "trend-pullback@120": {
    "n": 90,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 118,
     "rejected": 0,
@@ -182,6 +199,7 @@
   },
   "trend-pullback@240": {
    "n": 0,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 0,
     "rejected": 0,
@@ -191,6 +209,7 @@
   },
   "trend-pullback@720": {
    "n": 0,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 0,
     "rejected": 0,
@@ -200,6 +219,7 @@
   },
   "trend-pullback@1440": {
    "n": 0,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 0,
     "rejected": 0,
@@ -209,6 +229,7 @@
   },
   "overshoot-fade@1": {
    "n": 3130,
+   "tinyRisk": 174,
    "ideas": {
     "ideas": 3130,
     "rejected": 0,
@@ -218,6 +239,7 @@
   },
   "overshoot-fade@3": {
    "n": 1565,
+   "tinyRisk": 6,
    "ideas": {
     "ideas": 1565,
     "rejected": 0,
@@ -227,6 +249,7 @@
   },
   "overshoot-fade@5": {
    "n": 987,
+   "tinyRisk": 1,
    "ideas": {
     "ideas": 987,
     "rejected": 0,
@@ -236,6 +259,7 @@
   },
   "overshoot-fade@15": {
    "n": 303,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 303,
     "rejected": 0,
@@ -245,6 +269,7 @@
   },
   "overshoot-fade@30": {
    "n": 173,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 173,
     "rejected": 0,
@@ -254,6 +279,7 @@
   },
   "overshoot-fade@60": {
    "n": 60,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 60,
     "rejected": 0,
@@ -263,6 +289,7 @@
   },
   "overshoot-fade@120": {
    "n": 28,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 28,
     "rejected": 0,
@@ -272,6 +299,7 @@
   },
   "overshoot-fade@240": {
    "n": 13,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 13,
     "rejected": 0,
@@ -281,6 +309,7 @@
   },
   "overshoot-fade@720": {
    "n": 8,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 8,
     "rejected": 0,
@@ -290,6 +319,7 @@
   },
   "overshoot-fade@1440": {
    "n": 9,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 9,
     "rejected": 0,
@@ -299,6 +329,7 @@
   },
   "noise-breakout@5": {
    "n": 52639,
+   "tinyRisk": 50,
    "ideas": {
     "ideas": 52665,
     "rejected": 21750,
@@ -308,6 +339,7 @@
   },
   "noise-breakout@15": {
    "n": 32385,
+   "tinyRisk": 12,
    "ideas": {
     "ideas": 32394,
     "rejected": 7131,
@@ -317,6 +349,7 @@
   },
   "noise-breakout@30": {
    "n": 21951,
+   "tinyRisk": 8,
    "ideas": {
     "ideas": 21954,
     "rejected": 3519,
@@ -326,6 +359,7 @@
   },
   "noise-breakout@60": {
    "n": 13730,
+   "tinyRisk": 3,
    "ideas": {
     "ideas": 13730,
     "rejected": 1688,
@@ -335,6 +369,7 @@
   },
   "noise-breakout@120": {
    "n": 7827,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 7827,
     "rejected": 784,
@@ -344,6 +379,7 @@
   },
   "rsi-macd-rev@1": {
    "n": 42122,
+   "tinyRisk": 693,
    "ideas": {
     "ideas": 42328,
     "rejected": 0,
@@ -353,6 +389,7 @@
   },
   "rsi-macd-rev@3": {
    "n": 13241,
+   "tinyRisk": 2,
    "ideas": {
     "ideas": 13296,
     "rejected": 0,
@@ -362,6 +399,7 @@
   },
   "rsi-macd-rev@5": {
    "n": 7804,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 7833,
     "rejected": 0,
@@ -371,6 +409,7 @@
   },
   "rsi-macd-rev@15": {
    "n": 2584,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 2592,
     "rejected": 0,
@@ -380,6 +419,7 @@
   },
   "rsi-macd-rev@30": {
    "n": 1429,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1438,
     "rejected": 0,
@@ -389,6 +429,7 @@
   },
   "rsi-macd-rev@60": {
    "n": 794,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 799,
     "rejected": 0,
@@ -398,6 +439,7 @@
   },
   "rsi-macd-rev@120": {
    "n": 421,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 425,
     "rejected": 0,
@@ -407,6 +449,7 @@
   },
   "rsi-macd-rev@240": {
    "n": 199,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 200,
     "rejected": 0,
@@ -416,6 +459,7 @@
   },
   "rsi-macd-rev@720": {
    "n": 52,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 55,
     "rejected": 0,
@@ -425,6 +469,7 @@
   },
   "rsi-macd-rev@1440": {
    "n": 23,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 24,
     "rejected": 0,
@@ -434,6 +479,7 @@
   },
   "rsi-macd-trend@1": {
    "n": 160694,
+   "tinyRisk": 3711,
    "ideas": {
     "ideas": 161328,
     "rejected": 0,
@@ -443,6 +489,7 @@
   },
   "rsi-macd-trend@3": {
    "n": 52673,
+   "tinyRisk": 18,
    "ideas": {
     "ideas": 52886,
     "rejected": 0,
@@ -452,6 +499,7 @@
   },
   "rsi-macd-trend@5": {
    "n": 31391,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 31517,
     "rejected": 0,
@@ -461,6 +509,7 @@
   },
   "rsi-macd-trend@15": {
    "n": 10163,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 10200,
     "rejected": 0,
@@ -470,6 +519,7 @@
   },
   "rsi-macd-trend@30": {
    "n": 4999,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 5016,
     "rejected": 0,
@@ -479,6 +529,7 @@
   },
   "rsi-macd-trend@60": {
    "n": 2409,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 2413,
     "rejected": 0,
@@ -488,6 +539,7 @@
   },
   "rsi-macd-trend@120": {
    "n": 1126,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1131,
     "rejected": 0,
@@ -497,6 +549,7 @@
   },
   "rsi-macd-trend@240": {
    "n": 529,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 533,
     "rejected": 0,
@@ -506,6 +559,7 @@
   },
   "rsi-macd-trend@720": {
    "n": 168,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 168,
     "rejected": 0,
@@ -515,6 +569,7 @@
   },
   "rsi-macd-trend@1440": {
    "n": 72,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 73,
     "rejected": 0,
@@ -524,6 +579,7 @@
   },
   "harmonic@1": {
    "n": 4524,
+   "tinyRisk": 471,
    "ideas": {
     "ideas": 17258,
     "rejected": 0,
@@ -533,6 +589,7 @@
   },
   "harmonic@3": {
    "n": 1473,
+   "tinyRisk": 7,
    "ideas": {
     "ideas": 5715,
     "rejected": 1,
@@ -542,6 +599,7 @@
   },
   "harmonic@5": {
    "n": 870,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 3438,
     "rejected": 0,
@@ -551,6 +609,7 @@
   },
   "harmonic@15": {
    "n": 264,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1093,
     "rejected": 0,
@@ -560,6 +619,7 @@
   },
   "harmonic@30": {
    "n": 113,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 540,
     "rejected": 0,
@@ -569,6 +629,7 @@
   },
   "harmonic@60": {
    "n": 69,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 279,
     "rejected": 0,
@@ -578,6 +639,7 @@
   },
   "harmonic@120": {
    "n": 31,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 138,
     "rejected": 0,
@@ -587,6 +649,7 @@
   },
   "harmonic@240": {
    "n": 22,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 77,
     "rejected": 1,
@@ -596,6 +659,7 @@
   },
   "harmonic@720": {
    "n": 6,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 28,
     "rejected": 0,
@@ -605,6 +669,7 @@
   },
   "harmonic@1440": {
    "n": 6,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 12,
     "rejected": 0,
@@ -614,6 +679,7 @@
   },
   "ma-retest@1": {
    "n": 63847,
+   "tinyRisk": 751,
    "ideas": {
     "ideas": 64160,
     "rejected": 0,
@@ -623,6 +689,7 @@
   },
   "ma-retest@3": {
    "n": 20501,
+   "tinyRisk": 3,
    "ideas": {
     "ideas": 20599,
     "rejected": 0,
@@ -632,6 +699,7 @@
   },
   "ma-retest@5": {
    "n": 12028,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 12107,
     "rejected": 0,
@@ -641,6 +709,7 @@
   },
   "ma-retest@15": {
    "n": 3662,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 3686,
     "rejected": 0,
@@ -650,6 +719,7 @@
   },
   "ma-retest@30": {
    "n": 1782,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1787,
     "rejected": 0,
@@ -659,6 +729,7 @@
   },
   "ma-retest@60": {
    "n": 873,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 873,
     "rejected": 0,
@@ -668,6 +739,7 @@
   },
   "ma-retest@120": {
    "n": 357,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 359,
     "rejected": 0,
@@ -677,6 +749,7 @@
   },
   "ma-retest@240": {
    "n": 162,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 163,
     "rejected": 0,
@@ -686,6 +759,7 @@
   },
   "ma-retest@720": {
    "n": 48,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 49,
     "rejected": 0,
@@ -695,6 +769,7 @@
   },
   "ma-retest@1440": {
    "n": 15,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 15,
     "rejected": 0,
@@ -704,6 +779,7 @@
   },
   "ma-pullback@1": {
    "n": 146722,
+   "tinyRisk": 1147,
    "ideas": {
     "ideas": 147360,
     "rejected": 0,
@@ -713,6 +789,7 @@
   },
   "ma-pullback@3": {
    "n": 48598,
+   "tinyRisk": 3,
    "ideas": {
     "ideas": 48821,
     "rejected": 0,
@@ -722,6 +799,7 @@
   },
   "ma-pullback@5": {
    "n": 29091,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 29237,
     "rejected": 0,
@@ -731,6 +809,7 @@
   },
   "ma-pullback@15": {
    "n": 9474,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 9517,
     "rejected": 0,
@@ -740,6 +819,7 @@
   },
   "ma-pullback@30": {
    "n": 4667,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 4682,
     "rejected": 0,
@@ -749,6 +829,7 @@
   },
   "ma-pullback@60": {
    "n": 2250,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 2254,
     "rejected": 0,
@@ -758,6 +839,7 @@
   },
   "ma-pullback@120": {
    "n": 1052,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1059,
     "rejected": 0,
@@ -767,6 +849,7 @@
   },
   "ma-pullback@240": {
    "n": 491,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 494,
     "rejected": 0,
@@ -776,6 +859,7 @@
   },
   "ma-pullback@720": {
    "n": 132,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 135,
     "rejected": 0,
@@ -785,6 +869,7 @@
   },
   "ma-pullback@1440": {
    "n": 54,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 54,
     "rejected": 0,
@@ -794,6 +879,7 @@
   },
   "ma-pullback-ride@1": {
    "n": 122205,
+   "tinyRisk": 885,
    "ideas": {
     "ideas": 122746,
     "rejected": 0,
@@ -803,6 +889,7 @@
   },
   "ma-pullback-ride@3": {
    "n": 41208,
+   "tinyRisk": 3,
    "ideas": {
     "ideas": 41404,
     "rejected": 0,
@@ -812,6 +899,7 @@
   },
   "ma-pullback-ride@5": {
    "n": 24573,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 24700,
     "rejected": 0,
@@ -821,6 +909,7 @@
   },
   "ma-pullback-ride@15": {
    "n": 8046,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 8084,
     "rejected": 0,
@@ -830,6 +919,7 @@
   },
   "ma-pullback-ride@30": {
    "n": 4008,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 4019,
     "rejected": 0,
@@ -839,6 +929,7 @@
   },
   "ma-pullback-ride@60": {
    "n": 1960,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 1965,
     "rejected": 0,
@@ -848,6 +939,7 @@
   },
   "ma-pullback-ride@120": {
    "n": 905,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 911,
     "rejected": 0,
@@ -857,6 +949,7 @@
   },
   "ma-pullback-ride@240": {
    "n": 406,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 413,
     "rejected": 0,
@@ -866,6 +959,7 @@
   },
   "ma-pullback-ride@720": {
    "n": 109,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 111,
     "rejected": 0,
@@ -875,6 +969,7 @@
   },
   "ma-pullback-ride@1440": {
    "n": 41,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 41,
     "rejected": 0,
@@ -884,6 +979,7 @@
   },
   "session-drive@30": {
    "n": 521,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 521,
     "rejected": 0,
@@ -893,6 +989,7 @@
   },
   "leader-follow@1": {
    "n": 3313,
+   "tinyRisk": 1,
    "ideas": {
     "ideas": 3313,
     "rejected": 0,
@@ -902,6 +999,7 @@
   },
   "crowd-squeeze@5": {
    "n": 322,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 322,
     "rejected": 0,
@@ -911,6 +1009,7 @@
   },
   "crowd-squeeze@15": {
    "n": 202,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 202,
     "rejected": 0,
@@ -920,6 +1019,7 @@
   },
   "dip-reversal@5": {
    "n": 2215,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 2217,
     "rejected": 0,
@@ -929,6 +1029,7 @@
   },
   "squeeze-ride@5": {
    "n": 276,
+   "tinyRisk": 0,
    "ideas": {
     "ideas": 277,
     "rejected": 0,
