@@ -1,0 +1,549 @@
+{
+ "updatedAt": "2026-10-20T06:15:07.202Z",
+ "account": {
+  "ts": 1792476903282,
+  "mode": "paper",
+  "equity": 10000,
+  "cash": 10000,
+  "upl": 0,
+  "peak": 10000,
+  "dayStart": 10000,
+  "dd": 0,
+  "dayPnlPct": 0,
+  "gross": 0,
+  "grossX": 0,
+  "openRiskPct": 0,
+  "positions": 0,
+  "trades": 0,
+  "winRate": null,
+  "fees": 0,
+  "funding": 0,
+  "equity0": 10000,
+  "byStrategy": {}
+ },
+ "positions": {
+  "ts": 1792476903748,
+  "open": [],
+  "working": [],
+  "paused": false,
+  "account": "paper"
+ },
+ "risk": {
+  "ts": 1792476906602,
+  "mode": "normal",
+  "budgetScale": 1,
+  "provenOnly": false,
+  "reasons": [],
+  "dd": 0,
+  "dayLoss": 0,
+  "limitsHash": "00fb82bc38ee8f7f"
+ },
+ "universe": {
+  "ts": 1792476306858,
+  "source": "binance api",
+  "coins": [
+   "BTC",
+   "ETH",
+   "ZEC",
+   "SOL",
+   "NEAR",
+   "XRP",
+   "Q",
+   "HYPE",
+   "DOGE",
+   "BNB",
+   "SUI",
+   "STRK",
+   "ENA",
+   "UNI",
+   "PEPE",
+   "TIA",
+   "FIL",
+   "INJ",
+   "ZEREBRO",
+   "AVAX",
+   "TAO",
+   "LINK",
+   "QNT",
+   "BAT",
+   "ARB",
+   "ONDO",
+   "SAND",
+   "AAVE",
+   "OP",
+   "BCH",
+   "ZRO",
+   "LTC",
+   "DOT",
+   "TRUTH",
+   "S",
+   "APT",
+   "XMR",
+   "PYTH",
+   "CT",
+   "HBAR",
+   "LIT",
+   "PENGU",
+   "TRX",
+   "ARC",
+   "ASTER",
+   "ZK",
+   "MAGIC",
+   "XPL",
+   "XLM",
+   "VVV",
+   "AERO",
+   "EPIC",
+   "SHIB",
+   "NIL",
+   "ETHFI",
+   "LDO",
+   "DASH",
+   "DUSK",
+   "GRASS",
+   "USELESS",
+   "SEI",
+   "ETC",
+   "EIGEN",
+   "MARSCOIN"
+  ]
+ },
+ "guard": {
+  "ts": 1792476903281,
+  "notTradable": [
+   "Q: wide-spread",
+   "TRUTH: wide-spread",
+   "ARC: wide-spread",
+   "EPIC: wide-spread",
+   "EIGEN: wide-spread"
+  ]
+ },
+ "agents": {
+  "state-sync": {
+   "at": 1792476903371,
+   "agent": "state-sync",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307081,
+   "metrics": {}
+  },
+  "universe": {
+   "at": 1792476903362,
+   "agent": "universe",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476257773,
+   "metrics": {
+    "coins": 64,
+    "source": "binance api"
+   }
+  },
+  "blofin-feed": {
+   "at": 1792476903362,
+   "agent": "blofin-feed",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476306876,
+   "metrics": {
+    "opens": 12,
+    "msgs": 341134,
+    "trades": 2575,
+    "bars": 556,
+    "coins": 64,
+    "sockets": "6/6",
+    "lastMsgAgeMs": 8,
+    "wsErrors": 36,
+    "closes": 36,
+    "restBars": 134
+   }
+  },
+  "binance-feed": {
+   "at": 1792476903371,
+   "agent": "binance-feed",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476306885,
+   "metrics": {
+    "opens": 4,
+    "msgs": 172893,
+    "liqOther": 114,
+    "liqs": 91,
+    "flowMsgs": 447,
+    "lastMsgAgeMs": 65,
+    "coins": 64,
+    "sockets": "2/2",
+    "bars": 497,
+    "closes": 6,
+    "wsErrors": 5,
+    "oiErrors": 1
+   }
+  },
+  "guard": {
+   "at": 1792476903371,
+   "agent": "guard",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476306891,
+   "metrics": {
+    "lagMedMs": 504,
+    "tradable": "59/64"
+   }
+  },
+  "recorder": {
+   "at": 1792476903371,
+   "agent": "recorder",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476306894,
+   "metrics": {
+    "lines": 41452,
+    "bytes": 12946917
+   }
+  },
+  "events": {
+   "at": 1792476903371,
+   "agent": "events",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476306897,
+   "metrics": {
+    "windows": 0
+   }
+  },
+  "strategy:intraday-trend": {
+   "at": 1792476903371,
+   "agent": "strategy:intraday-trend",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:trend-pullback": {
+   "at": 1792476903371,
+   "agent": "strategy:trend-pullback",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:session-drive": {
+   "at": 1792476903371,
+   "agent": "strategy:session-drive",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:overshoot-fade": {
+   "at": 1792476903371,
+   "agent": "strategy:overshoot-fade",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:leader-follow": {
+   "at": 1792476903371,
+   "agent": "strategy:leader-follow",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:crowd-squeeze": {
+   "at": 1792476903371,
+   "agent": "strategy:crowd-squeeze",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:noise-breakout": {
+   "at": 1792476903371,
+   "agent": "strategy:noise-breakout",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:dip-reversal": {
+   "at": 1792476903371,
+   "agent": "strategy:dip-reversal",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:squeeze-ride": {
+   "at": 1792476903371,
+   "agent": "strategy:squeeze-ride",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:it-45-long": {
+   "at": 1792476903371,
+   "agent": "strategy:it-45-long",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:it-45-hold32": {
+   "at": 1792476903371,
+   "agent": "strategy:it-45-hold32",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "strategy:it-45-hold16": {
+   "at": 1792476903371,
+   "agent": "strategy:it-45-hold16",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "mode": "shadow",
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0,
+    "open": 0,
+    "pending": 0,
+    "shadowTrades": 0,
+    "shadowSumR": 0,
+    "unfilled": 0
+   }
+  },
+  "brain": {
+   "at": 1792476903371,
+   "agent": "brain",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307048,
+   "metrics": {
+    "coins": 64,
+    "warmedCoins": 61,
+    "bars_blofin": 99,
+    "bars_binance": 497,
+    "errors": 3
+   }
+  },
+  "coordinator": {
+   "at": 1792476903371,
+   "agent": "coordinator",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307055,
+   "metrics": {
+    "riskMode": "normal",
+    "budgetScale": 1
+   }
+  },
+  "trader": {
+   "at": 1792476903371,
+   "agent": "trader",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307061,
+   "metrics": {}
+  },
+  "accountant": {
+   "at": 1792476903371,
+   "agent": "accountant",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307064,
+   "metrics": {
+    "equity": 10000,
+    "positions": 0
+   }
+  },
+  "watchdog": {
+   "at": 1792476903371,
+   "agent": "watchdog",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307066,
+   "metrics": {
+    "diskFreePct": 65.8,
+    "memFreeMb": 1469,
+    "down": "none"
+   }
+  },
+  "guardian": {
+   "at": 1792476903371,
+   "agent": "guardian",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307069,
+   "metrics": {
+    "riskHash": "00fb82bc38ee8f7f",
+    "signed": true,
+    "account": "paper"
+   }
+  },
+  "herald": {
+   "at": 1792476903371,
+   "agent": "herald",
+   "pid": 7364,
+   "status": "ok",
+   "why": "",
+   "startedAt": 1792476307071,
+   "metrics": {
+    "pollErrors": 6,
+    "messages": 5
+   }
+  }
+ },
+ "strategyResults": null,
+ "strategyModes": {
+  "intraday-trend": "shadow",
+  "trend-pullback": "shadow",
+  "session-drive": "shadow",
+  "overshoot-fade": "shadow",
+  "leader-follow": "shadow",
+  "crowd-squeeze": "shadow",
+  "noise-breakout": "shadow",
+  "it-45-long": "shadow",
+  "it-45-hold32": "shadow",
+  "it-45-hold16": "shadow",
+  "squeeze-ride": "shadow"
+ }
+}
