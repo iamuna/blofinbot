@@ -81,27 +81,46 @@ if (-not (Test-Path $keyFile)) { Save-Text $keyFile (& node -e "process.stdout.w
 $sigFile = Join-Path $Root 'risk.sha256'
 if (-not (Test-Path $sigFile)) { Save-Text $sigFile ((Get-FileHash "$App\swarm\config\risk.json" -Algorithm SHA256).Hash.ToLower() + "  risk.json`n") }
 
-# 4. tokens (asked once; kept in C:\swarm\secrets.json, readable only by you)
-$secretsFile = Join-Path $Root 'secrets.json'
-if (-not (Test-Path $secretsFile)) {
-  $gh = ''; $tg = ''; $chat = ''
-  if (-not $env:SWARM_NO_PROMPT) {
-    Write-Step 'Tokens (press Enter to skip one)'
-    Write-Host '1) GitHub fine-grained token - repository iamuna/blofinbot only, Contents: Read and write.'
-    $gh = Read-Secret '   GitHub token (hidden)'
-    Write-Host '2) Telegram bot token from @BotFather (send your bot a message first).'
-    $tg = Read-Secret '   Telegram bot token (hidden)'
-    if ($tg) {
-      try {
-        $u = Invoke-RestMethod "https://api.telegram.org/bot$tg/getUpdates" -TimeoutSec 20
-        $m = @($u.result | Where-Object { $_.message }) | Select-Object -Last 1
-        if ($m) { $chat = [string]$m.message.chat.id; Write-Host "   Telegram chat: $chat" } else { Write-Host '   No message found: send your bot a message, then run this installer again.' }
-      } catch { Write-Host "   Could not reach Telegram with that token: $($_.Exception.Message)" }
-    }
-  }
-  Save-Text $secretsFile (@{ GITHUB_TOKEN = $gh.Trim(); TELEGRAM_BOT_TOKEN = $tg.Trim(); TELEGRAM_CHAT_ID = $chat } | ConvertTo-Json)
-  & icacls $secretsFile /inheritance:r /grant:r "$($env:USERNAME):(R,W)" | Out-Null
+# 4. tokens (asked once; kept in C:\swarm\secrets.json, readable only by you). Running the installer again asks
+#    for any token that is still missing and looks for the Telegram chat again if it was not found.
+function Stop-Swarm {
+  Stop-ScheduledTask -TaskName 'Swarm' -ErrorAction SilentlyContinue
+  Get-CimInstance Win32_Process -Filter "Name = 'powershell.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*swarm*run.ps1*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
+  Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -like '*swarm*run.js*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 }
+Stop-Swarm   # a running swarm reads Telegram itself; stop it while the installer looks for your chat, and restart it after
+$secretsFile = Join-Path $Root 'secrets.json'
+$sec = @{ GITHUB_TOKEN = ''; TELEGRAM_BOT_TOKEN = ''; TELEGRAM_CHAT_ID = '' }
+if (Test-Path $secretsFile) { $old = Get-Content $secretsFile -Raw | ConvertFrom-Json; foreach ($k in @($sec.Keys)) { if ($old.$k) { $sec[$k] = [string]$old.$k } } }
+if (-not $env:SWARM_NO_PROMPT -and (-not $sec.GITHUB_TOKEN -or -not $sec.TELEGRAM_BOT_TOKEN)) {
+  Write-Step 'Tokens (press Enter to skip one)'
+  if (-not $sec.GITHUB_TOKEN) {
+    Write-Host '1) GitHub fine-grained token - repository iamuna/blofinbot only, Contents: Read and write.'
+    $sec.GITHUB_TOKEN = (Read-Secret '   GitHub token (hidden)').Trim()
+  }
+  if (-not $sec.TELEGRAM_BOT_TOKEN) {
+    Write-Host '2) Telegram bot token from @BotFather (send your bot a message first).'
+    $sec.TELEGRAM_BOT_TOKEN = (Read-Secret '   Telegram bot token (hidden)').Trim()
+  }
+}
+if ($sec.TELEGRAM_BOT_TOKEN) {
+  Write-Step 'Telegram'
+  $tg = $sec.TELEGRAM_BOT_TOKEN
+  try {
+    $me = Invoke-RestMethod "https://api.telegram.org/bot$tg/getMe" -TimeoutSec 20
+    Write-Host "   Bot: @$($me.result.username)"
+    if (-not $sec.TELEGRAM_CHAT_ID) {
+      $u = Invoke-RestMethod "https://api.telegram.org/bot$tg/getUpdates" -TimeoutSec 20
+      $m = @($u.result | Where-Object { $_.message }) | Select-Object -Last 1
+      if ($m) { $sec.TELEGRAM_CHAT_ID = [string]$m.message.chat.id; Write-Host "   Your chat: $($sec.TELEGRAM_CHAT_ID)" }
+      else { Write-Host "   No message found. Open @$($me.result.username) in Telegram, send it 'hi', then run this installer again." -ForegroundColor Yellow }
+    } else { Write-Host "   Your chat: $($sec.TELEGRAM_CHAT_ID)" }
+  } catch {
+    Write-Host "   Telegram does not accept that bot token ($($_.Exception.Message)). Copy it again from @BotFather; to enter it again, delete C:\swarm\secrets.json and run this installer again." -ForegroundColor Yellow
+  }
+}
+Save-Text $secretsFile ($sec | ConvertTo-Json)
+& icacls $secretsFile /inheritance:r /grant:r "$($env:USERNAME):(R,W)" | Out-Null
 
 # 5. keep the PC awake while plugged in (the swarm watches the market around the clock)
 if (-not $env:SWARM_NO_TASK) {
@@ -120,6 +139,10 @@ if (-not $env:SWARM_NO_TASK) {
   Unregister-ScheduledTask -TaskName 'Swarm' -Confirm:$false -ErrorAction SilentlyContinue
   Register-ScheduledTask -TaskName 'Swarm' -Action $action -Trigger $trigger -Settings $settings -Description 'BloFin swarm (paper): starts at logon, see C:\swarm\logs' -ErrorAction Stop | Out-Null
   Start-ScheduledTask -TaskName 'Swarm' -ErrorAction Stop
+  if ($sec.TELEGRAM_BOT_TOKEN -and $sec.TELEGRAM_CHAT_ID) {
+    try { Invoke-RestMethod -Method Post -Uri "https://api.telegram.org/bot$($sec.TELEGRAM_BOT_TOKEN)/sendMessage" -Body @{ chat_id = $sec.TELEGRAM_CHAT_ID; text = "Swarm installed on $env:COMPUTERNAME (paper account). It is starting up: send /status in a minute." } -TimeoutSec 15 | Out-Null; Write-Host 'Sent you a hello on Telegram.' }
+    catch { Write-Host "Could not message you on Telegram: $($_.Exception.Message)" -ForegroundColor Yellow }
+  }
   Start-Sleep -Seconds 25
   $log = Get-ChildItem "$Root\logs\swarm-*.log" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1
   if ($log) { Write-Host "`nFirst lines of $($log.Name):"; Get-Content $log.FullName -Tail 8 }
