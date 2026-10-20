@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-20T16:58:20.121Z · account **PAPER** · risk mode normal
+Updated 2026-10-20T17:14:51.837Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -19,20 +19,11 @@ Open: none · working orders: 0
 | herald | ok |  |
 | recorder | ok |  |
 | state-sync | ok |  |
-| strategy:crowd-squeeze | ok |  |
-| strategy:dip-reversal | ok |  |
-| strategy:intraday-trend | ok |  |
-| strategy:it-45-hold16 | ok |  |
-| strategy:it-45-hold32 | ok |  |
-| strategy:it-45-long | ok |  |
-| strategy:leader-follow | ok |  |
-| strategy:noise-breakout | ok |  |
-| strategy:overshoot-fade | ok |  |
-| strategy:session-drive | ok |  |
-| strategy:squeeze-ride | ok |  |
-| strategy:trend-pullback | ok |  |
+| strategy:it-4h | ok |  |
+| strategy:ma-retest-12h | ok |  |
+| strategy:ma-retest-1d | ok |  |
+| strategy:rsi-macd-trend-12h | ok |  |
+| strategy:trend-pullback-1h | ok |  |
 | trader | ok |  |
 | universe | ok |  |
 | watchdog | ok |  |
-
-Not tradable now: ADA: wide-spread; ICP: wide-spread
