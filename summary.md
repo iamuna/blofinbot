@@ -1,33 +1,33 @@
 # Multi-coin paper bot — live status
 
-Updated 2026-10-20T01:02:09Z · 20 coins · mode: **PAPER** · risk governor: normal
+Updated 2026-10-20T01:12:09Z · 20 coins · mode: **PAPER** · risk governor: normal
 
 | Equity | Net | Gross exposure | Drawdown | Fills | Fees | Funding |
 |---|---|---|---|---|---|---|
-| $10,059.73 | 0.60% | 0% | 0.36% | 23 | $0.47 | $0.80 |
+| $10,055.84 | 0.56% | 0% | 0.4% | 23 | $0.47 | $0.80 |
 
 | Coin | Price | Target | Holding | 1d→3M vote | 1h→12h vote | Cross-coin rank | Note |
 |---|---|---|---|---|---|---|---|
-| XMR | 603.29 | 4.73% | 3.64% | 0.98 | 0.9 | 0.79 | within band |
-| INJ | 8.5190 | 1.56% | 1.7% | 0.76 | 0.3 | 0.68 | within band |
-| 1000BONK | 0.0029300 | -1.47% | -1.25% | -0.77 | 0 | -1 | within band |
-| NEAR | 4.8200 | 1.32% | 1.19% | 0.86 | 0.23 | 0.89 | within band |
-| BTC | 81,639.9 | 1.08% | 1.19% | 0.25 | 0.17 | 0.37 | within band |
-| Q | 0.12723 | 1.07% | 0.84% | 0.77 | 0.83 | 1 | within band |
-| DOGE | 0.079180 | -0.94% | -0.7% | -0.28 | 0 | -0.79 | within band |
-| HYPE | 79.0450 | 0.68% | 0.6% | 0.57 | 0 | 0.16 | within band |
-| ZEC | 1,141.68 | 0.58% | 0.78% | 0.59 | 0.07 | 0.47 | within band |
-| PEPE | 0.0000041530 | 0.48% | 0% | 0.27 | 0.3 | -0.37 | within band |
-| XLM | 0.17667 | -0.47% | 0% | -0.04 | 0 | -0.89 | within band |
-| PUMP | 0.0044450 | 0.47% | 0.63% | 0.46 | 0.07 | 0.58 | within band |
-| LINK | 11.9680 | 0.46% | 0.76% | 0.35 | 0 | 0.26 | within band |
-| LTC | 59.5200 | 0.37% | 0% | 0.23 | 0.1 | -0.16 | within band |
-| SOL | 104.6 | 0.3% | 0.09% | 0.13 | 0.1 | -0.05 | within band |
-| TAO | 265.97 | 0.23% | 0.5% | 0.25 | 0 | -0.26 | within band |
-| SUI | 0.99320 | 0.21% | 0% | 0.16 | 0.17 | 0.05 | within band |
-| ETH | 2,397.4 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
-| HBAR | 0.082880 | -0.08% | 0% | 0.11 | 0 | -0.47 | within band |
-| XRP | 1.2976 | 0% | 0% | 0.07 | 0.1 | -0.68 | within band |
+| XMR | 602.3 | 4.73% | 3.63% | 0.98 | 0.9 | 0.79 | within band |
+| INJ | 8.4790 | 1.56% | 1.69% | 0.76 | 0.3 | 0.68 | within band |
+| 1000BONK | 0.0029100 | -1.47% | -1.25% | -0.77 | 0 | -1 | within band |
+| NEAR | 4.8090 | 1.32% | 1.19% | 0.86 | 0.23 | 0.89 | within band |
+| BTC | 81,262.2 | 1.08% | 1.19% | 0.25 | 0.17 | 0.37 | within band |
+| Q | 0.12648 | 1.07% | 0.84% | 0.77 | 0.83 | 1 | within band |
+| DOGE | 0.078870 | -0.94% | -0.69% | -0.28 | 0 | -0.79 | within band |
+| HYPE | 78.7040 | 0.68% | 0.6% | 0.57 | 0 | 0.16 | within band |
+| ZEC | 1,134.56 | 0.58% | 0.77% | 0.59 | 0.07 | 0.47 | within band |
+| PEPE | 0.0000041320 | 0.48% | 0% | 0.27 | 0.3 | -0.37 | within band |
+| XLM | 0.17545 | -0.47% | 0% | -0.04 | 0 | -0.89 | within band |
+| PUMP | 0.0044020 | 0.47% | 0.62% | 0.46 | 0.07 | 0.58 | within band |
+| LINK | 11.8710 | 0.46% | 0.75% | 0.35 | 0 | 0.26 | within band |
+| LTC | 59.0300 | 0.37% | 0% | 0.23 | 0.1 | -0.16 | within band |
+| SOL | 104.2 | 0.3% | 0.09% | 0.13 | 0.1 | -0.05 | within band |
+| TAO | 264.46 | 0.23% | 0.49% | 0.25 | 0 | -0.26 | within band |
+| SUI | 0.98620 | 0.21% | 0% | 0.16 | 0.17 | 0.05 | within band |
+| ETH | 2,382.78 | -0.14% | 0% | 0.07 | 0 | -0.58 | within band |
+| HBAR | 0.082360 | -0.08% | 0% | 0.11 | 0 | -0.47 | within band |
+| XRP | 1.2917 | 0% | 0% | 0.07 | 0.1 | -0.68 | within band |
 
 ## Recent events
 
