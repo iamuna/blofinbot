@@ -3,42 +3,19 @@
 Living log for the multi-agent 1–45 minute bot (branch `swarm`). Newest first. Times Europe/Amsterdam.
 Design doc: "BloFin Swarm — multi-agent 1–45 min bot design" (claude.ai doc). The existing trend bot on `main` keeps running untouched.
 
-## Now — resume here (updated 2026-10-20 14:15)
+## Now — resume here (updated 2026-10-20 15:50)
 
-**Running: the 5-year sweep** (Ibrahim 10:56: "rethink timeframe selection, only the highest-ROI actions, test on
-3–5 years"; his answers: **all timeframes 1m–1d**, rank by **return per risk, out-of-sample**). Code in `history/`
-(README there), workflow `.github/workflows/swarm-history.yml`. First run 39398715406 built the data (one build
-job failed on two coins with Chinese names — left out now; builds are resumable). **Current run 39409051537** on
-commit aa7a325, started 12:40: data reused, finished 14:00 — report on `swarm-reports` history/2026-10-20/.
-**That report has a bug**: R = net / (fill-to-stop distance); a limit order filled at its stop gives ~0 risk and
-absurd R (noise-breakout, leader-follow: avg R in the millions). Fixed in the sweep (R against ≥ 10 bps; long/short
-split added; % now sized to a 20% worst drawdown) → **rerun pushed 14:15** (data reused, ~1.5 h). The same issue
-exists in `swarm/src/backtest/exec_sim.js` (factory + live shadow): fix there later (protected → approve.ps1).
-Preliminary (first run, before the fix): walk-forward 2022-10 → 2026-09 +679 R, Sharpe 0.49, t 0.97 (not
-significant); best in hindsight Sharpe 0.92 (luck gap). Every 1m–30m variant loses; edges only at 2h–1d. Best
-single: ma-retest@12h (Ibrahim's 21/200 retest), Sharpe 1.33, positive every year 2022–2026, +0.14 R a trade.
+**5-year sweep done** (rerun 39419701055 with the R fix, commit 4bb2d22). Results: `swarm-reports`
+history/2026-10-20/REPORT.md and docs/RESEARCH_LOG.md (15:45 entry). Short version: 1m–30m lose everywhere; edges only
+on 1h–1d; walk-forward picker Sharpe 0.49 (not significant); best single ma-retest@12h, Sharpe 1.33, positive every
+year, mostly from shorts. Code: `history/` (README). Data stays in release `swarm-history-v1` (19.4 GB, 665 coins);
+sweep artifacts kept 90 days (not downloadable from Claude's workspace — the report and results.json are).
 
-| Stage | State | Output |
-|---|---|---|
-| plan (universe from Binance's archive) | done 11:14 — 668 coins ever in the top-80 ≥ $20M, 80 coins on almost every day, 18,593 coin-months (incl. 7 warm-up months per coin) | release `swarm-history-v1`: universe.json, plan.json |
-| build (8 shards, 1m + OI + funding) | done 12:35 — 665 coins, 19.4 GB | release assets `<coin>.tar` (a rerun builds only missing coins) |
-| sweep (10 jobs × 4 processes = 40 coin shards, 101 variants: 13 strategies × 1m…1d) | first run done 14:00 (R bug, see above); rerun from 14:15 | artifacts `sweep-<job>` (daily R per variant; trades for ≥ 30m) |
-| select (walk-forward: 12-month window, top 5, quarterly — declared before the data) | waiting | branch `swarm-reports`: `history/<date>/REPORT.md`, `history/LATEST.md` |
-
-- Check: `gh api repos/iamuna/blofinbot/actions/runs/39409051537/jobs --jq '.jobs[]|"\(.name) \(.status) \(.conclusion)"'`.
-  Job logs are NOT readable from Claude's workspace (blob storage 403); release assets are:
-  `gh api -H "Accept: application/octet-stream" repos/iamuna/blofinbot/releases/assets/<id>` (ids from
-  `gh api repos/iamuna/blofinbot/releases/tags/swarm-history-v1`). data.binance.vision is not reachable from the
-  workspace either — everything that needs it runs on GitHub.
-- If a stage failed: fix under `history/` and push — that reruns everything, **and cancels a running sweep**
-  (concurrency), so never push to `history/` while a good run is in progress. The data is reused when all 8
-  manifests are in the release, unless `history/REBUILD` or `history/build.js` changed.
-- Local test kit: a mock archive (`node -r <mock.js> history/build.js …`) was used in the session; sweep speed
-  measured at ~10.5 s per coin-month for all 101 variants (one core).
-- After the results: tell Ibrahim (honest walk-forward number vs. best-in-hindsight = luck gap); winners go into
-  the live swarm in shadow — needs the winning timeframes in `swarm/src/analysis/features.js` TFS, longer brain
-  warm-up for 4h/1d (protected code → Ibrahim runs approve.ps1), plugin `tfs`, and `config/swarm.json` strategies.
-- Not done yet: per-signal ranking ("only the highest-ROI actions" inside a strategy) — after the sweep.
+**Waiting for Ibrahim** (asked 15:50): put the slow candidates in shadow on the PC (ma-retest 12h and 1d,
+intraday-trend 4h, rsi-macd-trend 12h, trend-pullback 1h). Needs protected changes → approve.ps1: live timeframes
+60/120/240/720/1440 in swarm/src/analysis/features.js TFS, brain warm-up of 12h/1d history from BloFin REST
+(200+ bars), plugin tfs; then config/swarm.json strategies in shadow. Also due: exec_sim R floor (same bug as the
+sweep had), update the scheduled researcher/review prompts (they still say 1–45 minutes).
 
 **Home PC (Windows, DESKTOP-4CJV8JF)**: running since 08:27 on paper, all agents OK (state on `swarm-state` every
 10 min since 11:18): 72 coins, guard lag 0.7 s (the clock fix worked), recorder ~370 MB raw in 3 h (gzipped hourly,

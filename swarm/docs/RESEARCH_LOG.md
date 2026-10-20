@@ -3,6 +3,30 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-20 15:45 — 5-year sweep: every strategy × every timeframe (1m → 1d), walk-forward
+
+Ibrahim: rethink timeframe selection, trade only the highest return-per-risk combinations, test on 3–5 years.
+101 variants (13 strategies × 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 12h, 1d) on Binance USD-M 2021-10 → 2026-09,
+point-in-time universe (665 coins ever in it, ~80 a day, dead coins included), live code path and costs. Report:
+`swarm-reports` history/2026-10-20/REPORT.md (code: `history/`). 98 tries logged (199 in total).
+
+- **Timeframe**: every variant on 1m–30m loses (Sharpe −0.3 to −50); positive ones only on 1h–1d. Best per chart:
+  1h +0.51 (trend-pullback), 2h +0.55 (intraday-trend), 4h +0.61 (intraday-trend), 12h +1.28 (ma-retest), 1d +0.84
+  (ma-retest).
+- **Walk-forward** (declared before: 12-month window, top 5 by Sharpe, quarterly): 2022-10 → 2026-09 +679 R, Sharpe
+  0.49, t 0.97, max DD 658 R — ≈ +5%/year sized for a 20% worst drawdown. 2023 lost, 2025 won. Best 5 in hindsight
+  Sharpe 0.92: half of the hindsight edge is luck. Robustness grid (6/12/24 months × top 3/5/10): Sharpe 0.25–0.65.
+  Ranking by last year's Sharpe chases last year's lucky variants — not a usable selector on its own.
+- **Best single**: ma-retest@12h (21/200 EMA retest, Ibrahim's idea): 1,657 trades, +0.14 R, positive every year
+  2022–2026, +229 R even at 1.5× costs. Best of 101 → treat as a candidate, not a result.
+- **The edge is mostly short**: ma-retest@12h long +80 / short +156 R; @1d −18 / +135; intraday-trend@4h +85 / +463;
+  rsi-macd-trend@12h −120 / +440. Shorting altcoins in established downtrends (coins that fade after their volume
+  peak, dead coins included) carries most of it. Needs its own check before trusting: BloFin listing of those
+  coins, short squeezes, borrow/funding at extremes.
+- Bug found and fixed in the sweep: R = net / (fill-to-stop distance) blows up when a limit fills at its stop
+  (noise-breakout, leader-follow showed average R in the millions). The sweep now uses ≥ 10 bps of risk; the same
+  fix is due in swarm/src/backtest/exec_sim.js (factory + live shadow; protected).
+
 ## 2026-10-20 09:20 — Ibrahim's retail strategies: RSI + MACD, Carney harmonics, 21/200 moving averages
 
 Asked for by Ibrahim. Plugins `rsi-macd`, `harmonic`, `ma-21-200` (not configured to run). Same dataset, costs and
