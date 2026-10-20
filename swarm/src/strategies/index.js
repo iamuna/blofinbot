@@ -12,5 +12,6 @@ const PLUGINS = [
   'noise_breakout',
   'dip_reversal',
   'squeeze_ride',
+  'rsi_macd',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);
