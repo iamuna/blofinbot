@@ -9,6 +9,7 @@ on:
   push:
     branches: [swarm]
     paths: ["swarm/**", ".github/workflows/swarm-ci.yml"]
+  # (the windows job below runs the Windows install the way Ibrahim's PC does: no Ubuntu, one process)
   workflow_dispatch:
     inputs:
       minutes:
@@ -88,3 +89,50 @@ jobs:
             /tmp/sw/state
             /tmp/sw/rec
           retention-days: 7
+
+  windows:
+    # The Windows version (no Ubuntu): unit tests on Windows, then install.ps1 without prompts or logon task, and
+    # run.ps1 live on BloFin's feed for a few minutes with the probe strategy trading on paper.
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: PowerShell scripts parse (Windows PowerShell 5.1)
+        shell: powershell
+        run: |
+          $bad = 0
+          foreach ($f in Get-ChildItem swarm/deploy/windows/*.ps1) {
+            $errs = $null; $toks = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($f.FullName, [ref]$toks, [ref]$errs) | Out-Null
+            if ($errs) { $bad++; foreach ($e in $errs) { Write-Host "$($f.Name): $($e.Message) at line $($e.Extent.StartLineNumber)" } } else { Write-Host "$($f.Name): ok" }
+          }
+          if ($bad) { exit 1 }
+      - name: Unit tests on Windows
+        working-directory: swarm
+        run: npm test
+      - name: Install and run the Windows version live for 5 minutes
+        shell: powershell
+        env:
+          SWARM_ROOT: C:\swarm-ci
+          SWARM_BRANCH: ci-head
+          SWARM_NO_PROMPT: "1"
+          SWARM_NO_TASK: "1"
+          SWARM_RUN_MINUTES: "5"
+        run: |
+          git branch ci-head
+          $env:SWARM_SOURCE = (Get-Location).Path
+          New-Item -ItemType Directory -Force -Path C:\swarm-ci | Out-Null
+          [IO.File]::WriteAllText('C:\swarm-ci\swarm.local.json', '{"extraStrategies":["probe"],"strategies":{"probe":{"mode":"trade"}},"trading":{"account":"paper"}}')
+          & .\swarm\deploy\windows\install.ps1
+          & C:\swarm-ci\app\swarm\deploy\windows\run.ps1
+          Write-Host '--- runner.log'; Get-Content C:\swarm-ci\logs\runner.log
+          $log = Get-ChildItem C:\swarm-ci\logs\swarm-*.log | Where-Object { $_.Name -notlike '*.err.log' } | Sort-Object LastWriteTime | Select-Object -Last 1
+          Write-Host "--- $($log.Name) (last 40 lines)"; Get-Content $log.FullName -Tail 40
+          $err = Get-ChildItem C:\swarm-ci\logs\swarm-*.err.log | Sort-Object LastWriteTime | Select-Object -Last 1
+          if ($err -and (Get-Item $err.FullName).Length -gt 0) { Write-Host "--- $($err.Name)"; Get-Content $err.FullName -Tail 40 }
+          node swarm/src/tools/smoke_report.js C:\swarm-ci\data
+          if ($LASTEXITCODE -ne 0) { exit 1 }

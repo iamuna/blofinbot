@@ -113,7 +113,7 @@ test('signed messages: with the bus key, the trader drops an unsigned order and 
   await t.stop();
 });
 
-test('deploy scripts: valid bash, and no assignments to bash\'s own variables (GROUPS once broke the installer)', () => {
+test('deploy scripts: valid bash, and no assignments to bash\'s own variables (GROUPS once broke the installer)', { skip: process.platform === 'win32' && 'bash scripts are for the Linux install' }, () => {
   const special = ['GROUPS', 'RANDOM', 'SECONDS', 'LINENO', 'UID', 'EUID', 'PPID', 'BASHPID']; // bash ignores or rewrites these
   const dir = path.join(ROOT, 'deploy');
   for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.sh'))) {

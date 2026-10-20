@@ -1,0 +1,109 @@
+# Swarm runner for Windows (started hidden at logon by the "Swarm" task that install.ps1 registers).
+#
+# Runs every agent in one Node process on the in-memory bus, restarts it within a minute if it stops, and every
+# 10 minutes looks for new code on the swarm branch. New code is installed the same way as on Linux:
+#   1. the update gate - run from the code ALREADY installed - lets only self-service changes through on their own
+#      (strategy plugins that pass the plugin check, shadow-mode settings, candidates, tests, docs); anything else
+#      waits for approve.ps1;
+#   2. every offline test passes in a scratch checkout;
+#   3. if the new code then crashes within 3 minutes, the previous version is restored.
+# Ibrahim hears about each outcome on Telegram. Logs: C:\swarm\logs (kept 14 days).
+# SWARM_RUN_MINUTES (tests): stop after that many minutes.
+
+$ErrorActionPreference = 'Continue'
+$Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
+$App = Join-Path $Root 'app'; $Data = Join-Path $Root 'data'; $Logs = Join-Path $Root 'logs'; $Approved = Join-Path $Root 'approved'
+$Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'swarm' }
+$Agents = 'universe,blofin-feed,binance-feed,guard,recorder,events,brain,coordinator,trader,accountant,watchdog,guardian,herald,state-sync'
+New-Item -ItemType Directory -Force -Path $Data, $Logs, $Approved | Out-Null
+
+function Write-Log($t) { Add-Content -Path (Join-Path $Logs 'runner.log') -Value ("{0:u} {1}" -f (Get-Date).ToUniversalTime(), $t) }
+# secrets and settings for the node process (inherited environment)
+if (Test-Path (Join-Path $Root 'secrets.json')) {
+  $s = Get-Content (Join-Path $Root 'secrets.json') -Raw | ConvertFrom-Json
+  foreach ($p in $s.PSObject.Properties) { if ($p.Value) { Set-Item -Path "env:$($p.Name)" -Value ([string]$p.Value) } }
+}
+foreach ($k in @('BLOFIN_API_KEY', 'BLOFIN_API_SECRET', 'BLOFIN_PASSPHRASE')) { Remove-Item "env:$k" -ErrorAction SilentlyContinue }
+if (Test-Path (Join-Path $Root 'blofin-demo.json')) {
+  $d = Get-Content (Join-Path $Root 'blofin-demo.json') -Raw | ConvertFrom-Json
+  foreach ($p in $d.PSObject.Properties) { Set-Item -Path "env:$($p.Name)" -Value ([string]$p.Value) }
+}
+$env:SWARM_LOCAL_CONFIG = Join-Path $Root 'swarm.local.json'
+$env:SWARM_BUS_KEY_FILE = Join-Path $Root 'bus.key'
+$env:SWARM_BUS = 'memory'
+
+function Say($text) {
+  Write-Log $text
+  if ($env:TELEGRAM_BOT_TOKEN -and $env:TELEGRAM_CHAT_ID) {
+    try { Invoke-RestMethod -Method Post -Uri "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage" -Body @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $text } -TimeoutSec 15 | Out-Null } catch { Write-Log "telegram: $($_.Exception.Message)" }
+  }
+}
+function Account {
+  try { $c = Get-Content $env:SWARM_LOCAL_CONFIG -Raw | ConvertFrom-Json; if ($c.trading.account) { return [string]$c.trading.account } } catch { }
+  return 'paper'
+}
+function Start-Swarm {
+  $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+  $out = Join-Path $Logs "swarm-$stamp.log"; $err = Join-Path $Logs "swarm-$stamp.err.log"
+  $argList = @("`"$App\swarm\src\run.js`"", '--agents', $Agents, '--bus', 'memory', '--data-dir', "`"$Data`"")
+  $p = Start-Process -FilePath 'node' -ArgumentList $argList -WorkingDirectory $App -RedirectStandardOutput $out -RedirectStandardError $err -WindowStyle Hidden -PassThru
+  $null = $p.Handle   # keeps the exit code readable after the process ends
+  Write-Log "started node pid $($p.Id) at $(& git -C $App rev-parse --short HEAD) ($(Account) account)"
+  return $p
+}
+function Stop-Swarm($p) {
+  if ($p -and -not $p.HasExited) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue; $p.WaitForExit(15000) | Out-Null }
+}
+
+# new code: gate (installed code judges), tests in a scratch checkout, then reset; returns the old commit or $null
+function Try-Update {
+  & git -C $App fetch -q origin $Branch 2>$null
+  $old = (& git -C $App rev-parse HEAD).Trim(); $new = (& git -C $App rev-parse "origin/$Branch").Trim()
+  if (-not $new -or $old -eq $new) { return $null }
+  $asked = Join-Path $Approved ".asked-$new"
+  $gate = (& node (Join-Path $App 'swarm\src\tools\update_gate.js') --repo $App --old $old --new $new --account (Account)) -join ' '
+  if (-not $gate.StartsWith('auto') -and -not (Test-Path (Join-Path $Approved $new))) {
+    if (-not (Test-Path $asked)) { New-Item -ItemType File -Path $asked | Out-Null; Say "Swarm update $($new.Substring(0,7)) needs your OK - $($gate -replace '^approval: ','').  To install it: run C:\swarm\app\swarm\deploy\windows\approve.ps1" }
+    return $null
+  }
+  $tmp = Join-Path $env:TEMP "swarm-update-$($new.Substring(0,12))"
+  if (Test-Path $tmp) { & git -C $App worktree remove --force $tmp 2>$null; Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue }
+  & git -C $App worktree add -q --detach $tmp $new 2>$null
+  Push-Location (Join-Path $tmp 'swarm')
+  $testLog = Join-Path $Logs "update-test-$($new.Substring(0,7)).log"
+  & node --test --test-timeout=60000 'test/*.test.js' *> $testLog
+  $ok = ($LASTEXITCODE -eq 0)
+  Pop-Location
+  & git -C $App worktree remove --force $tmp 2>$null
+  if (-not $ok) {
+    if (-not (Test-Path $asked)) { New-Item -ItemType File -Path $asked | Out-Null; Say "Swarm update $($new.Substring(0,7)) NOT installed: tests failed (see $testLog)." }
+    return $null
+  }
+  & git -C $App reset -q --hard $new
+  Say "Swarm updated $($old.Substring(0,7)) -> $($new.Substring(0,7)): $(& git -C $App log --format=%s -1)"
+  return $old
+}
+
+Get-ChildItem $Logs -Filter '*.log' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-14) -and $_.Name -ne 'runner.log' } | Remove-Item -ErrorAction SilentlyContinue
+Write-Log "runner started (pid $PID)"
+$started = Get-Date; $lastCheck = Get-Date; $rollbackTo = $null; $rollbackUntil = Get-Date
+$proc = Start-Swarm
+while ($true) {
+  Start-Sleep -Seconds 20
+  if ($env:SWARM_RUN_MINUTES -and ((Get-Date) - $started).TotalMinutes -ge [double]$env:SWARM_RUN_MINUTES) { Stop-Swarm $proc; Write-Log 'runner stopped (SWARM_RUN_MINUTES)'; break }
+  if ($proc.HasExited) {
+    if ($rollbackTo -and (Get-Date) -lt $rollbackUntil) {
+      & git -C $App reset -q --hard $rollbackTo
+      Say "Swarm update rolled back to $($rollbackTo.Substring(0,7)): the new code stopped within 3 minutes (exit code $($proc.ExitCode))."
+      $rollbackTo = $null
+    } else { Write-Log "node exited (code $($proc.ExitCode)); restarting" }
+    Start-Sleep -Seconds 5
+    $proc = Start-Swarm
+    continue
+  }
+  if (((Get-Date) - $lastCheck).TotalMinutes -ge 10) {
+    $lastCheck = Get-Date
+    $old = Try-Update
+    if ($old) { Stop-Swarm $proc; $rollbackTo = $old; $rollbackUntil = (Get-Date).AddMinutes(3); $proc = Start-Swarm }
+  }
+}
