@@ -1,0 +1,3824 @@
+{
+ "generated": "2026-10-20T12:03:26.422Z",
+ "days": [
+  "2021-10-01",
+  "2026-09-30"
+ ],
+ "primary": {
+  "from": "2022-10-01",
+  "n": 0,
+  "sumR": 678.51,
+  "sumR15": 678.51,
+  "avgR": null,
+  "sharpe": 0.49,
+  "t": 0.97,
+  "maxDD": 658.26,
+  "days": 1461,
+  "years": {
+   "2022": {
+    "n": 0,
+    "sumR": 177.54,
+    "sumR15": 177.54,
+    "avgR": null,
+    "sharpe": 2.02,
+    "t": 1.01,
+    "maxDD": 159.11,
+    "days": 92
+   },
+   "2023": {
+    "n": 0,
+    "sumR": -258.79,
+    "sumR15": -258.79,
+    "avgR": null,
+    "sharpe": -0.98,
+    "t": -0.98,
+    "maxDD": 535.98,
+    "days": 365
+   },
+   "2024": {
+    "n": 0,
+    "sumR": -17.06,
+    "sumR15": -17.06,
+    "avgR": null,
+    "sharpe": -0.06,
+    "t": -0.06,
+    "maxDD": 340.1,
+    "days": 366
+   },
+   "2025": {
+    "n": 0,
+    "sumR": 621.48,
+    "sumR15": 621.48,
+    "avgR": null,
+    "sharpe": 1.31,
+    "t": 1.31,
+    "maxDD": 234.36,
+    "days": 365
+   },
+   "2026": {
+    "n": 0,
+    "sumR": 155.35,
+    "sumR15": 155.35,
+    "avgR": null,
+    "sharpe": 0.65,
+    "t": 0.56,
+    "maxDD": 304.34,
+    "days": 273
+   }
+  },
+  "picks": [
+   {
+    "quarter": "2022-10-01",
+    "picks": [
+     {
+      "name": "ma-retest@240",
+      "trainSharpe": 2.23,
+      "trainN": 1164,
+      "oosR": 12.61,
+      "oosN": 348
+     },
+     {
+      "name": "rsi-macd-trend@720",
+      "trainSharpe": 1.78,
+      "trainN": 1173,
+      "oosR": 44.43,
+      "oosN": 361
+     },
+     {
+      "name": "harmonic@720",
+      "trainSharpe": 1.76,
+      "trainN": 51,
+      "oosR": 2.01,
+      "oosN": 15
+     },
+     {
+      "name": "ma-retest@120",
+      "trainSharpe": 1.58,
+      "trainN": 2987,
+      "oosR": 61.99,
+      "oosN": 821
+     },
+     {
+      "name": "ma-pullback-ride@720",
+      "trainSharpe": 1.3,
+      "trainN": 595,
+      "oosR": 56.5,
+      "oosN": 264
+     }
+    ],
+    "oosR": 177.54
+   },
+   {
+    "quarter": "2023-01-01",
+    "picks": [
+     {
+      "name": "rsi-macd-trend@720",
+      "trainSharpe": 1.92,
+      "trainN": 1433,
+      "oosR": -101.14,
+      "oosN": 324
+     },
+     {
+      "name": "ma-retest@240",
+      "trainSharpe": 1.91,
+      "trainN": 1332,
+      "oosR": 124.68,
+      "oosN": 477
+     },
+     {
+      "name": "ma-pullback-ride@720",
+      "trainSharpe": 1.84,
+      "trainN": 859,
+      "oosR": -115.69,
+      "oosN": 355
+     },
+     {
+      "name": "ma-retest@120",
+      "trainSharpe": 1.83,
+      "trainN": 3175,
+      "oosR": 76.8,
+      "oosN": 870
+     },
+     {
+      "name": "ma-pullback-ride@1440",
+      "trainSharpe": 1.74,
+      "trainN": 170,
+      "oosR": -66.94,
+      "oosN": 126
+     }
+    ],
+    "oosR": -82.29
+   },
+   {
+    "quarter": "2023-04-01",
+    "picks": [
+     {
+      "name": "ma-retest@240",
+      "trainSharpe": 1.78,
+      "trainN": 1478,
+      "oosR": -54.08,
+      "oosN": 447
+     },
+     {
+      "name": "ma-retest@120",
+      "trainSharpe": 1.57,
+      "trainN": 3204,
+      "oosR": -25.12,
+      "oosN": 875
+     },
+     {
+      "name": "harmonic@1440",
+      "trainSharpe": 1.44,
+      "trainN": 31,
+      "oosR": -0.13,
+      "oosN": 2
+     },
+     {
+      "name": "rsi-macd-rev@1440",
+      "trainSharpe": 1.03,
+      "trainN": 194,
+      "oosR": 3.9,
+      "oosN": 33
+     },
+     {
+      "name": "harmonic@720",
+      "trainSharpe": 0.98,
+      "trainN": 50,
+      "oosR": -0.84,
+      "oosN": 7
+     }
+    ],
+    "oosR": -76.27
+   },
+   {
+    "quarter": "2023-07-01",
+    "picks": [
+     {
+      "name": "rsi-macd-rev@720",
+      "trainSharpe": 1.42,
+      "trainN": 502,
+      "oosR": -21.19,
+      "oosN": 128
+     },
+     {
+      "name": "rsi-macd-rev@1440",
+      "trainSharpe": 1.11,
+      "trainN": 179,
+      "oosR": -4.87,
+      "oosN": 53
+     },
+     {
+      "name": "ma-retest@240",
+      "trainSharpe": 1.02,
+      "trainN": 1700,
+      "oosR": 7.41,
+      "oosN": 348
+     },
+     {
+      "name": "ma-retest@120",
+      "trainSharpe": 0.93,
+      "trainN": 3546,
+      "oosR": -117.93,
+      "oosN": 832
+     },
+     {
+      "name": "overshoot-fade@720",
+      "trainSharpe": 0.24,
+      "trainN": 72,
+      "oosR": -8.05,
+      "oosN": 17
+     }
+    ],
+    "oosR": -144.63
+   },
+   {
+    "quarter": "2023-10-01",
+    "picks": [
+     {
+      "name": "rsi-macd-rev@720",
+      "trainSharpe": 1.13,
+      "trainN": 547,
+      "oosR": -35.23,
+      "oosN": 148
+     },
+     {
+      "name": "ma-retest@240",
+      "trainSharpe": 0.78,
+      "trainN": 1620,
+      "oosR": 14.95,
+      "oosN": 371
+     },
+     {
+      "name": "rsi-macd-trend@240",
+      "trainSharpe": 0.76,
+      "trainN": 4591,
+      "oosR": -10.12,
+      "oosN": 1183
+     },
+     {
+      "name": "intraday-trend@240",
+      "trainSharpe": 0.68,
+      "trainN": 2398,
+      "oosR": 2.91,
+      "oosN": 656
+     },
+     {
+      "name": "ma-pullback-ride@720",
+      "trainSharpe": 0.54,
+      "trainN": 1157,
+      "oosR": 71.9,
+      "oosN": 310
+     }
+    ],
+    "oosR": 44.41
+   },
+   {
+    "quarter": "2024-01-01",
+    "picks": [
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 1.41,
+      "trainN": 522,
+      "oosR": 12.25,
+      "oosN": 100
+     },
+     {
+      "name": "ma-retest@1440",
+      "trainSharpe": 1.39,
+      "trainN": 168,
+      "oosR": -11.51,
+      "oosN": 57
+     },
+     {
+      "name": "trend-pullback@60",
+      "trainSharpe": 0.9,
+      "trainN": 2715,
+      "oosR": 18.82,
+      "oosN": 670
+     },
+     {
+      "name": "ma-retest@240",
+      "trainSharpe": 0.79,
+      "trainN": 1643,
+      "oosR": 15.06,
+      "oosN": 411
+     },
+     {
+      "name": "ma-pullback-ride@720",
+      "trainSharpe": 0.71,
+      "trainN": 1203,
+      "oosR": -32.72,
+      "oosN": 263
+     }
+    ],
+    "oosR": 1.9
+   },
+   {
+    "quarter": "2024-04-01",
+    "picks": [
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 2.62,
+      "trainN": 466,
+      "oosR": 6.45,
+      "oosN": 104
+     },
+     {
+      "name": "ma-pullback-ride@1440",
+      "trainSharpe": 1.89,
+      "trainN": 495,
+      "oosR": -58.88,
+      "oosN": 92
+     },
+     {
+      "name": "ma-pullback@1440",
+      "trainSharpe": 1.88,
+      "trainN": 574,
+      "oosR": -51.72,
+      "oosN": 115
+     },
+     {
+      "name": "rsi-macd-trend@1440",
+      "trainSharpe": 1.63,
+      "trainN": 678,
+      "oosR": 30.31,
+      "oosN": 134
+     },
+     {
+      "name": "ma-retest@1440",
+      "trainSharpe": 1.63,
+      "trainN": 184,
+      "oosR": -5.27,
+      "oosN": 47
+     }
+    ],
+    "oosR": -79.11
+   },
+   {
+    "quarter": "2024-07-01",
+    "picks": [
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 2.82,
+      "trainN": 437,
+      "oosR": 18.71,
+      "oosN": 107
+     },
+     {
+      "name": "trend-pullback@60",
+      "trainSharpe": 1.84,
+      "trainN": 2669,
+      "oosR": 11.27,
+      "oosN": 805
+     },
+     {
+      "name": "rsi-macd-trend@1440",
+      "trainSharpe": 1.63,
+      "trainN": 627,
+      "oosR": 8.48,
+      "oosN": 190
+     },
+     {
+      "name": "trend-pullback@120",
+      "trainSharpe": 1.35,
+      "trainN": 565,
+      "oosR": 48.67,
+      "oosN": 192
+     },
+     {
+      "name": "ma-pullback@240",
+      "trainSharpe": 0.85,
+      "trainN": 4327,
+      "oosR": -42.75,
+      "oosN": 1099
+     }
+    ],
+    "oosR": 44.38
+   },
+   {
+    "quarter": "2024-10-01",
+    "picks": [
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 2.34,
+      "trainN": 438,
+      "oosR": 7.14,
+      "oosN": 155
+     },
+     {
+      "name": "trend-pullback@120",
+      "trainSharpe": 2.07,
+      "trainN": 640,
+      "oosR": -20.22,
+      "oosN": 201
+     },
+     {
+      "name": "ma-retest@1440",
+      "trainSharpe": 1.4,
+      "trainN": 210,
+      "oosR": -2.38,
+      "oosN": 79
+     },
+     {
+      "name": "harmonic@120",
+      "trainSharpe": 1.34,
+      "trainN": 287,
+      "oosR": -13.99,
+      "oosN": 77
+     },
+     {
+      "name": "trend-pullback@60",
+      "trainSharpe": 1.31,
+      "trainN": 2863,
+      "oosR": 45.23,
+      "oosN": 734
+     }
+    ],
+    "oosR": 15.78
+   },
+   {
+    "quarter": "2025-01-01",
+    "picks": [
+     {
+      "name": "trend-pullback@120",
+      "trainSharpe": 1.51,
+      "trainN": 703,
+      "oosR": -31.83,
+      "oosN": 140
+     },
+     {
+      "name": "trend-pullback@60",
+      "trainSharpe": 1.41,
+      "trainN": 2921,
+      "oosR": 93.78,
+      "oosN": 699
+     },
+     {
+      "name": "rsi-macd-rev@720",
+      "trainSharpe": 1.38,
+      "trainN": 489,
+      "oosR": 4.53,
+      "oosN": 53
+     },
+     {
+      "name": "harmonic@1440",
+      "trainSharpe": 1.05,
+      "trainN": 30,
+      "oosR": 3.02,
+      "oosN": 3
+     },
+     {
+      "name": "rsi-macd-rev@1440",
+      "trainSharpe": 1.03,
+      "trainN": 174,
+      "oosR": -7.6,
+      "oosN": 49
+     }
+    ],
+    "oosR": 61.9
+   },
+   {
+    "quarter": "2025-04-01",
+    "picks": [
+     {
+      "name": "rsi-macd-rev@720",
+      "trainSharpe": 1.82,
+      "trainN": 431,
+      "oosR": -8.26,
+      "oosN": 100
+     },
+     {
+      "name": "trend-pullback@60",
+      "trainSharpe": 1.8,
+      "trainN": 2953,
+      "oosR": 76.17,
+      "oosN": 694
+     },
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 1.71,
+      "trainN": 475,
+      "oosR": 13.33,
+      "oosN": 96
+     },
+     {
+      "name": "rsi-macd-trend@720",
+      "trainSharpe": 1.3,
+      "trainN": 1383,
+      "oosR": 68.2,
+      "oosN": 333
+     },
+     {
+      "name": "intraday-trend@240",
+      "trainSharpe": 1.16,
+      "trainN": 2578,
+      "oosR": -9.37,
+      "oosN": 583
+     }
+    ],
+    "oosR": 140.07
+   },
+   {
+    "quarter": "2025-07-01",
+    "picks": [
+     {
+      "name": "rsi-macd-trend@720",
+      "trainSharpe": 1.88,
+      "trainN": 1355,
+      "oosR": -39.73,
+      "oosN": 272
+     },
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 1.79,
+      "trainN": 467,
+      "oosR": -32.94,
+      "oosN": 138
+     },
+     {
+      "name": "intraday-trend@120",
+      "trainSharpe": 1.74,
+      "trainN": 5237,
+      "oosR": 118.11,
+      "oosN": 1226
+     },
+     {
+      "name": "rsi-macd-rev@720",
+      "trainSharpe": 1.7,
+      "trainN": 417,
+      "oosR": 8.93,
+      "oosN": 123
+     },
+     {
+      "name": "crowd-squeeze@5",
+      "trainSharpe": 1.68,
+      "trainN": 1433,
+      "oosR": 34.78,
+      "oosN": 423
+     }
+    ],
+    "oosR": 89.15
+   },
+   {
+    "quarter": "2025-10-01",
+    "picks": [
+     {
+      "name": "crowd-squeeze@5",
+      "trainSharpe": 1.81,
+      "trainN": 1682,
+      "oosR": 24.27,
+      "oosN": 651
+     },
+     {
+      "name": "intraday-trend@120",
+      "trainSharpe": 1.75,
+      "trainN": 4990,
+      "oosR": 346.9,
+      "oosN": 1168
+     },
+     {
+      "name": "rsi-macd-rev@720",
+      "trainSharpe": 1.51,
+      "trainN": 430,
+      "oosR": -45.74,
+      "oosN": 100
+     },
+     {
+      "name": "harmonic@720",
+      "trainSharpe": 1.04,
+      "trainN": 55,
+      "oosR": -4.19,
+      "oosN": 8
+     },
+     {
+      "name": "trend-pullback@60",
+      "trainSharpe": 1.02,
+      "trainN": 2745,
+      "oosR": 9.09,
+      "oosN": 628
+     }
+    ],
+    "oosR": 330.33
+   },
+   {
+    "quarter": "2026-01-01",
+    "picks": [
+     {
+      "name": "ma-retest@1440",
+      "trainSharpe": 2.08,
+      "trainN": 231,
+      "oosR": 1.68,
+      "oosN": 21
+     },
+     {
+      "name": "crowd-squeeze@5",
+      "trainSharpe": 2.04,
+      "trainN": 2012,
+      "oosR": 2.45,
+      "oosN": 582
+     },
+     {
+      "name": "ma-retest@720",
+      "trainSharpe": 1.7,
+      "trainN": 432,
+      "oosR": 6.75,
+      "oosN": 28
+     },
+     {
+      "name": "intraday-trend@120",
+      "trainSharpe": 1.56,
+      "trainN": 4854,
+      "oosR": 81.47,
+      "oosN": 1188
+     },
+     {
+      "name": "intraday-trend@60",
+      "trainSharpe": 1.22,
+      "trainN": 10064,
+      "oosR": 220.74,
+      "oosN": 2334
+     }
+    ],
+    "oosR": 313.09
+   },
+   {
+    "quarter": "2026-04-01",
+    "picks": [
+     {
+      "name": "ma-pullback@1440",
+      "trainSharpe": 2.07,
+      "trainN": 483,
+      "oosR": -6.09,
+      "oosN": 110
+     },
+     {
+      "name": "ma-retest@1440",
+      "trainSharpe": 1.8,
+      "trainN": 194,
+      "oosR": 0.96,
+      "oosN": 14
+     },
+     {
+      "name": "crowd-squeeze@5",
+      "trainSharpe": 1.71,
+      "trainN": 2119,
+      "oosR": 18.02,
+      "oosN": 430
+     },
+     {
+      "name": "intraday-trend@120",
+      "trainSharpe": 1.59,
+      "trainN": 4804,
+      "oosR": -49.38,
+      "oosN": 1090
+     },
+     {
+      "name": "rsi-macd-trend@240",
+      "trainSharpe": 1.37,
+      "trainN": 4078,
+      "oosR": -139.64,
+      "oosN": 1106
+     }
+    ],
+    "oosR": -176.13
+   },
+   {
+    "quarter": "2026-07-01",
+    "picks": [
+     {
+      "name": "ma-pullback@1440",
+      "trainSharpe": 2.48,
+      "trainN": 472,
+      "oosR": -21.74,
+      "oosN": 133
+     },
+     {
+      "name": "ma-retest@1440",
+      "trainSharpe": 2.07,
+      "trainN": 147,
+      "oosR": 11.93,
+      "oosN": 18
+     },
+     {
+      "name": "intraday-trend@720",
+      "trainSharpe": 1.74,
+      "trainN": 906,
+      "oosR": 39.69,
+      "oosN": 271
+     },
+     {
+      "name": "ma-pullback-ride@1440",
+      "trainSharpe": 1.59,
+      "trainN": 374,
+      "oosR": -18.88,
+      "oosN": 103
+     },
+     {
+      "name": "intraday-trend@1440",
+      "trainSharpe": 1.3,
+      "trainN": 508,
+      "oosR": 7.4,
+      "oosN": 200
+     }
+    ],
+    "oosR": 18.4
+   }
+  ],
+  "timeframes": {
+   "5": 4,
+   "60": 7,
+   "120": 12,
+   "240": 11,
+   "720": 26,
+   "1440": 20
+  }
+ },
+ "robust": [
+  {
+   "train": 182,
+   "k": 3,
+   "from": "2022-04-01",
+   "n": 0,
+   "sumR": 655.39,
+   "sumR15": 655.39,
+   "avgR": null,
+   "sharpe": 0.36,
+   "t": 0.76,
+   "maxDD": 766.13,
+   "days": 1644
+  },
+  {
+   "train": 182,
+   "k": 5,
+   "from": "2022-04-01",
+   "n": 0,
+   "sumR": 924.8,
+   "sumR15": 924.8,
+   "avgR": null,
+   "sharpe": 0.32,
+   "t": 0.69,
+   "maxDD": 1019.14,
+   "days": 1644
+  },
+  {
+   "train": 182,
+   "k": 10,
+   "from": "2022-04-01",
+   "n": 0,
+   "sumR": 1546.73,
+   "sumR15": 1546.73,
+   "avgR": null,
+   "sharpe": 0.28,
+   "t": 0.59,
+   "maxDD": 2057.61,
+   "days": 1644
+  },
+  {
+   "train": 365,
+   "k": 3,
+   "from": "2022-10-01",
+   "n": 0,
+   "sumR": 349.16,
+   "sumR15": 349.16,
+   "avgR": null,
+   "sharpe": 0.33,
+   "t": 0.66,
+   "maxDD": 443.11,
+   "days": 1461
+  },
+  {
+   "train": 365,
+   "k": 5,
+   "from": "2022-10-01",
+   "n": 0,
+   "sumR": 678.51,
+   "sumR15": 678.51,
+   "avgR": null,
+   "sharpe": 0.49,
+   "t": 0.97,
+   "maxDD": 658.26,
+   "days": 1461
+  },
+  {
+   "train": 365,
+   "k": 10,
+   "from": "2022-10-01",
+   "n": 0,
+   "sumR": 995.54,
+   "sumR15": 995.54,
+   "avgR": null,
+   "sharpe": 0.25,
+   "t": 0.49,
+   "maxDD": 1559.01,
+   "days": 1461
+  },
+  {
+   "train": 730,
+   "k": 3,
+   "from": "2023-10-01",
+   "n": 0,
+   "sumR": 131.49,
+   "sumR15": 131.49,
+   "avgR": null,
+   "sharpe": 0.27,
+   "t": 0.47,
+   "maxDD": 276.79,
+   "days": 1096
+  },
+  {
+   "train": 730,
+   "k": 5,
+   "from": "2023-10-01",
+   "n": 0,
+   "sumR": 709.73,
+   "sumR15": 709.73,
+   "avgR": null,
+   "sharpe": 0.65,
+   "t": 1.12,
+   "maxDD": 398.45,
+   "days": 1096
+  },
+  {
+   "train": 730,
+   "k": 10,
+   "from": "2023-10-01",
+   "n": 0,
+   "sumR": 1152.23,
+   "sumR15": 1152.23,
+   "avgR": null,
+   "sharpe": 0.61,
+   "t": 1.05,
+   "maxDD": 971.77,
+   "days": 1096
+  }
+ ],
+ "variants": [
+  {
+   "name": "intraday-trend@1",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 1,
+   "params": {
+    "onlyTfs": [
+     1
+    ]
+   },
+   "full": {
+    "n": 2346001,
+    "sumR": -882213.6,
+    "sumR15": -1243820.36,
+    "avgR": -0.376,
+    "sharpe": -45.65,
+    "t": -102.11,
+    "maxDD": 882213.6,
+    "days": 1826
+   },
+   "years": {
+    "2021": -36506.58,
+    "2022": -165252.17,
+    "2023": -207841.69,
+    "2024": -167832.38,
+    "2025": -168922.12,
+    "2026": -135858.67
+   }
+  },
+  {
+   "name": "intraday-trend@3",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 3,
+   "params": {
+    "onlyTfs": [
+     3
+    ]
+   },
+   "full": {
+    "n": 811883,
+    "sumR": -158323.04,
+    "sumR15": -223420.33,
+    "avgR": -0.195,
+    "sharpe": -18.46,
+    "t": -41.29,
+    "maxDD": 158323.04,
+    "days": 1826
+   },
+   "years": {
+    "2021": -8179.13,
+    "2022": -27973.71,
+    "2023": -35617,
+    "2024": -31771.93,
+    "2025": -29380.26,
+    "2026": -25401.01
+   }
+  },
+  {
+   "name": "intraday-trend@5",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 5,
+   "params": {
+    "onlyTfs": [
+     5
+    ]
+   },
+   "full": {
+    "n": 498810,
+    "sumR": -74488.07,
+    "sumR15": -104148.82,
+    "avgR": -0.1493,
+    "sharpe": -11.43,
+    "t": -25.57,
+    "maxDD": 74488.07,
+    "days": 1826
+   },
+   "years": {
+    "2021": -4299.14,
+    "2022": -13802.12,
+    "2023": -16576.32,
+    "2024": -15187.27,
+    "2025": -13013.32,
+    "2026": -11609.9
+   }
+  },
+  {
+   "name": "intraday-trend@15",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 15,
+   "params": {
+    "onlyTfs": [
+     15
+    ]
+   },
+   "full": {
+    "n": 178942,
+    "sumR": -11334.83,
+    "sumR15": -17067.12,
+    "avgR": -0.0633,
+    "sharpe": -2.93,
+    "t": -6.54,
+    "maxDD": 11416.83,
+    "days": 1826
+   },
+   "years": {
+    "2021": -524.46,
+    "2022": -2288.45,
+    "2023": -3381.03,
+    "2024": -2028.4,
+    "2025": -854.15,
+    "2026": -2258.35
+   }
+  },
+  {
+   "name": "intraday-trend@30",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 30,
+   "params": {
+    "onlyTfs": [
+     30
+    ]
+   },
+   "full": {
+    "n": 96037,
+    "sumR": -4103.2,
+    "sumR15": -6249.02,
+    "avgR": -0.0427,
+    "sharpe": -1.53,
+    "t": -3.42,
+    "maxDD": 4543.33,
+    "days": 1826
+   },
+   "years": {
+    "2021": -28.61,
+    "2022": -905.75,
+    "2023": -1252.84,
+    "2024": -800.06,
+    "2025": -414.23,
+    "2026": -701.72
+   }
+  },
+  {
+   "name": "intraday-trend@60",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 60,
+   "params": {
+    "onlyTfs": [
+     60
+    ]
+   },
+   "full": {
+    "n": 51312,
+    "sumR": -262.3,
+    "sumR15": -1060.26,
+    "avgR": -0.0051,
+    "sharpe": -0.12,
+    "t": -0.27,
+    "maxDD": 1411.54,
+    "days": 1826
+   },
+   "years": {
+    "2021": 58.47,
+    "2022": -68.85,
+    "2023": -765.81,
+    "2024": -331.07,
+    "2025": 859.78,
+    "2026": -14.81
+   }
+  },
+  {
+   "name": "intraday-trend@120",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 120,
+   "params": {
+    "onlyTfs": [
+     120
+    ]
+   },
+   "full": {
+    "n": 24724,
+    "sumR": 760.88,
+    "sumR15": 488.89,
+    "avgR": 0.0308,
+    "sharpe": 0.55,
+    "t": 1.24,
+    "maxDD": 315.85,
+    "days": 1826
+   },
+   "years": {
+    "2021": 33.44,
+    "2022": -13.42,
+    "2023": -36.75,
+    "2024": 45.25,
+    "2025": 713.44,
+    "2026": 18.93
+   }
+  },
+  {
+   "name": "intraday-trend@240",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 240,
+   "params": {
+    "onlyTfs": [
+     240
+    ]
+   },
+   "full": {
+    "n": 12114,
+    "sumR": 568.98,
+    "sumR15": 476.29,
+    "avgR": 0.047,
+    "sharpe": 0.61,
+    "t": 1.36,
+    "maxDD": 164.45,
+    "days": 1826
+   },
+   "years": {
+    "2021": -0.08,
+    "2022": 23.04,
+    "2023": 105.77,
+    "2024": 69.88,
+    "2025": 321.14,
+    "2026": 49.22
+   }
+  },
+  {
+   "name": "intraday-trend@720",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 720,
+   "params": {
+    "onlyTfs": [
+     720
+    ]
+   },
+   "full": {
+    "n": 4234,
+    "sumR": -31.25,
+    "sumR15": -49.43,
+    "avgR": -0.0074,
+    "sharpe": -0.12,
+    "t": -0.27,
+    "maxDD": 186.81,
+    "days": 1826
+   },
+   "years": {
+    "2021": -34.73,
+    "2022": -59.43,
+    "2023": 1.54,
+    "2024": -19.21,
+    "2025": -35.43,
+    "2026": 116.01
+   }
+  },
+  {
+   "name": "intraday-trend@1440",
+   "group": "intraday-trend",
+   "base": "intraday-trend",
+   "tf": 1440,
+   "params": {
+    "onlyTfs": [
+     1440
+    ]
+   },
+   "full": {
+    "n": 2237,
+    "sumR": -56.69,
+    "sumR15": -63.72,
+    "avgR": -0.0253,
+    "sharpe": -0.32,
+    "t": -0.71,
+    "maxDD": 158.29,
+    "days": 1826
+   },
+   "years": {
+    "2021": 8.06,
+    "2022": -45.76,
+    "2023": 4,
+    "2024": -58.71,
+    "2025": -16.08,
+    "2026": 51.79
+   }
+  },
+  {
+   "name": "trend-pullback@1",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 1,
+   "params": {
+    "onlyTfs": [
+     1
+    ],
+    "holdMin": 24,
+    "waitMin": 3,
+    "cooldownMin": 12
+   },
+   "full": {
+    "n": 1536165,
+    "sumR": -479940.44,
+    "sumR15": -683091.02,
+    "avgR": -0.3124,
+    "sharpe": -32.34,
+    "t": -72.34,
+    "maxDD": 479940.44,
+    "days": 1826
+   },
+   "years": {
+    "2021": -19264.54,
+    "2022": -94457.76,
+    "2023": -120547.33,
+    "2024": -89788.94,
+    "2025": -85676.86,
+    "2026": -70205.01
+   }
+  },
+  {
+   "name": "trend-pullback@3",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 3,
+   "params": {
+    "onlyTfs": [
+     3
+    ],
+    "holdMin": 72,
+    "waitMin": 9,
+    "cooldownMin": 36
+   },
+   "full": {
+    "n": 496406,
+    "sumR": -80590.58,
+    "sumR15": -115194.13,
+    "avgR": -0.1623,
+    "sharpe": -14.95,
+    "t": -33.44,
+    "maxDD": 80605.94,
+    "days": 1826
+   },
+   "years": {
+    "2021": -3023.72,
+    "2022": -16894.86,
+    "2023": -20478.73,
+    "2024": -14929.76,
+    "2025": -13519.3,
+    "2026": -11744.21
+   }
+  },
+  {
+   "name": "trend-pullback@5",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 5,
+   "params": {
+    "onlyTfs": [
+     5
+    ]
+   },
+   "full": {
+    "n": 288538,
+    "sumR": -34542.64,
+    "sumR15": -49526.8,
+    "avgR": -0.1197,
+    "sharpe": -9.12,
+    "t": -20.41,
+    "maxDD": 34579.06,
+    "days": 1826
+   },
+   "years": {
+    "2021": -1216.01,
+    "2022": -7576.85,
+    "2023": -7991.59,
+    "2024": -6917.23,
+    "2025": -5925.43,
+    "2026": -4915.55
+   }
+  },
+  {
+   "name": "trend-pullback@15",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 15,
+   "params": {
+    "onlyTfs": [
+     15
+    ],
+    "holdMin": 360,
+    "waitMin": 45,
+    "cooldownMin": 180
+   },
+   "full": {
+    "n": 90071,
+    "sumR": -6449.82,
+    "sumR15": -8983.19,
+    "avgR": -0.0716,
+    "sharpe": -3.26,
+    "t": -7.29,
+    "maxDD": 6495.24,
+    "days": 1826
+   },
+   "years": {
+    "2021": -607.05,
+    "2022": -1188.56,
+    "2023": -898.06,
+    "2024": -1508.56,
+    "2025": -1562.87,
+    "2026": -684.72
+   }
+  },
+  {
+   "name": "trend-pullback@30",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 30,
+   "params": {
+    "onlyTfs": [
+     30
+    ],
+    "holdMin": 720,
+    "waitMin": 90,
+    "cooldownMin": 360
+   },
+   "full": {
+    "n": 41065,
+    "sumR": -1536.1,
+    "sumR15": -2315.11,
+    "avgR": -0.0374,
+    "sharpe": -1.19,
+    "t": -2.66,
+    "maxDD": 1568.43,
+    "days": 1826
+   },
+   "years": {
+    "2021": -213.47,
+    "2022": -293.43,
+    "2023": -139.74,
+    "2024": -381.3,
+    "2025": -443.68,
+    "2026": -64.48
+   }
+  },
+  {
+   "name": "trend-pullback@60",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 60,
+   "params": {
+    "onlyTfs": [
+     60
+    ],
+    "holdMin": 1440,
+    "waitMin": 180,
+    "cooldownMin": 720
+   },
+   "full": {
+    "n": 14141,
+    "sumR": 371.41,
+    "sumR15": 194.5,
+    "avgR": 0.0263,
+    "sharpe": 0.51,
+    "t": 1.13,
+    "maxDD": 199.76,
+    "days": 1826
+   },
+   "years": {
+    "2021": -89.17,
+    "2022": 98.53,
+    "2023": 140.93,
+    "2024": 194.92,
+    "2025": 106.62,
+    "2026": -80.41
+   }
+  },
+  {
+   "name": "trend-pullback@120",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 120,
+   "params": {
+    "onlyTfs": [
+     120
+    ],
+    "holdMin": 2880,
+    "waitMin": 360,
+    "cooldownMin": 1440
+   },
+   "full": {
+    "n": 3260,
+    "sumR": 128.74,
+    "sumR15": 101.06,
+    "avgR": 0.0395,
+    "sharpe": 0.45,
+    "t": 1.01,
+    "maxDD": 89.54,
+    "days": 1826
+   },
+   "years": {
+    "2021": 2.76,
+    "2022": 30.43,
+    "2023": 22.2,
+    "2024": 112.66,
+    "2025": -35.01,
+    "2026": -4.3
+   }
+  },
+  {
+   "name": "trend-pullback@240",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 240,
+   "params": {
+    "onlyTfs": [
+     240
+    ],
+    "holdMin": 5760,
+    "waitMin": 720,
+    "cooldownMin": 2880
+   },
+   "full": {
+    "n": 26,
+    "sumR": -2.72,
+    "sumR15": -2.88,
+    "avgR": -0.1046,
+    "sharpe": -0.21,
+    "t": -0.48,
+    "maxDD": 5.99,
+    "days": 1826
+   },
+   "years": {
+    "2021": -0.52,
+    "2022": -1.44,
+    "2023": -2.52,
+    "2024": 2.51,
+    "2025": -1.89,
+    "2026": 1.14
+   }
+  },
+  {
+   "name": "trend-pullback@720",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 720,
+   "params": {
+    "onlyTfs": [
+     720
+    ],
+    "holdMin": 17280,
+    "waitMin": 2160,
+    "cooldownMin": 8640
+   },
+   "full": {
+    "n": 0,
+    "sumR": 0,
+    "sumR15": 0,
+    "avgR": null,
+    "sharpe": 0,
+    "t": 0,
+    "maxDD": 0,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 0,
+    "2023": 0,
+    "2024": 0,
+    "2025": 0,
+    "2026": 0
+   }
+  },
+  {
+   "name": "trend-pullback@1440",
+   "group": "trend-pullback",
+   "base": "trend-pullback",
+   "tf": 1440,
+   "params": {
+    "onlyTfs": [
+     1440
+    ],
+    "holdMin": 34560,
+    "waitMin": 4320,
+    "cooldownMin": 17280
+   },
+   "full": {
+    "n": 0,
+    "sumR": 0,
+    "sumR15": 0,
+    "avgR": null,
+    "sharpe": 0,
+    "t": 0,
+    "maxDD": 0,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 0,
+    "2023": 0,
+    "2024": 0,
+    "2025": 0,
+    "2026": 0
+   }
+  },
+  {
+   "name": "overshoot-fade@1",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 1,
+   "params": {
+    "onlyTfs": [
+     1
+    ]
+   },
+   "full": {
+    "n": 106459,
+    "sumR": -30896.57,
+    "sumR15": -50176.77,
+    "avgR": -0.2902,
+    "sharpe": -15.61,
+    "t": -34.92,
+    "maxDD": 30896.57,
+    "days": 1826
+   },
+   "years": {
+    "2021": -2420.59,
+    "2022": -7389.47,
+    "2023": -5204.81,
+    "2024": -6044.61,
+    "2025": -5480.73,
+    "2026": -4356.37
+   }
+  },
+  {
+   "name": "overshoot-fade@3",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 3,
+   "params": {
+    "onlyTfs": [
+     3
+    ],
+    "holdMin": 90,
+    "waitMin": 9,
+    "cooldownMin": 90
+   },
+   "full": {
+    "n": 56171,
+    "sumR": -9747.25,
+    "sumR15": -16289.01,
+    "avgR": -0.1735,
+    "sharpe": -6.92,
+    "t": -15.47,
+    "maxDD": 9860.74,
+    "days": 1826
+   },
+   "years": {
+    "2021": -452.21,
+    "2022": -2101.68,
+    "2023": -2222.16,
+    "2024": -1533.74,
+    "2025": -1940.32,
+    "2026": -1497.14
+   }
+  },
+  {
+   "name": "overshoot-fade@5",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 5,
+   "params": {
+    "onlyTfs": [
+     5
+    ],
+    "holdMin": 150,
+    "waitMin": 15,
+    "cooldownMin": 150
+   },
+   "full": {
+    "n": 37448,
+    "sumR": -4144.99,
+    "sumR15": -7490.64,
+    "avgR": -0.1107,
+    "sharpe": -3.07,
+    "t": -6.87,
+    "maxDD": 4213.29,
+    "days": 1826
+   },
+   "years": {
+    "2021": -140.67,
+    "2022": -832.05,
+    "2023": -381.44,
+    "2024": -918.15,
+    "2025": -1090.57,
+    "2026": -782.1
+   }
+  },
+  {
+   "name": "overshoot-fade@15",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 15,
+   "params": {
+    "onlyTfs": [
+     15
+    ],
+    "holdMin": 450,
+    "waitMin": 45,
+    "cooldownMin": 450
+   },
+   "full": {
+    "n": 12838,
+    "sumR": -1262.69,
+    "sumR15": -1936.5,
+    "avgR": -0.0984,
+    "sharpe": -1.69,
+    "t": -3.77,
+    "maxDD": 1391.64,
+    "days": 1826
+   },
+   "years": {
+    "2021": 5.86,
+    "2022": -271.98,
+    "2023": -121.5,
+    "2024": -326.74,
+    "2025": -293.92,
+    "2026": -254.41
+   }
+  },
+  {
+   "name": "overshoot-fade@30",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 30,
+   "params": {
+    "onlyTfs": [
+     30
+    ],
+    "holdMin": 900,
+    "waitMin": 90,
+    "cooldownMin": 900
+   },
+   "full": {
+    "n": 6733,
+    "sumR": -1298.98,
+    "sumR15": -1559.79,
+    "avgR": -0.1929,
+    "sharpe": -2.72,
+    "t": -6.09,
+    "maxDD": 1359.71,
+    "days": 1826
+   },
+   "years": {
+    "2021": -76.89,
+    "2022": -581.62,
+    "2023": -170.35,
+    "2024": -113.05,
+    "2025": -178.09,
+    "2026": -178.99
+   }
+  },
+  {
+   "name": "overshoot-fade@60",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 60,
+   "params": {
+    "onlyTfs": [
+     60
+    ],
+    "holdMin": 1800,
+    "waitMin": 180,
+    "cooldownMin": 1800
+   },
+   "full": {
+    "n": 3334,
+    "sumR": -639.89,
+    "sumR15": -733.46,
+    "avgR": -0.1919,
+    "sharpe": -1.92,
+    "t": -4.3,
+    "maxDD": 677.9,
+    "days": 1826
+   },
+   "years": {
+    "2021": -51.15,
+    "2022": -273.52,
+    "2023": -89.23,
+    "2024": -102.19,
+    "2025": -89.75,
+    "2026": -34.05
+   }
+  },
+  {
+   "name": "overshoot-fade@120",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 120,
+   "params": {
+    "onlyTfs": [
+     120
+    ],
+    "holdMin": 3600,
+    "waitMin": 360,
+    "cooldownMin": 3600
+   },
+   "full": {
+    "n": 1541,
+    "sumR": -255.15,
+    "sumR15": -286.37,
+    "avgR": -0.1656,
+    "sharpe": -1.12,
+    "t": -2.51,
+    "maxDD": 292.74,
+    "days": 1826
+   },
+   "years": {
+    "2021": -11.56,
+    "2022": -103.22,
+    "2023": -74.59,
+    "2024": -67.9,
+    "2025": -19.41,
+    "2026": 21.52
+   }
+  },
+  {
+   "name": "overshoot-fade@240",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 240,
+   "params": {
+    "onlyTfs": [
+     240
+    ],
+    "holdMin": 7200,
+    "waitMin": 720,
+    "cooldownMin": 7200
+   },
+   "full": {
+    "n": 816,
+    "sumR": -198.93,
+    "sumR15": -210.2,
+    "avgR": -0.2438,
+    "sharpe": -1.39,
+    "t": -3.11,
+    "maxDD": 203.83,
+    "days": 1826
+   },
+   "years": {
+    "2021": -12.82,
+    "2022": -41.38,
+    "2023": -93.76,
+    "2024": -42.72,
+    "2025": 2.28,
+    "2026": -10.53
+   }
+  },
+  {
+   "name": "overshoot-fade@720",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 720,
+   "params": {
+    "onlyTfs": [
+     720
+    ],
+    "holdMin": 21600,
+    "waitMin": 2160,
+    "cooldownMin": 21600
+   },
+   "full": {
+    "n": 302,
+    "sumR": -61.43,
+    "sumR15": -63.44,
+    "avgR": -0.2034,
+    "sharpe": -1.09,
+    "t": -2.44,
+    "maxDD": 63.98,
+    "days": 1826
+   },
+   "years": {
+    "2021": -2.57,
+    "2022": -8.48,
+    "2023": -9.3,
+    "2024": -23.53,
+    "2025": -6.47,
+    "2026": -11.08
+   }
+  },
+  {
+   "name": "overshoot-fade@1440",
+   "group": "overshoot-fade",
+   "base": "overshoot-fade",
+   "tf": 1440,
+   "params": {
+    "onlyTfs": [
+     1440
+    ],
+    "holdMin": 43200,
+    "waitMin": 4320,
+    "cooldownMin": 43200
+   },
+   "full": {
+    "n": 290,
+    "sumR": -44.46,
+    "sumR15": -45.78,
+    "avgR": -0.1533,
+    "sharpe": -0.77,
+    "t": -1.72,
+    "maxDD": 48.47,
+    "days": 1826
+   },
+   "years": {
+    "2021": -10.74,
+    "2022": 1.94,
+    "2023": -5.81,
+    "2024": -11.59,
+    "2025": -8.64,
+    "2026": -9.62
+   }
+  },
+  {
+   "name": "noise-breakout@5",
+   "group": "noise-breakout",
+   "base": "noise-breakout",
+   "tf": 5,
+   "params": {
+    "onlyTfs": [
+     5
+    ]
+   },
+   "full": {
+    "n": 2017804,
+    "sumR": -14751991695234.68,
+    "sumR15": -1005157.65,
+    "avgR": -7310914.0904,
+    "sharpe": -0.75,
+    "t": -1.69,
+    "maxDD": 14751991695234.68,
+    "days": 1826
+   },
+   "years": {
+    "2021": -33991.98,
+    "2022": -157306.41,
+    "2023": -4098726174562.39,
+    "2024": -6571652738149.56,
+    "2025": -4081612484759.23,
+    "2026": -106465.06
+   }
+  },
+  {
+   "name": "noise-breakout@15",
+   "group": "noise-breakout",
+   "base": "noise-breakout",
+   "tf": 15,
+   "params": {
+    "onlyTfs": [
+     15
+    ]
+   },
+   "full": {
+    "n": 1252263,
+    "sumR": -23489695166034.76,
+    "sumR15": -520184,
+    "avgR": -18757797.0171,
+    "sharpe": -0.56,
+    "t": -1.26,
+    "maxDD": 33768710800724.6,
+    "days": 1826
+   },
+   "years": {
+    "2021": -17836.92,
+    "2022": -86285.69,
+    "2023": -6372593550968.84,
+    "2024": -5955560224894.2,
+    "2025": -3717091058693.3,
+    "2026": -7444450227355.76
+   }
+  },
+  {
+   "name": "noise-breakout@30",
+   "group": "noise-breakout",
+   "base": "noise-breakout",
+   "tf": 30,
+   "params": {
+    "onlyTfs": [
+     30
+    ]
+   },
+   "full": {
+    "n": 856343,
+    "sumR": 37684622659543.5,
+    "sumR15": -310883.17,
+    "avgR": 44006458.463,
+    "sharpe": 0.44,
+    "t": 0.97,
+    "maxDD": 14215579890421.34,
+    "days": 1826
+   },
+   "years": {
+    "2021": -10359.73,
+    "2022": -47554.65,
+    "2023": 20937054475920.43,
+    "2024": 30963148114667.15,
+    "2025": -42814.12,
+    "2026": -14215579830315.53
+   }
+  },
+  {
+   "name": "noise-breakout@60",
+   "group": "noise-breakout",
+   "base": "noise-breakout",
+   "tf": 60,
+   "params": {
+    "onlyTfs": [
+     60
+    ]
+   },
+   "full": {
+    "n": 544146,
+    "sumR": -4817500645847.97,
+    "sumR15": -175304.64,
+    "avgR": -8853323.6408,
+    "sharpe": -0.45,
+    "t": -1,
+    "maxDD": 4817500645847.97,
+    "days": 1826
+   },
+   "years": {
+    "2021": -5634.06,
+    "2022": -25936.27,
+    "2023": -4817500549587.59,
+    "2024": -21384.73,
+    "2025": -25021.96,
+    "2026": -18283.35
+   }
+  },
+  {
+   "name": "noise-breakout@120",
+   "group": "noise-breakout",
+   "base": "noise-breakout",
+   "tf": 120,
+   "params": {
+    "onlyTfs": [
+     120
+    ]
+   },
+   "full": {
+    "n": 314548,
+    "sumR": 28669915161414.39,
+    "sumR15": -90895.75,
+    "avgR": 91146391.525,
+    "sharpe": 0.45,
+    "t": 1,
+    "maxDD": 59522.8,
+    "days": 1826
+   },
+   "years": {
+    "2021": -3095.78,
+    "2022": -13952.65,
+    "2023": -14880.28,
+    "2024": -12884.35,
+    "2025": -11835.32,
+    "2026": 28669915218062.77
+   }
+  },
+  {
+   "name": "rsi-macd-rev@1",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 1,
+   "params": {
+    "mode": "reversal",
+    "tf": 1,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 1636205,
+    "sumR": -617090.78,
+    "sumR15": -882629.8,
+    "avgR": -0.3771,
+    "sharpe": -31.53,
+    "t": -70.53,
+    "maxDD": 617090.78,
+    "days": 1826
+   },
+   "years": {
+    "2021": -22092.51,
+    "2022": -104951.49,
+    "2023": -152613.14,
+    "2024": -114764.05,
+    "2025": -116968.26,
+    "2026": -105701.33
+   }
+  },
+  {
+   "name": "rsi-macd-rev@3",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 3,
+   "params": {
+    "mode": "reversal",
+    "tf": 3,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 519581,
+    "sumR": -99217.08,
+    "sumR15": -142493.85,
+    "avgR": -0.191,
+    "sharpe": -15.66,
+    "t": -35.02,
+    "maxDD": 99217.08,
+    "days": 1826
+   },
+   "years": {
+    "2021": -3751.12,
+    "2022": -16995.72,
+    "2023": -22051.35,
+    "2024": -18985.72,
+    "2025": -20579.19,
+    "2026": -16853.98
+   }
+  },
+  {
+   "name": "rsi-macd-rev@5",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 5,
+   "params": {
+    "mode": "reversal",
+    "tf": 5,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 303525,
+    "sumR": -46547.21,
+    "sumR15": -65213.54,
+    "avgR": -0.1534,
+    "sharpe": -10.21,
+    "t": -22.83,
+    "maxDD": 46550.52,
+    "days": 1826
+   },
+   "years": {
+    "2021": -2321.11,
+    "2022": -7729.01,
+    "2023": -9757.17,
+    "2024": -8256.86,
+    "2025": -10801.85,
+    "2026": -7681.21
+   }
+  },
+  {
+   "name": "rsi-macd-rev@15",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 15,
+   "params": {
+    "mode": "reversal",
+    "tf": 15,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 101562,
+    "sumR": -11203,
+    "sumR15": -14583.28,
+    "avgR": -0.1103,
+    "sharpe": -4.33,
+    "t": -9.68,
+    "maxDD": 11357.15,
+    "days": 1826
+   },
+   "years": {
+    "2021": -584.67,
+    "2022": -2290.16,
+    "2023": -2060.43,
+    "2024": -1809.09,
+    "2025": -2830.74,
+    "2026": -1627.91
+   }
+  },
+  {
+   "name": "rsi-macd-rev@30",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 30,
+   "params": {
+    "mode": "reversal",
+    "tf": 30,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 54825,
+    "sumR": -4641.6,
+    "sumR15": -5914.27,
+    "avgR": -0.0847,
+    "sharpe": -2.38,
+    "t": -5.33,
+    "maxDD": 4669.32,
+    "days": 1826
+   },
+   "years": {
+    "2021": -445.98,
+    "2022": -982.93,
+    "2023": -759.7,
+    "2024": -1138.66,
+    "2025": -441.91,
+    "2026": -872.42
+   }
+  },
+  {
+   "name": "rsi-macd-rev@60",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 60,
+   "params": {
+    "mode": "reversal",
+    "tf": 60,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 30564,
+    "sumR": -1705.43,
+    "sumR15": -2191,
+    "avgR": -0.0558,
+    "sharpe": -1.18,
+    "t": -2.63,
+    "maxDD": 2151.42,
+    "days": 1826
+   },
+   "years": {
+    "2021": 44.13,
+    "2022": 52.55,
+    "2023": -425.16,
+    "2024": -639.7,
+    "2025": -341.89,
+    "2026": -395.36
+   }
+  },
+  {
+   "name": "rsi-macd-rev@120",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 120,
+   "params": {
+    "mode": "reversal",
+    "tf": 120,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 16059,
+    "sumR": -1225.21,
+    "sumR15": -1401.18,
+    "avgR": -0.0763,
+    "sharpe": -1.32,
+    "t": -2.95,
+    "maxDD": 1271.5,
+    "days": 1826
+   },
+   "years": {
+    "2021": 27.31,
+    "2022": -494.21,
+    "2023": -318.89,
+    "2024": -274.21,
+    "2025": 99.55,
+    "2026": -264.76
+   }
+  },
+  {
+   "name": "rsi-macd-rev@240",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 240,
+   "params": {
+    "mode": "reversal",
+    "tf": 240,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 7814,
+    "sumR": -560.97,
+    "sumR15": -620.73,
+    "avgR": -0.0718,
+    "sharpe": -0.96,
+    "t": -2.14,
+    "maxDD": 576.97,
+    "days": 1826
+   },
+   "years": {
+    "2021": 6.11,
+    "2022": -200.03,
+    "2023": -123.54,
+    "2024": -46.06,
+    "2025": -28.03,
+    "2026": -169.41
+   }
+  },
+  {
+   "name": "rsi-macd-rev@720",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 720,
+   "params": {
+    "mode": "reversal",
+    "tf": 720,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 2216,
+    "sumR": 66.26,
+    "sumR15": 56.35,
+    "avgR": 0.0299,
+    "sharpe": 0.27,
+    "t": 0.6,
+    "maxDD": 95.15,
+    "days": 1826
+   },
+   "years": {
+    "2021": 1.35,
+    "2022": 16.67,
+    "2023": 33.82,
+    "2024": 72.61,
+    "2025": -40.54,
+    "2026": -17.64
+   }
+  },
+  {
+   "name": "rsi-macd-rev@1440",
+   "group": "rsi-macd-rev",
+   "base": "rsi-macd",
+   "tf": 1440,
+   "params": {
+    "mode": "reversal",
+    "tf": 1440,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 878,
+    "sumR": -50.24,
+    "sumR15": -53.18,
+    "avgR": -0.0572,
+    "sharpe": -0.45,
+    "t": -1.01,
+    "maxDD": 94.49,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": -3.53,
+    "2023": 2.97,
+    "2024": 22.38,
+    "2025": -39.72,
+    "2026": -32.35
+   }
+  },
+  {
+   "name": "rsi-macd-trend@1",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 1,
+   "params": {
+    "mode": "trend",
+    "tf": 1,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 6430857,
+    "sumR": -2815755.91,
+    "sumR15": -4041565.22,
+    "avgR": -0.4379,
+    "sharpe": -37.91,
+    "t": -84.8,
+    "maxDD": 2815755.91,
+    "days": 1826
+   },
+   "years": {
+    "2021": -107126.03,
+    "2022": -535584.01,
+    "2023": -725039.44,
+    "2024": -495068.97,
+    "2025": -489090.86,
+    "2026": -463846.61
+   }
+  },
+  {
+   "name": "rsi-macd-trend@3",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 3,
+   "params": {
+    "mode": "trend",
+    "tf": 3,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 2107624,
+    "sumR": -481741.13,
+    "sumR15": -690928.55,
+    "avgR": -0.2286,
+    "sharpe": -26.87,
+    "t": -60.11,
+    "maxDD": 481741.13,
+    "days": 1826
+   },
+   "years": {
+    "2021": -18451.33,
+    "2022": -95064.51,
+    "2023": -118749.35,
+    "2024": -90996.12,
+    "2025": -84520.78,
+    "2026": -73959.05
+   }
+  },
+  {
+   "name": "rsi-macd-trend@5",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 5,
+   "params": {
+    "mode": "trend",
+    "tf": 5,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 1255411,
+    "sumR": -217683.76,
+    "sumR15": -310471.32,
+    "avgR": -0.1734,
+    "sharpe": -18.81,
+    "t": -42.06,
+    "maxDD": 217769.63,
+    "days": 1826
+   },
+   "years": {
+    "2021": -9858.66,
+    "2022": -42335.02,
+    "2023": -55261,
+    "2024": -39055.49,
+    "2025": -38375.98,
+    "2026": -32797.61
+   }
+  },
+  {
+   "name": "rsi-macd-trend@15",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 15,
+   "params": {
+    "mode": "trend",
+    "tf": 15,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 405801,
+    "sumR": -36161.13,
+    "sumR15": -52251.33,
+    "avgR": -0.0891,
+    "sharpe": -6.03,
+    "t": -13.48,
+    "maxDD": 36161.13,
+    "days": 1826
+   },
+   "years": {
+    "2021": -1588.8,
+    "2022": -7531.28,
+    "2023": -8849.53,
+    "2024": -6055.69,
+    "2025": -6612.75,
+    "2026": -5523.08
+   }
+  },
+  {
+   "name": "rsi-macd-trend@30",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 30,
+   "params": {
+    "mode": "trend",
+    "tf": 30,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 197933,
+    "sumR": -11675.6,
+    "sumR15": -17000.49,
+    "avgR": -0.059,
+    "sharpe": -2.83,
+    "t": -6.33,
+    "maxDD": 11675.6,
+    "days": 1826
+   },
+   "years": {
+    "2021": -610.57,
+    "2022": -2863.76,
+    "2023": -3416.14,
+    "2024": -1557.56,
+    "2025": -1083.1,
+    "2026": -2144.48
+   }
+  },
+  {
+   "name": "rsi-macd-trend@60",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 60,
+   "params": {
+    "mode": "trend",
+    "tf": 60,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 95672,
+    "sumR": -1559.16,
+    "sumR15": -3300.81,
+    "avgR": -0.0163,
+    "sharpe": -0.55,
+    "t": -1.23,
+    "maxDD": 2169.29,
+    "days": 1826
+   },
+   "years": {
+    "2021": -306.99,
+    "2022": 363.12,
+    "2023": -1185.72,
+    "2024": 292.42,
+    "2025": -48.78,
+    "2026": -673.22
+   }
+  },
+  {
+   "name": "rsi-macd-trend@120",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 120,
+   "params": {
+    "mode": "trend",
+    "tf": 120,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 46092,
+    "sumR": -233.53,
+    "sumR15": -810.98,
+    "avgR": -0.0051,
+    "sharpe": -0.12,
+    "t": -0.28,
+    "maxDD": 1025.04,
+    "days": 1826
+   },
+   "years": {
+    "2021": 7.52,
+    "2022": 331.08,
+    "2023": -499.11,
+    "2024": 3.35,
+    "2025": -45.11,
+    "2026": -31.26
+   }
+  },
+  {
+   "name": "rsi-macd-trend@240",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 240,
+   "params": {
+    "mode": "trend",
+    "tf": 240,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 21875,
+    "sumR": 249.37,
+    "sumR15": 59.42,
+    "avgR": 0.0114,
+    "sharpe": 0.21,
+    "t": 0.47,
+    "maxDD": 389.23,
+    "days": 1826
+   },
+   "years": {
+    "2021": 27.77,
+    "2022": 147.59,
+    "2023": 25.11,
+    "2024": -53.21,
+    "2025": 208.04,
+    "2026": -105.94
+   }
+  },
+  {
+   "name": "rsi-macd-trend@720",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 720,
+   "params": {
+    "mode": "trend",
+    "tf": 720,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 6608,
+    "sumR": 583.43,
+    "sumR15": 550.91,
+    "avgR": 0.0883,
+    "sharpe": 0.93,
+    "t": 2.09,
+    "maxDD": 147.02,
+    "days": 1826
+   },
+   "years": {
+    "2021": -18.75,
+    "2022": 327.26,
+    "2023": -6.07,
+    "2024": 114.05,
+    "2025": 144.37,
+    "2026": 22.57
+   }
+  },
+  {
+   "name": "rsi-macd-trend@1440",
+   "group": "rsi-macd-trend",
+   "base": "rsi-macd",
+   "tf": 1440,
+   "params": {
+    "mode": "trend",
+    "tf": 1440,
+    "entry": "maker"
+   },
+   "full": {
+    "n": 2929,
+    "sumR": 57.62,
+    "sumR15": 47.09,
+    "avgR": 0.0197,
+    "sharpe": 0.16,
+    "t": 0.35,
+    "maxDD": 193.18,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 19.97,
+    "2023": 54.82,
+    "2024": 19.92,
+    "2025": -47.99,
+    "2026": 10.9
+   }
+  },
+  {
+   "name": "harmonic@1",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 1,
+   "params": {
+    "tf": 1,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 178639,
+    "sumR": -101332.61,
+    "sumR15": -154424.27,
+    "avgR": -0.5672,
+    "sharpe": -31.47,
+    "t": -70.39,
+    "maxDD": 101332.61,
+    "days": 1826
+   },
+   "years": {
+    "2021": -3227.45,
+    "2022": -17067.35,
+    "2023": -27864.15,
+    "2024": -18253.32,
+    "2025": -17540.73,
+    "2026": -17379.61
+   }
+  },
+  {
+   "name": "harmonic@3",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 3,
+   "params": {
+    "tf": 3,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 57029,
+    "sumR": -16465.13,
+    "sumR15": -25286.77,
+    "avgR": -0.2887,
+    "sharpe": -14.86,
+    "t": -33.24,
+    "maxDD": 16465.13,
+    "days": 1826
+   },
+   "years": {
+    "2021": -688.95,
+    "2022": -3184.63,
+    "2023": -4512.08,
+    "2024": -2957.25,
+    "2025": -2615.2,
+    "2026": -2507.02
+   }
+  },
+  {
+   "name": "harmonic@5",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 5,
+   "params": {
+    "tf": 5,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 33457,
+    "sumR": -7039.81,
+    "sumR15": -10888.77,
+    "avgR": -0.2104,
+    "sharpe": -8.75,
+    "t": -19.57,
+    "maxDD": 7039.81,
+    "days": 1826
+   },
+   "years": {
+    "2021": -226.99,
+    "2022": -1210.55,
+    "2023": -1856.89,
+    "2024": -1453.55,
+    "2025": -1206.16,
+    "2026": -1085.68
+   }
+  },
+  {
+   "name": "harmonic@15",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 15,
+   "params": {
+    "tf": 15,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 10799,
+    "sumR": -656.13,
+    "sumR15": -1320.65,
+    "avgR": -0.0608,
+    "sharpe": -1.57,
+    "t": -3.52,
+    "maxDD": 715.81,
+    "days": 1826
+   },
+   "years": {
+    "2021": -9.57,
+    "2022": -217.83,
+    "2023": -226.66,
+    "2024": -38.38,
+    "2025": -144.04,
+    "2026": -19.66
+   }
+  },
+  {
+   "name": "harmonic@30",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 30,
+   "params": {
+    "tf": 30,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 5428,
+    "sumR": -310.99,
+    "sumR15": -536,
+    "avgR": -0.0573,
+    "sharpe": -1.04,
+    "t": -2.32,
+    "maxDD": 375.85,
+    "days": 1826
+   },
+   "years": {
+    "2021": 30.55,
+    "2022": -141.33,
+    "2023": -72.4,
+    "2024": -104.93,
+    "2025": -15.99,
+    "2026": -6.89
+   }
+  },
+  {
+   "name": "harmonic@60",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 60,
+   "params": {
+    "tf": 60,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 2616,
+    "sumR": -310.81,
+    "sumR15": -388.14,
+    "avgR": -0.1188,
+    "sharpe": -1.58,
+    "t": -3.53,
+    "maxDD": 364.45,
+    "days": 1826
+   },
+   "years": {
+    "2021": -13.78,
+    "2022": -96.32,
+    "2023": -111.75,
+    "2024": -52.76,
+    "2025": -32.79,
+    "2026": -3.41
+   }
+  },
+  {
+   "name": "harmonic@120",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 120,
+   "params": {
+    "tf": 120,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 1321,
+    "sumR": -102.06,
+    "sumR15": -129.63,
+    "avgR": -0.0773,
+    "sharpe": -0.71,
+    "t": -1.59,
+    "maxDD": 114.26,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0.43,
+    "2022": -22.43,
+    "2023": -40.48,
+    "2024": -0.62,
+    "2025": -18.56,
+    "2026": -20.41
+   }
+  },
+  {
+   "name": "harmonic@240",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 240,
+   "params": {
+    "tf": 240,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 620,
+    "sumR": -53.99,
+    "sumR15": -63.1,
+    "avgR": -0.0871,
+    "sharpe": -0.57,
+    "t": -1.28,
+    "maxDD": 66.11,
+    "days": 1826
+   },
+   "years": {
+    "2021": 8.22,
+    "2022": -27.12,
+    "2023": 7.78,
+    "2024": -13.65,
+    "2025": -17.4,
+    "2026": -11.8
+   }
+  },
+  {
+   "name": "harmonic@720",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 720,
+   "params": {
+    "tf": 720,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 244,
+    "sumR": 2.61,
+    "sumR15": 0.68,
+    "avgR": 0.0107,
+    "sharpe": 0.04,
+    "t": 0.1,
+    "maxDD": 37.04,
+    "days": 1826
+   },
+   "years": {
+    "2021": 6,
+    "2022": 19.29,
+    "2023": -18.97,
+    "2024": 0.19,
+    "2025": -1.58,
+    "2026": -2.32
+   }
+  },
+  {
+   "name": "harmonic@1440",
+   "group": "harmonic",
+   "base": "harmonic",
+   "tf": 1440,
+   "params": {
+    "tf": 1440,
+    "waitBars": 24
+   },
+   "full": {
+    "n": 110,
+    "sumR": 24.69,
+    "sumR15": 24.07,
+    "avgR": 0.2245,
+    "sharpe": 0.57,
+    "t": 1.27,
+    "maxDD": 13.03,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 6.11,
+    "2023": -1.86,
+    "2024": 10.32,
+    "2025": 9.29,
+    "2026": 0.84
+   }
+  },
+  {
+   "name": "ma-retest@1",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 1,
+   "params": {
+    "mode": "retest",
+    "tf": 1
+   },
+   "full": {
+    "n": 2522923,
+    "sumR": -853939.4,
+    "sumR15": -1220770.28,
+    "avgR": -0.3385,
+    "sharpe": -39.62,
+    "t": -88.62,
+    "maxDD": 853939.4,
+    "days": 1826
+   },
+   "years": {
+    "2021": -41298.86,
+    "2022": -169301.32,
+    "2023": -207903.81,
+    "2024": -152686.67,
+    "2025": -152987.2,
+    "2026": -129761.53
+   }
+  },
+  {
+   "name": "ma-retest@3",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 3,
+   "params": {
+    "mode": "retest",
+    "tf": 3
+   },
+   "full": {
+    "n": 815470,
+    "sumR": -148714.74,
+    "sumR15": -213533.38,
+    "avgR": -0.1824,
+    "sharpe": -17.22,
+    "t": -38.52,
+    "maxDD": 148714.74,
+    "days": 1826
+   },
+   "years": {
+    "2021": -6991.61,
+    "2022": -29545.57,
+    "2023": -37115.73,
+    "2024": -26719.37,
+    "2025": -24502.74,
+    "2026": -23839.72
+   }
+  },
+  {
+   "name": "ma-retest@5",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 5,
+   "params": {
+    "mode": "retest",
+    "tf": 5
+   },
+   "full": {
+    "n": 476525,
+    "sumR": -66191.8,
+    "sumR15": -94857.45,
+    "avgR": -0.1389,
+    "sharpe": -10.97,
+    "t": -24.53,
+    "maxDD": 66197.69,
+    "days": 1826
+   },
+   "years": {
+    "2021": -3508.35,
+    "2022": -13168.48,
+    "2023": -16516.01,
+    "2024": -11607.8,
+    "2025": -10492.5,
+    "2026": -10898.67
+   }
+  },
+  {
+   "name": "ma-retest@15",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 15,
+   "params": {
+    "mode": "retest",
+    "tf": 15
+   },
+   "full": {
+    "n": 149041,
+    "sumR": -7586.09,
+    "sumR15": -12597.8,
+    "avgR": -0.0509,
+    "sharpe": -2.48,
+    "t": -5.54,
+    "maxDD": 7650.09,
+    "days": 1826
+   },
+   "years": {
+    "2021": -273.83,
+    "2022": -1557.59,
+    "2023": -1826.34,
+    "2024": -1103.09,
+    "2025": -1249.1,
+    "2026": -1576.15
+   }
+  },
+  {
+   "name": "ma-retest@30",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 30,
+   "params": {
+    "mode": "retest",
+    "tf": 30
+   },
+   "full": {
+    "n": 72114,
+    "sumR": -1710.46,
+    "sumR15": -3377.72,
+    "avgR": -0.0237,
+    "sharpe": -0.83,
+    "t": -1.86,
+    "maxDD": 1868.8,
+    "days": 1826
+   },
+   "years": {
+    "2021": -100.76,
+    "2022": -412.76,
+    "2023": -661.31,
+    "2024": -56.94,
+    "2025": -405.62,
+    "2026": -73.08
+   }
+  },
+  {
+   "name": "ma-retest@60",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 60,
+   "params": {
+    "mode": "retest",
+    "tf": 60
+   },
+   "full": {
+    "n": 34663,
+    "sumR": -572.59,
+    "sumR15": -1123.8,
+    "avgR": -0.0165,
+    "sharpe": -0.42,
+    "t": -0.93,
+    "maxDD": 984.85,
+    "days": 1826
+   },
+   "years": {
+    "2021": -107.59,
+    "2022": 363.77,
+    "2023": -388.9,
+    "2024": 193.1,
+    "2025": -246.22,
+    "2026": -386.75
+   }
+  },
+  {
+   "name": "ma-retest@120",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 120,
+   "params": {
+    "mode": "retest",
+    "tf": 120
+   },
+   "full": {
+    "n": 15770,
+    "sumR": 380.55,
+    "sumR15": 209.98,
+    "avgR": 0.0241,
+    "sharpe": 0.44,
+    "t": 0.98,
+    "maxDD": 354.44,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0.65,
+    "2022": 385.81,
+    "2023": -39.77,
+    "2024": 80.55,
+    "2025": -88.27,
+    "2026": 41.57
+   }
+  },
+  {
+   "name": "ma-retest@240",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 240,
+   "params": {
+    "mode": "retest",
+    "tf": 240
+   },
+   "full": {
+    "n": 7270,
+    "sumR": 276.11,
+    "sumR15": 221.71,
+    "avgR": 0.038,
+    "sharpe": 0.52,
+    "t": 1.15,
+    "maxDD": 202.19,
+    "days": 1826
+   },
+   "years": {
+    "2021": 39.9,
+    "2022": 201.37,
+    "2023": 92.95,
+    "2024": 6.33,
+    "2025": -61.88,
+    "2026": -2.55
+   }
+  },
+  {
+   "name": "ma-retest@720",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 720,
+   "params": {
+    "mode": "retest",
+    "tf": 720
+   },
+   "full": {
+    "n": 1807,
+    "sumR": 268.59,
+    "sumR15": 261.41,
+    "avgR": 0.1486,
+    "sharpe": 1.28,
+    "t": 2.87,
+    "maxDD": 89.51,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 24.11,
+    "2023": 68.85,
+    "2024": 44.55,
+    "2025": 83.8,
+    "2026": 47.28
+   }
+  },
+  {
+   "name": "ma-retest@1440",
+   "group": "ma-retest",
+   "base": "ma-21-200",
+   "tf": 1440,
+   "params": {
+    "mode": "retest",
+    "tf": 1440
+   },
+   "full": {
+    "n": 701,
+    "sumR": 113.8,
+    "sumR15": 111.86,
+    "avgR": 0.1623,
+    "sharpe": 0.84,
+    "t": 1.87,
+    "maxDD": 38.51,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": -5.24,
+    "2023": 36.28,
+    "2024": -1.83,
+    "2025": 70.01,
+    "2026": 14.57
+   }
+  },
+  {
+   "name": "ma-pullback@1",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 1,
+   "params": {
+    "mode": "pullback",
+    "tf": 1
+   },
+   "full": {
+    "n": 5806052,
+    "sumR": -1730874.37,
+    "sumR15": -2470269.71,
+    "avgR": -0.2981,
+    "sharpe": -43.34,
+    "t": -96.93,
+    "maxDD": 1730874.37,
+    "days": 1826
+   },
+   "years": {
+    "2021": -77554.46,
+    "2022": -340546.74,
+    "2023": -418560.93,
+    "2024": -314243.39,
+    "2025": -309581.4,
+    "2026": -270387.45
+   }
+  },
+  {
+   "name": "ma-pullback@3",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 3,
+   "params": {
+    "mode": "pullback",
+    "tf": 3
+   },
+   "full": {
+    "n": 1940889,
+    "sumR": -314630.41,
+    "sumR15": -450118.92,
+    "avgR": -0.1621,
+    "sharpe": -19.61,
+    "t": -43.87,
+    "maxDD": 314652.58,
+    "days": 1826
+   },
+   "years": {
+    "2021": -14030.51,
+    "2022": -64039.41,
+    "2023": -79428.83,
+    "2024": -56247.71,
+    "2025": -52855.88,
+    "2026": -48028.08
+   }
+  },
+  {
+   "name": "ma-pullback@5",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 5,
+   "params": {
+    "mode": "pullback",
+    "tf": 5
+   },
+   "full": {
+    "n": 1158665,
+    "sumR": -139978.02,
+    "sumR15": -201302.56,
+    "avgR": -0.1208,
+    "sharpe": -11.99,
+    "t": -26.83,
+    "maxDD": 139986.73,
+    "days": 1826
+   },
+   "years": {
+    "2021": -6523.48,
+    "2022": -30019.09,
+    "2023": -36458.01,
+    "2024": -23273.74,
+    "2025": -22885.35,
+    "2026": -20818.34
+   }
+  },
+  {
+   "name": "ma-pullback@15",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 15,
+   "params": {
+    "mode": "pullback",
+    "tf": 15
+   },
+   "full": {
+    "n": 380336,
+    "sumR": -20280.85,
+    "sumR15": -31354.34,
+    "avgR": -0.0533,
+    "sharpe": -3.24,
+    "t": -7.25,
+    "maxDD": 20280.85,
+    "days": 1826
+   },
+   "years": {
+    "2021": -1258.62,
+    "2022": -4302.95,
+    "2023": -5781.44,
+    "2024": -2578.18,
+    "2025": -3228.64,
+    "2026": -3131.02
+   }
+  },
+  {
+   "name": "ma-pullback@30",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 30,
+   "params": {
+    "mode": "pullback",
+    "tf": 30
+   },
+   "full": {
+    "n": 186951,
+    "sumR": -5911.03,
+    "sumR15": -9643.56,
+    "avgR": -0.0316,
+    "sharpe": -1.42,
+    "t": -3.17,
+    "maxDD": 5951.18,
+    "days": 1826
+   },
+   "years": {
+    "2021": -611.25,
+    "2022": -1328.32,
+    "2023": -2164.85,
+    "2024": -130.35,
+    "2025": -1062.78,
+    "2026": -613.49
+   }
+  },
+  {
+   "name": "ma-pullback@60",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 60,
+   "params": {
+    "mode": "pullback",
+    "tf": 60
+   },
+   "full": {
+    "n": 91080,
+    "sumR": -2832.29,
+    "sumR15": -4077.98,
+    "avgR": -0.0311,
+    "sharpe": -1.05,
+    "t": -2.35,
+    "maxDD": 3386.94,
+    "days": 1826
+   },
+   "years": {
+    "2021": -318.7,
+    "2022": 357.81,
+    "2023": -911.99,
+    "2024": -340.48,
+    "2025": -952.71,
+    "2026": -666.23
+   }
+  },
+  {
+   "name": "ma-pullback@120",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 120,
+   "params": {
+    "mode": "pullback",
+    "tf": 120
+   },
+   "full": {
+    "n": 43285,
+    "sumR": -265.15,
+    "sumR15": -670.18,
+    "avgR": -0.0061,
+    "sharpe": -0.15,
+    "t": -0.34,
+    "maxDD": 1070.54,
+    "days": 1826
+   },
+   "years": {
+    "2021": -45.2,
+    "2022": 393.99,
+    "2023": -170.21,
+    "2024": -201.07,
+    "2025": -204.86,
+    "2026": -37.79
+   }
+  },
+  {
+   "name": "ma-pullback@240",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 240,
+   "params": {
+    "mode": "pullback",
+    "tf": 240
+   },
+   "full": {
+    "n": 20154,
+    "sumR": 121.31,
+    "sumR15": -9.16,
+    "avgR": 0.006,
+    "sharpe": 0.11,
+    "t": 0.25,
+    "maxDD": 401.53,
+    "days": 1826
+   },
+   "years": {
+    "2021": 7.43,
+    "2022": 234.17,
+    "2023": 3.33,
+    "2024": -108.86,
+    "2025": 36.32,
+    "2026": -51.09
+   }
+  },
+  {
+   "name": "ma-pullback@720",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 720,
+   "params": {
+    "mode": "pullback",
+    "tf": 720
+   },
+   "full": {
+    "n": 5476,
+    "sumR": 259.71,
+    "sumR15": 239.72,
+    "avgR": 0.0474,
+    "sharpe": 0.58,
+    "t": 1.3,
+    "maxDD": 171.58,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 189.46,
+    "2023": -16.67,
+    "2024": -14.57,
+    "2025": 56.66,
+    "2026": 44.83
+   }
+  },
+  {
+   "name": "ma-pullback@1440",
+   "group": "ma-pullback",
+   "base": "ma-21-200",
+   "tf": 1440,
+   "params": {
+    "mode": "pullback",
+    "tf": 1440
+   },
+   "full": {
+    "n": 2223,
+    "sumR": 12.37,
+    "sumR15": 6.59,
+    "avgR": 0.0056,
+    "sharpe": 0.05,
+    "t": 0.12,
+    "maxDD": 161.62,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 36.84,
+    "2023": 6.03,
+    "2024": -79.55,
+    "2025": 39.57,
+    "2026": 9.48
+   }
+  },
+  {
+   "name": "ma-pullback-ride@1",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 1,
+   "params": {
+    "mode": "pullback",
+    "tf": 1,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 4833599,
+    "sumR": -1594219.19,
+    "sumR15": -2305957.1,
+    "avgR": -0.3298,
+    "sharpe": -35.82,
+    "t": -80.11,
+    "maxDD": 1594219.19,
+    "days": 1826
+   },
+   "years": {
+    "2021": -73302.81,
+    "2022": -310248.77,
+    "2023": -387197.74,
+    "2024": -287204.89,
+    "2025": -283737.04,
+    "2026": -252527.93
+   }
+  },
+  {
+   "name": "ma-pullback-ride@3",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 3,
+   "params": {
+    "mode": "pullback",
+    "tf": 3,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 1645932,
+    "sumR": -298063.98,
+    "sumR15": -430670.02,
+    "avgR": -0.1811,
+    "sharpe": -15.14,
+    "t": -33.87,
+    "maxDD": 298079.66,
+    "days": 1826
+   },
+   "years": {
+    "2021": -13966.37,
+    "2022": -58216.81,
+    "2023": -75729.35,
+    "2024": -53720.15,
+    "2025": -49188.33,
+    "2026": -47242.97
+   }
+  },
+  {
+   "name": "ma-pullback-ride@5",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 5,
+   "params": {
+    "mode": "pullback",
+    "tf": 5,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 984457,
+    "sumR": -132149.78,
+    "sumR15": -192239,
+    "avgR": -0.1342,
+    "sharpe": -8.91,
+    "t": -19.93,
+    "maxDD": 132149.78,
+    "days": 1826
+   },
+   "years": {
+    "2021": -7203.92,
+    "2022": -25948.87,
+    "2023": -35954.63,
+    "2024": -22059.17,
+    "2025": -20095.17,
+    "2026": -20888.03
+   }
+  },
+  {
+   "name": "ma-pullback-ride@15",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 15,
+   "params": {
+    "mode": "pullback",
+    "tf": 15,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 326795,
+    "sumR": -19906.13,
+    "sumR15": -30892.79,
+    "avgR": -0.0609,
+    "sharpe": -2.52,
+    "t": -5.63,
+    "maxDD": 19906.13,
+    "days": 1826
+   },
+   "years": {
+    "2021": -1296.79,
+    "2022": -3745.02,
+    "2023": -5636.61,
+    "2024": -3358.34,
+    "2025": -2857.21,
+    "2026": -3012.16
+   }
+  },
+  {
+   "name": "ma-pullback-ride@30",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 30,
+   "params": {
+    "mode": "pullback",
+    "tf": 30,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 162201,
+    "sumR": -4747.29,
+    "sumR15": -8494.8,
+    "avgR": -0.0293,
+    "sharpe": -0.9,
+    "t": -2.01,
+    "maxDD": 4814.45,
+    "days": 1826
+   },
+   "years": {
+    "2021": -743.98,
+    "2022": -983.26,
+    "2023": -1329.22,
+    "2024": -148.08,
+    "2025": -939.61,
+    "2026": -603.14
+   }
+  },
+  {
+   "name": "ma-pullback-ride@60",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 60,
+   "params": {
+    "mode": "pullback",
+    "tf": 60,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 78738,
+    "sumR": -1330.82,
+    "sumR15": -2569.93,
+    "avgR": -0.0169,
+    "sharpe": -0.37,
+    "t": -0.82,
+    "maxDD": 2048.88,
+    "days": 1826
+   },
+   "years": {
+    "2021": -247.06,
+    "2022": 408.02,
+    "2023": -474.82,
+    "2024": -271.97,
+    "2025": -396.45,
+    "2026": -348.55
+   }
+  },
+  {
+   "name": "ma-pullback-ride@120",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 120,
+   "params": {
+    "mode": "pullback",
+    "tf": 120,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 37128,
+    "sumR": 121.63,
+    "sumR15": -277.86,
+    "avgR": 0.0033,
+    "sharpe": 0.05,
+    "t": 0.12,
+    "maxDD": 870.35,
+    "days": 1826
+   },
+   "years": {
+    "2021": 3.5,
+    "2022": 293.54,
+    "2023": -148.27,
+    "2024": -118.35,
+    "2025": 158.42,
+    "2026": -67.22
+   }
+  },
+  {
+   "name": "ma-pullback-ride@240",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 240,
+   "params": {
+    "mode": "pullback",
+    "tf": 240,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 17594,
+    "sumR": 293.65,
+    "sumR15": 163.51,
+    "avgR": 0.0167,
+    "sharpe": 0.21,
+    "t": 0.48,
+    "maxDD": 518.66,
+    "days": 1826
+   },
+   "years": {
+    "2021": 47.62,
+    "2022": 164.72,
+    "2023": 38.58,
+    "2024": -174.63,
+    "2025": 251.16,
+    "2026": -33.81
+   }
+  },
+  {
+   "name": "ma-pullback-ride@720",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 720,
+   "params": {
+    "mode": "pullback",
+    "tf": 720,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 4669,
+    "sumR": 193.05,
+    "sumR15": 173.86,
+    "avgR": 0.0413,
+    "sharpe": 0.43,
+    "t": 0.96,
+    "maxDD": 229.6,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 144.74,
+    "2023": 66.14,
+    "2024": -132.22,
+    "2025": 50.3,
+    "2026": 64.09
+   }
+  },
+  {
+   "name": "ma-pullback-ride@1440",
+   "group": "ma-pullback-ride",
+   "base": "ma-21-200",
+   "tf": 1440,
+   "params": {
+    "mode": "pullback",
+    "tf": 1440,
+    "rr": 0,
+    "trailAtr": 3,
+    "trailAfterR": 1,
+    "holdBars": 96
+   },
+   "full": {
+    "n": 1853,
+    "sumR": -15.74,
+    "sumR15": -21.17,
+    "avgR": -0.0085,
+    "sharpe": -0.06,
+    "t": -0.14,
+    "maxDD": 215.17,
+    "days": 1826
+   },
+   "years": {
+    "2021": 0,
+    "2022": 38,
+    "2023": 2.86,
+    "2024": -98.67,
+    "2025": -22.93,
+    "2026": 65.01
+   }
+  },
+  {
+   "name": "session-drive@30",
+   "group": "native",
+   "base": "session-drive",
+   "tf": 30,
+   "params": {},
+   "full": {
+    "n": 23813,
+    "sumR": -2228.26,
+    "sumR15": -2858.11,
+    "avgR": -0.0936,
+    "sharpe": -1.88,
+    "t": -4.2,
+    "maxDD": 2482.43,
+    "days": 1826
+   },
+   "years": {
+    "2021": 212.19,
+    "2022": -596.92,
+    "2023": -680.89,
+    "2024": -145.79,
+    "2025": -541.16,
+    "2026": -475.69
+   }
+  },
+  {
+   "name": "leader-follow@1",
+   "group": "native",
+   "base": "leader-follow",
+   "tf": 1,
+   "params": {},
+   "full": {
+    "n": 129832,
+    "sumR": -27568756217350.96,
+    "sumR15": -57496.9,
+    "avgR": -212341766.4162,
+    "sharpe": -0.77,
+    "t": -1.73,
+    "maxDD": 27568756217475.81,
+    "days": 1826
+   },
+   "years": {
+    "2021": -2284.51,
+    "2022": -22937472000425.58,
+    "2023": -23629.25,
+    "2024": -4529509048994.78,
+    "2025": -101710258477.7,
+    "2026": -64883539.1
+   }
+  },
+  {
+   "name": "crowd-squeeze@5",
+   "group": "native",
+   "base": "crowd-squeeze",
+   "tf": 5,
+   "params": {
+    "onlyTfs": [
+     5
+    ]
+   },
+   "full": {
+    "n": 7521,
+    "sumR": -148.38,
+    "sumR15": -370.86,
+    "avgR": -0.0197,
+    "sharpe": -0.55,
+    "t": -1.23,
+    "maxDD": 296.08,
+    "days": 1826
+   },
+   "years": {
+    "2021": -31.45,
+    "2022": -205.41,
+    "2023": -47.07,
+    "2024": 38.92,
+    "2025": 116.31,
+    "2026": -19.68
+   }
+  },
+  {
+   "name": "crowd-squeeze@15",
+   "group": "native",
+   "base": "crowd-squeeze",
+   "tf": 15,
+   "params": {
+    "onlyTfs": [
+     15
+    ]
+   },
+   "full": {
+    "n": 4232,
+    "sumR": -87.24,
+    "sumR15": -168.29,
+    "avgR": -0.0206,
+    "sharpe": -0.53,
+    "t": -1.18,
+    "maxDD": 91.98,
+    "days": 1826
+   },
+   "years": {
+    "2021": -12.13,
+    "2022": -2.18,
+    "2023": -37.44,
+    "2024": -9.54,
+    "2025": -2.48,
+    "2026": -23.46
+   }
+  },
+  {
+   "name": "dip-reversal@5",
+   "group": "native",
+   "base": "dip-reversal",
+   "tf": 5,
+   "params": {},
+   "full": {
+    "n": 98980,
+    "sumR": -4883.51,
+    "sumR15": -7522.97,
+    "avgR": -0.0493,
+    "sharpe": -2.23,
+    "t": -4.99,
+    "maxDD": 4931.14,
+    "days": 1826
+   },
+   "years": {
+    "2021": -376.38,
+    "2022": -1179.64,
+    "2023": -1158.39,
+    "2024": -227.18,
+    "2025": -1105.25,
+    "2026": -836.67
+   }
+  },
+  {
+   "name": "squeeze-ride@5",
+   "group": "native",
+   "base": "squeeze-ride",
+   "tf": 5,
+   "params": {},
+   "full": {
+    "n": 9883,
+    "sumR": -104.05,
+    "sumR15": -266.22,
+    "avgR": -0.0105,
+    "sharpe": -0.27,
+    "t": -0.6,
+    "maxDD": 198.32,
+    "days": 1826
+   },
+   "years": {
+    "2021": 35.61,
+    "2022": -69.66,
+    "2023": -14.9,
+    "2024": -41.51,
+    "2025": -21.78,
+    "2026": 8.19
+   }
+  }
+ ]
+}

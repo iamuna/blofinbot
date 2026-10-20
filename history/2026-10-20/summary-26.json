@@ -1,0 +1,940 @@
+{
+ "shard": "26/40",
+ "coins": [
+  "PEPE",
+  "ICP",
+  "NEO",
+  "TLM",
+  "DUSK",
+  "ACT",
+  "TRU",
+  "AI",
+  "VELVET",
+  "ZKP",
+  "ARIA",
+  "BILL",
+  "XAN",
+  "RVV",
+  "AIO",
+  "ATH",
+  "SYS"
+ ],
+ "minutes": 78,
+ "data": {
+  "from": "2021-03-01T00:00:00.000Z",
+  "to": "2026-09-30T23:59:00.000Z",
+  "coins": 18,
+  "minutes": 2937600
+ },
+ "variants": {
+  "intraday-trend@1": {
+   "n": 60636,
+   "ideas": {
+    "ideas": 60648,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 12
+  },
+  "intraday-trend@3": {
+   "n": 20695,
+   "ideas": {
+    "ideas": 20698,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "intraday-trend@5": {
+   "n": 12803,
+   "ideas": {
+    "ideas": 12804,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "intraday-trend@15": {
+   "n": 4582,
+   "ideas": {
+    "ideas": 4583,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "intraday-trend@30": {
+   "n": 2415,
+   "ideas": {
+    "ideas": 2416,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "intraday-trend@60": {
+   "n": 1278,
+   "ideas": {
+    "ideas": 1278,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "intraday-trend@120": {
+   "n": 600,
+   "ideas": {
+    "ideas": 600,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "intraday-trend@240": {
+   "n": 289,
+   "ideas": {
+    "ideas": 289,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "intraday-trend@720": {
+   "n": 111,
+   "ideas": {
+    "ideas": 111,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "intraday-trend@1440": {
+   "n": 57,
+   "ideas": {
+    "ideas": 58,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "trend-pullback@1": {
+   "n": 39175,
+   "ideas": {
+    "ideas": 53936,
+    "rejected": 2,
+    "errors": 0
+   },
+   "unfilled": 14761
+  },
+  "trend-pullback@3": {
+   "n": 12544,
+   "ideas": {
+    "ideas": 16897,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 4352
+  },
+  "trend-pullback@5": {
+   "n": 7252,
+   "ideas": {
+    "ideas": 9819,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 2567
+  },
+  "trend-pullback@15": {
+   "n": 2301,
+   "ideas": {
+    "ideas": 3027,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 726
+  },
+  "trend-pullback@30": {
+   "n": 1031,
+   "ideas": {
+    "ideas": 1370,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 338
+  },
+  "trend-pullback@60": {
+   "n": 342,
+   "ideas": {
+    "ideas": 459,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 117
+  },
+  "trend-pullback@120": {
+   "n": 62,
+   "ideas": {
+    "ideas": 91,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 29
+  },
+  "trend-pullback@240": {
+   "n": 0,
+   "ideas": {
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "trend-pullback@720": {
+   "n": 0,
+   "ideas": {
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "trend-pullback@1440": {
+   "n": 0,
+   "ideas": {
+    "ideas": 0,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@1": {
+   "n": 3303,
+   "ideas": {
+    "ideas": 3303,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@3": {
+   "n": 1757,
+   "ideas": {
+    "ideas": 1757,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@5": {
+   "n": 1143,
+   "ideas": {
+    "ideas": 1143,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@15": {
+   "n": 389,
+   "ideas": {
+    "ideas": 389,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@30": {
+   "n": 193,
+   "ideas": {
+    "ideas": 193,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@60": {
+   "n": 104,
+   "ideas": {
+    "ideas": 104,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@120": {
+   "n": 39,
+   "ideas": {
+    "ideas": 39,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@240": {
+   "n": 18,
+   "ideas": {
+    "ideas": 18,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@720": {
+   "n": 6,
+   "ideas": {
+    "ideas": 6,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "overshoot-fade@1440": {
+   "n": 6,
+   "ideas": {
+    "ideas": 6,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "noise-breakout@5": {
+   "n": 53462,
+   "ideas": {
+    "ideas": 53479,
+    "rejected": 23280,
+    "errors": 0
+   },
+   "unfilled": 17
+  },
+  "noise-breakout@15": {
+   "n": 32790,
+   "ideas": {
+    "ideas": 32793,
+    "rejected": 7616,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "noise-breakout@30": {
+   "n": 21975,
+   "ideas": {
+    "ideas": 21977,
+    "rejected": 3707,
+    "errors": 0
+   },
+   "unfilled": 2
+  },
+  "noise-breakout@60": {
+   "n": 13854,
+   "ideas": {
+    "ideas": 13855,
+    "rejected": 1788,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "noise-breakout@120": {
+   "n": 7894,
+   "ideas": {
+    "ideas": 7895,
+    "rejected": 803,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "rsi-macd-rev@1": {
+   "n": 41014,
+   "ideas": {
+    "ideas": 41218,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 204
+  },
+  "rsi-macd-rev@3": {
+   "n": 12756,
+   "ideas": {
+    "ideas": 12803,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 47
+  },
+  "rsi-macd-rev@5": {
+   "n": 7610,
+   "ideas": {
+    "ideas": 7637,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 26
+  },
+  "rsi-macd-rev@15": {
+   "n": 2466,
+   "ideas": {
+    "ideas": 2469,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "rsi-macd-rev@30": {
+   "n": 1316,
+   "ideas": {
+    "ideas": 1324,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 7
+  },
+  "rsi-macd-rev@60": {
+   "n": 750,
+   "ideas": {
+    "ideas": 750,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-rev@120": {
+   "n": 397,
+   "ideas": {
+    "ideas": 397,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-rev@240": {
+   "n": 181,
+   "ideas": {
+    "ideas": 181,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-rev@720": {
+   "n": 62,
+   "ideas": {
+    "ideas": 62,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-rev@1440": {
+   "n": 30,
+   "ideas": {
+    "ideas": 30,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-trend@1": {
+   "n": 159343,
+   "ideas": {
+    "ideas": 160113,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 768
+  },
+  "rsi-macd-trend@3": {
+   "n": 52561,
+   "ideas": {
+    "ideas": 52792,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 229
+  },
+  "rsi-macd-trend@5": {
+   "n": 31471,
+   "ideas": {
+    "ideas": 31611,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 140
+  },
+  "rsi-macd-trend@15": {
+   "n": 10208,
+   "ideas": {
+    "ideas": 10258,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 50
+  },
+  "rsi-macd-trend@30": {
+   "n": 4931,
+   "ideas": {
+    "ideas": 4945,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 12
+  },
+  "rsi-macd-trend@60": {
+   "n": 2442,
+   "ideas": {
+    "ideas": 2456,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 14
+  },
+  "rsi-macd-trend@120": {
+   "n": 1142,
+   "ideas": {
+    "ideas": 1146,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "rsi-macd-trend@240": {
+   "n": 533,
+   "ideas": {
+    "ideas": 533,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-trend@720": {
+   "n": 149,
+   "ideas": {
+    "ideas": 151,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-trend@1440": {
+   "n": 75,
+   "ideas": {
+    "ideas": 75,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "harmonic@1": {
+   "n": 4615,
+   "ideas": {
+    "ideas": 17549,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 12934
+  },
+  "harmonic@3": {
+   "n": 1410,
+   "ideas": {
+    "ideas": 5897,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 4485
+  },
+  "harmonic@5": {
+   "n": 876,
+   "ideas": {
+    "ideas": 3578,
+    "rejected": 1,
+    "errors": 0
+   },
+   "unfilled": 2702
+  },
+  "harmonic@15": {
+   "n": 296,
+   "ideas": {
+    "ideas": 1120,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 823
+  },
+  "harmonic@30": {
+   "n": 157,
+   "ideas": {
+    "ideas": 570,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 413
+  },
+  "harmonic@60": {
+   "n": 66,
+   "ideas": {
+    "ideas": 263,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 197
+  },
+  "harmonic@120": {
+   "n": 36,
+   "ideas": {
+    "ideas": 118,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 82
+  },
+  "harmonic@240": {
+   "n": 8,
+   "ideas": {
+    "ideas": 54,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 46
+  },
+  "harmonic@720": {
+   "n": 7,
+   "ideas": {
+    "ideas": 25,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 17
+  },
+  "harmonic@1440": {
+   "n": 3,
+   "ideas": {
+    "ideas": 13,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 10
+  },
+  "ma-retest@1": {
+   "n": 63815,
+   "ideas": {
+    "ideas": 64172,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 356
+  },
+  "ma-retest@3": {
+   "n": 20639,
+   "ideas": {
+    "ideas": 20757,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 117
+  },
+  "ma-retest@5": {
+   "n": 12054,
+   "ideas": {
+    "ideas": 12123,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 68
+  },
+  "ma-retest@15": {
+   "n": 3762,
+   "ideas": {
+    "ideas": 3786,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 24
+  },
+  "ma-retest@30": {
+   "n": 1819,
+   "ideas": {
+    "ideas": 1826,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 6
+  },
+  "ma-retest@60": {
+   "n": 826,
+   "ideas": {
+    "ideas": 832,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 5
+  },
+  "ma-retest@120": {
+   "n": 387,
+   "ideas": {
+    "ideas": 388,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "ma-retest@240": {
+   "n": 173,
+   "ideas": {
+    "ideas": 173,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-retest@720": {
+   "n": 30,
+   "ideas": {
+    "ideas": 30,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-retest@1440": {
+   "n": 17,
+   "ideas": {
+    "ideas": 19,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-pullback@1": {
+   "n": 146517,
+   "ideas": {
+    "ideas": 147281,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 762
+  },
+  "ma-pullback@3": {
+   "n": 48973,
+   "ideas": {
+    "ideas": 49248,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 272
+  },
+  "ma-pullback@5": {
+   "n": 29198,
+   "ideas": {
+    "ideas": 29347,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 146
+  },
+  "ma-pullback@15": {
+   "n": 9599,
+   "ideas": {
+    "ideas": 9648,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 48
+  },
+  "ma-pullback@30": {
+   "n": 4639,
+   "ideas": {
+    "ideas": 4664,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 23
+  },
+  "ma-pullback@60": {
+   "n": 2273,
+   "ideas": {
+    "ideas": 2282,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 7
+  },
+  "ma-pullback@120": {
+   "n": 1090,
+   "ideas": {
+    "ideas": 1096,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "ma-pullback@240": {
+   "n": 499,
+   "ideas": {
+    "ideas": 505,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 2
+  },
+  "ma-pullback@720": {
+   "n": 129,
+   "ideas": {
+    "ideas": 132,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-pullback@1440": {
+   "n": 54,
+   "ideas": {
+    "ideas": 57,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-pullback-ride@1": {
+   "n": 121622,
+   "ideas": {
+    "ideas": 122264,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 639
+  },
+  "ma-pullback-ride@3": {
+   "n": 41466,
+   "ideas": {
+    "ideas": 41698,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 229
+  },
+  "ma-pullback-ride@5": {
+   "n": 24791,
+   "ideas": {
+    "ideas": 24904,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 110
+  },
+  "ma-pullback-ride@15": {
+   "n": 8222,
+   "ideas": {
+    "ideas": 8268,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 44
+  },
+  "ma-pullback-ride@30": {
+   "n": 4049,
+   "ideas": {
+    "ideas": 4067,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 16
+  },
+  "ma-pullback-ride@60": {
+   "n": 1956,
+   "ideas": {
+    "ideas": 1966,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 7
+  },
+  "ma-pullback-ride@120": {
+   "n": 950,
+   "ideas": {
+    "ideas": 955,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 2
+  },
+  "ma-pullback-ride@240": {
+   "n": 437,
+   "ideas": {
+    "ideas": 445,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "ma-pullback-ride@720": {
+   "n": 108,
+   "ideas": {
+    "ideas": 112,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-pullback-ride@1440": {
+   "n": 44,
+   "ideas": {
+    "ideas": 47,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "session-drive@30": {
+   "n": 577,
+   "ideas": {
+    "ideas": 577,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "leader-follow@1": {
+   "n": 3575,
+   "ideas": {
+    "ideas": 3575,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "crowd-squeeze@5": {
+   "n": 154,
+   "ideas": {
+    "ideas": 154,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "crowd-squeeze@15": {
+   "n": 75,
+   "ideas": {
+    "ideas": 75,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "dip-reversal@5": {
+   "n": 2401,
+   "ideas": {
+    "ideas": 2404,
+    "rejected": 2,
+    "errors": 0
+   },
+   "unfilled": 3
+  },
+  "squeeze-ride@5": {
+   "n": 280,
+   "ideas": {
+    "ideas": 280,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  }
+ }
+}
