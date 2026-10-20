@@ -1,6 +1,6 @@
 # Strategy factory — latest test
 
-Tested 2026-10-20T06:49Z on 31 coins, 2026-04-01 → 2026-10-18. Variants tried so far: 63 → t-stat bar 2.90.
+Tested 2026-10-20T06:52Z on 31 coins, 2026-04-01 → 2026-10-18. Variants tried so far: 63 → t-stat bar 2.90.
 
 | Strategy | Origin | Trades | Avg R | t | Avg R at 1.5× costs | Thirds (sum R) | Backtest gate |
 |---|---|---|---|---|---|---|---|
