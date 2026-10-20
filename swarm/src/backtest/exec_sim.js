@@ -13,7 +13,7 @@
  * slipBps, fundBps → netBps; R = netBps ÷ (entry-to-stop distance in bps).
  */
 'use strict';
-const MIN = 60000;
+const MIN = 60000, MIN_RISK_BPS = 10;
 
 class ExecSim {
   constructor(o = {}) {
@@ -86,7 +86,7 @@ class ExecSim {
     const grossBps = s * (px / pos.entry - 1) * 1e4;
     const feeBps = (pos.entryKind === 'maker' ? this.maker : this.taker) + (kind === 'maker' ? this.maker : this.taker);
     const slipBps = (pos.entryKind === 'taker' ? this.slip : 0) + (kind === 'taker' ? this.slip : 0);
-    const netBps = grossBps - feeBps - slipBps - pos.fundBps, rBps = pos.R * 1e4;
+    const netBps = grossBps - feeBps - slipBps - pos.fundBps, rBps = Math.max(pos.R * 1e4, MIN_RISK_BPS); // a limit filled at its stop has ~0 risk: R against at least 10 bps
     const tr = { id, strategy: i.strategy, ph: i.ph || null, coin: i.coin, tf: i.tf, side: s, t: i.t, entryT: pos.entryT, exitT: t, entry: pos.entry, exit: px, entryKind: pos.entryKind, exitKind: kind, reason, riskBps: +rBps.toFixed(2), grossBps: +grossBps.toFixed(2), feeBps, slipBps, fundBps: +pos.fundBps.toFixed(2), netBps: +netBps.toFixed(2), r: +(netBps / rBps).toFixed(4), why: i.why };
     this.trades.push(tr);
     this.onClose(i, { idea: i, outcome: reason, r: tr.r, netBps: tr.netBps, exitT: t, trade: tr });

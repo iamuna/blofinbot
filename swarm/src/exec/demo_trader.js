@@ -191,7 +191,7 @@ class DemoTrader extends Agent {
     const o = e.o, inst = this.inst[o.instId];
     delete this.S.entries[o.id];
     const qty = Q.contractsToBase(e.filled, inst), px = e.cost / e.filled;
-    const p = { orderId: o.id, coin: o.coin, instId: o.instId, side: o.side, contracts: e.filled, qty, entry: px, entryT: this.now(), stop: o.stop, target: o.target, trail: o.trail, timeStopMin: o.timeStopMin, best: px, R: Math.abs(px - o.stop), feeUsd: e.fee, fundUsd: 0, strategies: o.strategies, riskUsd: qty * Math.abs(px - o.stop), attempts: [] };
+    const p = { orderId: o.id, coin: o.coin, instId: o.instId, side: o.side, contracts: e.filled, qty, entry: px, entryT: this.now(), stop: o.stop, target: o.target, trail: o.trail, timeStopMin: o.timeStopMin, best: px, R: Math.abs(px - o.stop), feeUsd: e.fee, fundUsd: 0, strategies: o.strategies, riskUsd: qty * Math.max(Math.abs(px - o.stop), px * 0.001), attempts: [] }; // R against at least 10 bps
     if (!(p.R > 0) || o.side * (px - o.stop) <= 0) p.stop = px * (1 - o.side * 0.005); // filled beyond the stop: protect at 0.5% and let the manager exit
     this.S.positions[o.coin] = p; this.save(); this.dirty = true;
     this.jot({ ev: 'open', coin: o.coin, contracts: e.filled, px });

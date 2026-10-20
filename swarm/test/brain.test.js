@@ -106,3 +106,33 @@ test('event calendar: high-impact USD events become windows; a failed feed keeps
   const w2 = await run(fakeHttp([[/faireconomy/, new Error('down')]]));
   assert.deepStrictEqual(w2, w);
 });
+
+test('features: long timeframes seeded with their own bars; the 1-minute replay does not count them twice', () => {
+  const { FeatureState } = require('../src/analysis/features');
+  const fs1 = new FeatureState({ tfs: [1, 60, 1440] }), D = 86400000, H = 3600000;
+  const days = []; for (let i = 0; i < 250; i++) days.push({ t: i * D, o: 100 + i, h: 101 + i, l: 99 + i, c: 100.5 + i, v: 1, q: 100 });
+  assert.strictEqual(fs1.seed('X', 1440, days), 250);
+  const h = fs1.history('X', 1440);
+  assert.strictEqual(h.len, 250); assert.strictEqual(h.at(0).t, 249 * D);
+  // 1-minute bars from inside the last seeded day are skipped for 1d; the next day builds normally
+  let evs = [];
+  for (let m = 0; m < 60 * 24 * 2; m++) evs = evs.concat(fs1.onBar1m('X', { t: 249 * D + m * 60000, o: 400, h: 401, l: 399, c: 400, v: 1, q: 10 }));
+  const daily = evs.filter((e) => e.tf === 1440);
+  assert.deepStrictEqual(daily.map((e) => e.t), [250 * D], 'only the new day closes');
+  assert.strictEqual(daily[0].f.bars, 251);
+  assert.ok(Number.isFinite(daily[0].f.ema50) && daily[0].f.atr > 0);
+  assert.strictEqual(fs1.seed('X', 60, []), 0);
+});
+
+test('brain: 12h and daily bars are built from 4h bars in UTC; an incomplete bucket is dropped', () => {
+  const { aggregate } = require('../src/agents/brain');
+  const H4 = 4 * 3600000, D = 86400000;
+  const h4 = []; for (let i = 1; i < 6 * 3 + 2; i++) h4.push({ t: i * H4, o: i, h: i + 0.5, l: i - 0.5, c: i + 0.2, v: 1, q: 10 }); // starts at 04:00: day 0 incomplete
+  const days = aggregate(h4, 240, 1440);
+  assert.deepStrictEqual(days.map((d) => d.t), [D, 2 * D]);
+  assert.deepStrictEqual([days[0].o, days[0].c, days[0].q], [6, 11.2, 60]);
+  const halves = aggregate(h4, 240, 720);
+  assert.strictEqual(halves[0].t, 12 * 3600000); assert.strictEqual(halves.length, 5);
+  const gap = h4.filter((b) => b.t !== 8 * H4); // a missing 4h bar inside day 1
+  assert.deepStrictEqual(aggregate(gap, 240, 1440).map((d) => d.t), [2 * D]);
+});

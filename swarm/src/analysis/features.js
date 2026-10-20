@@ -3,7 +3,8 @@
  * identical inputs in both.
  *
  * Feed it closed 1-minute bars in time order: onBar1m(coin, {t,o,h,l,c,v,q,bq,n}) returns one event per
- * timeframe that closed with that minute: {coin, tf, t, bar, f}. t = the bar's open time (ms); bq = taker-buy
+ * timeframe that closed with that minute: {coin, tf, t, bar, f}. Long timeframes (1h → 1d) can be seeded with
+ * closed bars of their own size (seed()), so a 200-bar average on daily bars does not wait 200 days. t = the bar's open time (ms); bq = taker-buy
  * quote volume (Binance), or null when only BloFin data is available (flow features are then null).
  *
  * f (per timeframe): ret, retZ (vs the last 96 returns), atr, atrPct, ema20, ema50, slope20 (ATRs per bar),
@@ -13,7 +14,7 @@
 'use strict';
 const { Ring, RollStat, EMA, ATR, hiLoOf, efficiency } = require('./ta');
 
-const TFS = [1, 3, 5, 15, 30, 45];
+const TFS = [1, 3, 5, 15, 30, 45, 60, 120, 240, 720, 1440];
 const MIN = 60000;
 
 class TfState {
@@ -46,6 +47,7 @@ class FeatureState {
     this.context(coin).last = bar.c;
     const out = [];
     for (const [k, st] of s.tf) {
+      if (st.seededTo && b.t < st.seededTo) continue; // inside a bar that came whole from seed()
       const span = k * MIN, bucket = Math.floor(b.t / span) * span;
       if (st.cur && st.cur.t !== bucket) { out.push(this.close(coin, st, st.cur, true)); st.cur = null; } // the boundary minute was missing
       if (!st.cur) st.cur = { t: bucket, o: bar.o, h: bar.h, l: bar.l, c: bar.c, v: 0, q: 0, bq: bar.bq == null ? null : 0, n: 0, m: 0 };
@@ -79,6 +81,23 @@ class FeatureState {
       btcRet: coin === this.btc ? ret : btc && btc.t === bar.t ? btc.ret : null, beta: this.beta(coin), bars: st.count, partial,
     };
     return { coin, tf: st.tf, t: bar.t, bar, f };
+  }
+
+  // history for one timeframe from closed bars of that size ({t,o,h,l,c,v,q}, any order): rebuilds the timeframe's
+  // state with them first, then the bars already closed from live minutes after them, and keeps the bar in progress.
+  // No events are emitted. Returns the number of seeded bars.
+  seed(coin, tf, bars) {
+    const s = this.coin(coin), old = s.tf.get(tf); if (!old || !bars || !bars.length) return 0;
+    const span = tf * MIN, live = old.cur ? old.cur.t : Infinity;
+    const list = [...new Map(bars.filter((b) => b.t + span <= live && b.t % span === 0).map((b) => [b.t, b])).values()].sort((a, b) => a.t - b.t);
+    if (!list.length) return 0;
+    const st = new TfState(tf, this.keep);
+    for (const b of list) this.close(coin, st, { t: b.t, o: +b.o, h: +b.h, l: +b.l, c: +b.c, v: +b.v || 0, q: +b.q || 0, bq: null, n: +b.n || 0 }, false);
+    st.seededTo = list[list.length - 1].t + span;
+    for (let k = old.bars.len - 1; k >= 0; k--) { const b = old.bars.at(k); if (b.t >= st.seededTo) this.close(coin, st, b, false); }
+    st.cur = old.cur && old.cur.t >= st.seededTo ? old.cur : null;
+    s.tf.set(tf, st);
+    return list.length;
   }
 
   // beta of the coin's 1-minute returns to BTC's over the last day (refreshed every 15 minutes)

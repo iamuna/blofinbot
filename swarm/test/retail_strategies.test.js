@@ -11,7 +11,7 @@ function runner(plugin, params) {
   const step = (px, tf) => {
     t += tf * 60000;
     const ev = { coin: 'X', tf, t, bar: { o: px, h: px, l: px, c: px }, f: { atr: 0.5, bars: 500 } };
-    const api = { p, now: t + tf * 60000, state: (c) => { if (!states.has(c)) states.set(c, {}); return states.get(c); } };
+    const api = { p, now: t + tf * 60000, hist: () => null, state: (c) => { if (!states.has(c)) states.set(c, {}); return states.get(c); } };
     const r = plugin.onBar(ev, api); if (r) out.push(r);
   };
   return { step, out };
@@ -67,4 +67,18 @@ test('ma-21-200 retest: after the 21 crosses above the 200, a pull-back to the 2
   assert.ok(r.out.length > before, 'a long after the retest');
   const i = r.out[r.out.length - 1];
   assert.strictEqual(i.side, 1); assert.match(i.why, /retest/); assert.ok(i.stop < i.entry.px && i.target > i.entry.px);
+});
+
+test('ma-21-200 and rsi-macd start from seeded history: the first live bar already knows the 200-bar average', () => {
+  const { Ring } = require('../src/analysis/ta');
+  const bars = []; for (let i = 0; i < 300; i++) bars.push({ c: 100 + i * 0.1 }); // a steady rise: 21 above 200
+  const ring = new Ring(400); for (const b of bars) ring.push(b);
+  const st = {}, p = Object.assign({}, ma.params, { tf: 720, mode: 'pullback' });
+  const api = { p, now: 1e12, hist: () => ring, state: () => st };
+  ma.onBar({ coin: 'X', tf: 720, t: 0, bar: { o: 130, h: 130.1, l: 129.9, c: 130 }, f: { atr: 0.5, bars: 300 } }, api);
+  assert.strictEqual(st.m.n, 300, 'all 299 history closes + the live one');
+  assert.strictEqual(st.m.rel, 1);
+  const st2 = { }, api2 = { p: Object.assign({}, rsiMacd.params, { tf: 720, minBars: 100 }), now: 1e12, hist: () => ring, state: () => st2 };
+  rsiMacd.onBar({ coin: 'X', tf: 720, t: 0, bar: { o: 130, h: 130.1, l: 129.9, c: 130 }, f: { atr: 0.5, bars: 300 } }, api2);
+  assert.strictEqual(st2.m.get(720).n, 299, 'history steps + the live bar');
 });

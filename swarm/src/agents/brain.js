@@ -21,6 +21,20 @@ const { ExecSim } = require('../backtest/exec_sim');
 
 const MIN = 60000;
 
+// whole bars of `to` minutes from consecutive bars of `from` minutes (UTC buckets); incomplete buckets are dropped
+function aggregate(bars, from, to) {
+  const out = [], span = to * MIN, need = to / from;
+  let cur = null;
+  for (const b of bars) {
+    const t = Math.floor(b.t / span) * span;
+    if (!cur || cur.t !== t) { if (cur && cur.k === need) out.push(cur); cur = { t, o: b.o, h: b.h, l: b.l, c: b.c, v: 0, q: 0, n: 0, k: 0, last: b.t - from * MIN }; }
+    if (b.t !== cur.last + from * MIN) { cur.k = -Infinity; } // a gap inside the bucket
+    cur.h = Math.max(cur.h, b.h); cur.l = Math.min(cur.l, b.l); cur.c = b.c; cur.v += b.v || 0; cur.q += b.q || 0; cur.k++; cur.last = b.t;
+  }
+  if (cur && cur.k === need) out.push(cur);
+  return out.map(({ t, o, h, l, c, v, q, n }) => ({ t, o, h, l, c, v, q, n }));
+}
+
 class Brain extends Agent {
   static agentName = 'brain';
   async onStart() {
@@ -90,6 +104,7 @@ class Brain extends Agent {
         try {
           const hours = await get('1H', 1440);
           for (const h of hours.slice(0, -1)) this.regime.onHour(c.coin, h.t, h.c);
+          await this.seedLong(c.coin, hours, get);
           let mins = [], after = null;
           for (let k = 0; k < (this.BR.warmupDays || 7); k++) {
             const page = await get('1m', 1440, after);
@@ -104,6 +119,23 @@ class Brain extends Agent {
         } catch (e) { this.error(`warmup ${c.coin}`, e); }
       }
     } finally { this.warming = false; }
+  }
+
+  // long timeframes from their own bars, so 200-bar averages on 12h/1d bars are ready at once: 1h from the hourly
+  // history, 2h from BloFin, 4h from BloFin (240 days), 12h and 1d built from the 4h bars in UTC (BloFin's own
+  // daily bars may close at another hour)
+  async seedLong(coin, hours, get) {
+    const has = (tf) => this.fs.tfs.includes(tf), keep = this.fs.keep, pace = () => net.sleep(this.ctx.paceMs == null ? 150 : this.ctx.paceMs);
+    let n = 0;
+    if (has(60)) n += this.fs.seed(coin, 60, hours.slice(-keep));
+    if (has(120)) { await pace(); n += this.fs.seed(coin, 120, (await get('2H', keep)).slice(-keep)); }
+    if (has(240) || has(720) || has(1440)) {
+      await pace();
+      const h4 = await get('4H', 1440);
+      if (has(240)) n += this.fs.seed(coin, 240, h4.slice(-keep));
+      for (const tf of [720, 1440]) if (has(tf)) n += this.fs.seed(coin, tf, aggregate(h4, 240, tf).slice(-keep));
+    }
+    this.count('seededBars', n);
   }
 
   onTrades(d) { // BloFin taker flow per minute (used when Binance has no bar for that minute)
@@ -191,4 +223,4 @@ class Brain extends Agent {
   }
 }
 
-module.exports = { Brain };
+module.exports = { Brain, aggregate };

@@ -282,43 +282,50 @@
   },
   "strategies": {
     "intraday-trend": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "trend-pullback": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "session-drive": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "overshoot-fade": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "leader-follow": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "crowd-squeeze": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "noise-breakout": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
-      "params": {}
+      "params": {},
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "it-45-long": {
       "base": "intraday-trend",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -333,11 +340,12 @@
           1
         ],
         "againstBias": 0.3
-      }
+      },
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "it-45-hold32": {
       "base": "intraday-trend",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -349,11 +357,12 @@
         "volZ": 1,
         "er": 0.35,
         "againstBias": 0.2
-      }
+      },
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "it-45-hold16": {
       "base": "intraday-trend",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -365,13 +374,79 @@
         "volZ": 1,
         "er": 0.4,
         "againstBias": 0.2
-      }
+      },
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
     },
     "squeeze-ride": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "watch (2026-10-20): +0.22 R, t 2.8 over 104 backtest trades, positive in every third, but fewer than 300 trades and below the multiple-testing bar; trades only if its live shadow record earns it (out-of-sample route)"
+      "note": "watch (2026-10-20): +0.22 R, t 2.8 over 104 backtest trades, positive in every third, but fewer than 300 trades and below the multiple-testing bar; trades only if its live shadow record earns it (out-of-sample route) | 5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+    },
+    "ma-retest-12h": {
+      "base": "ma-21-200",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "retest",
+        "tf": 720,
+        "onlyTfs": [
+          720
+        ]
+      },
+      "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): best of 101: 1,657 trades, +0.14 R, Sharpe 1.33, positive every year 2022-2026; long +80 / short +156 R"
+    },
+    "ma-retest-1d": {
+      "base": "ma-21-200",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "retest",
+        "tf": 1440,
+        "onlyTfs": [
+          1440
+        ]
+      },
+      "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 696 trades, +0.17 R, Sharpe 0.96; long -18 / short +135 R"
+    },
+    "it-4h": {
+      "base": "intraday-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 9,734 trades, +0.06 R, Sharpe 0.72; long +85 / short +463 R"
+    },
+    "rsi-macd-trend-12h": {
+      "base": "rsi-macd",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "trend",
+        "tf": 720,
+        "entry": "maker",
+        "onlyTfs": [
+          720
+        ]
+      },
+      "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 5,435 trades, +0.06 R, Sharpe 0.68; long -120 / short +440 R"
+    },
+    "trend-pullback-1h": {
+      "base": "trend-pullback",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "onlyTfs": [
+          60
+        ],
+        "holdMin": 1440,
+        "waitMin": 180,
+        "cooldownMin": 720
+      },
+      "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 10,966 trades, +0.03 R, Sharpe 0.60 (minute settings scaled x12 from 5m)"
     }
   },
   "trading": {
@@ -382,7 +457,7 @@
     "makerBps": 2,
     "takerBps": 6,
     "slipBps": 1.5,
-    "breakevenR": 1.0,
+    "breakevenR": 1,
     "staleBookMs": 10000
   },
   "watch": {

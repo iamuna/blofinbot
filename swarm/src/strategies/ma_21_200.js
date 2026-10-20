@@ -10,6 +10,22 @@
  * optional trailing stop; time stop holdBars bars.
  */
 'use strict';
+// one close into the averages
+function push(m, c, p) {
+  m.n++; m.closes.push(c); m.sf += c; m.ss += c;
+  if (m.closes.length > p.fast) m.sf -= m.closes[m.closes.length - 1 - p.fast];
+  if (m.closes.length > p.slow) { m.ss -= m.closes[0]; m.closes.shift(); }
+  m.ef += (2 / (p.fast + 1)) * (c - m.ef); m.es += (2 / (p.slow + 1)) * (c - m.es);
+}
+// which side of the slow line the fast one is on, and whether it just crossed
+function lines(m, p) {
+  const fast = p.kind === 'sma' ? m.sf / p.fast : m.ef, slow = p.kind === 'sma' ? m.ss / p.slow : m.es;
+  const rel = fast > slow ? 1 : fast < slow ? -1 : 0;
+  const crossed = rel !== 0 && m.rel !== 0 && rel !== m.rel;
+  if (rel !== m.rel) { m.touched = false; m.ext = 0; }
+  m.rel = rel; m.crossAgo = crossed ? 0 : m.crossAgo + 1;
+  return { fast, slow, rel, crossed };
+}
 module.exports = {
   name: 'ma-21-200', version: 1, tfs: [5, 15, 30, 45], needsRef: false,
   params: { mode: 'retest', tf: 15, fast: 21, slow: 200, kind: 'ema', retestBars: 48, stopAtr: 1, rr: 2, trailAtr: 0, trailAfterR: 1, holdBars: 48, entry: 'maker', cooldownBars: 4 },
@@ -18,20 +34,15 @@ module.exports = {
     const { coin, tf, bar, f } = ev, p = api.p;
     if (tf !== p.tf) return null;
     const st = api.state(coin);
-    if (!st.m) st.m = { n: 0, ef: bar.c, es: bar.c, closes: [], sf: 0, ss: 0, rel: 0, crossAgo: Infinity, side: 0, touched: false, ext: 0 };
+    if (!st.m) { // first bar seen: start from the history already loaded for this timeframe (seeded at start-up)
+      const h = api.hist(coin, tf), n = h ? h.len : 0;
+      st.m = { n: 0, ef: n > 1 ? h.at(n - 1).c : bar.c, es: n > 1 ? h.at(n - 1).c : bar.c, closes: [], sf: 0, ss: 0, rel: 0, crossAgo: Infinity, touched: false, ext: 0 };
+      for (let k = n - 1; k >= 1; k--) { push(st.m, h.at(k).c, p); if (st.m.n >= p.slow + 10) lines(st.m, p); }
+    }
     const m = st.m, c = bar.c;
-    // moving averages
-    m.n++; m.closes.push(c); m.sf += c; m.ss += c;
-    if (m.closes.length > p.fast) m.sf -= m.closes[m.closes.length - 1 - p.fast];
-    if (m.closes.length > p.slow) { m.ss -= m.closes[0]; m.closes.shift(); }
-    m.ef += (2 / (p.fast + 1)) * (c - m.ef); m.es += (2 / (p.slow + 1)) * (c - m.es);
+    push(m, c, p);
     if (m.n < p.slow + 10 || !(f.atr > 0)) return null;
-    const fast = p.kind === 'sma' ? m.sf / p.fast : m.ef, slow = p.kind === 'sma' ? m.ss / p.slow : m.es;
-    const rel = fast > slow ? 1 : fast < slow ? -1 : 0;
-    const crossed = rel !== 0 && m.rel !== 0 && rel !== m.rel;
-    if (rel !== m.rel) { m.touched = false; m.ext = 0; }
-    m.rel = rel;
-    m.crossAgo = crossed ? 0 : m.crossAgo + 1;
+    const { fast, slow, rel, crossed } = lines(m, p);
     if (!rel || (st.until || 0) > api.now) return null;
     const side = rel;
     const beyondBoth = side * (c - fast) > 0 && side * (c - slow) > 0;

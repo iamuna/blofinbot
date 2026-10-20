@@ -9,6 +9,19 @@
  * versions do) or maker.
  */
 'use strict';
+// RSI (Wilder) and MACD, updated once per closed bar
+function step(s, c, p) {
+  const d = c - s.prev; s.prev = c; s.n++;
+  const L = p.rsiLen;
+  s.ag = (s.ag * (L - 1) + Math.max(d, 0)) / L; s.al = (s.al * (L - 1) + Math.max(-d, 0)) / L;
+  const rsi = s.al > 0 ? 100 - 100 / (1 + s.ag / s.al) : 100;
+  s.rsi.push(rsi); if (s.rsi.length > p.lookBars) s.rsi.shift();
+  s.ef += (2 / (p.fast + 1)) * (c - s.ef); s.es += (2 / (p.slow + 1)) * (c - s.es);
+  const macd = s.ef - s.es;
+  s.sg += (2 / (p.sig + 1)) * (macd - s.sg);
+  const hist = macd - s.sg, prevHist = s.hist; s.hist = hist;
+  return { rsi, macd, hist, prevHist };
+}
 module.exports = {
   name: 'rsi-macd', version: 1, tfs: [5, 15, 30], needsRef: false,
   params: { mode: 'reversal', tf: 15, rsiLen: 14, fast: 12, slow: 26, sig: 9, os: 30, lookBars: 5, zeroLine: false, stopAtr: 1.5, rr: 2, trailAtr: 0, trailAfterR: 1, holdBars: 24, entry: 'taker', waitMin: 3, cooldownBars: 3, minBars: 100 },
@@ -20,18 +33,13 @@ module.exports = {
     if (!st.m) st.m = new Map();
     let s = st.m.get(tf);
     const c = bar.c;
-    if (!s) { s = { n: 0, prev: c, ef: c, es: c, sg: 0, ag: 0, al: 0, rsi: [], hist: 0 }; st.m.set(tf, s); return null; }
-    // RSI (Wilder) and MACD, updated once per closed bar
-    const d = c - s.prev; s.prev = c; s.n++;
-    const L = p.rsiLen;
-    s.ag = (s.ag * (L - 1) + Math.max(d, 0)) / L; s.al = (s.al * (L - 1) + Math.max(-d, 0)) / L;
-    const rsi = s.al > 0 ? 100 - 100 / (1 + s.ag / s.al) : 100;
-    s.rsi.push(rsi); if (s.rsi.length > p.lookBars) s.rsi.shift();
-    const kf = 2 / (p.fast + 1), ks = 2 / (p.slow + 1), kg = 2 / (p.sig + 1);
-    s.ef += kf * (c - s.ef); s.es += ks * (c - s.es);
-    const macd = s.ef - s.es;
-    s.sg += kg * (macd - s.sg);
-    const hist = macd - s.sg, prevHist = s.hist; s.hist = hist;
+    if (!s) { // first bar seen: start from the history already loaded for this timeframe (seeded at start-up)
+      const h = api.hist(coin, tf), n = h ? h.len : 0, c0 = n > 1 ? h.at(n - 1).c : c;
+      s = { n: 0, prev: c0, ef: c0, es: c0, sg: 0, ag: 0, al: 0, rsi: [], hist: 0 }; st.m.set(tf, s);
+      for (let k = n - 2; k >= 1; k--) step(s, h.at(k).c, p);
+      if (n <= 1) return null;
+    }
+    const { rsi, macd, hist, prevHist } = step(s, c, p);
     if (s.n < p.minBars || f.bars < 30 || !(f.atr > 0) || (st.until || 0) > api.now) return null;
     const crossUp = prevHist <= 0 && hist > 0, crossDn = prevHist >= 0 && hist < 0;
     let side = 0;

@@ -92,7 +92,7 @@ class Trader extends Agent {
     const R = Math.abs(px - w.stop);
     if (!(R > 0) || w.side * (px - w.stop) <= 0) return this.endOrder(w, 'price passed the stop before the fill');
     const fee = w.qty * px * this.bp(kind === 'maker' ? this.X.makerBps : this.X.takerBps);
-    const p = { orderId: w.id, coin: w.coin, side: w.side, qty: w.qty, entry: px, entryKind: kind, entryT: this.now(), stop: w.stop, initStop: w.stop, target: w.target, trail: w.trail, timeStopMin: w.timeStopMin, best: px, R, feeUsd: fee, fundUsd: 0, strategies: w.strategies, why: w.why, riskUsd: w.qty * R };
+    const p = { orderId: w.id, coin: w.coin, side: w.side, qty: w.qty, entry: px, entryKind: kind, entryT: this.now(), stop: w.stop, initStop: w.stop, target: w.target, trail: w.trail, timeStopMin: w.timeStopMin, best: px, R, feeUsd: fee, fundUsd: 0, strategies: w.strategies, why: w.why, riskUsd: w.qty * Math.max(R, px * 0.001) }; // R against at least 10 bps (a fill right at the stop)
     this.S.positions[w.coin] = p; this.save(); this.dirty = true;
     this.count('entries');
     await this.publish('exec.fill', { orderId: w.id, coin: w.coin, side: w.side, qty: w.qty, px, feeUsd: fee, kind, role: 'entry', ts: this.now() }, { trace: w.strategies[0] && w.strategies[0].ideaId });

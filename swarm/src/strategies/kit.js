@@ -33,7 +33,7 @@ class StrategyHost {
     this.s = strategy; this.name = o.name || strategy.name; this.p = Object.assign({}, strategy.params, o.params || {});
     this.fs = o.fs; this.regimeState = o.regime; this.tradableFn = o.tradable || (() => true);
     this.states = new Map(); this.open = new Map(); this.seq = 0; this.stats = { ideas: 0, rejected: 0, errors: 0 }; this.lastError = null;
-    this.tfs = new Set(strategy.tfs);
+    this.tfs = new Set(this.p.onlyTfs || strategy.tfs); // onlyTfs (a variant's setting) picks the timeframes, wider or narrower
     this.ph = paramsHash(strategy.version, this.p);
   }
   state(coin) { let x = this.states.get(coin); if (!x) this.states.set(coin, (x = {})); return x; }
