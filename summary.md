@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-20T15:38:20.167Z · account **PAPER** · risk mode normal
+Updated 2026-10-20T15:48:20.166Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -35,4 +35,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ZRO: wide-spread; ICP: wide-spread; STBL: wide-spread; EIGEN: wide-spread
+Not tradable now: TRUTH: wide-spread; LIT: wide-spread; ICP: wide-spread; STBL: wide-spread; GRASS: wide-spread
