@@ -29,17 +29,20 @@ class Coordinator extends Agent {
     this.stateFile = path.join(this.ctx.dataDir, 'state', 'coordinator.json');
     const saved = readJSON(this.stateFile, {});
     this.halted = !!saved.halted; this.paused = !!saved.paused; this.lastMode = saved.lastMode || 'normal';
+    // modes: the config's defaults, then the coordinator's own saved changes (commands it accepted). Not the shared
+    // kv store: any process can write there, and modes decide what trades.
     this.modes = {}; for (const [k, v] of Object.entries(this.cfg.strategies || {})) this.modes[k] = v.enabled === false ? 'off' : v.mode || 'shadow';
-    Object.assign(this.modes, (await this.bus.kv.get('strategyModes')) || {}, saved.modes || {});
+    Object.assign(this.modes, saved.modes || {});
+    await this.bus.kv.set('strategyModes', this.modes);
     this.queue = []; this.timer = null; this.books = new Map();
     this.account = await this.bus.kv.get('account'); this.positions = (await this.bus.kv.get('positions')) || { open: [], working: [] };
     this.guard = ((await this.bus.kv.get('guard')) || {}).coins || {}; this.events = ((await this.bus.kv.get('events')) || {}).windows || [];
     this.betas = (await this.bus.kv.get('betas')) || {}; this.universe = new Map((((await this.bus.kv.get('universe')) || {}).coins || []).map((c) => [c.coin, c]));
-    this.alloc.load((await this.bus.kv.get('strategyResults')) || {});
+    this.alloc.load(saved.results || {}); // its own record of closed trades (signed trade.closed), not the kv store
     this.subscribe('idea', (m) => this.onIdea(m.data));
     this.subscribe('account', (m) => { this.account = m.data; });
     this.subscribe('positions', (m) => { this.positions = m.data; });
-    this.subscribe('trade.closed', (m) => { for (const s of m.data.strategies || []) this.alloc.record(s.name, m.data.r); });
+    this.subscribe('trade.closed', (m) => { for (const s of m.data.strategies || []) this.alloc.record(s.name, m.data.r); this.save(); });
     this.subscribe('guard.status', (m) => { this.guard = m.data.coins; });
     this.subscribe('event.window', (m) => { this.events = m.data.windows; });
     this.subscribe('uni.list', (m) => { this.universe = new Map(m.data.coins.map((c) => [c.coin, c])); });
@@ -49,7 +52,7 @@ class Coordinator extends Agent {
     this.every(60000, async () => { this.betas = (await this.bus.kv.get('betas')) || this.betas; });
     this.log.info(`risk limits sha256 ${this.riskHash.slice(0, 16)}…`);
   }
-  save() { writeAtomic(this.stateFile, JSON.stringify({ halted: this.halted, paused: this.paused, lastMode: this.lastMode, modes: this.modes })); }
+  save() { writeAtomic(this.stateFile, JSON.stringify({ halted: this.halted, paused: this.paused, lastMode: this.lastMode, modes: this.modes, results: this.alloc.dump() })); }
 
   onIdea(idea) {
     if (this.modes[idea.strategy] !== 'trade') { this.count('ideasShadow'); return; }
@@ -74,7 +77,8 @@ class Coordinator extends Agent {
       const size = this.alloc.size(it, eq);
       const s = {
         equity: eq, mode: rm.mode, positions: this.positions.open || [], working: this.positions.working || [], inWindow,
-        tradable: (c) => !this.guard[c] || this.guard[c].tradable, beta: (c) => (c === 'BTC' ? 1 : this.betas[c]),
+        // betas come from the brain (untrusted zone): an alt counts as at least 0.5 and at most 3 BTC
+        tradable: (c) => !this.guard[c] || this.guard[c].tradable, beta: (c) => (c === 'BTC' ? 1 : Number.isFinite(this.betas[c]) ? Math.min(3, Math.max(0.5, this.betas[c])) : 1),
         book: (c) => { const b = this.books.get(c); return b && now - b.ts < 30000 ? b : null; }, inst: (c) => this.universe.get(c),
       };
       const d = this.risk.check(it, size, s);

@@ -15,14 +15,17 @@
 const os = require('os');
 const { Redis, parseXread } = require('./resp');
 const S = require('./schemas');
+const A = require('./auth');
 
 let seq = 0;
 const rnd = () => Math.random().toString(36).slice(2, 6);
 function newId(ts) { seq = (seq + 1) % 1679616; return `${ts.toString(36)}-${seq.toString(36)}-${rnd()}`; }
-function envelope(type, data, meta, now) {
+function envelope(type, data, meta, now, key) {
   const ts = meta.ts || now();
   const id = newId(ts);
-  return { v: 1, id, type, ts, src: meta.src || 'unknown', trace: meta.trace || id, data };
+  const m = { v: 1, id, type, ts, src: meta.src || 'unknown', trace: meta.trace || id, data };
+  if (key && A.SIGNED.has(type)) m.sig = A.sign(key, m); // core/auth.js: authority messages are signed
+  return m;
 }
 
 // per-subscriber serial queue: handler(m) runs for one message at a time, in arrival order
@@ -42,13 +45,13 @@ class Lane {
 
 class MemoryBus {
   constructor(o = {}) {
-    this.now = o.now || Date.now; this.keepN = o.keep || 20000; this.validate = o.validate !== false;
+    this.now = o.now || Date.now; this.keepN = o.keep || 20000; this.validate = o.validate !== false; this.signKey = o.key || null;
     this.subs = new Set(); this.hist = new Map(); this.store = new Map(); this.stats = { published: {}, dead: 0 };
     this.kv = { get: async (k) => (this.store.has(k) ? JSON.parse(this.store.get(k)) : null), set: async (k, v) => { this.store.set(k, JSON.stringify(v)); }, del: async (k) => { this.store.delete(k); } };
   }
   async publish(type, data, meta = {}) {
     if (this.validate) S.check(type, data);
-    const m = envelope(type, data, meta, this.now);
+    const m = envelope(type, data, meta, this.now, meta.key === undefined ? this.signKey : meta.key);
     let h = this.hist.get(type); if (!h) this.hist.set(type, (h = []));
     h.push(m); if (h.length > this.keepN) h.splice(0, h.length - this.keepN);
     this.stats.published[type] = (this.stats.published[type] || 0) + 1;
@@ -85,7 +88,7 @@ class MemoryBus {
 
 class RedisBus {
   constructor(o = {}) {
-    this.url = o.url || 'redis://127.0.0.1:6379'; this.prefix = o.prefix || 'sw'; this.now = o.now || Date.now; this.validate = o.validate !== false;
+    this.url = o.url || 'redis://127.0.0.1:6379'; this.prefix = o.prefix || 'sw'; this.now = o.now || Date.now; this.validate = o.validate !== false; this.signKey = o.key || null;
     this.cmd = new Redis({ url: this.url, name: `${this.prefix}-cmd-${process.pid}` });
     this.readers = new Set(); this.stats = { published: {}, dead: 0, readErrors: 0 };
     this.kv = {
@@ -98,7 +101,7 @@ class RedisBus {
   async connect() { await this.cmd.connect(); await this.cmd.call('PING'); return this; }
   async publish(type, data, meta = {}) {
     if (this.validate) S.check(type, data);
-    const m = envelope(type, data, meta, this.now);
+    const m = envelope(type, data, meta, this.now, this.signKey);
     await this.cmd.call('XADD', this.key(type), 'MAXLEN', '~', S.keep(type), '*', 'm', JSON.stringify(m));
     this.stats.published[type] = (this.stats.published[type] || 0) + 1;
     return m.id;

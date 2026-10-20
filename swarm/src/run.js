@@ -12,6 +12,7 @@
 const fs = require('fs'), path = require('path');
 const { createBus } = require('./core/bus');
 const { makeLogger } = require('./core/agent');
+const { loadKey } = require('./core/auth');
 
 const REGISTRY = {
   universe: () => require('./market/universe').UniverseAgent,
@@ -57,11 +58,15 @@ async function main() {
   fs.mkdirSync(dataDir, { recursive: true });
   const busKind = A.bus || process.env.SWARM_BUS || cfg.bus.kind;
   const log = makeLogger('runner');
-  const bus = await createBus({ kind: busKind, url: A.redis || process.env.SWARM_REDIS || cfg.bus.url, prefix: cfg.bus.prefix });
-  const ctx = { bus, cfg, dataDir };
+  // the bus key (core/auth.js): trusted groups sign and check order/command/account messages; the brain has none
+  const busKey = loadKey(A['bus-key'] || process.env.SWARM_BUS_KEY_FILE);
+  const account = (cfg.trading || {}).account || 'paper';
+  if (account !== 'paper' && names.includes('trader') && !busKey) throw new Error(`a ${account} trader needs the bus key (SWARM_BUS_KEY_FILE): it only accepts signed orders`);
+  const bus = await createBus({ kind: busKind, url: A.redis || process.env.SWARM_REDIS || cfg.bus.url, prefix: cfg.bus.prefix, key: busKey });
+  const ctx = { bus, cfg, dataDir, busKey };
   const agents = [];
   for (const n of names) { const C = REGISTRY[n](cfg); const a = new C(ctx, { name: n }); await a.start(); agents.push(a); }
-  log.info(`running ${names.join(', ')} on the ${busKind} bus, data in ${dataDir}`);
+  log.info(`running ${names.join(', ')} on the ${busKind} bus, data in ${dataDir}, ${busKey ? 'signing and checking authority messages' : 'no bus key'}`);
   let stopping = false;
   const stop = async (why) => {
     if (stopping) return; stopping = true;

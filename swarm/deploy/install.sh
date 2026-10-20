@@ -3,16 +3,20 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/install.sh | sudo bash
 #
-# Installs Node 22, Redis (the message bus), git and time sync; creates the service user `swarm`; checks the code out
+# Installs Node 22, Redis (the message bus), git and time sync; creates the service users; checks the code out
 # read-only to /opt/swarm (agents cannot edit their own code — changes come through git and tests); asks once for
 # the optional secrets (GitHub token for the dashboard/supervisor, Telegram bot for alerts); signs the risk limits;
-# starts one systemd service per agent group and an updater that tests new code before it restarts anything.
+# starts one systemd service per agent group and an updater that tests new code before it restarts anything and
+# leaves protected code for Ibrahim to approve (sudo swarm-approve).
+# Users: `swarm` runs the trusted groups (market, decision, trader, ops) and can read the keys; `swarm-brain` runs
+# the brain group, where the strategy plugins the Claude agents write are executed — no keys, no bus key (it cannot
+# sign orders or commands), its own data folder.
 # PAPER account by default. Demo: deploy/enable-demo.sh afterwards. No withdrawal-capable key is ever accepted.
 set -euo pipefail
 
 REPO="https://github.com/iamuna/blofinbot.git"; BRANCH="${SWARM_BRANCH:-swarm}"
 APP=/opt/swarm; DATA=/var/lib/swarm; ETC=/etc/swarm
-GROUPS="market brain decision trader ops"
+SWARM_GROUPS="market brain decision trader ops"   # not GROUPS: bash reserves that name
 
 [ "$(id -u)" -eq 0 ] || { echo "Run with sudo." >&2; exit 1; }
 . /etc/os-release; echo "Installing the swarm on $PRETTY_NAME"
@@ -38,7 +42,9 @@ grep -q 'include /etc/redis/redis.conf.d-swarm' /etc/redis/redis.conf || echo 'i
 systemctl enable --now redis-server >/dev/null; systemctl restart redis-server
 
 id swarm >/dev/null 2>&1 || useradd --system --home-dir "$DATA" --shell /usr/sbin/nologin swarm
-mkdir -p "$DATA" "$ETC"; chown swarm:swarm "$DATA"; chmod 750 "$DATA"
+id swarm-brain >/dev/null 2>&1 || useradd --system --user-group --home-dir /var/lib/swarm-brain --shell /usr/sbin/nologin swarm-brain
+mkdir -p "$DATA" /var/lib/swarm-brain "$ETC" "$ETC/approved"; chown swarm:swarm "$DATA"; chmod 750 "$DATA"
+chown swarm-brain:swarm-brain /var/lib/swarm-brain; chmod 750 /var/lib/swarm-brain; chmod 755 "$ETC"; chmod 700 "$ETC/approved"
 if [ ! -d "$APP/.git" ]; then git clone -q --branch "$BRANCH" "$REPO" "$APP"; else git -C "$APP" fetch -q origin "$BRANCH" && git -C "$APP" checkout -q "$BRANCH" && git -C "$APP" reset -q --hard "origin/$BRANCH"; fi
 chown -R root:root "$APP"; chmod -R go-w "$APP"   # read-only for the swarm user
 
@@ -48,7 +54,13 @@ SWARM_CONFIG=$APP/swarm/config/swarm.json
 SWARM_LOCAL_CONFIG=$ETC/swarm.local.json
 SWARM_BUS=redis
 ENV
+chmod 644 "$ETC/env"
 [ -f "$ETC/swarm.local.json" ] || echo '{ "trading": { "account": "paper" } }' > "$ETC/swarm.local.json"
+chmod 644 "$ETC/swarm.local.json"
+# bus key: the trusted groups sign orders, commands and account updates with it (src/core/auth.js)
+if [ ! -f "$ETC/bus.key" ]; then (umask 077; node -e 'console.log(require("crypto").randomBytes(32).toString("hex"))' > "$ETC/bus.key"); fi
+chown root:swarm "$ETC/bus.key"; chmod 640 "$ETC/bus.key"
+printf 'SWARM_BUS_KEY_FILE=%s\n' "$ETC/bus.key" > "$ETC/trusted.env"; chown root:swarm "$ETC/trusted.env"; chmod 640 "$ETC/trusted.env"
 
 if [ ! -f "$ETC/secrets.env" ]; then
   echo
@@ -93,6 +105,7 @@ Requires=redis-server.service
 [Service]
 User=swarm
 EnvironmentFile=/etc/swarm/env
+EnvironmentFile=-/etc/swarm/trusted.env
 EnvironmentFile=-/etc/swarm/secrets.env
 EnvironmentFile=-/etc/swarm/blofin-demo.env
 WorkingDirectory=/opt/swarm
@@ -109,7 +122,22 @@ PrivateTmp=true
 WantedBy=multi-user.target
 UNIT
 
+# the brain group runs the strategy plugins: its own user, no key files, its own data folder
+mkdir -p /etc/systemd/system/swarm@brain.service.d
+cat > /etc/systemd/system/swarm@brain.service.d/isolate.conf <<'UNIT'
+[Service]
+User=swarm-brain
+Group=swarm-brain
+EnvironmentFile=
+EnvironmentFile=/etc/swarm/env
+ExecStart=
+ExecStart=/usr/bin/node /opt/swarm/swarm/src/run.js --group brain --data-dir /var/lib/swarm-brain
+ReadWritePaths=
+ReadWritePaths=/var/lib/swarm-brain
+UNIT
+
 install -m 755 "$APP/swarm/deploy/update.sh" /usr/local/bin/swarm-update
+install -m 755 "$APP/swarm/deploy/approve.sh" /usr/local/bin/swarm-approve
 cat > /etc/systemd/system/swarm-update.service <<'UNIT'
 [Unit]
 Description=Test and install new swarm code (rolls back if the swarm is unhealthy after the restart)
@@ -128,10 +156,11 @@ WantedBy=timers.target
 UNIT
 
 systemctl daemon-reload
-for g in $GROUPS; do systemctl enable --now "swarm@$g" >/dev/null; done
+for g in $SWARM_GROUPS; do systemctl enable --now "swarm@$g" >/dev/null; done
 systemctl enable --now swarm-update.timer >/dev/null
 sleep 5
-systemctl --no-pager --lines=0 status $(for g in $GROUPS; do echo "swarm@$g"; done) | grep -E '●|Active' || true
+systemctl --no-pager --lines=0 status $(for g in $SWARM_GROUPS; do echo "swarm@$g"; done) | grep -E '●|Active' || true
 echo
 echo "Installed (PAPER account). Logs: journalctl -u 'swarm@*' -f"
 echo "Stop everything: sudo systemctl stop 'swarm@*'   ·   Risk limits: sudo swarm-sign-risk after editing"
+echo "Updates install themselves every 10 minutes when they only touch strategies; others wait for: sudo swarm-approve"

@@ -30,7 +30,10 @@ class Brain extends Agent {
     this.hosts = new Map(); this.shadow = new Map(); this.mode = {};
     // plugins, extra (test) plugins, and configured variants {name: {base, params}} of a plugin
     const variants = Object.entries(this.S).filter(([n, v]) => v.base && strategies.byName[v.base] && !strategies.byName[n]).map(([n, v]) => Object.assign({}, strategies.byName[v.base], { name: n }));
-    const list = this.ctx.strategies || strategies.all.concat((this.cfg.extraStrategies || []).map((n) => require(`../strategies/${n}`)), variants);
+    // extra plugins (the CI probe) go through the same check as the listed ones
+    const extra = (this.cfg.extraStrategies || []).map((n) => strategies.load(n)).filter((r) => (r.error ? this.error('plugin', r.error) : true)).map((r) => r.plugin);
+    for (const e of strategies.rejected) this.error('plugin rejected', e);
+    const list = this.ctx.strategies || strategies.all.concat(extra, variants);
     for (const s of list) {
       const sc = this.S[s.name] || {};
       if (sc.enabled === false || sc.mode === 'off') continue;

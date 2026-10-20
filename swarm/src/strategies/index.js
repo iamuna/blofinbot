@@ -1,13 +1,14 @@
 'use strict';
-// Every strategy plugin the swarm knows. The agent manager adds, edits or retires entries here (through git).
-const all = [
-  require('./intraday_trend'),
-  require('./trend_pullback'),
-  require('./session_drive'),
-  require('./overshoot_fade'),
-  require('./leader_follow'),
-  require('./crowd_squeeze'),
-  require('./noise_breakout'),
+// Every strategy plugin the swarm knows, by file name. The agent manager adds or retires names here (through git);
+// nothing else in this file may change without Ibrahim's approval. Each plugin must pass the plugin check before
+// it is loaded (loader.js).
+const PLUGINS = [
+  'intraday_trend',
+  'trend_pullback',
+  'session_drive',
+  'overshoot_fade',
+  'leader_follow',
+  'crowd_squeeze',
+  'noise_breakout',
 ];
-const byName = Object.fromEntries(all.map((s) => [s.name, s]));
-module.exports = { all, byName };
+module.exports = require('./loader').loadPlugins(PLUGINS);

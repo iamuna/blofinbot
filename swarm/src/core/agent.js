@@ -5,6 +5,7 @@
  * Timers and handlers never throw out of the agent: errors are counted, logged and published as sys.log.
  */
 'use strict';
+const auth = require('./auth');
 
 function makeLogger(name, sink) {
   const out = sink || ((line) => process.stdout.write(line + '\n'));
@@ -45,7 +46,13 @@ class Agent {
 
   publish(type, data, meta) { return this.bus.publish(type, data, Object.assign({ src: this.name }, meta)); }
   subscribe(patterns, fn, o) {
-    const s = this.bus.subscribe(patterns, (m) => fn.call(this, m), Object.assign({ group: this.name }, o));
+    // with a bus key (trusted groups in production), order/command/account/… messages must carry a valid signature
+    const key = this.ctx.busKey;
+    const handler = key ? (m) => {
+      if (auth.SIGNED.has(m.type) && !auth.verify(key, m)) { this.count('unsignedDropped'); this.warn(`dropped an unsigned ${m.type} from ${m.src}`); return; }
+      return fn.call(this, m);
+    } : (m) => fn.call(this, m);
+    const s = this.bus.subscribe(patterns, handler, Object.assign({ group: this.name }, o));
     this.subs.push(s);
     return s;
   }
