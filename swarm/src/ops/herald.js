@@ -49,7 +49,7 @@ class Herald extends Agent {
     if (prev === undefined && r.mode === 'normal') return;
     this.say(`Risk mode ${prev || '?'} → ${r.mode}${r.reasons.length ? ': ' + r.reasons.join('; ') : ''}${r.mode === 'halt' ? '\nTrading is stopped. Reply /resume when you have looked at it.' : ''}`);
   }
-  async status() {
+  async statusText() {
     const a = (await this.bus.kv.get('account')) || {}, p = (await this.bus.kv.get('positions')) || { open: [] };
     const L = [`Account (${a.mode || '?'}): $${a.equity} (${a.equity0 ? (((a.equity / a.equity0) - 1) * 100).toFixed(2) : '?'}% since start), today ${a.dayPnlPct != null ? (a.dayPnlPct * 100).toFixed(2) : '?'}%, drawdown ${a.dd != null ? (a.dd * 100).toFixed(1) : '?'}%`];
     L.push(`${p.open.length} open: ${p.open.map((x) => `${x.side > 0 ? '+' : '−'}${x.coin}`).join(' ') || 'none'} · open risk ${a.openRiskPct != null ? (a.openRiskPct * 100).toFixed(2) : '?'}% · ${a.trades || 0} trades, win rate ${a.winRate != null ? (a.winRate * 100).toFixed(0) + '%' : '—'}`);
@@ -67,22 +67,25 @@ class Herald extends Agent {
     const key = local.toDateString();
     if (local.getHours() !== 21 || this.lastDaily === key) return;
     this.lastDaily = key;
-    await this.say(`Daily summary\n${await this.status()}`);
+    await this.say(`Daily summary\n${await this.statusText()}`);
   }
 
   async poll() {
     while (!this.stopped) {
       try {
         const ups = await this.api('getUpdates', { offset: this.offset, timeout: 30, allowed_updates: ['message'] });
-        for (const u of ups) { this.offset = u.update_id + 1; await this.onMessage(u.message); }
-      } catch (e) { this.count('pollErrors'); await net.sleep(5000); }
+        for (const u of ups) {
+          this.offset = u.update_id + 1;
+          try { await this.onMessage(u.message); } catch (e) { this.error('command', e); await this.say(`That command failed: ${e.message}`); }
+        }
+      } catch (e) { this.count('pollErrors'); this.log.warn(`Telegram poll: ${e.message}`); await net.sleep(5000); }
     }
   }
   async onMessage(msg) {
     if (!msg || String(msg.chat && msg.chat.id) !== this.chat) return; // only Ibrahim's chat
     const [cmd, ...args] = String(msg.text || '').trim().split(/\s+/);
     const send = (c, extra) => this.publish('sys.command', Object.assign({ cmd: c, by: 'ibrahim' }, extra));
-    if (cmd === '/status') return this.say(await this.status());
+    if (cmd === '/status') return this.say(await this.statusText());
     if (cmd === '/pause') { await send('pause'); return this.say('Paused: working orders cancelled, no new ones. Positions keep their stops. /resume to continue.'); }
     if (cmd === '/resume') { await send('resume'); return this.say('Resumed.'); }
     if (cmd === '/flatten') { await send('flatten', { why: 'Ibrahim' }); await send('pause'); return this.say('Closing everything and pausing. /resume to continue.'); }

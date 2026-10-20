@@ -11,7 +11,7 @@ const { quiet, baseCfg, tap, tmpDir, sleep } = require('./helpers');
 
 test('herald: sends alerts, rate-limits repeats, takes commands only from Ibrahim\'s chat', async () => {
   process.env.TELEGRAM_BOT_TOKEN = 'T'; process.env.TELEGRAM_CHAT_ID = '42';
-  const sent = [], updates = [[{ update_id: 1, message: { chat: { id: 99 }, text: '/flatten' } }, { update_id: 2, message: { chat: { id: 42 }, text: '/pause' } }]];
+  const sent = [], updates = [[{ update_id: 1, message: { chat: { id: 99 }, text: '/flatten' } }, { update_id: 2, message: { chat: { id: 42 }, text: '/pause' } }, { update_id: 3, message: { chat: { id: 42 }, text: '/status' } }]];
   const fakeFetch = async (url, o) => {
     const body = JSON.parse(o.body);
     if (url.endsWith('/sendMessage')) { sent.push(body.text); return { json: async () => ({ ok: true, result: {} }) }; }
@@ -31,6 +31,7 @@ test('herald: sends alerts, rate-limits repeats, takes commands only from Ibrahi
     assert.strictEqual(sent.filter((t) => /brain/.test(t)).length, 1, 'the same alert key is sent once per 10 minutes');
     assert.ok(sent.some((t) => /normal → no-new/.test(t)));
     assert.deepStrictEqual(cmds.map((m) => [m.src, m.data.cmd, m.data.by]), [['herald', 'pause', 'ibrahim']], 'the stranger\'s /flatten was ignored');
+    assert.ok(sent.some((t) => /^Account \(/.test(t)), '/status answers (it once collided with the agent\'s own status field)');
   } finally { await h.stop(); delete process.env.TELEGRAM_BOT_TOKEN; delete process.env.TELEGRAM_CHAT_ID; }
 });
 
