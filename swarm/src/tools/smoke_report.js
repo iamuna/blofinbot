@@ -62,6 +62,9 @@ async function main() {
   const good = universe.filter((c) => coins[c] && coins[c].bars >= 1 && coins[c].books >= 10).length;
   const need = Math.ceil(universe.length / 2);
   console.log(`\nBloFin data check: ${good}/${universe.length} coins produced bars and books (need ${need}).`);
-  if (!universe.length || good < need) process.exit(1);
+  // the probe strategy's ideas must reach fills, and no signed message may have been dropped (bus key in CI)
+  const probe = ideas.probe || 0, fills = (trade['exec.fill'] || []).length, unsigned = logs.filter((l) => /dropped an unsigned/.test(l));
+  console.log(`Trade path check: ${probe} probe ideas → ${fills} fills; ${unsigned.length} unsigned messages dropped.`);
+  if (!universe.length || good < need || unsigned.length || (probe >= 2 && fills === 0)) process.exit(1);
 }
 main().catch((e) => { console.error(e); process.exit(1); });
