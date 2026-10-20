@@ -3,6 +3,34 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-20 09:20 — Ibrahim's retail strategies: RSI + MACD, Carney harmonics, 21/200 moving averages
+
+Asked for by Ibrahim. Plugins `rsi-macd`, `harmonic`, `ma-21-200` (not configured to run). Same dataset, costs and
+simulator as the factory; 38 tries logged (now 101 in total → t bar 3.0). 1h/4h runs added the timeframes in the
+test script only (features TFS + plugin tfs), not in the live code.
+
+| Strategy, best versions | Chart | Trades | Win | Avg R | t | Test (Sep–Oct) n / avg R |
+|---|---|---|---|---|---|---|
+| RSI+MACD oversold bounce, maker | 15m | 3,840 | 40% | −0.05 | −2.5 | 1,087 / −0.07 |
+| RSI+MACD, 10 other versions (5m–4h, trend/reversal, trailing exits) | | | | −0.06 to −0.40 | | all negative |
+| Harmonic (Gartley/Bat/Butterfly/Crab), limit at D, waits 12h | 15m | 615 | 35% | −0.06 | −0.9 | 161 / +0.09 |
+| Harmonic, confirmation entry | 15m | 425 | 52% | −0.16 | −3.2 | 100 / −0.09 |
+| Harmonic | 1h | 100 | 41% | +0.12 | 0.8 | 15 / +0.77 |
+| 21/200 cross | 15m | 4,548 | 31% | −0.28 | −13.1 | 1,188 / −0.23 |
+| 21/200 retest (cross, pull back to the 21, hold) | 15m | 6,395 | 36% | −0.11 | −6.3 | 1,698 / −0.02 |
+| 21/200 pullback (any time in trend) | 1h | 3,700 | 36% | −0.06 | −2.8 | 955 / 0.00 |
+| 21/200 retest | 4h | 240 | 41% | +0.03 | 0.3 | 49 / +0.50 |
+| 21/200 pullback, trailing ride | 4h | 809 | 41% | +0.04 | 0.8 | 244 / +0.12 |
+
+- **RSI + MACD has no edge on any chart, 5m to 4h**; trailing exits made it worse. Rejected.
+- **Harmonics**: a small reaction at the D zone before costs on 15m (+13 bps gross) that costs eat. Confirmation
+  entries raise the win rate (52%) but lose more (worse price, same stop). 1h is positive on 100 trades: noise-level.
+- **21/200**: entering on the cross is late (−0.28 R); the pull-back retest is much better, and on 4h it turns
+  slightly positive (+0.02 to +0.04 R, t < 1), positive in 2 of 3 thirds and in the test period. Long-biased in a
+  rising universe. Lesson again: longer holds and bigger charts do better because costs shrink against the move.
+- **Next (if Ibrahim agrees)**: 3–5 years of 1h/4h bars from Binance's public archive to test 21/200 4h and
+  harmonics 1h/4h across bull and bear markets — as a slow sleeve, not part of the 1–45 minute swarm.
+
 ## 2026-10-20 — open-interest moves and funding settlements
 
 **Tries so far: 59 before today's backtests** (10 factory runs + 19 variant backtests run outside the factory on
