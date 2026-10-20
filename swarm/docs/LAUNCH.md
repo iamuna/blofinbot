@@ -18,9 +18,9 @@ it would have done). About 15 minutes of your time.
 | What | How |
 |---|---|
 | Logs | `C:\swarm\logs` |
-| Updates that need your OK | Telegram tells you; run `C:\swarm\app\swarm\deploy\windows\approve.ps1` |
-| Demo account (later) | `C:\swarm\app\swarm\deploy\windows\enable-demo.ps1` (`-Off` to go back) |
-| Stop and remove from startup | `C:\swarm\app\swarm\deploy\windows\uninstall.ps1` |
+| Updates that need your OK | Telegram tells you; run `powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\approve.ps1` |
+| Demo account (later) | `powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\enable-demo.ps1` (`-Off` to go back) |
+| Stop and remove from startup | `powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\uninstall.ps1` |
 
 Differences from the Ubuntu install: everything runs in one program under your Windows account, so agent-written
 strategy code is kept in line by the plugin check and the update gate, not by a separate user. That is fine for
