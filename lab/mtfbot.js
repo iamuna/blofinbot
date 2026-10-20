@@ -126,12 +126,13 @@ function resolveUniverse() {
   // coins we still hold (or have orders in) stay until flat, with a zero target
   const prev = ((S && S.universe) || []).slice();
   // coins with positions or orders but no universe record (e.g. state from an older version)
-  for (const k of new Set([...Object.keys(S.pos || {}), ...Object.keys(S.orders || {})])) if (!prev.some((c) => c.coin === k)) prev.push({ coin: k, instId: k + '-USDT', seedScale: 1 });
+  for (const k of new Set([...Object.keys(S.pos || {}).filter((k) => S.pos[k].qty), ...Object.keys(S.orders || {})])) if (!prev.some((c) => c.coin === k)) prev.push({ coin: k, instId: k + '-USDT', seedScale: 1 });
   for (const c of prev) if (!have.has(c.coin) && ((S.pos[c.coin] && S.pos[c.coin].qty) || S.orders[c.coin])) {
     if (ex.has(c.coin) && S.orders[c.coin] && !(S.pos[c.coin] && S.pos[c.coin].qty)) { delete S.orders[c.coin]; continue; } // excluded and nothing filled: just cancel
     coins.push(Object.assign({}, c, { windDown: true })); have.add(c.coin);
   }
   UNIVERSE = Object.assign({}, BASE_UNIVERSE, { coins, source });
+  for (const k of Object.keys(S.pos || {})) if (!S.pos[k].qty && !have.has(k)) delete S.pos[k]; // closed positions in coins that left the universe
   const added = coins.filter((c) => !prev.some((p) => p.coin === c.coin)).map((c) => c.coin);
   const dropped = prev.filter((p) => !have.has(p.coin)).map((p) => p.coin);
   S.universePrevCount = ((S && S.universe) || []).length;
@@ -412,7 +413,7 @@ function snapshot(closed) {
 }
 function stats() {
   const eq = equityNow();
-  const gross = Object.keys(S.pos).reduce((a, k) => a + Math.abs((S.pos[k].qty || 0) * lastPrice(k)), 0);
+  const gross = Object.keys(S.pos).reduce((a, k) => { const q = S.pos[k].qty || 0, c = lastPrice(k); return q && isFinite(c) ? a + Math.abs(q * c) : a; }, 0);
   const fees = S.fills.reduce((a, f) => a + f.feeUsd, 0);
   S.stats = { equity: +eq.toFixed(2), netPct: +((eq / S.equity0 - 1) * 100).toFixed(3), gross: +(gross / eq).toFixed(3), peak: +S.peak.toFixed(2), drawdownPct: +((1 - eq / S.peak) * 100).toFixed(2), fills: S.fills.length, feesUsd: +fees.toFixed(2), fundingUsd: +(S.fundingPaid || 0).toFixed(2), openOrders: Object.keys(S.orders).length, positions: Object.values(S.pos).filter((p) => p.qty).length, governor: S.governor };
 }
