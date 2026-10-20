@@ -1,8 +1,35 @@
 # Launch on the home PC
 
-Everything runs on one small 24/7 PC with Ubuntu Server 24.04 LTS (4 GB RAM is plenty). Nothing here moves
-money: the swarm starts on a **paper** account, and every strategy starts in **shadow** (it tracks what it would
-have done). About 20 minutes of your time.
+Two ways: **on your Windows PC** (no Ubuntu; simplest) or on a small 24/7 Ubuntu Server PC (most robust). Nothing
+here moves money: the swarm starts on a **paper** account, and every strategy starts in **shadow** (it tracks what
+it would have done). About 15 minutes of your time.
+
+## Windows (no Ubuntu)
+
+1. Make the GitHub token and the Telegram bot (section 1 below); send your bot a message first.
+2. Right-click Start → **Terminal (Admin)** and paste:
+
+       irm https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/windows/install.ps1 | iex
+
+   It installs Node.js and Git if needed, asks for the two tokens (typing is hidden), sets the PC not to sleep while
+   plugged in, and starts the swarm hidden. It starts again by itself every time you log in.
+3. Send /status to your Telegram bot.
+
+| What | How |
+|---|---|
+| Logs | `C:\swarm\logs` |
+| Updates that need your OK | Telegram tells you; run `C:\swarm\app\swarm\deploy\windows\approve.ps1` |
+| Demo account (later) | `C:\swarm\app\swarm\deploy\windows\enable-demo.ps1` (`-Off` to go back) |
+| Stop and remove from startup | `C:\swarm\app\swarm\deploy\windows\uninstall.ps1` |
+
+Differences from the Ubuntu install: everything runs in one program under your Windows account, so agent-written
+strategy code is kept in line by the plugin check and the update gate, not by a separate user. That is fine for
+paper and demo; before real money, move to the Ubuntu install (or ask Claude to harden the Windows one). The PC must
+stay on; after a Windows Update restart, log in once.
+
+## Ubuntu Server
+
+Steps 1–3 below. Step 1 is also how to make the two tokens for the Windows install.
 
 ## 1. Before you start (on your phone or laptop)
 
