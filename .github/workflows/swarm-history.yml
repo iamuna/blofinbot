@@ -1,0 +1,146 @@
+name: Swarm 5-year sweep (every strategy × every timeframe, walk-forward)
+
+# 1. plan:   the point-in-time universe from Binance's archive (daily volumes of every USDT perpetual)
+# 2. build:  1-minute bars, open interest and funding for every coin while it was in the universe (8 shards),
+#            stored as assets of the release "swarm-history-v1" (built once; later runs reuse it)
+# 3. sweep:  every strategy × every timeframe on that history (10 jobs × 4 processes = 40 coin shards)
+# 4. select: walk-forward selection; the report goes to the swarm-reports branch (history/<date>/)
+# Runs on a push that changes history/ or this file, or by hand. history/REBUILD: change it to rebuild the data.
+
+on:
+  push:
+    branches: [swarm]
+    paths: ["history/**", ".github/workflows/swarm-history.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: swarm-history
+  cancel-in-progress: true
+
+env:
+  TAG: swarm-history-v1
+  BUILD_SHARDS: "8"
+  SWEEP_SHARDS: "40"
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    outputs:
+      built: ${{ steps.check.outputs.built }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Is the history already built?
+        env: { GH_TOKEN: "${{ github.token }}" }
+        id: check
+        run: |
+          n=$(gh release view "$TAG" -R "${{ github.repository }}" --json assets -q '[.assets[].name | select(test("^manifest-[0-9]+\\.json$"))] | length' 2>/dev/null || echo 0)
+          changed=$(git diff --name-only HEAD~1 HEAD -- history/REBUILD history/build.js | wc -l)
+          if [ "$n" = "$BUILD_SHARDS" ] && [ "$changed" = "0" ]; then echo "built=true" >> "$GITHUB_OUTPUT"; else echo "built=false" >> "$GITHUB_OUTPUT"; fi
+          echo "manifests in release: $n, builder changed: $changed"
+      - name: Plan the universe
+        if: steps.check.outputs.built != 'true'
+        run: node history/build.js plan data --from 2021-10 --to 2026-09 --parallel 32
+      - name: Release for the data
+        env: { GH_TOKEN: "${{ github.token }}" }
+        if: steps.check.outputs.built != 'true'
+        run: |
+          gh release delete "$TAG" -R "${{ github.repository }}" -y --cleanup-tag 2>/dev/null || true
+          gh release create "$TAG" -R "${{ github.repository }}" --target "${{ github.sha }}" --title "Swarm 5-year history (data for the sweep)" --notes "Binance USD-M 1m bars, open interest and funding, 2021-10 → 2026-09, point-in-time universe. Built by .github/workflows/swarm-history.yml." --prerelease
+          gh release upload "$TAG" -R "${{ github.repository }}" data/universe.json data/plan.json --clobber
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.built != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix: { shard: [0, 1, 2, 3, 4, 5, 6, 7] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Build shard ${{ matrix.shard }}
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          gh release download "$TAG" -R "${{ github.repository }}" -p plan.json -D .
+          node history/build.js coins data --plan plan.json --shard ${{ matrix.shard }}/$BUILD_SHARDS --parallel 8
+      - name: Upload to the release
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          cd data && du -sh .
+          for c in */; do c=${c%/}; tar -cf "$c.tar" "$c" && rm -rf "$c"; done
+          ls *.tar | xargs -n 20 gh release upload "$TAG" -R "${{ github.repository }}" --clobber
+          gh release upload "$TAG" -R "${{ github.repository }}" manifest-${{ matrix.shard }}.json --clobber
+
+  sweep:
+    needs: [plan, build]
+    if: always() && needs.plan.result == 'success' && (needs.build.result == 'success' || needs.build.result == 'skipped')
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix: { job: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] }
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Data for this job's four shards
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          mkdir -p data && cd data
+          gh release download "$TAG" -R "${{ github.repository }}" -p 'manifest-*.json' -p universe.json
+          node ../history/manifest.js .
+          coins=""
+          for k in 0 1 2 3; do s=$(( ${{ matrix.job }} * 4 + k )); coins="$coins $(node ../history/sweep.js --data . --shard $s/$SWEEP_SHARDS --print-coins)"; done
+          coins=$(echo $coins | tr ' ' '\n' | sort -u)
+          echo "coins: $(echo $coins | wc -w)"
+          for c in $coins; do gh release download "$TAG" -R "${{ github.repository }}" -p "$c.tar" && tar -xf "$c.tar" && rm "$c.tar"; done
+          du -sh .
+      - name: Sweep (4 shards in parallel)
+        run: |
+          for k in 0 1 2 3; do s=$(( ${{ matrix.job }} * 4 + k ))
+            node --max-old-space-size=3500 history/sweep.js --data data --out out --shard $s/$SWEEP_SHARDS > "sweep-$s.log" 2>&1 &
+          done
+          fail=0; for p in $(jobs -p); do wait $p || fail=1; done
+          tail -n 3 sweep-*.log; exit $fail
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sweep-${{ matrix.job }}
+          path: out/
+          retention-days: 90
+
+  select:
+    needs: sweep
+    if: always() && needs.sweep.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: actions/download-artifact@v4
+        with: { pattern: "sweep-*", path: sweep, merge-multiple: true }
+      - name: Walk-forward selection
+        run: |
+          ls sweep | head -100
+          node --max-old-space-size=12000 history/select.js --in sweep --out select
+      - name: Publish to swarm-reports
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          d=$(date -u +%F)
+          git clone -q --depth 1 --branch swarm-reports "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" reports 2>/dev/null || { mkdir reports && git -C reports init -q -b swarm-reports; }
+          mkdir -p "reports/history/$d" && cp select/REPORT.md select/results.json "reports/history/$d/" && cp sweep/summary-*.json "reports/history/$d/" 2>/dev/null || true
+          cp select/REPORT.md reports/history/LATEST.md
+          cd reports && git config user.name "swarm history sweep" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "5-year sweep $d (${{ github.sha }})" || exit 0
+          for i in 1 2 3; do git pull -q --rebase "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" swarm-reports 2>/dev/null; git push -q "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD:swarm-reports && exit 0; sleep 5; done; exit 1
