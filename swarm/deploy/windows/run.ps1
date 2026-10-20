@@ -1,7 +1,8 @@
 # Swarm runner for Windows (started hidden at logon by the "Swarm" task that install.ps1 registers).
 #
 # Runs every agent in one Node process on the in-memory bus, restarts it within a minute if it stops, and every
-# 10 minutes looks for new code on the swarm branch. New code is installed the same way as on Linux:
+# 10 minutes looks for new code on the swarm branch (every step logged; git fetch and the tests have time limits, so
+# a hang can no longer stop the runner — on 2026-10-20 it went silent for 10 hours before this). New code is installed the same way as on Linux:
 #   1. the update gate - run from the code ALREADY installed - lets only self-service changes through on their own
 #      (strategy plugins that pass the plugin check, shadow-mode settings, candidates, tests, docs); anything else
 #      waits for approve.ps1;
@@ -38,6 +39,15 @@ function Say($text) {
     try { Invoke-RestMethod -Method Post -Uri "https://api.telegram.org/bot$($env:TELEGRAM_BOT_TOKEN)/sendMessage" -Body @{ chat_id = $env:TELEGRAM_CHAT_ID; text = $text } -TimeoutSec 15 | Out-Null } catch { Write-Log "telegram: $($_.Exception.Message)" }
   }
 }
+# run a program with a time limit; output to $log (or nowhere); true when it finished with exit code 0
+function Run-Timed($exe, $argv, $seconds, $log) {
+  $o = if ($log) { $log } else { Join-Path $env:TEMP 'swarm-runtimed.out' }
+  $p = Start-Process -FilePath $exe -ArgumentList $argv -WorkingDirectory (Get-Location).Path -RedirectStandardOutput $o -RedirectStandardError "$o.err" -WindowStyle Hidden -PassThru
+  $null = $p.Handle
+  if (-not $p.WaitForExit($seconds * 1000)) { Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue; if ($log) { Add-Content $log "killed after $seconds s" }; return $false }
+  if ($log -and (Test-Path "$o.err")) { Get-Content "$o.err" | Add-Content $log; Remove-Item "$o.err" -ErrorAction SilentlyContinue }
+  return ($p.ExitCode -eq 0)
+}
 function Account {
   try { $c = Get-Content $env:SWARM_LOCAL_CONFIG -Raw | ConvertFrom-Json; if ($c.trading.account) { return [string]$c.trading.account } } catch { }
   return 'paper'
@@ -57,13 +67,16 @@ function Stop-Swarm($p) {
 
 # new code: gate (installed code judges), tests in a scratch checkout, then reset; returns the old commit or $null
 function Try-Update {
-  & git -C $App fetch -q origin $Branch 2>$null
-  $old = (& git -C $App rev-parse HEAD).Trim(); $new = (& git -C $App rev-parse "origin/$Branch").Trim()
-  if (-not $new -or $old -eq $new) { return $null }
+  if (-not (Run-Timed 'git' @('-C', "`"$App`"", 'fetch', '-q', 'origin', $Branch) 120 $null)) { Write-Log 'update check: git fetch failed or took over 2 minutes'; return $null }
+  $old = "$(& git -C $App rev-parse HEAD)".Trim(); $new = "$(& git -C $App rev-parse "origin/$Branch")".Trim()
+  if (-not $new -or -not $old -or $old -eq $new) { return $null }
   $asked = Join-Path $Approved ".asked-$new"
   $gate = (& node (Join-Path $App 'swarm\src\tools\update_gate.js') --repo $App --old $old --new $new --account (Account)) -join ' '
+  $seen = Join-Path $Approved ".seen-$new"
+  if (-not (Test-Path $seen)) { New-Item -ItemType File -Path $seen | Out-Null; Write-Log "update check: $($old.Substring(0,7)) -> $($new.Substring(0,7)); gate: $gate" }
+  if (Test-Path (Join-Path $Approved ".failed-$new")) { return $null } # its tests failed: wait for newer code
   if (-not $gate.StartsWith('auto') -and -not (Test-Path (Join-Path $Approved $new))) {
-    if (-not (Test-Path $asked)) { New-Item -ItemType File -Path $asked | Out-Null; Say "Swarm update $($new.Substring(0,7)) needs your OK - $($gate -replace '^approval: ','').  To install it: run C:\swarm\app\swarm\deploy\windows\approve.ps1" }
+    if (-not (Test-Path $asked)) { New-Item -ItemType File -Path $asked | Out-Null; Say "Swarm update $($new.Substring(0,7)) needs your OK - $($gate -replace '^approval: ','').  To install it (Terminal as Admin): powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\approve.ps1" }
     return $null
   }
   $tmp = Join-Path $env:TEMP "swarm-update-$($new.Substring(0,12))"
@@ -71,12 +84,14 @@ function Try-Update {
   & git -C $App worktree add -q --detach $tmp $new 2>$null
   Push-Location (Join-Path $tmp 'swarm')
   $testLog = Join-Path $Logs "update-test-$($new.Substring(0,7)).log"
-  & node --test --test-timeout=60000 'test/*.test.js' *> $testLog
-  $ok = ($LASTEXITCODE -eq 0)
+  Write-Log "update $($new.Substring(0,7)): tests started"
+  $ok = Run-Timed 'node' @('--test', '--test-timeout=60000', 'test/*.test.js') 900 $testLog   # 15 minutes at most
+  Write-Log "update $($new.Substring(0,7)): tests $(if ($ok) { 'passed' } else { 'failed or timed out' })"
   Pop-Location
   & git -C $App worktree remove --force $tmp 2>$null
   if (-not $ok) {
-    if (-not (Test-Path $asked)) { New-Item -ItemType File -Path $asked | Out-Null; Say "Swarm update $($new.Substring(0,7)) NOT installed: tests failed (see $testLog)." }
+    $failed = Join-Path $Approved ".failed-$new"   # told once per commit (not the approval marker: an approved update that fails must still be reported)
+    if (-not (Test-Path $failed)) { New-Item -ItemType File -Path $failed | Out-Null; Say "Swarm update $($new.Substring(0,7)) NOT installed: tests failed or timed out (see $testLog). The running version stays." }
     return $null
   }
   & git -C $App reset -q --hard $new
@@ -86,7 +101,7 @@ function Try-Update {
 
 Get-ChildItem $Logs -Filter '*.log' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-14) -and $_.Name -ne 'runner.log' } | Remove-Item -ErrorAction SilentlyContinue
 Write-Log "runner started (pid $PID)"
-$started = Get-Date; $lastCheck = Get-Date; $rollbackTo = $null; $rollbackUntil = Get-Date
+$started = Get-Date; $lastCheck = Get-Date; $lastAlive = Get-Date; $rollbackTo = $null; $rollbackUntil = Get-Date
 $proc = Start-Swarm
 while ($true) {
   Start-Sleep -Seconds 20
@@ -101,6 +116,7 @@ while ($true) {
     $proc = Start-Swarm
     continue
   }
+  if (((Get-Date) - $lastAlive).TotalMinutes -ge 60) { $lastAlive = Get-Date; Write-Log "alive: node pid $($proc.Id), code $(& git -C $App rev-parse --short HEAD)" }
   if (((Get-Date) - $lastCheck).TotalMinutes -ge 10) {
     $lastCheck = Get-Date
     $old = Try-Update
