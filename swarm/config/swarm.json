@@ -447,6 +447,22 @@
         "cooldownMin": 720
       },
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 10,966 trades, +0.03 R, Sharpe 0.60 (minute settings scaled x12 from 5m)"
+    },
+    "dip-reversal": {
+      "enabled": false,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+    },
+    "harmonic": {
+      "enabled": false,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+    },
+    "ma-21-200": {
+      "enabled": false,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+    },
+    "rsi-macd": {
+      "enabled": false,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
     }
   },
   "trading": {
