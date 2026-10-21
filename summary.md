@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-21T04:56:01.960Z · account **PAPER** · risk mode normal
+Updated 2026-10-21T05:08:03.178Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -13,7 +13,7 @@ Open: none · working orders: 0
 | blofin-feed | ok |  |
 | brain | ok |  |
 | coordinator | ok |  |
-| events | degraded | calendar feed: fetch failed (keeping 0 saved events) |
+| events | ok |  |
 | guard | ok |  |
 | guardian | ok |  |
 | herald | ok |  |
@@ -73,5 +73,5 @@ Open: none · working orders: 0
 | strategy:wyckoff-spring-1h | ok |  |
 | strategy:wyckoff-spring-4h | ok |  |
 | trader | ok |  |
-| universe | degraded | refresh failed: fetch failed |
+| universe | ok |  |
 | watchdog | ok |  |
