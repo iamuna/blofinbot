@@ -11,6 +11,7 @@
 'use strict';
 const { Agent } = require('../core/agent');
 const net = require('../core/net');
+const fs = require('fs'), path = require('path');
 
 class Herald extends Agent {
   static agentName = 'herald';
@@ -24,6 +25,8 @@ class Herald extends Agent {
     this.subscribe('sys.log', (m) => { if (m.data.level === 'error') this.say(`⚠️ ${m.data.agent}: ${m.data.msg}`, `err:${m.data.agent}:${m.data.msg}`, 600000); });
     this.subscribe('sys.alert', (m) => this.say(`🚨 ${m.data.text}`, `alert:${m.data.key || m.data.text}`, m.data.everyMs || 600000));
     this.subscribe('trade.closed', (m) => this.hourTrades.push(m.data));
+    this.shadow = []; this.loadShadow();
+    this.subscribe('shadow.trade', (m) => this.addShadow(m.data));
     this.every(3600000, () => this.digest());
     this.every(60000, () => this.daily());
     if (this.token && this.chat) this.poll();
@@ -51,6 +54,29 @@ class Herald extends Agent {
     if (prev === undefined && r.mode === 'normal') return;
     this.say(`Risk mode ${prev || '?'} → ${r.mode}${r.reasons.length ? ': ' + r.reasons.join('; ') : ''}${r.mode === 'halt' ? '\nTrading is stopped. Reply /resume when you have looked at it.' : ''}`);
   }
+  // shadow results: the log state-sync keeps (survives restarts), then live shadow.trade messages
+  loadShadow() {
+    const file = this.ctx.dataDir && path.join(this.ctx.dataDir, 'state-repo', 'shadow.jsonl');
+    if (!file || !fs.existsSync(file)) return;
+    try { for (const line of fs.readFileSync(file, 'utf8').split('\n')) if (line.trim()) { try { this.addShadow(JSON.parse(line)); } catch (e) { /* bad line */ } } } catch (e) { this.log.warn('shadow log: ' + e.message); }
+  }
+  addShadow(t) {
+    if (!t || !t.strategy || !isFinite(t.r)) return;
+    if (t.id) { this.shadowIds = this.shadowIds || new Set(); if (this.shadowIds.has(t.id)) return; this.shadowIds.add(t.id); }
+    this.shadow.push({ s: t.strategy, r: +t.r, x: t.exitT || 0 });
+  }
+  shadowText() {
+    const day = this.now() - 86400000, by = {};
+    for (const t of this.shadow) {
+      const b = (by[t.s] = by[t.s] || { n: 0, w: 0, r: 0, n24: 0, r24: 0 });
+      b.n++; b.r += t.r; if (t.r > 0) b.w++;
+      if (t.x >= day) { b.n24++; b.r24 += t.r; }
+    }
+    const names = Object.keys(by).sort((a, b) => by[b].r - by[a].r);
+    if (!names.length) return ['  no shadow trades yet'];
+    const sg = (x) => (x >= 0 ? '+' : '') + x.toFixed(1);
+    return names.map((k) => { const b = by[k]; return '  ' + k + ': ' + b.n + ' trades · win ' + Math.round(100 * b.w / b.n) + '% · ' + sg(b.r) + ' R (24h: ' + b.n24 + ', ' + sg(b.r24) + ' R)'; });
+  }
   async statusText() {
     const kv = (k) => this.bus.kv.get(k).catch(() => null);
     const [a0, p0, u, g, modes] = await Promise.all([kv('account'), kv('positions'), kv('universe'), kv('guard'), kv('strategyModes')]);
@@ -77,6 +103,7 @@ class Herald extends Agent {
     const names = [...new Set([...Object.keys(modes || {}), ...Object.keys(a.byStrategy || {})])].sort();
     if (!names.length) L.push('  none loaded');
     for (const k of names) { const st = (a.byStrategy || {})[k]; L.push('  ' + k + ': ' + ((modes || {})[k] || 'off') + ' · ' + (st ? st.trades + ' trades, ' + Number(st.sumR).toFixed(1) + ' R, ' + usd(st.netUsd) : 'no trades yet')); }
+    L.push('', '👻 Shadow results (all time, best first)', ...this.shadowText());
     L.push('', '🌐 Market data');
     L.push('Universe ' + (u && u.coins ? u.coins.length : '?') + ' coins (' + ((u && u.source) || '?') + ', updated ' + ago(u && u.ts) + ')');
     const nt = Object.entries((g && g.coins) || {}).filter(([, v]) => v && !v.tradable).map(([k, v]) => k + ' (' + (v.reasons || []).join(', ') + ')');

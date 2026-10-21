@@ -25,13 +25,15 @@ test('herald: sends alerts, rate-limits repeats, takes commands only from Ibrahi
   try {
     await bus.publish('sys.alert', { text: 'brain has not reported for 95 s', key: 'down:brain' });
     await bus.publish('sys.alert', { text: 'brain has not reported for 110 s', key: 'down:brain' });
+    await bus.publish('shadow.trade', { mode: 'shadow', id: 'x1', strategy: 'it-4h', coin: 'BTC', side: 1, entryT: 1, exitT: 2, netBps: 30, r: 1.5, reason: 'target' });
+    await bus.publish('shadow.trade', { mode: 'shadow', id: 'x1', strategy: 'it-4h', coin: 'BTC', side: 1, entryT: 1, exitT: 2, netBps: 30, r: 1.5, reason: 'target' });
     await bus.publish('risk.state', { ts: 1, mode: 'normal', budgetScale: 1, reasons: [] });
     await bus.publish('risk.state', { ts: 2, mode: 'no-new', budgetScale: 1, reasons: ['day loss 3.1% ≥ 3%'] });
     await bus.drain(); await sleep(60); await bus.drain();
     assert.strictEqual(sent.filter((t) => /brain/.test(t)).length, 1, 'the same alert key is sent once per 10 minutes');
     assert.ok(sent.some((t) => /normal → no-new/.test(t)));
     assert.deepStrictEqual(cmds.map((m) => [m.src, m.data.cmd, m.data.by]), [['herald', 'pause', 'ibrahim']], 'the stranger\'s /flatten was ignored');
-    assert.ok(sent.some((t) => /^📊 Swarm status/.test(t) && /Equity/.test(t) && /Agents:/.test(t)), '/status answers with the full report (it once collided with the agent\'s own status field)');
+    assert.ok(sent.some((t) => /^📊 Swarm status/.test(t) && /Equity/.test(t) && /Agents:/.test(t) && /it-4h: 1 trades · win 100% · \+1\.5 R/.test(t)), '/status answers with the full report (it once collided with the agent\'s own status field)');
   } finally { await h.stop(); delete process.env.TELEGRAM_BOT_TOKEN; delete process.env.TELEGRAM_CHAT_ID; }
 });
 
