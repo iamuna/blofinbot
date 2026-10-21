@@ -68,3 +68,5 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 - New plugins: `krown-jewel` (Krown-style EMA 21/55/200 + stochastic RSI; 1h, 2h), `wyckoff-spring` (Mitch Ray TA's spring + test, 3:1; 1h, 4h), `candles` (14 Japanese candlestick families, one variant each on 1h and 4h: `candle-<family>-<1h|4h>`).
 - `/status` shows shadow results per strategy (all time + 24 h), seeded from state-repo/shadow.jsonl.
 - Not yet run through the 5-year sweep: add them to history/sweep.js GROUPS to test.
+- `/status` (99c031e): per-strategy shadow/paper stats (trades, win %, total/avg/best/worst R, 24 h), only running strategies listed, long reports split. Approved by Ibrahim 05:02; confirm it runs (66 agents ok expected).
+- Open next: shadow results need days on 1h/4h; then add the new plugins (krown-jewel, wyckoff-spring, candles) to history/sweep.js GROUPS for the 5-year test; dragon (W) pattern was offered, not built.
