@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-21T14:38:03.200Z · account **PAPER** · risk mode normal
+Updated 2026-10-21T14:48:03.199Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -76,4 +76,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ADA: wide-spread; EIGEN: wide-spread
+Not tradable now: PUMP: wide-spread; PENGU: price-divergence; AERO: wide-spread; ARC: wide-spread; ALT: wide-spread; S: wide-spread
