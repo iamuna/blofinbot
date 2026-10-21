@@ -100,3 +100,35 @@ test('krown-jewel: in an uptrend, a stochastic RSI turn up from oversold gives a
   for (let i = 0; i < 4; i++) { px += 0.5; dn.step(px, 60); }
   assert.ok(dn.out.every((x) => x.side === -1), 'no long against the trend');
 });
+
+test('wyckoff-spring: a dip under range support, a close back inside, a higher-low test and an up close give a long at 3:1', () => {
+  const ws = require('../src/strategies/wyckoff_spring');
+  const states = new Map(), p = Object.assign({}, ws.params, { tf: 60 }), out = [];
+  let t = 0;
+  const bar = (o, h, l, c) => { t += 3600000; const r = ws.onBar({ coin: 'X', tf: 60, t, bar: { o, h, l, c }, f: { atr: 1, bars: 500 } }, { p, now: t + 3600000, hist: () => null, state: (k) => { if (!states.has(k)) states.set(k, {}); return states.get(k); } }); if (r) out.push(r); };
+  for (let i = 0; i < 60; i++) { const m = 103 + 2.2 * Math.sin(i / 3); bar(m, m + 0.8, m - 0.8, m); } // trading range ~100-106
+  const sup = Math.min(...Array.from({ length: 60 }, (_, i) => 103 + 2.2 * Math.sin(i / 3) - 0.8));
+  bar(sup + 0.5, sup + 0.6, sup - 1, sup + 0.4);   // the spring: new low under support, close back inside
+  bar(sup + 0.4, sup + 1.2, sup + 0.3, sup + 0.9);
+  bar(sup + 0.9, sup + 1.0, sup + 0.2, sup + 0.3); // the test: back to support, higher low than the spring
+  assert.strictEqual(out.length, 0, 'no entry before the test turns up');
+  bar(sup + 0.3, sup + 1.6, sup + 0.3, sup + 1.5); // up close above support: entry
+  assert.strictEqual(out.length, 1);
+  const i = out[0];
+  assert.strictEqual(i.side, 1); assert.match(i.why, /spring/);
+  assert.ok(i.stop < sup - 1, 'stop under the spring low');
+  assert.ok(Math.abs((i.target - i.entry.px) / (i.entry.px - i.stop) - 3) < 1e-9, '3:1');
+});
+
+test('wyckoff-spring: a break that keeps falling (lower low on the test) gives nothing', () => {
+  const ws = require('../src/strategies/wyckoff_spring');
+  const states = new Map(), p = Object.assign({}, ws.params, { tf: 60 }), out = [];
+  let t = 0;
+  const bar = (o, h, l, c) => { t += 3600000; const r = ws.onBar({ coin: 'X', tf: 60, t, bar: { o, h, l, c }, f: { atr: 1, bars: 500 } }, { p, now: t + 3600000, hist: () => null, state: (k) => { if (!states.has(k)) states.set(k, {}); return states.get(k); } }); if (r) out.push(r); };
+  for (let i = 0; i < 60; i++) { const m = 103 + 2.2 * Math.sin(i / 3); bar(m, m + 0.8, m - 0.8, m); }
+  const sup = Math.min(...Array.from({ length: 60 }, (_, i) => 103 + 2.2 * Math.sin(i / 3) - 0.8));
+  bar(sup + 0.5, sup + 0.6, sup - 1, sup + 0.4);
+  bar(sup + 0.4, sup + 0.5, sup - 1.5, sup - 1.2); // the test breaks the spring low
+  bar(sup - 1.2, sup + 0.8, sup - 1.3, sup + 0.7);
+  assert.ok(out.every((x) => x.side !== 1));
+});

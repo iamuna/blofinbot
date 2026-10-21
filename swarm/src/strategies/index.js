@@ -16,5 +16,6 @@ const PLUGINS = [
   'harmonic',
   'ma_21_200',
   'krown_jewel',
+  'wyckoff_spring',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

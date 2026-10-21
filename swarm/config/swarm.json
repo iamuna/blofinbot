@@ -495,6 +495,34 @@
     "krown-jewel": {
       "enabled": false,
       "note": "plugin default; the 1h and 2h variants run"
+    },
+    "wyckoff-spring-1h": {
+      "base": "wyckoff-spring",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Wyckoff spring/upthrust with a test, 3:1 (Mitch Ray TA video), 2026-10-21"
+    },
+    "wyckoff-spring-4h": {
+      "base": "wyckoff-spring",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Wyckoff spring/upthrust with a test, 3:1 (Mitch Ray TA video), 2026-10-21"
+    },
+    "wyckoff-spring": {
+      "enabled": false,
+      "note": "plugin default; the 1h and 4h variants run"
     }
   },
   "trading": {
