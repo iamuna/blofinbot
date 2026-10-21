@@ -18,5 +18,6 @@ const PLUGINS = [
   'krown_jewel',
   'wyckoff_spring',
   'candles',
+  'funding_fade',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

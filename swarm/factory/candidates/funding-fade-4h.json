@@ -1,0 +1,8 @@
+{
+  "name": "funding-fade-4h",
+  "base": "funding-fade",
+  "params": { "tf": 240, "onlyTfs": [240] },
+  "idea": "Funding ≥ 0.03%/8h on average for 72h (and still there) means leveraged longs are crowded and paying; when a 4h bar closes below the prior 3-bar low, their stops and liquidations add forced selling. Short (paid funding while holding), stop 0.5 ATR over the 3-bar high, 2-day time stop; mirror long for negative funding.",
+  "source": "Schmeling, Schrimpf & Todorov, Crypto carry (BIS WP 1087, 2023; Management Science): high carry predicts crash risk and long liquidations. Own data: the 5-year sweep's slow edges are mostly short.",
+  "author": "researcher"
+}

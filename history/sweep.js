@@ -34,6 +34,8 @@ const GROUPS = [
   ['native', 'crowd-squeeze', [5, 15], (tf) => ({ onlyTfs: [tf] })],
   ['native', 'dip-reversal', [5], () => ({})],
   ['native', 'squeeze-ride', [5], () => ({})],
+  // 2026-10-21 researcher: fade a crowd that has paid high funding for 3 days once price breaks against it
+  ['funding-fade', 'funding-fade', [240, 720], (tf) => ({ tf, onlyTfs: [tf] })],
 ];
 
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }
