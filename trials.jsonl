@@ -202,3 +202,9 @@
 {"key":"intraday-trend:834fd87e1994","name":"it-4h","base":"intraday-trend","params":{"onlyTfs":[240]},"at":"2026-10-20T16:10:44.561Z","n":577,"avgR":0.0847,"tStat":1.75}
 {"key":"rsi-macd:aac94fc9c799","name":"rsi-macd-trend-12h","base":"rsi-macd","params":{"mode":"trend","tf":720,"entry":"maker","onlyTfs":[720]},"at":"2026-10-20T16:10:44.561Z","n":259,"avgR":0.3045,"tStat":3.55}
 {"key":"trend-pullback:f2ac5485ac5d","name":"trend-pullback-1h","base":"trend-pullback","params":{"onlyTfs":[60],"holdMin":1440,"waitMin":180,"cooldownMin":720},"at":"2026-10-20T16:10:44.561Z","n":478,"avgR":-0.0194,"tStat":-0.4}
+{"key":"dip-reversal:44136fa355b3","name":"dip-reversal","base":"dip-reversal","params":{},"at":"2026-10-21T02:26:39.697Z","n":3729,"avgR":-0.1232,"tStat":-10.56}
+{"key":"harmonic:44136fa355b3","name":"harmonic","base":"harmonic","params":{},"at":"2026-10-21T02:26:39.697Z","n":307,"avgR":-0.0717,"tStat":-0.79}
+{"key":"ma-21-200:44136fa355b3","name":"ma-21-200","base":"ma-21-200","params":{},"at":"2026-10-21T02:26:39.697Z","n":6395,"avgR":-0.106,"tStat":-6.28}
+{"key":"rsi-macd:44136fa355b3","name":"rsi-macd","base":"rsi-macd","params":{},"at":"2026-10-21T02:26:39.697Z","n":3901,"avgR":-0.1019,"tStat":-4.86}
+{"key":"krown-jewel:f8134af9ef3d","name":"krown-jewel-1h","base":"krown-jewel","params":{"tf":60,"onlyTfs":[60]},"at":"2026-10-21T02:26:39.697Z","n":3396,"avgR":-0.0702,"tStat":-2.95}
+{"key":"krown-jewel:0e87f5af2523","name":"krown-jewel-2h","base":"krown-jewel","params":{"tf":120,"onlyTfs":[120]},"at":"2026-10-21T02:26:39.697Z","n":1741,"avgR":-0.0254,"tStat":-0.76}
