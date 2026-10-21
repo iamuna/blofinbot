@@ -523,6 +523,374 @@
     "wyckoff-spring": {
       "enabled": false,
       "note": "plugin default; the 1h and 4h variants run"
+    },
+    "candle-engulfing-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "engulfing",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-engulfing-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "engulfing",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-hammer-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "hammer",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-hammer-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "hammer",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-star-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "star",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-star-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "star",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-morning-star-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "morning-star",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-morning-star-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "morning-star",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-piercing-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "piercing",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-piercing-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "piercing",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-soldiers-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "soldiers",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-soldiers-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "soldiers",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-harami-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "harami",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-harami-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "harami",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-tweezer-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "tweezer",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-tweezer-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "tweezer",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-doji-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "doji",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-doji-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "doji",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-marubozu-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "marubozu",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-marubozu-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "marubozu",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-three-inside-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "three-inside",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-three-inside-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "three-inside",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-three-outside-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "three-outside",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-three-outside-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "three-outside",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-three-methods-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "three-methods",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-three-methods-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "three-methods",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-doji-star-1h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "doji-star",
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candle-doji-star-4h": {
+      "base": "candles",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "pattern": "doji-star",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Japanese candlestick pattern, 2026-10-21"
+    },
+    "candles": {
+      "enabled": false,
+      "note": "plugin default; one variant per pattern runs (candle-*)"
     }
   },
   "trading": {

@@ -62,3 +62,9 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 - 2026-10-20 00:30 — Day 3–4 code: fusion, allocator (quarter-Kelly, 0.25% start), risk engine with ladders and per-order caps, coordinator, paper trader (fills only through the price), accountant, Herald, watchdog, guardian (signed limits), state sync, installer (Redis, read-only code, systemd per group) and updater (tests before restart, rollback on bad health). 36 tests.
 - 2026-10-20 00:10 — Day 2 code: features (1/3/5/15/30/45m), regime, strategy kit + 6 plugins, execution simulator, backtester, brain (minute batches BTC-first), event calendar. Dataset builder → swarm-data (Binance archive, checksummed).
 - 2026-10-20 00:xx — Day 1 code: bus (Redis Streams with consumer groups + in-memory), schemas, agent base, keep-alive WebSocket, universe, BloFin feed, Binance feed, data guard, recorder, runner, smoke report, CI workflow. 15 offline tests pass (fake BloFin/Binance sockets and REST, real throwaway Redis incl. restart).
+
+## 2026-10-21 (night) — more strategies, all in shadow
+- Every retired strategy enabled again in shadow (Ibrahim). Note: `/mode x shadow` on a strategy disabled in config only changes the listed mode — the brain never loads it.
+- New plugins: `krown-jewel` (Krown-style EMA 21/55/200 + stochastic RSI; 1h, 2h), `wyckoff-spring` (Mitch Ray TA's spring + test, 3:1; 1h, 4h), `candles` (14 Japanese candlestick families, one variant each on 1h and 4h: `candle-<family>-<1h|4h>`).
+- `/status` shows shadow results per strategy (all time + 24 h), seeded from state-repo/shadow.jsonl.
+- Not yet run through the 5-year sweep: add them to history/sweep.js GROUPS to test.

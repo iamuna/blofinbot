@@ -132,3 +132,35 @@ test('wyckoff-spring: a break that keeps falling (lower low on the test) gives n
   bar(sup - 1.2, sup + 0.8, sup - 1.3, sup + 0.7);
   assert.ok(out.every((x) => x.side !== 1));
 });
+
+// candlesticks: feed a fall (or rise) of plain bars, then the pattern's bars
+function candleRun(pattern, moveDir, patternBars) {
+  const cs = require('../src/strategies/candles');
+  const states = new Map(), p = Object.assign({}, cs.params, { pattern, tf: 60 }), out = [];
+  let t = 0, px = 100;
+  const bar = (o, h, l, c) => { t += 3600000; const r = cs.onBar({ coin: 'X', tf: 60, t, bar: { o, h, l, c }, f: { atr: 1, bars: 500 } }, { p, now: t + 3600000, hist: () => null, state: (k) => { if (!states.has(k)) states.set(k, {}); return states.get(k); } }); if (r) out.push(r); };
+  for (let i = 0; i < 30; i++) { const o = px; px += moveDir * 0.6; bar(o, Math.max(o, px) + 0.3, Math.min(o, px) - 0.3, px); }
+  for (const [o, h, l, c] of patternBars(px)) bar(o, h, l, c);
+  return out;
+}
+test('candles: every family is defined, and the textbook shapes fire on the right side', () => {
+  const cs = require('../src/strategies/candles');
+  assert.strictEqual(cs.FAMILIES.length, 14);
+  // bullish engulfing after a fall → long; stop under the pattern low
+  let o = candleRun('engulfing', -1, (p) => [[p, p + 0.2, p - 0.8, p - 0.6], [p - 0.8, p + 0.6, p - 0.9, p + 0.4]]);
+  assert.strictEqual(o.length, 1); assert.strictEqual(o[0].side, 1); assert.ok(o[0].stop < o[0].entry.px - 1);
+  // the same hammer shape: long after a fall, short (hanging man) after a rise
+  const hammer = (p) => [[p, p + 0.05, p - 1.6, p + 0.2]];
+  o = candleRun('hammer', -1, hammer); assert.strictEqual(o.length, 1); assert.strictEqual(o[0].side, 1);
+  o = candleRun('hammer', 1, hammer); assert.strictEqual(o.length, 1); assert.strictEqual(o[0].side, -1);
+  // morning star after a fall
+  o = candleRun('morning-star', -1, (p) => [[p, p + 0.1, p - 1.6, p - 1.5], [p - 1.6, p - 1.4, p - 1.9, p - 1.55], [p - 1.5, p + 0.1, p - 1.6, p - 0.2]]);
+  assert.strictEqual(o.length, 1); assert.strictEqual(o[0].side, 1);
+  // rising three methods: continuation, so only after a rise
+  const r3 = (p) => [[p, p + 1.6, p - 0.1, p + 1.5], [p + 1.4, p + 1.5, p + 1.0, p + 1.1], [p + 1.1, p + 1.3, p + 0.8, p + 0.9], [p + 0.9, p + 1.2, p + 0.6, p + 1.0], [p + 1.0, p + 2.6, p + 0.9, p + 2.5]];
+  o = candleRun('three-methods', 1, r3); assert.strictEqual(o.length, 1); assert.strictEqual(o[0].side, 1);
+  o = candleRun('three-methods', -1, r3); assert.strictEqual(o.length, 0, 'no continuation trade against the move');
+  // a bullish engulfing after a rise is not a reversal: nothing
+  o = candleRun('engulfing', 1, (p) => [[p, p + 0.2, p - 0.8, p - 0.6], [p - 0.8, p + 0.6, p - 0.9, p + 0.4]]);
+  assert.ok(o.every((x) => x.side !== 1));
+});
