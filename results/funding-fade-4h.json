@@ -1,0 +1,174 @@
+{
+ "name": "funding-fade-4h",
+ "base": "funding-fade",
+ "params": {
+  "tf": 240,
+  "onlyTfs": [
+   240
+  ]
+ },
+ "ph": "37a7043f95",
+ "origin": "candidate funding-fade-4h.json",
+ "idea": "Funding ≥ 0.03%/8h on average for 72h (and still there) means leveraged longs are crowded and paying; when a 4h bar closes below the prior 3-bar low, their stops and liquidations add forced selling. Short (paid funding while holding), stop 0.5 ATR over the 3-bar high, 2-day time stop; mirror long for negative funding.",
+ "source": "Schmeling, Schrimpf & Todorov, Crypto carry (BIS WP 1087, 2023; Management Science): high carry predicts crash risk and long liquidations. Own data: the 5-year sweep's slow edges are mostly short.",
+ "all": {
+  "n": 15,
+  "perDay": 0.09,
+  "winRate": 0.267,
+  "avgR": -0.32,
+  "sumR": -4.8,
+  "avgNetBps": -122.13,
+  "avgGrossBps": -131.67,
+  "avgCostBps": -9.54,
+  "pf": 0.36,
+  "tStat": -1.7,
+  "maxDDR": 4.8,
+  "sharpe": -2.42,
+  "days": 161
+ },
+ "cost15": {
+  "n": 15,
+  "perDay": 0.09,
+  "winRate": 0.267,
+  "avgR": -0.3261,
+  "sumR": -4.89,
+  "avgNetBps": -126.88,
+  "avgGrossBps": -131.67,
+  "avgCostBps": -4.79,
+  "pf": 0.35,
+  "tStat": -1.73,
+  "maxDDR": 4.89,
+  "sharpe": -2.46,
+  "days": 161
+ },
+ "thirds": [
+  {
+   "n": 5,
+   "perDay": 0.11,
+   "winRate": 0.2,
+   "avgR": -0.3524,
+   "sumR": -1.76,
+   "avgNetBps": -3.93,
+   "avgGrossBps": -10.96,
+   "avgCostBps": -7.02,
+   "pf": 0.39,
+   "tStat": -0.9,
+   "maxDDR": 1.76,
+   "sharpe": -2.62,
+   "days": 45
+  },
+  {
+   "n": 0
+  },
+  {
+   "n": 10,
+   "perDay": 0.2,
+   "winRate": 0.3,
+   "avgR": -0.3039,
+   "sumR": -3.04,
+   "avgNetBps": -181.22,
+   "avgGrossBps": -192.02,
+   "avgCostBps": -10.8,
+   "pf": 0.34,
+   "tStat": -1.37,
+   "maxDDR": 3.04,
+   "sharpe": -3.54,
+   "days": 51
+  }
+ ],
+ "months": {
+  "2026-05": {
+   "n": 2,
+   "perDay": 0.11,
+   "winRate": 0,
+   "avgR": -0.7497,
+   "sumR": -1.5,
+   "avgNetBps": -413.42,
+   "avgGrossBps": -413.55,
+   "avgCostBps": -0.13,
+   "pf": 0,
+   "tStat": -2.89,
+   "maxDDR": 1.5,
+   "sharpe": -6.16,
+   "days": 18
+  },
+  "2026-06": {
+   "n": 3,
+   "perDay": 0.2,
+   "winRate": 0.333,
+   "avgR": -0.0876,
+   "sumR": -0.26,
+   "avgNetBps": 269.06,
+   "avgGrossBps": 257.44,
+   "avgCostBps": -11.62,
+   "pf": 0.81,
+   "tStat": -0.14,
+   "maxDDR": 1.38,
+   "sharpe": -0.81,
+   "days": 15
+  },
+  "2026-08": {
+   "n": 2,
+   "perDay": 0.67,
+   "winRate": 0,
+   "avgR": -0.9575,
+   "sumR": -1.92,
+   "avgNetBps": -492.59,
+   "avgGrossBps": -518.71,
+   "avgCostBps": -26.12,
+   "pf": 0,
+   "tStat": -28.16,
+   "maxDDR": 1.92,
+   "sharpe": -22.02,
+   "days": 3
+  },
+  "2026-09": {
+   "n": 5,
+   "perDay": 0.18,
+   "winRate": 0.6,
+   "avgR": -0.0873,
+   "sumR": -0.44,
+   "avgNetBps": -1.63,
+   "avgGrossBps": -18.48,
+   "avgCostBps": -16.85,
+   "pf": 0.78,
+   "tStat": -0.22,
+   "maxDDR": 1.99,
+   "sharpe": -0.85,
+   "days": 28
+  },
+  "2026-10": {
+   "n": 3,
+   "perDay": 0.23,
+   "winRate": 0,
+   "avgR": -0.229,
+   "sumR": -0.69,
+   "avgNetBps": -272.96,
+   "avgGrossBps": -263.46,
+   "avgCostBps": 9.5,
+   "pf": 0,
+   "tStat": -2.85,
+   "maxDDR": 0.69,
+   "sharpe": -8.75,
+   "days": 13
+  }
+ },
+ "gate": {
+  "pass": false,
+  "why": [
+   "15 trades (need 300)",
+   "average -0.3261 R at 1.5× costs (need > 0)",
+   "newest third -0.3039 R (need > 0)",
+   "positive in fewer than 2 of 3 thirds",
+   "t -1.7 < 3.19 (bar for 241 tries)"
+  ],
+  "bar": 3.191008521287434
+ },
+ "testedAt": "2026-10-21T03:47:47.823Z",
+ "data": {
+  "from": "2026-04-01T00:00:00.000Z",
+  "to": "2026-10-18T23:59:00.000Z",
+  "coins": 31,
+  "minutes": 289440
+ }
+}
