@@ -282,50 +282,50 @@
   },
   "strategies": {
     "intraday-trend": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "trend-pullback": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "session-drive": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "overshoot-fade": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "leader-follow": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "crowd-squeeze": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "noise-breakout": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "it-45-long": {
       "base": "intraday-trend",
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -341,11 +341,11 @@
         ],
         "againstBias": 0.3
       },
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "it-45-hold32": {
       "base": "intraday-trend",
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -358,11 +358,11 @@
         "er": 0.35,
         "againstBias": 0.2
       },
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "it-45-hold16": {
       "base": "intraday-trend",
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -375,13 +375,13 @@
         "er": 0.4,
         "againstBias": 0.2
       },
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "squeeze-ride": {
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": {},
-      "note": "watch (2026-10-20): +0.22 R, t 2.8 over 104 backtest trades, positive in every third, but fewer than 300 trades and below the multiple-testing bar; trades only if its live shadow record earns it (out-of-sample route) | 5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow"
+      "note": "watch (2026-10-20): +0.22 R, t 2.8 over 104 backtest trades, positive in every third, but fewer than 300 trades and below the multiple-testing bar; trades only if its live shadow record earns it (out-of-sample route) | 5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "ma-retest-12h": {
       "base": "ma-21-200",
@@ -449,20 +449,52 @@
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 10,966 trades, +0.03 R, Sharpe 0.60 (minute settings scaled x12 from 5m)"
     },
     "dip-reversal": {
-      "enabled": false,
-      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+      "enabled": true,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
+      "mode": "shadow"
     },
     "harmonic": {
-      "enabled": false,
-      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+      "enabled": true,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
+      "mode": "shadow"
     },
     "ma-21-200": {
-      "enabled": false,
-      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+      "enabled": true,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
+      "mode": "shadow"
     },
     "rsi-macd": {
+      "enabled": true,
+      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
+      "mode": "shadow"
+    },
+    "krown-jewel-1h": {
+      "base": "krown-jewel",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "tf": 60,
+        "onlyTfs": [
+          60
+        ]
+      },
+      "note": "Krown-style trend + stochastic RSI (approximation; his Jewel is private), 2026-10-21"
+    },
+    "krown-jewel-2h": {
+      "base": "krown-jewel",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "tf": 120,
+        "onlyTfs": [
+          120
+        ]
+      },
+      "note": "Krown-style trend + stochastic RSI (approximation; his Jewel is private), 2026-10-21"
+    },
+    "krown-jewel": {
       "enabled": false,
-      "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin)"
+      "note": "plugin default; the 1h and 2h variants run"
     }
   },
   "trading": {

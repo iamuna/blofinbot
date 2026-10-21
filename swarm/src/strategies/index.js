@@ -15,5 +15,6 @@ const PLUGINS = [
   'rsi_macd',
   'harmonic',
   'ma_21_200',
+  'krown_jewel',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

@@ -82,3 +82,21 @@ test('ma-21-200 and rsi-macd start from seeded history: the first live bar alrea
   rsiMacd.onBar({ coin: 'X', tf: 720, t: 0, bar: { o: 130, h: 130.1, l: 129.9, c: 130 }, f: { atr: 0.5, bars: 300 } }, api2);
   assert.strictEqual(st2.m.get(720).n, 299, 'history steps + the live bar');
 });
+
+test('krown-jewel: in an uptrend, a stochastic RSI turn up from oversold gives a long; the same turn in a downtrend does not', () => {
+  const kj = require('../src/strategies/krown_jewel');
+  const up = runner(kj, { tf: 60 });
+  let px = 100;
+  for (let i = 0; i < 300; i++) { px += 0.2; up.step(px, 60); }           // steady uptrend: EMAs stacked, above the 200
+  for (let i = 0; i < 6; i++) { px -= 0.6; up.step(px, 60); }             // a short dip: stochastic RSI drops to 0
+  for (let i = 0; i < 4; i++) { px += 0.5; up.step(px, 60); }             // and turns back up
+  assert.strictEqual(up.out.length, 1, 'one long');
+  const i = up.out[0];
+  assert.strictEqual(i.side, 1); assert.ok(i.stop < i.entry.px && i.target > i.entry.px); assert.match(i.why, /oversold/);
+  const dn = runner(kj, { tf: 60 });
+  px = 200;
+  for (let i = 0; i < 300; i++) { px -= 0.2; dn.step(px, 60); }
+  for (let i = 0; i < 6; i++) { px -= 0.6; dn.step(px, 60); }
+  for (let i = 0; i < 4; i++) { px += 0.5; dn.step(px, 60); }
+  assert.ok(dn.out.every((x) => x.side === -1), 'no long against the trend');
+});
