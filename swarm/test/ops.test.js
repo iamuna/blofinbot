@@ -33,7 +33,7 @@ test('herald: sends alerts, rate-limits repeats, takes commands only from Ibrahi
     assert.strictEqual(sent.filter((t) => /brain/.test(t)).length, 1, 'the same alert key is sent once per 10 minutes');
     assert.ok(sent.some((t) => /normal → no-new/.test(t)));
     assert.deepStrictEqual(cmds.map((m) => [m.src, m.data.cmd, m.data.by]), [['herald', 'pause', 'ibrahim']], 'the stranger\'s /flatten was ignored');
-    assert.ok(sent.some((t) => /^📊 Swarm status/.test(t) && /Equity/.test(t) && /Agents:/.test(t) && /it-4h: 1 trades · win 100% · \+1\.5 R/.test(t)), '/status answers with the full report (it once collided with the agent\'s own status field)');
+    assert.ok(sent.some((t) => /^📊 Swarm status/.test(t) && /Equity/.test(t) && /Agents:/.test(t) && /it-4h \(/.test(t) && /shadow: 1 trades · win 100% · \+1\.50 R/.test(t)), '/status answers with the full report (it once collided with the agent\'s own status field)');
   } finally { await h.stop(); delete process.env.TELEGRAM_BOT_TOKEN; delete process.env.TELEGRAM_CHAT_ID; }
 });
 

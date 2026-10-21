@@ -45,7 +45,10 @@ class Herald extends Agent {
     if (key) this.sent.set(key, t);
     this.count('messages');
     if (!this.token || !this.chat) { this.log.info(`(not sent) ${text}`); return; }
-    try { await this.api('sendMessage', { chat_id: this.chat, text: text.slice(0, 4000), disable_web_page_preview: true }); } catch (e) { this.count('sendErrors'); this.log.warn(e.message); }
+    const parts = []; let cur = '';
+    for (const line of String(text).split('\n')) { const l = line.slice(0, 3900); if (cur && cur.length + l.length + 1 > 3900) { parts.push(cur); cur = ''; } cur += (cur ? '\n' : '') + l; }
+    if (cur || !parts.length) parts.push(cur);
+    for (const part of parts) { try { await this.api('sendMessage', { chat_id: this.chat, text: part, disable_web_page_preview: true }); } catch (e) { this.count('sendErrors'); this.log.warn(e.message); } }
   }
 
   onRisk(r) {
@@ -65,17 +68,15 @@ class Herald extends Agent {
     if (t.id) { this.shadowIds = this.shadowIds || new Set(); if (this.shadowIds.has(t.id)) return; this.shadowIds.add(t.id); }
     this.shadow.push({ s: t.strategy, r: +t.r, x: t.exitT || 0 });
   }
-  shadowText() {
+  // per strategy: shadow trades, wins, total and average R, best and worst trade, last 24 h
+  shadowStats() {
     const day = this.now() - 86400000, by = {};
     for (const t of this.shadow) {
-      const b = (by[t.s] = by[t.s] || { n: 0, w: 0, r: 0, n24: 0, r24: 0 });
-      b.n++; b.r += t.r; if (t.r > 0) b.w++;
+      const b = (by[t.s] = by[t.s] || { n: 0, w: 0, r: 0, best: -Infinity, worst: Infinity, n24: 0, r24: 0 });
+      b.n++; b.r += t.r; if (t.r > 0) b.w++; b.best = Math.max(b.best, t.r); b.worst = Math.min(b.worst, t.r);
       if (t.x >= day) { b.n24++; b.r24 += t.r; }
     }
-    const names = Object.keys(by).sort((a, b) => by[b].r - by[a].r);
-    if (!names.length) return ['  no shadow trades yet'];
-    const sg = (x) => (x >= 0 ? '+' : '') + x.toFixed(1);
-    return names.map((k) => { const b = by[k]; return '  ' + k + ': ' + b.n + ' trades · win ' + Math.round(100 * b.w / b.n) + '% · ' + sg(b.r) + ' R (24h: ' + b.n24 + ', ' + sg(b.r24) + ' R)'; });
+    return by;
   }
   async statusText() {
     const kv = (k) => this.bus.kv.get(k).catch(() => null);
@@ -99,11 +100,23 @@ class Herald extends Agent {
     L.push('Closed trades: ' + (a.trades || 0) + ' · win rate ' + pct(a.winRate, 0));
     L.push('', '📂 Positions: ' + p.open.length + ' open · ' + (p.working || []).length + ' working orders');
     for (const x of p.open) L.push('  ' + (x.side > 0 ? 'LONG ' : 'SHORT') + ' ' + x.coin + ' · ' + ((x.strategies || []).join('+') || '?'));
-    L.push('', '🧠 Strategies (mode · results)');
-    const names = [...new Set([...Object.keys(modes || {}), ...Object.keys(a.byStrategy || {})])].sort();
-    if (!names.length) L.push('  none loaded');
-    for (const k of names) { const st = (a.byStrategy || {})[k]; L.push('  ' + k + ': ' + ((modes || {})[k] || 'off') + ' · ' + (st ? st.trades + ' trades, ' + Number(st.sumR).toFixed(1) + ' R, ' + usd(st.netUsd) : 'no trades yet')); }
-    L.push('', '👻 Shadow results (all time, best first)', ...this.shadowText());
+    // strategies: the loaded ones (each reports as strategy:<name>), with shadow and paper results
+    const loaded = Object.keys(hb).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9));
+    const sh = this.shadowStats(), bs = a.byStrategy || {}, md = modes || {};
+    const sg = (x) => (x >= 0 ? '+' : '') + x.toFixed(2);
+    const names = [...new Set([...loaded, ...Object.keys(sh), ...Object.keys(bs)])];
+    const score = (k) => (sh[k] ? sh[k].r : 0) + (bs[k] ? Number(bs[k].sumR) || 0 : 0);
+    const traded = names.filter((k) => sh[k] || bs[k]).sort((x, y) => score(y) - score(x)), quiet = names.filter((k) => !sh[k] && !bs[k]).sort();
+    L.push('', '🧠 Strategies: ' + loaded.length + ' running · ' + traded.length + ' with trades (best first)');
+    for (const k of traded) {
+      const b = sh[k], st = bs[k], on = loaded.includes(k) ? (md[k] || 'shadow') : 'not running';
+      L.push('• ' + k + ' (' + on + ')');
+      if (b) L.push('   shadow: ' + b.n + ' trades · win ' + Math.round(100 * b.w / b.n) + '% · ' + sg(b.r) + ' R · avg ' + sg(b.r / b.n) + ' R · best ' + sg(b.best) + ' · worst ' + sg(b.worst) + ' · 24h ' + b.n24 + ' (' + sg(b.r24) + ' R)');
+      if (st) L.push('   paper: ' + st.trades + ' trades · ' + sg(Number(st.sumR) || 0) + ' R · ' + usd(st.netUsd));
+    }
+    if (quiet.length) L.push('No trades yet (' + quiet.length + '): ' + quiet.join(', '));
+    const ghost = Object.keys(md).filter((k) => !loaded.includes(k) && md[k] !== 'off' && !sh[k] && !bs[k]);
+    if (loaded.length && ghost.length) L.push('Listed but not running (no such strategy): ' + ghost.join(', '));
     L.push('', '🌐 Market data');
     L.push('Universe ' + (u && u.coins ? u.coins.length : '?') + ' coins (' + ((u && u.source) || '?') + ', updated ' + ago(u && u.ts) + ')');
     const nt = Object.entries((g && g.coins) || {}).filter(([, v]) => v && !v.tradable).map(([k, v]) => k + ' (' + (v.reasons || []).join(', ') + ')');
