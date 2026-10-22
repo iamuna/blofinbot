@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-22T21:48:03.296Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T21:58:03.296Z · account **PAPER** · risk mode normal
 
-Equity $9916.26 (start $10000) · today -0.84% · drawdown 0.9% · 3 trades · fees $3.27 · funding $0
+Equity $9927.05 (start $10000) · today -0.73% · drawdown 0.7% · 3 trades · fees $3.27 · funding $0
 
 Open: +BAT (candle-engulfing-4h+candle-star-4h), +BCH (candle-three-outside-1h), +DUSK (candle-three-outside-1h), +LTC (candle-engulfing-1h), +ONDO (candle-three-outside-1h), −US (candle-engulfing-1h), +XLM (candle-three-outside-1h), +ZRO (candle-three-outside-1h), −ASTER (intraday-trend), +XMR (dip-reversal), +LIT (dip-reversal) · working orders: 0
 
@@ -76,4 +76,4 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +BCH (candle-three-outside-1h),
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: STRK: wide-spread; ALT: wide-spread; TRUTH: wide-spread; EIGEN: wide-spread
+Not tradable now: LDO: wide-spread; IRYS: wide-spread
