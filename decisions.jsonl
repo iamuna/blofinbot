@@ -34,3 +34,4 @@
 {"ts":1792706404825,"id":"int-candle-engulfing-1h-mvk33r40-114","coin":"TRX","verdict":"trim","qty":30252.971292740902,"reasons":["trimmed by coin notional"],"mode":"normal"}
 {"ts":1792706404826,"id":"int-candle-engulfing-1h-mvk33r40-115","coin":"XRP","verdict":"approve","qty":1564.8941162299727,"reasons":[],"mode":"normal"}
 {"ts":1792707306062,"id":"int-intraday-trend-mvk3n1k0-176","coin":"WLFI","verdict":"reject","qty":0,"reasons":["total open risk leaves 0.00 < exchange minimum 93.4"],"mode":"normal"}
+{"ts":1792710006139,"id":"int-wyckoff-spring-1h-mvk58ww0-65","coin":"XPL","verdict":"reject","qty":0,"reasons":["total open risk leaves 0.00 < exchange minimum 66.2"],"mode":"normal"}
