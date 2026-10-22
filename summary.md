@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-22T11:28:03.271Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T11:38:03.270Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -76,4 +76,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ZEREBRO: wide-spread; TRUTH: wide-spread; DUSK: wide-spread
+Not tradable now: IOST: wide-spread
