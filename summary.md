@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-22T19:38:03.294Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T19:48:03.295Z · account **PAPER** · risk mode normal
 
-Equity $9986.1 (start $10000) · today -0.14% · drawdown 0.1% · 0 trades · fees $0 · funding $0
+Equity $9972.27 (start $10000) · today -0.28% · drawdown 0.3% · 1 trades · fees $1.01 · funding $0
 
-Open: +DASH (intraday-trend) · working orders: 0
+Open: +DASH (dip-reversal), −QNT (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -76,4 +76,4 @@ Open: +DASH (intraday-trend) · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ALT: wide-spread; EIGEN: wide-spread
+Not tradable now: ADA: wide-spread; PONS: wide-spread; ARC: wide-spread
