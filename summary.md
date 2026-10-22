@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-22T20:58:03.295Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T21:08:03.295Z · account **PAPER** · risk mode normal
 
-Equity $9945.76 (start $10000) · today -0.54% · drawdown 0.5% · 2 trades · fees $1.95 · funding $0
+Equity $9935.6 (start $10000) · today -0.64% · drawdown 0.7% · 2 trades · fees $1.95 · funding $0
 
-Open: −QNT (intraday-trend), +BAT (candle-engulfing-4h+candle-star-4h), +BCH (candle-three-outside-1h), +DUSK (candle-three-outside-1h), +LTC (candle-engulfing-1h), +ONDO (candle-three-outside-1h), −US (candle-engulfing-1h), +XLM (candle-three-outside-1h), +ZRO (candle-three-outside-1h) · working orders: 0
+Open: −QNT (intraday-trend), +BAT (candle-engulfing-4h+candle-star-4h), +BCH (candle-three-outside-1h), +DUSK (candle-three-outside-1h), +LTC (candle-engulfing-1h), +ONDO (candle-three-outside-1h), −US (candle-engulfing-1h), +XLM (candle-three-outside-1h), +ZRO (candle-three-outside-1h), −ASTER (intraday-trend), +XMR (dip-reversal) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -76,4 +76,4 @@ Open: −QNT (intraday-trend), +BAT (candle-engulfing-4h+candle-star-4h), +BCH (
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PONS: wide-spread
+Not tradable now: WLD: price-divergence; TIA: wide-spread; IRYS: wide-spread
