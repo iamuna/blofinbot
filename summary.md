@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-22T22:48:03.296Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T22:58:03.298Z · account **PAPER** · risk mode normal
 
-Equity $9798 (start $10000) · today -2.02% · drawdown 2.0% · 5 trades · fees $4.29 · funding $0
+Equity $9775.09 (start $10000) · today -2.25% · drawdown 2.3% · 5 trades · fees $4.29 · funding $0
 
 Open: +BAT (candle-engulfing-4h+candle-star-4h), +BCH (candle-three-outside-1h), +DUSK (candle-three-outside-1h), +LTC (candle-engulfing-1h), +ONDO (candle-three-outside-1h), −US (candle-engulfing-1h), +XLM (candle-three-outside-1h), +ZRO (candle-three-outside-1h), −ASTER (intraday-trend), +ARB (wyckoff-spring-1h), +BNB (wyckoff-spring-1h), +DOGE (wyckoff-spring-1h), +ETC (candle-engulfing-1h), +ETH (wyckoff-spring-1h+candle-engulfing-1h), +FIL (candle-three-outside-1h), +HBAR (candle-engulfing-1h), +HYPE (wyckoff-spring-1h+candle-engulfing-1h), +ICP (wyckoff-spring-1h+candle-engulfing-1h), +LINK (wyckoff-spring-1h), +NIL (candle-engulfing-1h), +OP (candle-engulfing-1h), +PENDLE (wyckoff-spring-1h+candle-engulfing-1h), +QNT (wyckoff-spring-1h), +SEI (candle-engulfing-1h), +SHIB (candle-engulfing-1h), +TRX (candle-engulfing-1h), +XRP (candle-engulfing-1h), +DASH (intraday-trend) · working orders: 0
 
@@ -76,4 +76,4 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +BCH (candle-three-outside-1h),
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ARC: wide-spread; EIGEN: wide-spread
+Not tradable now: APR: wide-spread; PONS: wide-spread; DASH: price-divergence
