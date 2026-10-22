@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-22T13:38:03.271Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T13:48:03.273Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -76,4 +76,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: NEAR: wide-spread; DOT: wide-spread; APR: wide-spread; PYTH: wide-spread; CRV: wide-spread; ZK: wide-spread; NIL: wide-spread; ARC: wide-spread; ICP: wide-spread; CHIP: wide-spread; EIGEN: wide-spread
+Not tradable now: APR: wide-spread; CRV: wide-spread; TRUTH: wide-spread; SEI: wide-spread
