@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-22T17:18:03.290Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T17:28:03.289Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -76,4 +76,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ALT: wide-spread; VVV: blofin-stale; ZK: blofin-stale; PONS: wide-spread; PHA: blofin-stale; AERO: blofin-stale; SHIB: blofin-stale; NIL: blofin-stale,wide-spread; US: blofin-stale; DASH: blofin-stale; ETHFI: blofin-stale; ARC: blofin-stale; MAGIC: blofin-stale; LDO: wide-spread; S: blofin-stale; CHIP: wide-spread; EIGEN: wide-spread; MARSCOIN: wide-spread
+Not tradable now: PUMP: wide-spread; PONS: wide-spread; PHA: wide-spread
