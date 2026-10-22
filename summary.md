@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-22T08:08:03.261Z · account **PAPER** · risk mode normal
+Updated 2026-10-22T08:18:03.261Z · account **PAPER** · risk mode normal
 
 Equity $10000 (start $10000) · today 0.00% · drawdown 0.0% · 0 trades · fees $0 · funding $0
 
@@ -76,4 +76,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PHA: wide-spread; ICP: wide-spread; EIGEN: wide-spread
+Not tradable now: Q: price-divergence; PONS: wide-spread; PHA: price-divergence; NIL: price-divergence; EIGEN: wide-spread
