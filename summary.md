@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-23T07:36:36.087Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T07:46:36.088Z · account **PAPER** · risk mode normal
 
-Equity $10228.25 (start $10000) · today 3.98% · drawdown 3.7% · 33 trades · fees $62.21 · funding $2.55
+Equity $10246.97 (start $10000) · today 4.17% · drawdown 3.5% · 33 trades · fees $62.21 · funding $2.55
 
 Open: −DASH (candle-three-outside-1h), −HBAR (candle-engulfing-1h), −SAND (candle-three-outside-1h), +CT (wyckoff-spring-1h), −PONS (candle-engulfing-1h) · working orders: 0
 
@@ -82,4 +82,4 @@ Open: −DASH (candle-three-outside-1h), −HBAR (candle-engulfing-1h), −SAND 
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: IRYS: wide-spread; ICP: wide-spread; COMP: wide-spread; EIGEN: wide-spread
+Not tradable now: APR: wide-spread; PONS: wide-spread
