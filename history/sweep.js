@@ -36,6 +36,11 @@ const GROUPS = [
   ['native', 'squeeze-ride', [5], () => ({})],
   // 2026-10-21 researcher: fade a crowd that has paid high funding for 3 days once price breaks against it
   ['funding-fade', 'funding-fade', [240, 720], (tf) => ({ tf, onlyTfs: [tf] })],
+  // 2026-10-23: one component of the retired trend bot's ensemble (Donchian on closes); three lookbacks, longs and
+  // shorts on 1d, long only on 12h (as in the trend research)
+  ['donchian-20', 'donchian-trend', [720, 1440], (tf) => ({ tf, onlyTfs: [tf], look: 20, shorts: tf >= 1440 })],
+  ['donchian-60', 'donchian-trend', [720, 1440], (tf) => ({ tf, onlyTfs: [tf], look: 60, shorts: tf >= 1440 })],
+  ['donchian-150', 'donchian-trend', [1440], (tf) => ({ tf, onlyTfs: [tf], look: 150 })],
 ];
 
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }

@@ -1,6 +1,7 @@
-/* Signed BloFin REST client for the DEMO broker.
+/* Signed BloFin REST client for the swarm's demo trader (exec/demo_trader.js). Came from the retired trend bot's
+ * lab/broker/ (tag archive/trend-bot-2026-10-20); keyProblem came from its demo broker.
  *
- * - Only the demo host is allowed in this build. LIVE needs a deliberate code change (see docs/DEMO_TRADING.md).
+ * - Only the demo host is allowed in this build. LIVE needs a deliberate code change.
  * - Signing (BloFin docs, checked 2026-10-18 against BloFin's own blofin-mcp and blofin-sdk-python):
  *     prehash = requestPath(with query) + METHOD + timestamp(ms) + nonce + body(JSON, POST only)
  *     sign    = base64( hex( HMAC_SHA256(secret, prehash) ) )
@@ -124,4 +125,18 @@ function createClient(opts) {
   };
 }
 
-module.exports = { createClient, sign, query, BloFinError, HOSTS, PUBLIC_HOST };
+// The demo key must be able to trade and must NOT be able to move money (transfer / withdraw).
+function keyProblem(info) {
+  const x = Array.isArray(info) ? info[0] : info;
+  if (!x) return null;
+  if (String(x.readOnly) === '1') return 'the API key is read-only; create the demo key with READ + TRADE';
+  const bad = [];
+  (function walk(o, k) {
+    if (o == null) return;
+    if (typeof o === 'object') { for (const [kk, v] of Object.entries(o)) walk(v, kk); return; }
+    if (/perm|scope|auth/i.test(k || '') && /transfer|withdraw/i.test(String(o))) bad.push(String(o));
+  })(x, '');
+  return bad.length ? `the API key has money-moving permission (${bad.join(', ')}); create a key with READ + TRADE only` : null;
+}
+
+module.exports = { createClient, sign, query, keyProblem, BloFinError, HOSTS, PUBLIC_HOST };

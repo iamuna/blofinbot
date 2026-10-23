@@ -1,13 +1,13 @@
 name: Swarm CI (tests + live data smoke run)
 
-# Tests the multi-agent swarm on every push to the swarm branch: unit tests (with a real Redis), then a short
+# Tests the multi-agent swarm on every push to main: unit tests (with a real Redis), then a short
 # live run of the market-data agents against BloFin's public feed, summarised from the recording.
 # Binance usually refuses US-based runners, so here the universe comes from Binance's public archive and the
 # Binance feed is expected to report itself degraded. No keys, no orders.
 
 on:
   push:
-    branches: [swarm]
+    branches: [main]
     paths: ["swarm/**", ".github/workflows/swarm-ci.yml"]
   # (the windows job below runs the Windows install the way Ibrahim's PC does: no Ubuntu, one process)
   workflow_dispatch:

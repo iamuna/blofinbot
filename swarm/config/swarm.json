@@ -409,6 +409,49 @@
       },
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 696 trades, +0.17 R, Sharpe 0.96; long -18 / short +135 R"
     },
+    "donchian-trend": {
+      "enabled": false,
+      "note": "base plugin (2026-10-23, from the retired trend bot); runs only as the donchian-* variants below"
+    },
+    "donchian-1d-20": {
+      "base": "donchian-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "tf": 1440, "onlyTfs": [1440], "look": 20 },
+      "note": "trend bot component (Sharpe 1.40 ensemble, 0.86 on unseen coins); shadow until the 5-year sweep and its shadow record judge it"
+    },
+    "donchian-1d-60": {
+      "base": "donchian-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "tf": 1440, "onlyTfs": [1440], "look": 60 },
+      "note": "trend bot component; shadow"
+    },
+    "donchian-1d-150": {
+      "base": "donchian-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "tf": 1440, "onlyTfs": [1440], "look": 150 },
+      "note": "trend bot component; shadow"
+    },
+    "donchian-12h-60": {
+      "base": "donchian-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "tf": 720, "onlyTfs": [720], "look": 60, "shorts": false },
+      "note": "trend bot component, long only (the research kept shorts to 1d and slower); shadow"
+    },
+    "funding-fade": {
+      "enabled": false,
+      "note": "base plugin; its default (tf 240 without onlyTfs) never saw a 4h bar live. Runs as funding-fade-4h"
+    },
+    "funding-fade-4h": {
+      "base": "funding-fade",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "tf": 240, "onlyTfs": [240] },
+      "note": "researcher 2026-10-21 (factory candidate funding-fade-4h, 5-year sweep group funding-fade); shadow"
+    },
     "it-4h": {
       "base": "intraday-trend",
       "enabled": true,

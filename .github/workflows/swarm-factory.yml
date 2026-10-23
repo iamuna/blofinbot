@@ -7,7 +7,7 @@ name: Swarm factory (tester + promotion gate)
 
 on:
   push:
-    branches: [swarm]
+    branches: [main]
     paths: ["swarm/factory/candidates/**", "swarm/src/strategies/**", "swarm/src/analysis/**", "swarm/src/backtest/**", "swarm/src/factory/**", ".github/workflows/swarm-factory.yml"]
   workflow_dispatch:
 

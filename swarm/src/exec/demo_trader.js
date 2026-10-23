@@ -18,9 +18,8 @@
 const path = require('path'), fs = require('fs');
 const { Agent } = require('../core/agent');
 const { readJSON, writeAtomic } = require('../core/fsx');
-const { createClient } = require('../../../lab/broker/blofin.js');
-const { keyProblem } = require('../../../lab/broker/demo.js');
-const Q = require('../../../lab/broker/quant.js');
+const { createClient, keyProblem } = require('./blofin/client');
+const Q = require('./blofin/quant');
 
 const isUnknown = (e) => e && (e.kind === 'network' || e.kind === 'parse' || (e.kind === 'http' && e.status >= 500));
 const LIVE = new Set(['live', 'partially_filled']);

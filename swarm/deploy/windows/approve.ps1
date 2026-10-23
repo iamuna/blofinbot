@@ -5,8 +5,8 @@
 # (tests first; rolled back if it crashes). Changed risk limits are signed right here, after you have read them.
 $ErrorActionPreference = 'Stop'
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
-$App = Join-Path $Root 'app'; $Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'swarm' }
-& git -C $App fetch -q origin $Branch
+$App = Join-Path $Root 'app'; $Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'main' }
+& git -C $App fetch -q origin "+refs/heads/${Branch}:refs/remotes/origin/${Branch}"
 $old = (& git -C $App rev-parse HEAD).Trim(); $new = (& git -C $App rev-parse "origin/$Branch").Trim()
 if ($old -eq $new) { Write-Host "Nothing new: $($old.Substring(0,12)) is installed."; Read-Host 'Press Enter to close'; return }
 $account = 'paper'; try { $c = Get-Content (Join-Path $Root 'swarm.local.json') -Raw | ConvertFrom-Json; if ($c.trading.account) { $account = $c.trading.account } } catch { }

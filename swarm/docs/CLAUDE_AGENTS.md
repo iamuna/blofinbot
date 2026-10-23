@@ -13,12 +13,12 @@ update gate (`src/tools/update_gate.js`):
 | | Anything on a live account |
 
 A new plugin's test file therefore waits for Ibrahim, and holds up everything pushed with it: put new tests on a
-`swarm-fix/<topic>` branch (CI runs them there) and let the plugin go to `swarm` on its own.
+`swarm-fix/<topic>` branch (CI runs them there) and let the plugin go to `main` on its own.
 
-Protected fixes go to a branch `swarm-fix/<topic>` with a pull request into `swarm`, so the self-service updates
-on `swarm` keep flowing while the fix waits for Ibrahim. Every commit ends with the attribution lines.
+Protected fixes go to a branch `swarm-fix/<topic>` with a pull request into `main`, so the self-service updates
+on `main` keep flowing while the fix waits for Ibrahim. Every commit ends with the attribution lines.
 
-Where things are: code on branch `swarm`; backtest data `swarm-data`; factory results `swarm-factory`
+Where things are: code on branch `main` (the swarm moved there from `swarm` on 2026-10-23); backtest data `swarm-data`; factory results `swarm-factory`
 (`LATEST.md`, `latest.json`, `trials.jsonl`); live state from the home PC `swarm-state` (exists once it runs);
 reports `swarm-reports`. Every variant anyone backtests counts as a try — the factory logs its own; log anything
 else with `node swarm/src/factory/log_tries.js` (the t-stat bar rises with the number of tries).
@@ -40,7 +40,7 @@ and test any new idea on the 5-year history (`history/README.md`) before trustin
    (`{"name","base","params","idea","source","author":"researcher"}`); a new mechanism is a plugin
    `swarm/src/strategies/<name>.js` (pure: see the plugin check) + its name in `index.js` PLUGINS + a unit test +
    a candidate file. Run `npm test` and `node src/factory/plugin_check.js src/strategies/<name>.js` in `swarm/`.
-5. Commit to `swarm`: the factory workflow backtests it on 6.5 months × 31 coins and applies the gate.
+5. Commit to `main`: the factory workflow backtests it on 6.5 months × 31 coins and applies the gate.
 6. A candidate that passes the backtest gate: add it to `config/swarm.json` → `strategies` with `"mode": "shadow"`.
    It gathers live evidence; the promotion gate decides about trade. A candidate that misses the gate only on the
    number of trades or the t-stat bar, but is positive at 1.5× costs and in every third, may also go to shadow as
@@ -67,5 +67,5 @@ and test any new idea on the 5-year history (`history/README.md`) before trustin
 
 - Paper first. Never add keys, never enable live trading, never edit `config/risk.json`.
 - Never invent data, fills or results; when evidence is weak, prefer "no trade / no promotion".
-- Never push protected changes straight to `swarm`; never force-push.
+- Never push protected changes straight to `main`; never force-push.
 - A strategy that loses money is not a failure to hide: retire it and write down what was learned.

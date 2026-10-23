@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-command installer for the swarm on the 24/7 PC (Ubuntu Server 24.04 LTS).
 #
-#   curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/install.sh | sudo bash
+#   curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/main/swarm/deploy/install.sh | sudo bash
 #
 # Installs Node 22, Redis (the message bus), git and time sync; creates the service users; checks the code out
 # read-only to /opt/swarm (agents cannot edit their own code — changes come through git and tests); asks once for
@@ -14,7 +14,7 @@
 # PAPER account by default. Demo: deploy/enable-demo.sh afterwards. No withdrawal-capable key is ever accepted.
 set -euo pipefail
 
-REPO="https://github.com/iamuna/blofinbot.git"; BRANCH="${SWARM_BRANCH:-swarm}"
+REPO="https://github.com/iamuna/blofinbot.git"; BRANCH="${SWARM_BRANCH:-main}"
 APP=/opt/swarm; DATA=/var/lib/swarm; ETC=/etc/swarm
 SWARM_GROUPS="market brain decision trader ops"   # not GROUPS: bash reserves that name
 
@@ -45,7 +45,7 @@ id swarm >/dev/null 2>&1 || useradd --system --home-dir "$DATA" --shell /usr/sbi
 id swarm-brain >/dev/null 2>&1 || useradd --system --user-group --home-dir /var/lib/swarm-brain --shell /usr/sbin/nologin swarm-brain
 mkdir -p "$DATA" /var/lib/swarm-brain "$ETC" "$ETC/approved"; chown swarm:swarm "$DATA"; chmod 750 "$DATA"
 chown swarm-brain:swarm-brain /var/lib/swarm-brain; chmod 750 /var/lib/swarm-brain; chmod 755 "$ETC"; chmod 700 "$ETC/approved"
-if [ ! -d "$APP/.git" ]; then git clone -q --branch "$BRANCH" "$REPO" "$APP"; else git -C "$APP" fetch -q origin "$BRANCH" && git -C "$APP" checkout -q "$BRANCH" && git -C "$APP" reset -q --hard "origin/$BRANCH"; fi
+if [ ! -d "$APP/.git" ]; then git clone -q --branch "$BRANCH" "$REPO" "$APP"; else git -C "$APP" fetch -q origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" && git -C "$APP" checkout -q -B "$BRANCH" "origin/$BRANCH"; fi
 chown -R root:root "$APP"; chmod -R go-w "$APP"   # read-only for the swarm user
 
 cat > "$ETC/env" <<ENV

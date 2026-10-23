@@ -11,7 +11,7 @@ name: Swarm 5-year sweep (every strategy × every timeframe, walk-forward)
 
 on:
   push:
-    branches: [swarm]
+    branches: [main]
     paths: ["history/**", ".github/workflows/swarm-history.yml"]
   workflow_dispatch:
 

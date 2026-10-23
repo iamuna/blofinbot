@@ -7,8 +7,8 @@
 #   sudo swarm-approve <sha>      the same, but only if <sha> is still the newest commit
 set -euo pipefail
 [ "$(id -u)" -eq 0 ] || { echo "Run with sudo." >&2; exit 1; }
-APP=/opt/swarm; BRANCH="${SWARM_BRANCH:-swarm}"; APPROVED=/etc/swarm/approved
-git -C "$APP" fetch -q origin "$BRANCH"
+APP=/opt/swarm; BRANCH="${SWARM_BRANCH:-main}"; APPROVED=/etc/swarm/approved
+git -C "$APP" fetch -q origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
 OLD=$(git -C "$APP" rev-parse HEAD); NEW=$(git -C "$APP" rev-parse "origin/$BRANCH")
 if [ "$OLD" = "$NEW" ]; then echo "Nothing new: ${OLD:0:12} is installed."; exit 0; fi
 if [ -n "${1:-}" ]; then case "$NEW" in "$1"*) ;; *) echo "The newest commit is ${NEW:0:12}, not $1 — look at it first: sudo swarm-approve"; exit 1;; esac; fi

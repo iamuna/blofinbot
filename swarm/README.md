@@ -3,7 +3,8 @@
 A team of agents that trades BloFin USDT perpetuals. Built for 1–45 minute horizons; the 5-year sweep (2026-10-20,
 `../history/`) moved it to 1h–1d bars, the only ones with an edge after costs. Fast agents (code) handle data,
 decisions and orders every minute; slow agents (Claude) research, build, test and review strategies and agents.
-Every agent talks through one message bus. Design: the "BloFin Swarm" doc; status: [PROGRESS.md](PROGRESS.md).
+Every agent talks through one message bus. Design: the "BloFin Swarm" doc; status: [PROGRESS.md](PROGRESS.md);
+map of every file, agent and strategy: [INDEX.md](INDEX.md).
 
 **PAPER first.** No keys in this folder; demo and live come later, each behind its own gate.
 Launch on the home PC: [docs/LAUNCH.md](docs/LAUNCH.md). What the scheduled Claude agents do: [docs/CLAUDE_AGENTS.md](docs/CLAUDE_AGENTS.md).

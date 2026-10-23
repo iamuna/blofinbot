@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Updater (root, every 10 minutes). New commits on the swarm branch are installed only when:
+# Updater (root, every 10 minutes). New commits on the main branch are installed only when:
 #   1. the update gate — run from the code ALREADY installed — says they stay in the self-service area (strategy
 #      plugins that pass the plugin check, shadow-mode strategy settings, candidates, docs), or Ibrahim
 #      approved this exact commit on the PC (sudo swarm-approve);
@@ -8,14 +8,14 @@
 #   3. three minutes after the restart the swarm is healthy (every group running, heartbeats coming in).
 #      Otherwise the previous commit is restored. Ibrahim hears about each outcome on Telegram.
 set -euo pipefail
-APP=/opt/swarm; BRANCH="${SWARM_BRANCH:-swarm}"; SWARM_GROUPS="market brain decision trader ops"
+APP=/opt/swarm; BRANCH="${SWARM_BRANCH:-main}"; SWARM_GROUPS="market brain decision trader ops"
 APPROVED=/etc/swarm/approved
 . /etc/swarm/secrets.env 2>/dev/null || true
 say() { [ -n "${TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ] && curl -fsS -m 10 "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="$TELEGRAM_CHAT_ID" --data-urlencode text="$1" >/dev/null || true; echo "$1"; }
 restart_all() { for g in $SWARM_GROUPS; do systemctl restart "swarm@$g"; done; }
 
 cd "$APP"
-git fetch -q origin "$BRANCH"
+git fetch -q origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH" # explicit: the clone may be for another branch
 OLD=$(git rev-parse HEAD); NEW=$(git rev-parse "origin/$BRANCH")
 [ "$OLD" = "$NEW" ] && exit 0
 mkdir -p "$APPROVED"

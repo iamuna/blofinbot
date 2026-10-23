@@ -1,6 +1,6 @@
 # Swarm on Windows - no Ubuntu, no WSL. Run in PowerShell opened as administrator:
 #
-#   irm https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/windows/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/iamuna/blofinbot/main/swarm/deploy/windows/install.ps1 | iex
 #
 # Installs Node.js and Git (winget) if missing, puts the code in C:\swarm\app, asks once for the optional tokens
 # (GitHub for the status/daily review, Telegram for alerts and commands), and registers a task that starts the
@@ -15,7 +15,7 @@
 # through exit codes and -ErrorAction Stop on the cmdlets that matter
 $ErrorActionPreference = 'Continue'
 $Root = if ($env:SWARM_ROOT) { $env:SWARM_ROOT } else { 'C:\swarm' }
-$Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'swarm' }
+$Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'main' }   # the swarm moved from branch 'swarm' to 'main' on 2026-10-23
 $Repo = 'https://github.com/iamuna/blofinbot.git'
 $App = Join-Path $Root 'app'
 function Write-Step($t) { Write-Host "`n== $t" -ForegroundColor Cyan }
@@ -54,7 +54,8 @@ New-Item -ItemType Directory -Force -Path $Root, "$Root\data", "$Root\logs", "$R
 $src = if ($env:SWARM_SOURCE) { $env:SWARM_SOURCE } else { $Repo }
 if (Test-Path "$App\.git") {
   & git -C $App config core.autocrlf false
-  & git -C $App fetch -q origin $Branch
+  # an explicit refspec: the clone may have been made for another branch (single-branch, e.g. 'swarm')
+  & git -C $App fetch -q origin "+refs/heads/${Branch}:refs/remotes/origin/${Branch}"
   & git -C $App reset -q --hard "origin/$Branch"
   if ($LASTEXITCODE -ne 0) { throw "could not update the code in $App" }
 } else {

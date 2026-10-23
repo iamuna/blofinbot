@@ -3,7 +3,7 @@
 # Runs every agent in one Node process on the in-memory bus, except the brain (the strategy plugins, code the Claude
 # agents write): it runs in its own locked-down Node process without the tokens (--isolate brain, src/core/isolate.js).
 # Restarts the swarm within a minute if it stops, and every
-# 10 minutes looks for new code on the swarm branch (every step logged; git fetch and the tests have time limits, so
+# 10 minutes looks for new code on the main branch (every step logged; git fetch and the tests have time limits, so
 # a hang can no longer stop the runner — on 2026-10-20 it went silent for 10 hours before this). New code is installed the same way as on Linux:
 #   1. the update gate - run from the code ALREADY installed - lets only self-service changes through on their own
 #      (strategy plugins that pass the plugin check, shadow-mode settings, candidates, docs); anything else,
@@ -18,7 +18,7 @@ param([string]$RollbackTo = '')
 $ErrorActionPreference = 'Continue'
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $App = Join-Path $Root 'app'; $Data = Join-Path $Root 'data'; $Logs = Join-Path $Root 'logs'; $Approved = Join-Path $Root 'approved'
-$Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'swarm' }
+$Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'main' }
 $Agents = 'universe,blofin-feed,binance-feed,guard,recorder,events,brain,coordinator,trader,accountant,watchdog,guardian,herald,state-sync'
 New-Item -ItemType Directory -Force -Path $Data, $Logs, $Approved | Out-Null
 
@@ -74,7 +74,7 @@ function Stop-Swarm($p) {
 
 # new code: gate (installed code judges), tests in a scratch checkout, then reset; returns the old commit or $null
 function Try-Update {
-  if (-not (Run-Timed 'git' @('-C', "`"$App`"", 'fetch', '-q', 'origin', $Branch) 120 $null)) { Write-Log 'update check: git fetch failed or took over 2 minutes'; return $null }
+  if (-not (Run-Timed 'git' @('-C', "`"$App`"", 'fetch', '-q', 'origin', "+refs/heads/${Branch}:refs/remotes/origin/${Branch}") 120 $null)) { Write-Log 'update check: git fetch failed or took over 2 minutes'; return $null }
   $old = "$(& git -C $App rev-parse HEAD)".Trim(); $new = "$(& git -C $App rev-parse "origin/$Branch")".Trim()
   if (-not $new -or -not $old -or $old -eq $new) { return $null }
   $asked = Join-Path $Approved ".asked-$new"

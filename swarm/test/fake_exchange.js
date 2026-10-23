@@ -5,8 +5,8 @@
  * 'drop-after' processes the request and then loses the answer — the case that must not create duplicates.
  */
 'use strict';
-const { sign } = require('./blofin.js');
-const { decimals } = require('./quant.js');
+const { sign } = require('../src/exec/blofin/client');
+const { decimals } = require('../src/exec/blofin/quant');
 
 function createFakeExchange(o) {
   const cfg = Object.assign({ key: 'k', secret: 's', pass: 'p', equity: 100000, maker: 0.0002, taker: 0.0006, postOnlyCross: 'reject' }, o || {});

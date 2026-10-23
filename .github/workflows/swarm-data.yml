@@ -1,12 +1,13 @@
 name: Swarm dataset (Binance 1m + open interest, last 6 months)
 
 # Builds the swarm's backtest data from Binance's public archive and force-pushes it to the orphan branch
-# `swarm-data` (one commit, replaced each run). Runs when the builder changes, or by hand.
+# `swarm-data` (one commit, replaced each run). Runs when the builder changes, or by hand (not when only this file
+# changes: a rebuild moves the factory's data window, so it should be a deliberate step).
 
 on:
   push:
-    branches: [swarm]
-    paths: ["swarm/tools/build_dataset.js", ".github/workflows/swarm-data.yml"]
+    branches: [main]
+    paths: ["swarm/tools/build_dataset.js"]
   workflow_dispatch:
     inputs:
       months:

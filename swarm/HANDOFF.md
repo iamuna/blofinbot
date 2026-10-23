@@ -1,13 +1,13 @@
 # Handoff: Ibrahim's BloFin "swarm" bot (as of 2026-10-21 05:30 Amsterdam)
 
 ## Where things are
-- Code: repo iamuna/blofinbot, branch `swarm` (deployed). Bot lives in `swarm/`. Progress notes: `swarm/PROGRESS.md` ("Now — resume here").
+- Code: repo iamuna/blofinbot, branch `main` (deployed; it was `swarm` until 2026-10-23). Bot lives in `swarm/`. Progress notes: `swarm/PROGRESS.md` ("Now — resume here").
 - Runs on Ibrahim's Windows PC (HP ProDesk 400, i5, 4 GB RAM, DDR3 board) in `C:\swarm`. Paper account, $10,000. Logs in `C:\swarm\logs`, secrets in `C:\swarm\secrets.json` (never paste it).
 - Status: the bot publishes `swarm-state` branch to GitHub every 10 min (state.json, summary.md, shadow.jsonl). Check with `git ls-remote origin refs/heads/swarm-state`, then fetch that commit.
 - Telegram: `/status` (full report: account, per-strategy shadow + paper stats), `/pause`, `/resume`, `/flatten`, `/mode <name> off|shadow|trade`.
 - Updates to protected code need Ibrahim's OK: Telegram tells him, he runs
   `powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\approve.ps1` in Terminal (Admin).
-- Fresh install: `irm https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/windows/install.ps1 | iex`.
+- Fresh install: `irm https://raw.githubusercontent.com/iamuna/blofinbot/main/swarm/deploy/windows/install.ps1 | iex`.
 
 ## State right now
 - 52 strategies running in SHADOW (none in trade mode, so no paper trades). Coins 71–80 (maxCoins 80). No heap cap (1 GB cap removed).

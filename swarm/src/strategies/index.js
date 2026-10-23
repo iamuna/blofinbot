@@ -19,5 +19,6 @@ const PLUGINS = [
   'wyckoff_spring',
   'candles',
   'funding_fade',
+  'donchian_trend',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

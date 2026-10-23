@@ -1,11 +1,5 @@
-.venv/
-__pycache__/
-.pytest_cache/
-*.pyc
-*.sqlite
-*.sqlite-wal
-*.sqlite-shm
+node_modules/
 data/
 output/
 .env
-research_out/ml/*.csv
+swarm/config/swarm.local.json

@@ -93,3 +93,24 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
   one with that code, so the running runner must be restarted once by hand after it installs: run the installer
   again (Terminal as Admin) — `irm https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/windows/install.ps1 | iex`
   — it keeps the tokens and chat. Check after: /status lists `brain-host` ok and the strategies report again.
+
+## 2026-10-23 (morning) — the swarm is `main`; repo consolidated
+- Branch: the swarm's code is on `main` now (main = swarm + main's last 2 commits). `swarm` stays as a mirror until
+  the PC follows `main`, then it is deleted. PC scripts, installers (Windows + Linux) and the four swarm workflows
+  default to `main`; every fetch names its branch explicitly, because the PC's clone was made single-branch for
+  `swarm`. Switch-over on the PC: approve the update as usual, then run the installer again (it moves the clone to
+  `main`). The scheduled Claude agents (researcher, daily review) must push to `main` from now on.
+- Retired code removed from `main`, kept at tag `archive/trend-bot-2026-10-20`: Python BTC core (btc_bot/, tools/,
+  tests/), single-coin and 20-coin trend bots (lab/), dashboards, research outputs, root docs, their 6 workflows
+  (the 30-minute trend-bot schedule was only paused in the Actions settings; the file is gone now). The BloFin
+  client the demo trader needs moved to `src/exec/blofin/` (keyProblem with it); the fake exchange to `test/`. Kept
+  in `docs/`: the trend bot's research (TREND_BOT_RESEARCH) and the high-frequency study.
+- Branches: swarm-history-fix, swarm-no-heap-cap, swarm-status-report (fully merged), paper-state, mtf-state
+  (retired bots' state) deleted, each kept as tag `archive/<name>`.
+- [INDEX.md](INDEX.md): map of every agent, file, strategy, branch and test.
+- New plugin `donchian-trend` (shadow): one component of the retired trend bot's ensemble — the best-evidenced
+  strategy in the repo (Sharpe 1.40 top-20 2020–2026 after costs, 0.86 on 30 unseen coins). Variants donchian-1d-20,
+  -1d-60, -1d-150 (long + short), donchian-12h-60 (long only); sweep groups donchian-20/-60/-150 @12h/@1d. The
+  full portfolio (vol targeting, cross-coin momentum, rebalancing) is the next piece of work.
+- Found: `funding-fade` never ran live (its default listens on 45m bars; tf 240 needs onlyTfs). Now runs as
+  `funding-fade-4h` (shadow); the base entry is off.

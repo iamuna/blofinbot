@@ -1,10 +1,10 @@
 'use strict';
-// The demo broker's fake BloFin (lab/broker/fake_exchange.js) plus what the swarm's demo trader also uses:
+// The demo broker's fake BloFin (test/fake_exchange.js) plus what the swarm's demo trader also uses:
 // exchange-side stop-loss orders (order-tpsl, cancel-tpsl, orders-tpsl-pending) that trigger when the market moves
 // through them, and close-position. Private calls are signed and checked like the real API.
 const crypto = require('crypto');
-const { createFakeExchange } = require('../../lab/broker/fake_exchange.js');
-const { sign } = require('../../lab/broker/blofin.js');
+const { createFakeExchange } = require('./fake_exchange');
+const { sign } = require('../src/exec/blofin/client');
 
 function createFakePlus(o = {}) {
   const cfg = Object.assign({ key: 'k', secret: 's', pass: 'p' }, o);

@@ -9,7 +9,7 @@ it would have done). About 15 minutes of your time.
 1. Make the GitHub token and the Telegram bot (section 1 below); send your bot a message first.
 2. Right-click Start → **Terminal (Admin)** and paste:
 
-       irm https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/windows/install.ps1 | iex
+       irm https://raw.githubusercontent.com/iamuna/blofinbot/main/swarm/deploy/windows/install.ps1 | iex
 
    It installs Node.js and Git if needed, asks for the two tokens (typing is hidden), sets the PC not to sleep while
    plugged in, and starts the swarm hidden. It starts again by itself every time you log in.
@@ -41,7 +41,7 @@ Steps 1–3 below. Step 1 is also how to make the two tokens for the Windows ins
 
 ## 2. Install (on the Ubuntu PC)
 
-    curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/install.sh | sudo bash
+    curl -fsSL https://raw.githubusercontent.com/iamuna/blofinbot/main/swarm/deploy/install.sh | sudo bash
 
 It asks for the two tokens (Enter skips one). When it finishes you should see five services "active (running)":
 market, brain, decision, trader, ops. Within a few minutes Telegram says hello and /status answers.
