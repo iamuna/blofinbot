@@ -179,7 +179,8 @@ class Herald extends Agent {
     return this.say('Commands: /status /pause /resume /flatten /mode <strategy> <off|shadow|trade>');
   }
   // configured strategies and variants, and every strategy the brain reports as loaded
-  knownStrategies() { return new Set([...Object.keys(this.cfg.strategies || {}), ...Object.keys(this.hb || {}).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9))]); }
+  // strategies, plus the sleeves (/mode sleeve:trend trade: the only way a sleeve trades)
+  knownStrategies() { return new Set([...Object.keys(this.cfg.strategies || {}), ...Object.keys(this.cfg.sleeves || {}).map((k) => `sleeve:${k}`),...Object.keys(this.hb || {}).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9))]); }
 }
 
 function editDistance(a, b) {

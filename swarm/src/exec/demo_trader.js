@@ -11,6 +11,10 @@
  * Every 2 s it reads BloFin (orders, positions; stops and balance every 10 s): BloFin is the truth. A position that
  *   disappeared was closed by its stop or target — the fills are read from order history. A position without its
  *   stop gets one again at once. Positions the swarm does not know about are reported and left alone.
+ * Sleeves: BloFin nets one position per instrument (one-way mode), so a coin has ONE owner: an idea trade or a sleeve
+ *   (the coordinator keeps them apart; an order for a coin another owner holds ends 'coin busy'). A sleeve order may
+ *   grow its position (average entry; the stop is replaced for the new size) or, reduceOnly, shrink or close it (each
+ *   reduction is booked as a trade.closed). Sleeve positions keep only their stop; stop.move tightens it.
  * Keys: BLOFIN_API_KEY / BLOFIN_API_SECRET / BLOFIN_PASSPHRASE (read + trade only; a key that can transfer or
  * withdraw is refused). Demo host only — the client cannot reach live in this build. Refuses GitHub Actions.
  */
@@ -39,6 +43,7 @@ class DemoTrader extends Agent {
     for (const p of Object.values(this.S.positions)) for (const k of ['sl', 'tp', 'closing']) if (p[k] && p[k].state === 'SUBMITTING') p[k].state = 'UNKNOWN';
     this.books = new Map(); this.last = new Map(); this.inst = {}; this.snap = null; this.ready = false; this.dirty = true; this.busy = false; this.lastSlow = 0;
     this.subscribe('order', (m) => (m.src === 'risk' ? this.onOrder(m.data) : this.warn(`order ${m.data.id} from ${m.src} ignored`)), { durable: true });
+    this.subscribe('stop.move', (m) => (m.src === 'risk' ? this.onStopMove(m.data).catch((e) => this.error('stop.move', e)) : this.warn(`stop.move ${m.data.coin} from ${m.src} ignored`)), { durable: true });
     this.subscribe('md.book', (m) => this.books.set(m.data.coin, Object.assign({ seenAt: this.now() }, m.data)));
     this.subscribe('md.trade', (m) => { const t = m.data.trades; if (t.length) this.last.set(m.data.coin, t[t.length - 1][1]); });
     this.subscribe('sys.command', (m) => this.onCommand(m.data, m.src));
@@ -80,7 +85,11 @@ class DemoTrader extends Agent {
   // ───────── orders from the risk agent
   async onOrder(o) {
     if (this.S.paused) return this.endOrder(o, 'paused');
-    if (this.coinBusy(o.coin)) return this.endOrder(o, 'coin busy');
+    const held = this.S.positions[o.coin], working = Object.values(this.S.entries).some((e) => e.o.coin === o.coin);
+    // a sleeve may grow (same side) or reduce (reduceOnly) its own position, one order at a time
+    const resize = !!(o.owner && held && held.owner === o.owner && !working && (o.reduceOnly ? held.side === -o.side : held.side === o.side));
+    if (this.coinBusy(o.coin) && !resize) return this.endOrder(o, 'coin busy');
+    if (o.reduceOnly && !resize) return this.endOrder(o, 'nothing to reduce');
     const inst = this.inst[o.instId];
     if (this.ready && !inst) return this.endOrder(o, 'not tradable on BloFin demo');
     const contracts = inst ? Math.abs(Q.toContracts(o.qty, inst)) : null;
@@ -142,7 +151,7 @@ class DemoTrader extends Agent {
   }
 
   async workEntry(e) {
-    const o = e.o, inst = this.inst[o.instId], side = o.side > 0 ? 'buy' : 'sell';
+    const o = e.o, inst = this.inst[o.instId], side = o.side > 0 ? 'buy' : 'sell', ro = o.reduceOnly ? { reduceOnly: 'true' } : {};
     if (!inst) return this.endOrder(o, 'not tradable on BloFin demo');
     if (e.contracts == null) { e.contracts = Math.abs(Q.toContracts(o.qty, inst)); if (!(e.contracts >= inst.minSize)) return this.endOrder(o, 'below the exchange minimum after rounding'); }
     for (const a of e.attempts) if (a.state === 'UNKNOWN' || (a.state === 'LIVE' && !this.snap.pending[a.exId])) await this.settle(e, a);
@@ -163,17 +172,17 @@ class DemoTrader extends Agent {
     if (expired || this.S.paused) {
       if (!this.S.paused && (o.entry.kind === 'taker' || o.entry.fallback === 'taker') && !e.attempts.some((a) => a.kind === 'market')) {
         const size = Q.sizeString(remaining, inst, true);
-        if (size) { await this.send(e, { instId: o.instId, marginMode: 'cross', positionSide: 'net', side, orderType: 'market', size }, 'market'); return; }
+        if (size) { await this.send(e, { instId: o.instId, marginMode: 'cross', positionSide: 'net', side, orderType: 'market', size, ...ro }, 'market'); return; }
       }
       return e.filled > 0 ? this.openPosition(e) : this.endOrder(o, this.S.paused ? 'paused' : 'unfilled');
     }
-    if (o.entry.kind === 'taker') { const size = Q.sizeString(remaining, inst, true); if (size) await this.send(e, { instId: o.instId, marginMode: 'cross', positionSide: 'net', side, orderType: 'market', size }, 'market'); return; }
+    if (o.entry.kind === 'taker') { const size = Q.sizeString(remaining, inst, true); if (size) await this.send(e, { instId: o.instId, marginMode: 'cross', positionSide: 'net', side, orderType: 'market', size, ...ro }, 'market'); return; }
     const b = this.fresh(o.coin); if (!b) return; // no fresh prices: wait
     const best = side === 'buy' ? b.bids[0][0] : b.asks[0][0];
     const limit = o.entry.chase === false ? (side === 'buy' ? Math.min(o.entry.px, best) : Math.max(o.entry.px, best)) : best;
     const size = Q.sizeString(remaining, inst, false); if (!size) return this.openPosition(e);
     await this.setLeverage(o.instId);
-    const a = await this.send(e, { instId: o.instId, marginMode: 'cross', positionSide: 'net', side, orderType: 'post_only', price: Q.passivePrice(limit, side, inst), size }, 'post_only');
+    const a = await this.send(e, { instId: o.instId, marginMode: 'cross', positionSide: 'net', side, orderType: 'post_only', price: Q.passivePrice(limit, side, inst), size, ...ro }, 'post_only');
     if (a.state === 'REJECTED') this.count('postOnlyRejected');
   }
   async setLeverage(instId) {
@@ -189,8 +198,20 @@ class DemoTrader extends Agent {
   async openPosition(e) {
     const o = e.o, inst = this.inst[o.instId];
     delete this.S.entries[o.id];
-    const qty = Q.contractsToBase(e.filled, inst), px = e.cost / e.filled;
-    const p = { orderId: o.id, coin: o.coin, instId: o.instId, side: o.side, contracts: e.filled, qty, entry: px, entryT: this.now(), stop: o.stop, target: o.target, trail: o.trail, timeStopMin: o.timeStopMin, best: px, R: Math.abs(px - o.stop), feeUsd: e.fee, fundUsd: 0, strategies: o.strategies, riskUsd: qty * Math.max(Math.abs(px - o.stop), px * 0.001), attempts: [] }; // R against at least 10 bps
+    const qty = Q.contractsToBase(e.filled, inst), px = e.cost / e.filled, held = this.S.positions[o.coin];
+    const kind = e.attempts.some((a) => a.kind === 'market' && a.filled) ? 'taker' : 'maker';
+    for (const a of e.attempts) if (held) (held.ownCids || (held.ownCids = [])).push(a.cid); // its fills are not a stop's
+    if (o.reduceOnly) return held ? this.shrink(held, e.filled, px, e.fee, kind, o.id) : this.endOrder(o, 'nothing to reduce');
+    if (held) {
+      // a sleeve grows its position: average entry, fees add up, the whole position takes the new stop (as the backtest)
+      const c = held.contracts + e.filled, q = Q.contractsToBase(c, inst);
+      held.entry = (held.qty * held.entry + qty * px) / q; held.contracts = c; held.qty = q; held.feeUsd += e.fee;
+      held.stop = o.side * (px - o.stop) > 0 ? o.stop : held.stop; held.R = Math.abs(held.entry - held.stop); held.riskUsd = q * Math.max(held.R, held.entry * 0.001); held.resizedAt = this.now();
+      this.jot({ ev: 'add', coin: o.coin, contracts: e.filled, px });
+      await this.publish('exec.fill', { orderId: o.id, coin: o.coin, side: o.side, qty, px, feeUsd: e.fee, kind, role: 'entry', ts: this.now() });
+      return this.replaceStop(held);
+    }
+    const p = { orderId: o.id, owner: o.owner || null, coin: o.coin, instId: o.instId, side: o.side, contracts: e.filled, qty, entry: px, entryT: this.now(), stop: o.stop, target: o.target, trail: o.trail, timeStopMin: o.timeStopMin, best: px, R: Math.abs(px - o.stop), feeUsd: e.fee, fundUsd: 0, strategies: o.strategies, riskUsd: qty * Math.max(Math.abs(px - o.stop), px * 0.001), attempts: [] }; // R against at least 10 bps
     if (!(p.R > 0) || o.side * (px - o.stop) <= 0) p.stop = px * (1 - o.side * 0.005); // filled beyond the stop: protect at 0.5% and let the manager exit
     this.S.positions[o.coin] = p; this.save(); this.dirty = true;
     this.jot({ ev: 'open', coin: o.coin, contracts: e.filled, px });
@@ -219,15 +240,17 @@ class DemoTrader extends Agent {
   }
   async workPosition(p) {
     const inst = this.inst[p.instId], ex = this.snap.pos[p.instId], have = ex ? Math.abs(ex.contracts) : 0;
-    if (have < p.contracts - inst.lotSize / 2) return this.closed(p, have); // the stop, the target or our close did it
+    const reducing = Object.values(this.S.entries).some((e) => e.o.coin === p.coin && e.o.reduceOnly); // a sleeve's reduce-only leg is shrinking it
+    if (!reducing && have < p.contracts - inst.lotSize / 2) return this.closed(p, have); // the stop, the target or our close did it
     // the stop must be on BloFin
     // (only a stop list read after the stop was placed can say it is gone)
     if (p.sl && p.sl.state === 'LIVE' && this.snap.tpsl && this.lastSlow > p.sl.at && !this.snap.tpsl[p.sl.tpslId] && this.now() - this.lastSlow < 3000) p.sl.state = 'GONE';
     if (p.sl && p.sl.state === 'UNKNOWN') { const found = Object.values(this.snap.tpsl || {}).find((x) => x.clientOrderId === p.sl.cid); if (found) { p.sl.tpslId = String(found.tpslId); p.sl.state = 'LIVE'; } else if (this.now() - p.sl.at > 30000) p.sl.state = 'GONE'; }
     if (!p.sl || p.sl.state === 'GONE') { this.count('stopReplaced'); await this.protect(p); }
+    else if (p.resizeStop && p.sl.state === 'LIVE') await this.replaceStop(p);
     if (p.closing) return;
     const px = this.last.get(p.coin), s = p.side;
-    if (px > 0) {
+    if (px > 0 && !p.owner) { // a sleeve's position keeps only its stop (moved by the risk agent)
       if (s * (px - p.best) > 0) p.best = px;
       const fav = s * (p.best - p.entry);
       let ns = p.stop;
@@ -235,7 +258,7 @@ class DemoTrader extends Agent {
       else if (!p.trail && this.X.breakevenR && fav >= this.X.breakevenR * p.R) ns = p.entry * (1 + s * (this.X.makerBps + this.X.takerBps) / 1e4);
       if (s * (ns - p.stop) > this.X.stopMoveR * p.R && this.now() - (p.stopMovedAt || 0) > this.X.stopMoveEveryMs) await this.moveStop(p, ns);
     }
-    if (this.S.paused === 'flatten' || this.now() >= p.entryT + p.timeStopMin * 60000) await this.closeNow(p, this.S.paused === 'flatten' ? 'flatten' : 'time');
+    if (this.S.paused === 'flatten' || (p.timeStopMin > 0 && this.now() >= p.entryT + p.timeStopMin * 60000)) await this.closeNow(p, this.S.paused === 'flatten' ? 'flatten' : 'time');
   }
   async moveStop(p, ns) {
     const old = p.sl; p.stop = ns; p.stopMovedAt = this.now(); p.sl = null;
@@ -243,6 +266,41 @@ class DemoTrader extends Agent {
     if (p.sl && p.sl.state === 'LIVE' && old && old.tpslId) { try { await this.client.cancelTpsl([{ instId: p.instId, tpslId: old.tpslId }]); } catch (e) { this.count('cancelStopErrors'); } } // … then the old one
     else if (!(p.sl && p.sl.state === 'LIVE')) p.sl = old; // keep the old stop if the new one failed
     this.save(); this.dirty = true;
+  }
+  // the position changed size: a stop for the new size first, then the old one goes (kept if the new one failed)
+  async replaceStop(p) {
+    const old = p.sl; p.sl = null;
+    await this.protect(p);
+    if (p.sl && p.sl.state === 'LIVE' && old && old.tpslId) { try { await this.client.cancelTpsl([{ instId: p.instId, tpslId: old.tpslId }]); } catch (e) { this.count('cancelStopErrors'); } }
+    else if (!(p.sl && p.sl.state === 'LIVE') && old) { p.sl = old; p.resizeStop = true; this.warn(`${p.coin}: the stop for the new size failed; the old one stays until the next try`); }
+    if (p.sl && p.sl !== old) p.resizeStop = false;
+    this.save(); this.dirty = true;
+  }
+  // a reduce-only leg filled: book that share of the position, then fit the stop to what is left
+  async shrink(p, contracts, px, fee, kind, orderId) {
+    const inst = this.inst[p.instId], all = contracts >= p.contracts - inst.lotSize / 2;
+    if (!(contracts > 0)) return;
+    const f = all ? 1 : contracts / p.contracts, qty = Q.contractsToBase(contracts, inst);
+    const entryFee = p.feeUsd * f, fundUsd = p.fundUsd * f, riskUsd = p.riskUsd * f;
+    const grossUsd = p.side * (px - p.entry) * qty, feeUsd = entryFee + fee, netUsd = grossUsd - feeUsd - fundUsd;
+    if (all) {
+      if (p.sl && p.sl.tpslId) { try { await this.client.cancelTpsl([{ instId: p.instId, tpslId: p.sl.tpslId }]); } catch (e) { /* gone with the position */ } }
+      delete this.S.positions[p.coin];
+    } else {
+      p.contracts -= contracts; p.qty = Q.contractsToBase(p.contracts, inst); p.feeUsd -= entryFee; p.fundUsd -= fundUsd; p.riskUsd -= riskUsd; p.resizedAt = this.now();
+    }
+    this.save(); this.dirty = true;
+    this.jot({ ev: 'reduce', coin: p.coin, contracts, px, all });
+    await this.publish('exec.fill', { orderId, coin: p.coin, side: -p.side, qty, px, feeUsd: fee, kind, role: 'exit', reason: 'rebalance', ts: this.now() });
+    await this.publish('trade.closed', { orderId: p.orderId, coin: p.coin, side: p.side, qty, entry: p.entry, exit: px, entryT: p.entryT, exitT: this.now(), grossUsd, feeUsd, fundUsd, netUsd, riskUsd, r: riskUsd > 0 ? netUsd / riskUsd : 0, reason: 'rebalance', strategies: p.strategies, account: 'demo', owner: p.owner || undefined, partial: all ? undefined : true });
+    if (!all) await this.replaceStop(p);
+  }
+  async onStopMove(m) {
+    const p = this.S.positions[m.coin], last = this.last.get(m.coin);
+    if (!p || (p.owner || null) !== (m.owner || null)) { this.count('stopMoveNoPosition'); return; }
+    if (!(p.side * (m.stop - p.stop) > 0)) { this.count('stopMoveRefused'); this.warn(`${m.coin}: stop ${p.stop} → ${m.stop} refused: a stop only moves toward the price`); return; }
+    if (last > 0 && !(p.side * (last - m.stop) > 0)) { this.count('stopMoveRefused'); this.warn(`${m.coin}: stop ${m.stop} refused: it is past the price ${last}`); return; }
+    await this.moveStop(p, m.stop);
   }
   async closeNow(p, reason) {
     const inst = this.inst[p.instId];
@@ -256,7 +314,8 @@ class DemoTrader extends Agent {
     const inst = this.inst[p.instId], closeSide = p.side > 0 ? 'sell' : 'buy';
     let hist = [];
     try { hist = (await this.client.orderHistory(p.instId)) || []; } catch (e) { if (isUnknown(e)) return; }
-    const exits = hist.filter((o) => o.side === closeSide && +o.filledSize > 0 && +(o.createTime || 0) >= p.entryT - 5000);
+    const mine = new Set(p.ownCids || []); // a sleeve's own reduce-only legs, already booked
+    const exits = hist.filter((o) => o.side === closeSide && +o.filledSize > 0 && +(o.createTime || 0) >= (p.resizedAt || p.entryT) - 5000 && !mine.has(o.clientOrderId));
     const contracts = exits.reduce((s, o) => s + +o.filledSize, 0);
     if (contracts < p.contracts - have - inst.lotSize / 2 && this.now() - (p.goneAt || (p.goneAt = this.now())) < 20000) return; // history not updated yet
     const px = contracts ? exits.reduce((s, o) => s + +o.filledSize * +o.averagePrice, 0) / contracts : this.last.get(p.coin) || p.entry;
@@ -269,7 +328,7 @@ class DemoTrader extends Agent {
     const qty = Q.contractsToBase(p.contracts - have, inst), grossUsd = p.side * (px - p.entry) * qty, feeUsd = p.feeUsd + fee, netUsd = grossUsd - feeUsd - p.fundUsd;
     this.jot({ ev: 'closed', coin: p.coin, reason, px, contracts });
     await this.publish('exec.fill', { orderId: p.orderId, coin: p.coin, side: -p.side, qty, px, feeUsd: fee, kind: reason === 'target' ? 'maker' : 'taker', role: 'exit', reason, ts: this.now() });
-    await this.publish('trade.closed', { orderId: p.orderId, coin: p.coin, side: p.side, qty, entry: p.entry, exit: px, entryT: p.entryT, exitT: this.now(), grossUsd, feeUsd, fundUsd: p.fundUsd, netUsd, riskUsd: p.riskUsd, r: p.riskUsd > 0 ? netUsd / p.riskUsd : 0, reason, strategies: p.strategies, account: 'demo' });
+    await this.publish('trade.closed', { orderId: p.orderId, coin: p.coin, side: p.side, qty, entry: p.entry, exit: px, entryT: p.entryT, exitT: this.now(), grossUsd, feeUsd, fundUsd: p.fundUsd, netUsd, riskUsd: p.riskUsd, r: p.riskUsd > 0 ? netUsd / p.riskUsd : 0, reason, strategies: p.strategies, account: 'demo', owner: p.owner || undefined });
     if (have > 0) this.warn(`${p.coin}: ${have} contracts left after the exit — left for the next check`);
   }
   orphans() {
@@ -278,8 +337,8 @@ class DemoTrader extends Agent {
   }
   async publishPositions() {
     this.dirty = false;
-    const open = Object.values(this.S.positions).map((p) => ({ coin: p.coin, side: p.side, qty: p.qty, px: p.entry, entry: p.entry, stop: p.stop, target: p.target, entryT: p.entryT, last: this.last.get(p.coin) || p.entry, strategies: p.strategies.map((s) => s.name), orderId: p.orderId, exchangeStop: p.sl ? p.sl.state : 'none' }));
-    const working = Object.values(this.S.entries).map((e) => ({ coin: e.o.coin, side: e.o.side, qty: e.o.qty, px: e.o.entry.px, stop: e.o.stop, until: e.until, orderId: e.o.id }));
+    const open = Object.values(this.S.positions).map((p) => ({ coin: p.coin, side: p.side, qty: p.qty, px: p.entry, entry: p.entry, stop: p.stop, target: p.target, entryT: p.entryT, last: this.last.get(p.coin) || p.entry, strategies: p.strategies.map((s) => s.name), orderId: p.orderId, exchangeStop: p.sl ? p.sl.state : 'none' }, p.owner ? { owner: p.owner } : {}));
+    const working = Object.values(this.S.entries).map((e) => Object.assign({ coin: e.o.coin, side: e.o.side, qty: e.o.qty, px: e.o.entry.px, stop: e.o.stop, until: e.until, orderId: e.o.id }, e.o.owner ? { owner: e.o.owner } : {}, e.o.reduceOnly ? { reduceOnly: true } : {}));
     const msg = { ts: this.now(), open, working, paused: !!this.S.paused, account: 'demo', equity: this.snap ? this.snap.equity : null };
     await this.bus.kv.set('positions', msg);
     await this.publish('positions', msg);

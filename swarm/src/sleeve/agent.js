@@ -9,9 +9,10 @@
  *                  and a dry run of the same targets against the live account and the other strategies' positions
  * and keeps the book in kv 'sleeve:trend', so a restart continues it (and catches up the hours it missed).
  *
- * SHADOW ONLY. It sends no order, intent or command and holds no key: on the PC it runs isolated like the brain
- * (core/isolate.js RULES). Trading needs phase 2 of the design: the coordinator turns sleeve.target into signed,
- * risk-checked orders, and the trader keeps the sleeve's positions apart. Until then any other mode runs as shadow.
+ * It only ASKS. It sends no order, intent or command and holds no key: on the PC it runs isolated like the brain
+ * (core/isolate.js RULES). Whether the sleeve trades is the coordinator's mode 'sleeve:trend' (Ibrahim's /mode): in
+ * trade, the coordinator runs plan() on its own state and signs the legs (phase 2 of the design). This agent keeps its
+ * shadow book either way, as the evidence the live account is compared with.
  * Universe: the top maxCoins of uni.list by Binance volume (the research used the top 20); a coin that drops out
  * keeps being priced, with weight 0, until the book is flat in it. Funding: settlements seen on md.funding.
  */
@@ -34,7 +35,7 @@ class TrendSleeve extends Agent {
     const C = (this.C = Object.assign({ enabled: true, mode: 'shadow', maxCoins: 20, historyDays: 560, warmDays: 400, shadowSince: null, settleMin: 1, waitMin: 10, tickMs: 60000, rules: {} }, (this.cfg.sleeves || {}).trend || {}));
     this.mode = 'shadow';
     if (C.enabled === false || C.mode === 'off') { this.off = true; this.setStatus('ok', 'off in config'); return; }
-    if (C.mode !== 'shadow') this.warn(`trend sleeve mode "${C.mode}" is not built yet (docs/TREND_SLEEVE_DESIGN.md, phase 2): it runs in shadow`);
+    if (C.mode !== 'shadow') this.warn(`trend sleeve mode "${C.mode}" in the config is ignored: only Ibrahim's /mode sleeve:trend trade makes it trade (the coordinator decides)`);
     this.limits = this.ctx.riskLimits || this.cfg.riskLimits || readRisk();
     if (!this.limits) throw new Error('trend-sleeve needs the risk limits (config/risk.json)');
     this.rules = Object.assign({}, C.rules, { equity0: (this.cfg.trading || {}).paperEquity || 10000 });
@@ -136,7 +137,9 @@ class TrendSleeve extends Agent {
     const legs = (last.legs || []).filter((l) => l.qty || l.verdict === 'reject' || l.kind === 'stop').map((l) => ({ coin: l.coin, kind: l.kind, qty: +(+l.qty).toPrecision(6), px: l.px, stop: l.stop == null ? null : +(+l.stop).toPrecision(6), verdict: l.verdict, reasons: l.reasons }));
     const live = await this.liveCheck(weights, grid, sim, i).catch((e) => { this.error('live check', e); return null; });
     const sm = S.summary(this.st, this.rules);
-    await this.publish('sleeve.target', { sleeve: 'trend', ts, mode: this.mode, weights, capitalShare: this.rules.capitalShare, portScale: +sim.portScale.toFixed(3), coins: grid.coins.length, late });
+    // sigma (daily vol) sets the 8σ stops; the coordinator clamps it and checks every limit on its own state
+    const sigma = {}; grid.coins.forEach((g, j) => { const v = sim.targets.vols[j][i] / sq; if (v > 0) sigma[g.coin] = +v.toPrecision(5); });
+    await this.publish('sleeve.target', { sleeve: 'trend', ts, mode: this.mode, weights, sigma, capitalShare: this.rules.capitalShare, portScale: +sim.portScale.toFixed(3), coins: grid.coins.length, late });
     await this.publish('sleeve.state', {
       sleeve: 'trend', ts, mode: this.mode, since: this.C.shadowSince, equity: +this.st.eq.toFixed(2), equity0: this.rules.equity0, peak: +this.st.peak.toFixed(2), riskMode: this.st.mode,
       holdings, legs, gross: +(gross / this.st.eq).toFixed(3), riskPct: +((last.riskPct || 0) * 100).toFixed(2),
