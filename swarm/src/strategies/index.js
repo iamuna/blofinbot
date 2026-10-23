@@ -20,5 +20,6 @@ const PLUGINS = [
   'candles',
   'funding_fade',
   'donchian_trend',
+  'oi_flush',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

@@ -3,6 +3,57 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-23 03:45 — funding-fade verdict; new try: open-interest flush reversal (12h, 1d)
+
+**Tries: 244 (factory `trials.jsonl` after today's log) → t bar 3.19.** Nothing passes the backtest gate. Logged today:
+funding-fade@720 from the 5-year sweep (was never logged; @240 has the factory candidate's key) and the two oi-flush
+sweep variants (results pending; the factory candidate oi-flush-12h shares @720's key).
+
+**funding-fade (2026-10-21 try)**:
+- Factory, funding-fade-4h (6.5 months × 31 coins): 15 trades, −0.32 R, t −1.7. Too few to judge; negative.
+- Sweep @4h: 3,568 trades, +0.012 R, Sharpe 0.16, t 0.36, 2026 −31 R. No edge. **Candidate moved to
+  `factory/rejected/`.**
+- Sweep @12h: 1,392 trades, +0.069 R, Sharpe 0.78, **t 1.73**, +96 R (+92 R at 1.5× costs), max DD 68 R; by year
+  2021 (Q4 only) −59, 2022 +0.6, 2023 +43, 2024 +66, 2025 +12, 2026 +34; out-of-sample window (2022-10 →) long +79 /
+  short +69 R, the best Sharpe in hindsight (1.54) of 103. Both sides earn, as the rule demanded. But t 1.73 is far
+  under 3.19, and the first third (2021-10 → 2023-05) is almost surely negative (the 3 months of 2021 lost 59 R:
+  high funding in a running bull market is not a sell signal). Not a watch strategy (needs every third positive);
+  **not added to shadow by the researcher**. (The repo consolidation the same morning put funding-fade-4h into shadow
+  because the plugin default never fired live; on this evidence the 4h version has no edge — a retirement candidate
+  for the agent manager once it has a shadow record.) Worth one more look only with the per-third numbers from a later sweep.
+- Side effect on the walk-forward: with funding-fade in the pool the selector picked funding-fade@240 in 2024-Q1
+  (−101 R) and the 12-month/top-5 walk-forward fell from Sharpe 0.49 to **0.10 (t 0.19)**, ≈ 0.8%/year. Every extra
+  variant in the pool is one more lucky-looking pick for the selector: the walk-forward is not a usable portfolio.
+
+**swarm-state** now exists (home PC running on PAPER; last sync 2026-10-23 03:38 UTC). It carries summary, shadow and trade logs
+only — the book / liquidation recordings stay on the PC, so ideas 2 and 3 in the queue still cannot be tested here.
+
+### New try (2 sweep variants + 1 factory candidate): `oi-flush`
+
+- **Mechanism**: open interest falling 15%+ in three days during a big price move means positions are being closed
+  by force or in a hurry — long liquidations and margin calls into a drop, shorts squeezed out into a rally. Forced
+  traders pay for immediacy, so price overshoots; once the forced flow is spent (the leverage is gone), part of the
+  move should revert. The candle tests never saw open interest; this is the first slow strategy that uses it.
+- **Source**: Coval & Stafford, "Asset fire sales (and purchases) in equity markets" (JFE 86, 2007) — forced trades
+  move prices from value and reverse over the following weeks; Brunnermeier & Pedersen, "Market liquidity and
+  funding liquidity" (RFS 2009) — margin-driven spirals. Own data: the 15-minute long-flush study (+25 bps after
+  60 min, t 1.2 — weak), and against it the 15-minute short-squeeze line, which continued (+78 bps). Different
+  horizon; the sweep's long/short split will say which side, if any, carries it.
+- **Rule** (declared before any result, one parameter set): on 12h (1d) bars, open interest −15% or more over 72h
+  and the close moved ≥ 2.5 ATR → armed for 3 bars (re-armed while the flush continues); enter when a bar closes
+  past the previous bar's high (long after a drop) / low (short after a rise); stop 0.5 ATR beyond the flush
+  extreme; no target; time stop 10 bars; cooldown 6 bars. The flush bar itself never enters.
+- **Tests**: plugin `swarm/src/strategies/oi_flush.js` (on `main`); its unit test `test/oi_flush.test.js` waits for
+  Ibrahim on `swarm-fix/oi-flush-test` (tests are protected since 2026-10-23); factory candidate `oi-flush-12h`;
+  5-year sweep group `oi-flush` @720 and @1440 — **not pushed today**: the repo consolidation (main = swarm,
+  workflows now run on `main`) started a sweep at 03:40 UTC with the new donchian-trend groups, and a push to
+  `history/` would cancel it. Next session: once that run is finished, add
+  `['oi-flush', 'oi-flush', [720, 1440], (tf) => ({ tf, onlyTfs: [tf] })]` to GROUPS and push. Binance's open-interest archive starts
+  ~2021-12, so the sweep's first months have no signals. Judge it on the sweep: positive at 1.5× costs in most
+  years, both sides reported, and per-third. If @12h and @1d disagree, that is noise, not a choice.
+- Only one idea today: the funding-fade variants (queue 5) would be fitting the same data before its sweep verdict
+  was clear, and the recordings-based ideas still lack data.
+
 ## 2026-10-21 03:40 — verdicts on the 1h/4h retail set; new try: funding-crowd fade (4h, 12h)
 
 **Tries: 240 (factory `trials.jsonl`, run 2026-10-21 02:41) → t bar 3.19.** Nothing passes the backtest gate.
@@ -163,8 +214,9 @@ Tries after these: 63 (bar 2.90).
 3. **Book imbalance** — BloFin top-5 book (recorded live): imbalance before 1–5 minute moves. Needs recordings.
 4. **Dip reversal with room to breathe** — a stop 3× the drop (or none, with small fixed size) and the rebound
    window of 60–120 min; outside the majors only. Every one of these is fitting to the same data: one try, then judge.
-5. **Funding-fade variants** — only after the sweep verdict: a 0.05% bar, a 7-day average, or funding relative to
-   the coin's own history. Each is another try.
+5. **Funding-fade variants** — sweep verdict 2026-10-23: 12h +0.069 R, t 1.73, lost in 2021-Q4's bull run. A
+   variant that skips strong uptrends (funding high *and* price under its 200-bar average) is the one with a reason;
+   still a try on the same data — only if oi-flush gives nothing.
 6. **More squeezes** — the squeeze signal fires 0.6 times a day; a lower bar (z 2.5, open interest −1%) would show
    whether the effect has breadth or was a handful of big days.
 

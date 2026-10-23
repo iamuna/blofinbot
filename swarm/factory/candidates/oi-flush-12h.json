@@ -1,0 +1,8 @@
+{
+  "name": "oi-flush-12h",
+  "base": "oi-flush",
+  "params": { "tf": 720, "onlyTfs": [720] },
+  "idea": "Open interest down 15%+ over 72h while price moved 2.5+ ATR means positions were closed by force (long liquidations into a drop, shorts squeezed into a rally). Forced flow overshoots; once a 12h bar closes back past the previous bar's extreme, trade the reversal. Stop 0.5 ATR beyond the flush extreme, no target, 5-day time stop.",
+  "source": "Coval & Stafford, Asset fire sales (and purchases) in equity markets (JFE 2007): forced trades push price from value and reverse over weeks; Brunnermeier & Pedersen (RFS 2009) liquidity spirals. Own data: 15-minute long-flush event study 2026-10-20 (+25 bps/60 min, t 1.2, weak).",
+  "author": "researcher"
+}
