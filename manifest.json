@@ -1,0 +1,471 @@
+{
+ "generated": "2026-10-23T03:40:50.710Z",
+ "months": [
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09"
+ ],
+ "currentMonthDays": [
+  "2026-10-01",
+  "2026-10-02",
+  "2026-10-03",
+  "2026-10-04",
+  "2026-10-05",
+  "2026-10-06",
+  "2026-10-07",
+  "2026-10-08",
+  "2026-10-09",
+  "2026-10-10",
+  "2026-10-11",
+  "2026-10-12",
+  "2026-10-13",
+  "2026-10-14",
+  "2026-10-15",
+  "2026-10-16",
+  "2026-10-17",
+  "2026-10-18",
+  "2026-10-19",
+  "2026-10-20",
+  "2026-10-21",
+  "2026-10-22"
+ ],
+ "coins": {
+  "SOL": {
+   "symbol": "SOLUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 149
+  },
+  "ZEC": {
+   "symbol": "ZECUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 151
+  },
+  "NEAR": {
+   "symbol": "NEARUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 152
+  },
+  "BTC": {
+   "symbol": "BTCUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 153
+  },
+  "XRP": {
+   "symbol": "XRPUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 157
+  },
+  "ETH": {
+   "symbol": "ETHUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 158
+  },
+  "DOGE": {
+   "symbol": "DOGEUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 157
+  },
+  "HYPE": {
+   "symbol": "HYPEUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 163
+  },
+  "UNI": {
+   "symbol": "UNIUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 156
+  },
+  "BNB": {
+   "symbol": "BNBUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 162
+  },
+  "SUI": {
+   "symbol": "SUIUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 163
+  },
+  "Q": {
+   "symbol": "QUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 160
+  },
+  "PUMP": {
+   "symbol": "PUMPUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 161
+  },
+  "ADA": {
+   "symbol": "ADAUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 156
+  },
+  "PEPE": {
+   "symbol": "1000PEPEUSDT",
+   "scale": 1000,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 160
+  },
+  "AVAX": {
+   "symbol": "AVAXUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 160
+  },
+  "LINK": {
+   "symbol": "LINKUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 157
+  },
+  "INJ": {
+   "symbol": "INJUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 160
+  },
+  "QNT": {
+   "symbol": "QNTUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58751,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 152
+  },
+  "AAVE": {
+   "symbol": "AAVEUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 156
+  },
+  "ARB": {
+   "symbol": "ARBUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 161
+  },
+  "DOT": {
+   "symbol": "DOTUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 158
+  },
+  "BCH": {
+   "symbol": "BCHUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 159
+  },
+  "LTC": {
+   "symbol": "LTCUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 160
+  },
+  "SAND": {
+   "symbol": "SANDUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 148
+  },
+  "HBAR": {
+   "symbol": "HBARUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 150
+  },
+  "XLM": {
+   "symbol": "XLMUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 152
+  },
+  "ICP": {
+   "symbol": "ICPUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 149
+  },
+  "XMR": {
+   "symbol": "XMRUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 149
+  },
+  "CRV": {
+   "symbol": "CRVUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 150
+  },
+  "ALGO": {
+   "symbol": "ALGOUSDT",
+   "scale": 1,
+   "rows1m": 293760,
+   "rowsOI": 58752,
+   "missing": [
+    "1m 2026-10-22",
+    "metrics 2026-10-22"
+   ],
+   "first": 1775001600000,
+   "last": 1792627140000,
+   "status": "ok",
+   "seconds": 140
+  }
+ }
+}
