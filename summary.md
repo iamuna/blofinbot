@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-23T20:33:42.893Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T20:43:42.893Z · account **PAPER** · risk mode normal
 
-Equity $10868.52 (start $10000) · today 10.49% · drawdown 6.0% · 61 trades · fees $106.12 · funding $2.36
+Equity $10866.28 (start $10000) · today 10.47% · drawdown 6.0% · 61 trades · fees $106.12 · funding $2.36
 
 Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h) · working orders: 0
 
@@ -90,4 +90,4 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: IRYS: wide-spread,price-divergence
+Not tradable now: IRYS: wide-spread; PONS: wide-spread
