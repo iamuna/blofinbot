@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T22:23:42.908Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T22:33:42.908Z · account **PAPER** · risk mode normal
 
-Equity $10876.42 (start $10000) · today 10.57% · drawdown 5.9% · 63 trades · fees $109.71 · funding $2.15
+Equity $10774.9 (start $10000) · today 9.54% · drawdown 6.8% · 67 trades · fees $113.18 · funding $2.09
 
-Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +ETHFI (wyckoff-spring-1h), +AERO (candle-engulfing-1h), +BAT (candle-engulfing-1h) · working orders: 0
+Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +ETHFI (wyckoff-spring-1h), +BAT (candle-engulfing-1h) · working orders: 1
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ADA: wide-spread; IRYS: wide-spread; PHA: wide-spread; PONS: wide-spread; ICP: wide-spread
+Not tradable now: PUMP: wide-spread; TIA: wide-spread; INJ: wide-spread; SAND: price-divergence; QNT: price-divergence; LIT: price-divergence; ONDO: price-divergence; IRYS: wide-spread,price-divergence; APR: wide-spread; PENGU: wide-spread; CRV: wide-spread; PYTH: wide-spread; USELESS: wide-spread; ICP: wide-spread; SEI: wide-spread; NIL: wide-spread
