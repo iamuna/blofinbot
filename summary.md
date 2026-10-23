@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T03:38:03.318Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T05:09:00.919Z · account **PAPER** · risk mode normal
 
-Equity $10278.42 (start $10000) · today 4.49% · drawdown 0.5% · 10 trades · fees $12.89 · funding $-0.19
+Equity $10230.45 (start $10000) · today 4.00% · drawdown 3.7% · 33 trades · fees $62.21 · funding $2.55
 
-Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h), +LTC (candle-engulfing-1h), +ONDO (candle-three-outside-1h), −US (candle-engulfing-1h), +XLM (candle-three-outside-1h), +ZRO (candle-three-outside-1h), +ARB (wyckoff-spring-1h), +BNB (wyckoff-spring-1h), +DOGE (wyckoff-spring-1h), +ETC (candle-engulfing-1h), +ETH (wyckoff-spring-1h+candle-engulfing-1h), +FIL (candle-three-outside-1h), +HBAR (candle-engulfing-1h), +HYPE (wyckoff-spring-1h+candle-engulfing-1h), +LINK (wyckoff-spring-1h), +NIL (candle-engulfing-1h), +OP (candle-engulfing-1h), +PENDLE (wyckoff-spring-1h+candle-engulfing-1h), +SEI (candle-engulfing-1h), +SHIB (candle-engulfing-1h), +TRX (candle-engulfing-1h), +XRP (candle-engulfing-1h) · working orders: 0
+Open: none · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -12,6 +12,7 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h)
 | binance-feed | ok |  |
 | blofin-feed | ok |  |
 | brain | ok |  |
+| brain-host | ok |  |
 | coordinator | ok |  |
 | events | ok |  |
 | guard | ok |  |
@@ -49,7 +50,11 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h)
 | strategy:candle-tweezer-4h | ok |  |
 | strategy:crowd-squeeze | ok |  |
 | strategy:dip-reversal | ok |  |
-| strategy:funding-fade | ok |  |
+| strategy:donchian-12h-60 | ok |  |
+| strategy:donchian-1d-150 | ok |  |
+| strategy:donchian-1d-20 | ok |  |
+| strategy:donchian-1d-60 | ok |  |
+| strategy:funding-fade-4h | ok |  |
 | strategy:harmonic | ok |  |
 | strategy:intraday-trend | ok |  |
 | strategy:it-45-hold16 | ok |  |
@@ -63,6 +68,7 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h)
 | strategy:ma-retest-12h | ok |  |
 | strategy:ma-retest-1d | ok |  |
 | strategy:noise-breakout | ok |  |
+| strategy:oi-flush | ok |  |
 | strategy:overshoot-fade | ok |  |
 | strategy:rsi-macd | ok |  |
 | strategy:rsi-macd-trend-12h | ok |  |
@@ -76,4 +82,4 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h)
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: APR: wide-spread; PONS: wide-spread
+Not tradable now: PEPE: wide-spread
