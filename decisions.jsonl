@@ -123,3 +123,5 @@
 {"ts":1792753204893,"id":"int-candle-three-outside-1h-mvkuyu80-19","coin":"XPL","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 64.3"],"mode":"normal"}
 {"ts":1792760403679,"id":"int-candle-three-outside-1h-mvkz95s0-1","coin":"STRK","verdict":"approve","qty":13321.96822247091,"reasons":[],"mode":"normal"}
 {"ts":1792760403696,"id":"int-candle-engulfing-1h-mvkz95s0-1","coin":"TIA","verdict":"trim","qty":1912.7,"reasons":["trimmed by book depth"],"mode":"normal"}
+{"ts":1792764004053,"id":"int-wyckoff-spring-1h-mvl1ebk0-1","coin":"COMP","verdict":"approve","qty":43.259599781312545,"reasons":[],"mode":"normal"}
+{"ts":1792764004063,"id":"int-wyckoff-spring-1h-mvl1ebk0-3","coin":"OP","verdict":"trim","qty":9192.2,"reasons":["trimmed by book depth"],"mode":"normal"}
