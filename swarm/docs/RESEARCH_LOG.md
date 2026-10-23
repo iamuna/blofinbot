@@ -51,6 +51,9 @@ only — the book / liquidation recordings stay on the PC, so ideas 2 and 3 in t
   `['oi-flush', 'oi-flush', [720, 1440], (tf) => ({ tf, onlyTfs: [tf] })]` to GROUPS and push. Binance's open-interest archive starts
   ~2021-12, so the sweep's first months have no signals. Judge it on the sweep: positive at 1.5× costs in most
   years, both sides reported, and per-third. If @12h and @1d disagree, that is noise, not a choice.
+- **Factory verdict (run 2026-10-23 03:55, 6.5 months × 31 coins)**: oi-flush-12h 5 trades, −0.86 R (all three thirds
+  negative). Five trades say nothing either way — the rule needs a 15% open-interest drop in 3 days, rare in a
+  6.5-month window. The verdict waits for the 5-year sweep group (deferred, see above).
 - Only one idea today: the funding-fade variants (queue 5) would be fitting the same data before its sweep verdict
   was clear, and the recordings-based ideas still lack data.
 
