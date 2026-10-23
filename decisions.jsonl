@@ -82,3 +82,21 @@
 {"ts":1792735204263,"id":"int-candle-three-outside-1h-mvkk91c0-2","coin":"SAND","verdict":"approve","qty":41612.69890544233,"reasons":[],"mode":"normal"}
 {"ts":1792738803868,"id":"int-candle-engulfing-1h-mvkme740-2","coin":"PONS","verdict":"approve","qty":6698.213062180626,"reasons":[],"mode":"normal"}
 {"ts":1792738803878,"id":"int-ma-21-200-mvkme740-1","coin":"US","verdict":"trim","qty":48470,"reasons":["trimmed by book depth"],"mode":"normal"}
+{"ts":1792742404216,"id":"int-candle-engulfing-1h-mvkojcw0-3","coin":"ADA","verdict":"reject","qty":0,"reasons":["spread 13.9 bps > 10"],"mode":"normal"}
+{"ts":1792742404218,"id":"int-candle-engulfing-1h-mvkojcw0-4","coin":"AVAX","verdict":"approve","qty":272.51373689010495,"reasons":[],"mode":"normal"}
+{"ts":1792742404234,"id":"int-candle-engulfing-4h-mvkojcw0-1","coin":"BAT","verdict":"trim","qty":900,"reasons":["trimmed by book depth"],"mode":"normal"}
+{"ts":1792742404244,"id":"int-candle-engulfing-1h-mvkojcw0-5","coin":"ETH","verdict":"approve","qty":1.7524301928393864,"reasons":[],"mode":"normal"}
+{"ts":1792742404246,"id":"int-candle-engulfing-1h-mvkojcw0-6","coin":"FIL","verdict":"approve","qty":3106.6422966220684,"reasons":[],"mode":"normal"}
+{"ts":1792742404257,"id":"int-candle-engulfing-1h-mvkojcw0-7","coin":"INJ","verdict":"approve","qty":176.43365094364324,"reasons":[],"mode":"normal"}
+{"ts":1792742404265,"id":"int-candle-engulfing-1h-mvkojcw0-8","coin":"LINK","verdict":"trim","qty":134.93045045620312,"reasons":["trimmed by net BTC exposure"],"mode":"normal"}
+{"ts":1792742404272,"id":"int-candle-engulfing-1h-mvkojcw0-9","coin":"LTC","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.0842"],"mode":"normal"}
+{"ts":1792742404273,"id":"int-candle-engulfing-1h-mvkojcw0-10","coin":"OP","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 41.8"],"mode":"normal"}
+{"ts":1792742404278,"id":"int-candle-engulfing-1h-mvkojcw0-11","coin":"PENDLE","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 2.40"],"mode":"normal"}
+{"ts":1792742404279,"id":"int-candle-engulfing-1h-mvkojcw0-12","coin":"PENGU","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 630"],"mode":"normal"}
+{"ts":1792742404279,"id":"int-candle-engulfing-1h-mvkojcw0-13","coin":"SOL","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.0480"],"mode":"normal"}
+{"ts":1792742404280,"id":"int-candle-engulfing-1h-mvkojcw0-14","coin":"SUI","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 5.03"],"mode":"normal"}
+{"ts":1792742404280,"id":"int-candle-engulfing-1h-mvkojcw0-15","coin":"TAO","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.0191"],"mode":"normal"}
+{"ts":1792742404281,"id":"int-candle-engulfing-1h-mvkojcw0-16","coin":"XLM","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 28.2"],"mode":"normal"}
+{"ts":1792742404281,"id":"int-candle-engulfing-1h-mvkojcw0-17","coin":"XPL","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 64.0"],"mode":"normal"}
+{"ts":1792742404282,"id":"int-candle-engulfing-1h-mvkojcw0-18","coin":"XRP","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 3.78"],"mode":"normal"}
+{"ts":1792742404282,"id":"int-candle-engulfing-1h-mvkojcw0-19","coin":"ZEREBRO","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 170"],"mode":"normal"}
