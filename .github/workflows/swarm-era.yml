@@ -1,0 +1,100 @@
+name: Swarm era test (2017-2021, before the 5-year sweep)
+
+# The 5-year sweep starts in 2021. This tests the slow trend strategies on the era before it (the 2018 bear market,
+# 2019, the 2020-21 bull run) with Binance SPOT 1-minute archives (data.binance.vision; the coding sessions' network
+# cannot reach Binance, GitHub's runners can). Spot, not BloFin perpetuals: no funding, so use it for direction and
+# stability, not for costs. Each variant runs as is and with break-even at +1 R (as the paper trader).
+# Imported with swarm/tools/import_binance_1m.js (gaps listed, never filled). Report: swarm-reports branch, era/.
+# By hand only (expansion/RESULTS_2026-10-23.md).
+
+on:
+  workflow_dispatch:
+    inputs:
+      coins:
+        description: "Coins (Binance spot <COIN>USDT)"
+        default: "BTC ETH BNB XRP ADA LTC LINK TRX XLM EOS ETC NEO"
+      from:
+        description: "First month of data (YYYY-MM)"
+        default: "2017-08"
+      to:
+        description: "Last month of data (YYYY-MM)"
+        default: "2021-09"
+      trade_from:
+        description: "Count trades from (warm-up before: the 1d strategies need ~200 daily bars)"
+        default: "2018-03-01"
+
+permissions:
+  contents: write   # the report goes to the swarm-reports branch
+
+concurrency:
+  group: swarm-era
+  cancel-in-progress: true
+
+jobs:
+  era:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }   # the swarm's code runs here; no token on disk
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - name: Download and import the archives
+        env:
+          COINS: ${{ github.event.inputs.coins }}
+          FROM: ${{ github.event.inputs.from }}
+          TO: ${{ github.event.inputs.to }}
+        run: |
+          set -e
+          mkdir -p raw data
+          months=$(node -e 'let [y,m]=process.argv[1].split("-").map(Number);const [Y,M]=process.argv[2].split("-").map(Number);const o=[];while(y<Y||(y===Y&&m<=M)){o.push(y+"-"+String(m).padStart(2,"0"));if(++m>12){m=1;y++}}console.log(o.join(" "))' "$FROM" "$TO")
+          for c in $COINS; do
+            : > "raw/$c.csv"; got=0
+            for m in $months; do
+              f="${c}USDT-1m-$m.zip"; u="https://data.binance.vision/data/spot/monthly/klines/${c}USDT/1m/$f"
+              curl -sfL -o "raw/$f" "$u" || continue        # not listed yet that month
+              curl -sfL -o "raw/$f.CHECKSUM" "$u.CHECKSUM" && (cd raw && sha256sum -c "$f.CHECKSUM" > /dev/null) || { echo "::warning::checksum failed: $f"; continue; }
+              unzip -p "raw/$f" >> "raw/$c.csv"; got=$((got + 1)); rm -f "raw/$f" "raw/$f.CHECKSUM"
+            done
+            echo "$c: $got months"
+            [ "$got" -gt 0 ] && node swarm/tools/import_binance_1m.js --in "raw/$c.csv" --out data --coin "$c"
+            rm -f "raw/$c.csv"
+          done
+          du -sh data
+      - name: Backtest the slow strategies, with and without break-even
+        env: { TRADE_FROM: "${{ github.event.inputs.trade_from }}" }
+        run: |
+          node -e '
+            const v = [
+              ["ma-retest-12h", "ma-21-200", { mode: "retest", tf: 720, onlyTfs: [720] }],
+              ["ma-retest-1d", "ma-21-200", { mode: "retest", tf: 1440, onlyTfs: [1440] }],
+              ["ma-retest-4h", "ma-21-200", { mode: "retest", tf: 240, onlyTfs: [240] }],
+              ["ma-pullback-12h", "ma-21-200", { mode: "pullback", tf: 720, onlyTfs: [720] }],
+              ["rsi-macd-trend-12h", "rsi-macd", { mode: "trend", tf: 720, entry: "maker", onlyTfs: [720] }],
+              ["donchian-1d-20", "donchian-trend", { tf: 1440, onlyTfs: [1440], look: 20 }],
+              ["adaptive-score-4h", "adaptive-score", { tf: 240, onlyTfs: [240] }],
+              ["adaptive-score-12h", "adaptive-score", { tf: 720, onlyTfs: [720], holdBars: 30 }],
+            ];
+            const out = [];
+            for (const [name, base, params] of v) { out.push({ name, base, params }); out.push({ name: name + "+be", base, params, breakevenR: 1 }); }
+            require("fs").writeFileSync("variants.json", JSON.stringify(out));'
+          node --max-old-space-size=6000 swarm/src/backtest/run.js --data data --variants variants.json --from "$TRADE_FROM" --split 2020-01-01 --out era > /dev/null
+          for f in era/trades-*.csv; do node swarm/src/research/streak_rules.js "$f"; done > era/streaks.txt
+          { echo "# Era test $(date -u +%F): Binance spot, ${{ github.event.inputs.from }} → ${{ github.event.inputs.to }}, trades from $TRADE_FROM"; echo;
+            echo "Coins: ${{ github.event.inputs.coins }}. Spot: no funding. \"+be\" = stop to break-even at +1 R. Test column: trades from 2020-01-01."; echo;
+            tail -n +3 era/report.md; echo; echo '## Loss-streak rule (half size after 3 losses, skip after 6)'; echo; echo '```'; cat era/streaks.txt; echo '```'; } > era/era.md
+          cat era/era.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Publish report to swarm-reports
+        run: |
+          R="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git clone -q --depth 1 --branch swarm-reports "$R" rep 2>/dev/null || { mkdir rep && git -C rep init -q -b swarm-reports && git -C rep remote add origin "$R"; }
+          d="rep/era/$(date -u +%F)"; mkdir -p "$d"
+          cp era/era.md era/results.json era/streaks.txt "$d/"; cp data/manifest.json "$d/data-manifest.json"
+          cd rep && git config user.name "swarm era test" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "era test ${{ github.run_id }}" && for i in 1 2 3; do git pull -q --rebase origin swarm-reports && git push -q origin HEAD:swarm-reports && break; sleep 5; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: swarm-era
+          path: era
+          retention-days: 30

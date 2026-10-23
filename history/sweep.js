@@ -3,11 +3,15 @@
  * execution simulator) and the point-in-time universe. Nothing in the live swarm changes: the extra timeframes and
  * the universe gate are set up here, in memory.
  *
- *   node history/sweep.js --data <dir> --out <dir> [--shard 0/20] [--groups a,b] [--from 2021-10-01] [--list]
+ *   node history/sweep.js --data <dir> --out <dir> [--shard 0/20] [--groups a,b] [--frames 240,720] [--from 2021-10-01]
+ *        [--breakeven 1] [--list]
  *
  * --shard i/n: trade only the i-th of n coin groups (BTC's data is always read: other coins' features use it).
  * --print-coins: print the coins a shard reads (to download only those) and stop. The data dir then needs only
  * universe.json and manifest.json.
+ * --frames: only these timeframes of the chosen groups. --breakeven R: move no-trail stops to break-even at +R, as the
+ * paper and demo traders do (ExecSim breakevenR; off by default, as in shadow). --breakeven both: every variant twice,
+ * as is and with break-even at +1 R (named <variant>+be), in the same pass over the data.
  * Writes <out>/trades-<i>.jsonl.gz (one line per variant: daily sums by exit day [R, R at 1.5× costs, trades, net bps, long R, long trades],
  * and the trades for timeframes ≥ 30 minutes) and <out>/summary-<i>.json.
  */
@@ -41,12 +45,14 @@ const GROUPS = [
   ['donchian-20', 'donchian-trend', [720, 1440], (tf) => ({ tf, onlyTfs: [tf], look: 20, shorts: tf >= 1440 })],
   ['donchian-60', 'donchian-trend', [720, 1440], (tf) => ({ tf, onlyTfs: [tf], look: 60, shorts: tf >= 1440 })],
   ['donchian-150', 'donchian-trend', [1440], (tf) => ({ tf, onlyTfs: [tf], look: 150 })],
+  // 2026-10-23 (branch possible-expansion): the 1-minute bot's trend + momentum score, on slow bars only
+  ['adaptive-score', 'adaptive-score', [240, 720, 1440], (tf) => ({ tf, onlyTfs: [tf] })],
 ];
 
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }
 const ymd = (t) => new Date(t).toISOString().slice(0, 10);
 
-function variants(groupFilter) {
+function variants(groupFilter, frameFilter) {
   const S = require('../swarm/src/strategies');
   const out = [];
   for (const [group, base, frames, params, scale] of GROUPS) {
@@ -54,6 +60,7 @@ function variants(groupFilter) {
     const plugin = S.byName[base]; if (!plugin) throw new Error('no plugin ' + base);
     const native = Math.min(...plugin.tfs);
     for (const tf of frames) {
+      if (frameFilter && !frameFilter.includes(tf)) continue;
       const p = Object.assign({}, params(tf));
       if (scale && tf !== native) for (const [k, v] of Object.entries(plugin.params)) if (/Min$/.test(k) && typeof v === 'number') p[k] = Math.round(v * tf / native);
       out.push({ name: `${group === 'native' ? base : group}@${tf}`, group, base, tf, params: p });
@@ -64,7 +71,9 @@ function variants(groupFilter) {
 
 async function main() {
   const A = args();
-  const V = variants(A.groups ? A.groups.split(',') : null);
+  const V = variants(A.groups ? A.groups.split(',') : null, A.frames ? String(A.frames).split(',').map(Number) : null);
+  const both = A.breakeven === 'both', breakevenR = A.breakeven && !both ? +A.breakeven : null;
+  if (both) for (const v of V.slice()) V.push(Object.assign({}, v, { name: `${v.name}+be`, breakevenR: 1 }));
   if (A.list) { for (const v of V) console.log(v.name, JSON.stringify(v.params)); console.log(V.length, 'variants'); return; }
   const data = path.resolve(A.data), out = path.resolve(A.out || 'sweep-out');
   // timeframes: what the variants use, plus 1 (features), 5 (plugins that read 5-minute history), 15 (regime)
@@ -95,11 +104,11 @@ async function main() {
   console.error(`shard ${si}/${sn}: ${trade.size} coins (${[...trade].join(' ')}), ${V.length} variants, timeframes ${feat.TFS.join(',')}`);
   const { backtest } = require('../swarm/src/backtest/run');
   const t0 = Date.now();
-  const r = await backtest({ data, coins, variants: V.map((v) => ({ name: v.name, base: v.base, params: v.params })), warmupDays: 0, from: A.from ? Date.parse(A.from) : null,
+  const r = await backtest({ data, coins, variants: V.map((v) => ({ name: v.name, base: v.base, params: v.params, breakevenR: v.breakevenR })), warmupDays: 0, from: A.from ? Date.parse(A.from) : null, breakevenR,
     progress: (m, n) => console.error(`month ${m} done (${Math.round((Date.now() - t0) / 60000)} min)`) });
   // per variant: daily sums by exit day (R, R at 1.5× costs, trades, net bps) for the selector, and the trades
   // themselves for timeframes of 30 minutes and up (the short ones have millions)
-  const lines = [], summary = { shard: `${si}/${sn}`, coins: [...trade], minutes: Math.round((Date.now() - t0) / 60000), data: r.data, variants: {} };
+  const lines = [], summary = { shard: `${si}/${sn}`, breakevenR: both ? 'both' : breakevenR, coins: [...trade], minutes: Math.round((Date.now() - t0) / 60000), data: r.data, variants: {} };
   const cols = ['coin', 'side', 'entryT', 'exitT', 'exitKind', 'reason', 'riskBps', 'grossBps', 'feeBps', 'slipBps', 'fundBps', 'netBps', 'r'];
   for (const v of V) {
     const s = r.strategies[v.name], daily = {};
@@ -115,7 +124,7 @@ async function main() {
     }
     for (const x of Object.values(daily)) for (const k of [0, 1, 3, 4]) x[k] = +x[k].toFixed(4);
     const trades = v.tf >= 30 ? mine.map((t) => cols.map((c) => (typeof t[c] === 'number' ? +t[c].toFixed(4) : t[c]))) : null;
-    lines.push(JSON.stringify({ name: v.name, group: v.group, base: v.base, tf: v.tf, params: v.params, daily, cols: trades ? cols : null, trades }));
+    lines.push(JSON.stringify({ name: v.name, group: v.group, base: v.base, tf: v.tf, params: v.params, breakevenR: v.breakevenR || breakevenR || null, daily, cols: trades ? cols : null, trades }));
     summary.variants[v.name] = { n: mine.length, tinyRisk: tiny, ideas: s.ideas, unfilled: s.unfilled };
   }
   fs.writeFileSync(path.join(out, `trades-${si}.jsonl.gz`), zlib.gzipSync(lines.join('\n') + '\n'));

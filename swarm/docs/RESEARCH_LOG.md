@@ -3,6 +3,21 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-23 — the 1-minute bot's tools on the 5-year data (break-even, adaptive-score, streak rule)
+
+Branch possible-expansion run for real: 60 longest-listed coins of `swarm-history-v1`, 2021-10 → 2026-09, sweep
+with `--breakeven both`. Full report: [../../expansion/RESULTS_2026-10-23.md](../../expansion/RESULTS_2026-10-23.md).
+- Break-even at +1 R (what paper/demo did, shadow did not): robust five +1,345 R → +1,198 R, Sharpe 1.33 → 1.24;
+  ma-retest-12h +0.183 → +0.133 R a trade. **`trading.breakevenR` set to 0**: paper exits as shadow and backtests.
+- adaptive-score (the 1-minute bot's trend + momentum score): 4h −0.009, 12h +0.024 (t 0.56), 1d +0.036 (t 0.65).
+  Rejected; 6 tries.
+- Loss-streak rule: −10 to −32% of R, R÷DD better in 2 of 5. Not adopted. Its replay sized trades at exit
+  (look-ahead with overlapping trades), fixed.
+- Event study works as a screen: winners have edge (MFE ÷ |MAE|) 1.3–1.6 with forward R positive in both halves,
+  losers ≤ 1. Rule: edge ≥ ~1.2 and both halves positive before writing a factory candidate.
+- Both sides earn, by regime (longs in 2023/24, shorts in 2022/25): no side filter. The 2017–2021 era test is
+  `swarm-era.yml` (by hand).
+
 ## 2026-10-23 — deep review of every strategy (Ibrahim: "improve them or fix them")
 
 136 variants (every family × 1h/2h/4h/12h/1d, 14 candle patterns separately) on hourly history 2020–2026, research

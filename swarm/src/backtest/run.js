@@ -5,6 +5,7 @@
  *
  *   node swarm/src/backtest/run.js --data <swarm-data dir> [--strategies a,b] [--coins BTC,ETH] [--from 2026-05-15]
  *        [--to 2026-10-19] [--warmup-days 21] [--slip 1.5] [--out dir] [--params '{"intraday-trend":{"volZ":1}}']
+ *        [--breakeven 1]   (move no-trail stops to break-even at +1 R, as the paper/demo traders do; default off)
  * Writes <out>/results.json, <out>/report.md and <out>/trades-<strategy>.csv.
  */
 'use strict';
@@ -31,8 +32,9 @@ async function backtest(o) {
   if (o.coins) coins = coins.filter((c) => o.coins.includes(c));
   coins.sort((a, b) => (a === 'BTC' ? -1 : b === 'BTC' ? 1 : a.localeCompare(b))); // BTC first in every minute
   const months = [...new Set([...man.months, ...(man.currentMonthDays || []).map((d) => d.slice(0, 7))])].sort();
-  // variants: [{name, base, params}] — several parameter sets of the same plugin share one pass over the data
-  const plugins = o.variants ? o.variants.map((v) => Object.assign({}, strategies.byName[v.base], { name: v.name, variantParams: v.params || {} }))
+  // variants: [{name, base, params, breakevenR?}] — several parameter sets of the same plugin share one pass over the data
+  // (breakevenR on a variant overrides o.breakevenR for that variant's simulator: with and without in one pass)
+  const plugins = o.variants ? o.variants.map((v) => Object.assign({}, strategies.byName[v.base], { name: v.name, variantParams: v.params || {}, breakevenR: v.breakevenR }))
     : (o.strategies ? o.strategies.map((n) => strategies.byName[n]).filter(Boolean) : strategies.all);
   const fsx = new FeatureState(), regime = new RegimeState();
   const funding = {}, oi = {};
@@ -40,7 +42,7 @@ async function backtest(o) {
   const evalFrom = o.from || 0, evalTo = o.to || Infinity;
   const sims = {}, hosts = {};
   for (const s of plugins) {
-    const sim = new ExecSim({ funding, slipBps: o.slip, onClose: (idea, res) => hosts[s.name].onClose(idea.coin, idea.id, res) });
+    const sim = new ExecSim({ funding, slipBps: o.slip, breakevenR: s.breakevenR == null ? o.breakevenR : s.breakevenR, onClose: (idea, res) => hosts[s.name].onClose(idea.coin, idea.id, res) });
     sims[s.name] = sim;
     hosts[s.name] = new StrategyHost(s, { fs: fsx, regime, params: Object.assign({}, s.variantParams, (o.params || {})[s.name]) });
   }
@@ -77,7 +79,7 @@ async function backtest(o) {
     if (o.progress) o.progress(m, minutes);
   }
   const from = evalFrom || firstT + (o.warmupDays == null ? 21 : o.warmupDays) * DAY;
-  const out = { generated: new Date().toISOString(), data: { from: new Date(firstT).toISOString(), to: new Date(lastT).toISOString(), coins: coins.length, minutes }, evalFrom: new Date(from).toISOString(), costs: { makerBps: 2, takerBps: 6, slipBps: o.slip == null ? 1.5 : o.slip }, strategies: {} };
+  const out = { generated: new Date().toISOString(), data: { from: new Date(firstT).toISOString(), to: new Date(lastT).toISOString(), coins: coins.length, minutes }, evalFrom: new Date(from).toISOString(), costs: { makerBps: 2, takerBps: 6, slipBps: o.slip == null ? 1.5 : o.slip, breakevenR: o.breakevenR || null }, strategies: {} };
   for (const s of plugins) {
     const trades = sims[s.name].trades.filter((t) => t.entryT >= from);
     const ideas = hosts[s.name].stats;
@@ -113,6 +115,7 @@ async function main() {
     from: A.from ? Date.parse(A.from) : null, to: A.to ? Date.parse(A.to) : null, warmupDays: A['warmup-days'] == null ? 21 : +A['warmup-days'],
     slip: A.slip == null ? undefined : +A.slip, params: A.params ? JSON.parse(A.params) : {}, progress: (m, n) => console.error(`month ${m} done, ${n} minutes`),
     variants: A.variants ? JSON.parse(fs.readFileSync(A.variants, 'utf8')) : null, split: A.split ? Date.parse(A.split) : null,
+    breakevenR: A.breakeven == null ? null : +A.breakeven,
   });
   const out = path.resolve(A.out || 'swarm-backtest');
   fs.mkdirSync(out, { recursive: true });
