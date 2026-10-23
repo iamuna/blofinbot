@@ -1,36 +1,36 @@
 # 5-year sweep: every strategy × every timeframe, walk-forward selection
 
-Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 103 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
+Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 108 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
 
 ## The honest result: walk-forward (12-month window, top 5, re-picked every quarter)
 
-Out-of-sample 2022-10-01 → 2026-09-30: **109.75 R, Sharpe 0.1, t 0.19**, max drawdown 692.21 R. Sized for a 20% worst drawdown: **+3.2% in 4.0 years** (≈ 0.8% a year).
+Out-of-sample 2022-10-01 → 2026-09-30: **130.93 R, Sharpe 0.12, t 0.24**, max drawdown 671.02 R. Sized for a 20% worst drawdown: **+3.9% in 4.0 years** (≈ 1.0% a year).
 
 | Year | R | % | Sharpe | Max DD (R) |
 |---|---|---|---|---|
 | 2022 | 58 | +1.7% | 0.93 | 110.68 |
-| 2023 | -534.64 | -15.4% | -2.86 | 625.75 |
-| 2024 | -36.64 | -1.1% | -0.2 | 186.19 |
-| 2025 | 569.8 | +16.5% | 1.27 | 127.94 |
-| 2026 | 53.22 | +1.5% | 0.35 | 173.05 |
+| 2023 | -560.48 | -16.7% | -3.15 | 625.75 |
+| 2024 | 10.39 | +0.3% | 0.06 | 147.9 |
+| 2025 | 569.8 | +17.0% | 1.27 | 127.94 |
+| 2026 | 53.22 | +1.6% | 0.35 | 173.05 |
 
-Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 103 variants together (scaled to 5 slots) -499245.02 R (Sharpe -48.55).
+Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 108 variants together (scaled to 5 slots) -476133.61 R (Sharpe -48.54).
 
-Timeframes picked (quarter-slots): 5m 4, 1h 4, 2h 9, 4h 9, 12h 32, 1d 22
+Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 
 ### Robustness (other windows and pick counts — not chosen after the fact)
 
 | Window | Top | From | R | Sharpe | Max DD | t |
 |---|---|---|---|---|---|---|
-| 6 months | 3 | 2022-04-01 | 708.78 | 0.6 | 387.83 | 1.28 |
-| 6 months | 5 | 2022-04-01 | 500.46 | 0.23 | 994.53 | 0.5 |
-| 6 months | 10 | 2022-04-01 | 1078.73 | 0.22 | 1533.85 | 0.46 |
-| 12 months | 3 | 2022-10-01 | 171.11 | 0.17 | 501.7 | 0.35 |
-| 12 months | 5 | 2022-10-01 | 109.75 | 0.1 | 692.21 | 0.19 |
-| 12 months | 10 | 2022-10-01 | 805.38 | 0.31 | 1434.57 | 0.62 |
+| 6 months | 3 | 2022-04-01 | 788.3 | 0.67 | 333.08 | 1.43 |
+| 6 months | 5 | 2022-04-01 | 277.88 | 0.16 | 997.57 | 0.33 |
+| 6 months | 10 | 2022-04-01 | 1621.16 | 0.36 | 1208.55 | 0.77 |
+| 12 months | 3 | 2022-10-01 | 165.33 | 0.17 | 507.47 | 0.33 |
+| 12 months | 5 | 2022-10-01 | 130.93 | 0.12 | 671.02 | 0.24 |
+| 12 months | 10 | 2022-10-01 | 551.49 | 0.21 | 1646.1 | 0.43 |
 | 24 months | 3 | 2023-10-01 | 98.42 | 0.26 | 250.62 | 0.45 |
 | 24 months | 5 | 2023-10-01 | 134.57 | 0.23 | 346.1 | 0.39 |
-| 24 months | 10 | 2023-10-01 | 1420.65 | 0.82 | 562.01 | 1.42 |
+| 24 months | 10 | 2023-10-01 | 1322.81 | 0.76 | 585.19 | 1.31 |
 
 ### Picks per quarter (out-of-sample R in brackets)
 
@@ -38,8 +38,8 @@ Timeframes picked (quarter-slots): 5m 4, 1h 4, 2h 9, 4h 9, 12h 32, 1d 22
 - 2023-01-01: ma-pullback-ride@720 (-114.27), ma-pullback-ride@1440 (-61.82), ma-pullback@1440 (-85.74), ma-retest@1440 (-20.05), ma-pullback@720 (-147.42) → -429.3 R
 - 2023-04-01: ma-retest@240 (-57.29), ma-retest@120 (-32.92), harmonic@1440 (-0.13), funding-fade@240 (-6.73), ma-pullback-ride@1440 (51.32) → -45.75 R
 - 2023-07-01: ma-pullback-ride@1440 (-8.91), rsi-macd-rev@720 (-21.64), rsi-macd-rev@1440 (-4.87), funding-fade@720 (10.18), ma-retest@240 (-4.08) → -29.32 R
-- 2023-10-01: funding-fade@720 (-2.81), rsi-macd-rev@720 (-34.5), funding-fade@240 (-19.6), ma-pullback-ride@1440 (23.72), intraday-trend@240 (2.91) → -30.28 R
-- 2024-01-01: funding-fade@720 (30.77), ma-retest@720 (18.07), ma-retest@1440 (-5.28), trend-pullback@60 (18.82), funding-fade@240 (-100.62) → -38.24 R
+- 2023-10-01: funding-fade@720 (-2.81), rsi-macd-rev@720 (-34.5), funding-fade@240 (-19.6), donchian-150@1440 (2.62), donchian-20@1440 (-1.83) → -56.12 R
+- 2024-01-01: funding-fade@720 (30.77), donchian-150@1440 (-11.05), ma-retest@720 (18.07), ma-retest@1440 (-5.28), donchian-20@1440 (-23.72) → 8.79 R
 - 2024-04-01: ma-retest@720 (1.38), ma-pullback-ride@1440 (-59.44), funding-fade@720 (28.75), rsi-macd-trend@1440 (30.3), ma-pullback@720 (-64.43) → -63.44 R
 - 2024-07-01: ma-retest@720 (15.04), funding-fade@720 (0.87), trend-pullback@60 (11.27), rsi-macd-trend@1440 (6.52), trend-pullback@120 (48.67) → 82.37 R
 - 2024-10-01: ma-retest@720 (8.15), trend-pullback@120 (-20.22), funding-fade@720 (5.94), ma-retest@1440 (2.81), harmonic@120 (-13.99) → -17.31 R
@@ -71,6 +71,9 @@ Timeframes picked (quarter-slots): 5m 4, 1h 4, 2h 9, 4h 9, 12h 32, 1d 22
 | dip-reversal |  |  | -2.23 / -0.0493 (98980) |  |  |  |  |  |  |  |
 | squeeze-ride |  |  | -0.27 / -0.0105 (9883) |  |  |  |  |  |  |  |
 | funding-fade |  |  |  |  |  |  |  | 0.16 / 0.0119 (3568) | 0.78 / 0.069 (1392) |  |
+| donchian-20 |  |  |  |  |  |  |  |  | -0.89 / -0.0324 (12658) | 0.27 / 0.0107 (11196) |
+| donchian-60 |  |  |  |  |  |  |  |  | -0.43 / -0.018 (5124) | -0.09 / -0.0033 (3997) |
+| donchian-150 |  |  |  |  |  |  |  |  |  | -0.29 / -0.017 (1478) |
 
 ## Best 15 in hindsight (same out-of-sample period; for reference, not a result)
 
@@ -83,6 +86,7 @@ Timeframes picked (quarter-slots): 5m 4, 1h 4, 2h 9, 4h 9, 12h 32, 1d 22
 | rsi-macd-trend@720 | 5595 | 0.0593 | 331.85 | 303.43 | -108 / 439 | 0.7 | 143.38 | 2021: -28, 2022: 314, 2023: -16, 2024: 116, 2025: 157, 2026: 32 |
 | intraday-trend@120 | 19815 | 0.0379 | 750.13 | 524.13 | 241 / 509 | 0.65 | 315.85 | 2021: 33, 2022: -13, 2023: -37, 2024: 45, 2025: 713, 2026: 19 |
 | trend-pullback@60 | 10966 | 0.0304 | 332.85 | 190.46 | 22 / 310 | 0.6 | 199.76 | 2021: -89, 2022: 99, 2023: 141, 2024: 195, 2025: 107, 2026: -80 |
+| donchian-20@1440 | 9120 | 0.0177 | 161.33 | 129.86 | -37 / 198 | 0.45 | 95.26 | 2021: -81, 2022: 20, 2023: 120, 2024: 5, 2025: 20, 2026: 35 |
 | trend-pullback@120 | 2525 | 0.0315 | 79.43 | 57.02 | 17 / 63 | 0.36 | 89.54 | 2021: 3, 2022: 30, 2023: 22, 2024: 113, 2025: -35, 2026: -4 |
 | ma-pullback@720 | 4873 | 0.0248 | 120.88 | 102.8 | -91 / 212 | 0.34 | 175.01 | 2021: -76, 2022: 255, 2023: -18, 2024: -24, 2025: 48, 2026: 29 |
 | rsi-macd-rev@720 | 1991 | 0.0336 | 66.96 | 57.99 | 110 / -43 | 0.32 | 95.57 | 2021: -1, 2022: 15, 2023: 33, 2024: 73, 2025: -37, 2026: -14 |
@@ -90,4 +94,3 @@ Timeframes picked (quarter-slots): 5m 4, 1h 4, 2h 9, 4h 9, 12h 32, 1d 22
 | crowd-squeeze@5 | 6231 | 0.0053 | 32.98 | -142.73 | 54 / -21 | 0.15 | 120.26 | 2021: -31, 2022: -205, 2023: -47, 2024: 39, 2025: 116, 2026: -20 |
 | intraday-trend@720 | 3582 | 0.008 | 28.66 | 12.85 | 113 / -84 | 0.13 | 132.52 | 2021: -35, 2022: -59, 2023: 2, 2024: -19, 2025: -35, 2026: 116 |
 | ma-retest@240 | 6297 | 0.0092 | 58.17 | 10.06 | -235 / 293 | 0.13 | 182.75 | 2021: -24, 2022: 191, 2023: 87, 2024: 31, 2025: -62, 2026: -5 |
-| ma-pullback-ride@720 | 4223 | 0.0118 | 49.73 | 32.21 | -153 / 203 | 0.13 | 262.13 | 2021: -81, 2022: 221, 2023: 51, 2024: -138, 2025: 25, 2026: 57 |
