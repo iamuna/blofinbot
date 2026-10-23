@@ -24,7 +24,7 @@
 - Strategies start in shadow; promotion to trade is his call via `/mode`.
 - Keep the bot's self-adding strategies shadow-only (he has not yet confirmed building that: offered, not built).
 - No auto-approve via Telegram (declined).
-- Memory: upgraded to 8 GB on 2026-10-23 (the 4 GB PC had ~2.5 GB free). The 4 GB-era limits are already gone: no Node heap cap (`deploy/windows/run.ps1`), universe back at 80 coins (`universe.maxCoins`). Nothing else in the code is sized for 4 GB.
+- Memory: upgraded to 8 GB on 2026-10-23 (the 4 GB PC had ~2.5 GB free). The 4 GB-era limits are already gone: no Node heap cap (`deploy/windows/run.ps1`), universe back at 80 coins (`universe.maxCoins`). Using the headroom (PC reported 8,117 MB total, 6,152 MB free, swarm process 304 MB): `brain.keepBars` 1000 bars per timeframe and coin (was 400; ~+70 MB), `brain.seed4hBars` 4320 (720 days of 4h history at start-up instead of 240, so 12h/1d averages start as in the backtests; start-up ~1 min longer), two more shadow strategies (`it-12h`, `it-1d`), and the brain's own memory in `/status` ("brain N MB").
 
 ## Open items
 1. Confirm `/status` shows the per-strategy layout (commit 99c031e). If not, run approve.ps1 again.

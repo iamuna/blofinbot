@@ -136,3 +136,29 @@ test('brain: 12h and daily bars are built from 4h bars in UTC; an incomplete buc
   const gap = h4.filter((b) => b.t !== 8 * H4); // a missing 4h bar inside day 1
   assert.deepStrictEqual(aggregate(gap, 240, 1440).map((d) => d.t), [2 * D]);
 });
+
+test('brain on 8 GB: keepBars bars per timeframe, and seed4hBars pages back through BloFin so 1d starts with 720 days', async () => {
+  const bus = new MemoryBus({ now: () => T0 });
+  const cfg = baseCfg(); cfg.brain.warmup = false; cfg.brain.keepBars = 1000; cfg.brain.seed4hBars = 4320; cfg.strategies = {};
+  const b = new Brain({ bus, cfg, now: () => T0, heartbeats: false, logSink: quiet, strategies: [], paceMs: 0 });
+  await b.start();
+  try {
+    assert.strictEqual(b.fs.keep, 1000);
+    const H4 = 240 * MIN, end = Math.floor(T0 / 86400000) * 86400000, calls = [];
+    // a fake BloFin: 4h bars before `after` (or before the end), newest last, at most `limit`, 3,000 in all
+    const get = async (bar, limit, after) => {
+      calls.push([bar, limit, after || null]);
+      const out = [];
+      for (let t = (after || end) - H4; out.length < limit && t >= end - 3000 * H4; t -= H4) out.unshift({ t, o: 1, h: 1.01, l: 0.99, c: 1, v: 1, q: 1 });
+      return out;
+    };
+    const h4 = await b.pages(get, '4H', 4320);
+    assert.strictEqual(h4.length, 3000, 'stops when BloFin has no older bars');
+    assert.deepStrictEqual(calls.map((c) => c[1]), [1440, 1440, 1440, 1320], 'pages of at most 1440, the last asks only for what is missing');
+    assert.ok(h4.every((x, k) => k === 0 || x.t - h4[k - 1].t === H4), 'one series, oldest first, no duplicates');
+    calls.length = 0;
+    await b.seedLong('BTC', [], get);
+    assert.strictEqual(b.fs.history('BTC', 1440).len, 500, '3,000 4h bars = 500 daily bars (was at most 240)');
+    assert.strictEqual(b.fs.history('BTC', 720).len, 1000, '12h: as many as keepBars');
+  } finally { await b.stop(); }
+});

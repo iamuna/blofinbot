@@ -39,7 +39,7 @@ class Brain extends Agent {
   static agentName = 'brain';
   async onStart() {
     this.S = this.cfg.strategies || {}; this.BR = this.cfg.brain || {}; this.B = this.cfg.blofin; this.http = this.ctx.http || net;
-    this.fs = new FeatureState(); this.regime = new RegimeState();
+    this.fs = new FeatureState({ keep: this.BR.keepBars || 400 }); this.regime = new RegimeState(); // keepBars: bars kept per timeframe and coin
     this.coins = new Map(); this.guard = {}; this.events = []; this.batches = new Map(); this.flow = new Map(); this.warmed = new Set(); this.warming = false;
     this.hosts = new Map(); this.shadow = new Map(); this.mode = {};
     // plugins, extra (test) plugins, and configured variants {name: {base, params}} of a plugin
@@ -121,9 +121,21 @@ class Brain extends Agent {
     } finally { this.warming = false; }
   }
 
+  // `total` closed bars, newest last, from older pages through `after` (BloFin gives at most 1440 a call)
+  async pages(get, bar, total) {
+    let all = await get(bar, Math.min(1440, total));
+    while (all.length && all.length < total) {
+      await net.sleep(this.ctx.paceMs == null ? 150 : this.ctx.paceMs);
+      const older = (await get(bar, Math.min(1440, total - all.length), all[0].t)).filter((b) => b.t < all[0].t);
+      if (!older.length) break;
+      all = older.concat(all);
+    }
+    return all;
+  }
   // long timeframes from their own bars, so 200-bar averages on 12h/1d bars are ready at once: 1h from the hourly
-  // history, 2h from BloFin, 4h from BloFin (240 days), 12h and 1d built from the 4h bars in UTC (BloFin's own
-  // daily bars may close at another hour)
+  // history, 2h from BloFin, 4h from BloFin (brain.seed4hBars, default 1440 = 240 days; on 8 GB 4320 = 720 days, so the
+  // 1d EMA 200 starts from 720 daily bars, as in the backtests, instead of 240), 12h and 1d built from the 4h bars in
+  // UTC (BloFin's own daily bars may close at another hour)
   async seedLong(coin, hours, get) {
     const has = (tf) => this.fs.tfs.includes(tf), keep = this.fs.keep, pace = () => net.sleep(this.ctx.paceMs == null ? 150 : this.ctx.paceMs);
     let n = 0;
@@ -131,7 +143,7 @@ class Brain extends Agent {
     if (has(120)) { await pace(); n += this.fs.seed(coin, 120, (await get('2H', keep)).slice(-keep)); }
     if (has(240) || has(720) || has(1440)) {
       await pace();
-      const h4 = await get('4H', 1440);
+      const h4 = await this.pages(get, '4H', this.BR.seed4hBars || 1440);
       if (has(240)) n += this.fs.seed(coin, 240, h4.slice(-keep));
       for (const tf of [720, 1440]) if (has(tf)) n += this.fs.seed(coin, tf, aggregate(h4, 240, tf).slice(-keep));
     }
@@ -214,6 +226,7 @@ class Brain extends Agent {
     else if (m.type === 'md.book') this.fs.onBook(d.coin, d);
   }
   strategyHeartbeats() {
+    this.gauge('rssMb', Math.round(process.memoryUsage().rss / 1048576)); // the brain's own process (isolated on Windows)
     for (const [name, host] of this.hosts) {
       const sim = this.shadow.get(name), tr = sim.trades.slice(-500);
       const sumR = tr.reduce((a, t) => a + t.r, 0);
