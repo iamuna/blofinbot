@@ -1,0 +1,48 @@
+era/trades-adaptive-score-12h+be.csv: 1367 trades, win rate 35%, longest losing run 23 (≈ 14.5 expected by chance)
+  without rule: 222.65 R, max DD 36.33 R, R/DD 6.13
+  with rule:    149.12 R, max DD 29.35 R, R/DD 5.08 (296 trades at reduced size, 277 skipped)
+era/trades-adaptive-score-12h.csv: 1270 trades, win rate 44%, longest losing run 18 (≈ 11.0 expected by chance)
+  without rule: 246.3 R, max DD 40.2 R, R/DD 6.13
+  with rule:    159.97 R, max DD 31.13 R, R/DD 5.14 (208 trades at reduced size, 175 skipped)
+era/trades-adaptive-score-4h+be.csv: 4697 trades, win rate 33%, longest losing run 41 (≈ 18.2 expected by chance)
+  without rule: 435.38 R, max DD 69.12 R, R/DD 6.3
+  with rule:    338.27 R, max DD 70.24 R, R/DD 4.82 (789 trades at reduced size, 1221 skipped)
+era/trades-adaptive-score-4h.csv: 4285 trades, win rate 41%, longest losing run 38 (≈ 14.1 expected by chance)
+  without rule: 468.38 R, max DD 79.36 R, R/DD 5.9
+  with rule:    360.29 R, max DD 88.75 R, R/DD 4.06 (640 trades at reduced size, 766 skipped)
+era/trades-donchian-1d-20+be.csv: 1080 trades, win rate 42%, longest losing run 21 (≈ 11.3 expected by chance)
+  without rule: 124.56 R, max DD 25.59 R, R/DD 4.87
+  with rule:    100.42 R, max DD 17.09 R, R/DD 5.88 (176 trades at reduced size, 178 skipped)
+era/trades-donchian-1d-20.csv: 1080 trades, win rate 42%, longest losing run 21 (≈ 11.3 expected by chance)
+  without rule: 124.56 R, max DD 25.59 R, R/DD 4.87
+  with rule:    100.42 R, max DD 17.09 R, R/DD 5.88 (176 trades at reduced size, 178 skipped)
+era/trades-ma-pullback-12h+be.csv: 743 trades, win rate 38%, longest losing run 32 (≈ 11.9 expected by chance)
+  without rule: 127.7 R, max DD 47.9 R, R/DD 2.67
+  with rule:    110.49 R, max DD 18.65 R, R/DD 5.92 (122 trades at reduced size, 169 skipped)
+era/trades-ma-pullback-12h.csv: 705 trades, win rate 44%, longest losing run 31 (≈ 9.9 expected by chance)
+  without rule: 107.42 R, max DD 48.91 R, R/DD 2.2
+  with rule:    93.31 R, max DD 20.21 R, R/DD 4.62 (90 trades at reduced size, 111 skipped)
+era/trades-ma-retest-12h+be.csv: 260 trades, win rate 42%, longest losing run 19 (≈ 8.7 expected by chance)
+  without rule: 80.51 R, max DD 16.61 R, R/DD 4.85
+  with rule:    73.38 R, max DD 11.56 R, R/DD 6.35 (32 trades at reduced size, 26 skipped)
+era/trades-ma-retest-12h.csv: 243 trades, win rate 50%, longest losing run 18 (≈ 7.0 expected by chance)
+  without rule: 72.08 R, max DD 17.63 R, R/DD 4.09
+  with rule:    73.99 R, max DD 11.56 R, R/DD 6.4 (17 trades at reduced size, 16 skipped)
+era/trades-ma-retest-1d+be.csv: 156 trades, win rate 26%, longest losing run 33 (≈ 12.5 expected by chance)
+  without rule: -15.04 R, max DD 41.83 R, R/DD -0.36
+  with rule:    -4.74 R, max DD 19.14 R, R/DD -0.25 (33 trades at reduced size, 49 skipped)
+era/trades-ma-retest-1d.csv: 145 trades, win rate 30%, longest losing run 32 (≈ 10.5 expected by chance)
+  without rule: -23.77 R, max DD 41.37 R, R/DD -0.57
+  with rule:    -13.43 R, max DD 25.3 R, R/DD -0.53 (15 trades at reduced size, 49 skipped)
+era/trades-ma-retest-4h+be.csv: 832 trades, win rate 35%, longest losing run 17 (≈ 13.1 expected by chance)
+  without rule: 106.58 R, max DD 29.14 R, R/DD 3.66
+  with rule:    64.39 R, max DD 28.19 R, R/DD 2.28 (163 trades at reduced size, 144 skipped)
+era/trades-ma-retest-4h.csv: 774 trades, win rate 42%, longest losing run 15 (≈ 10.5 expected by chance)
+  without rule: 103.37 R, max DD 34.25 R, R/DD 3.02
+  with rule:    68.4 R, max DD 35.22 R, R/DD 1.94 (124 trades at reduced size, 83 skipped)
+era/trades-rsi-macd-trend-12h+be.csv: 754 trades, win rate 40%, longest losing run 16 (≈ 11.2 expected by chance)
+  without rule: 225.82 R, max DD 18.1 R, R/DD 12.47
+  with rule:    140.23 R, max DD 11.81 R, R/DD 11.87 (140 trades at reduced size, 154 skipped)
+era/trades-rsi-macd-trend-12h.csv: 715 trades, win rate 51%, longest losing run 10 (≈ 8.3 expected by chance)
+  without rule: 265.68 R, max DD 21.53 R, R/DD 12.34
+  with rule:    230.98 R, max DD 17.06 R, R/DD 13.54 (105 trades at reduced size, 71 skipped)
