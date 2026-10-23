@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T18:53:42.851Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T19:03:42.861Z · account **PAPER** · risk mode normal
 
-Equity $10330.88 (start $10000) · today 5.02% · drawdown 2.7% · 50 trades · fees $87.71 · funding $2.29
+Equity $10274.03 (start $10000) · today 4.45% · drawdown 3.3% · 51 trades · fees $88.54 · funding $2.34
 
-Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −SHIB (candle-engulfing-1h), +IRYS (intraday-trend), −USELESS (candle-engulfing-1h), +APT (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +INJ (candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +NEAR (wyckoff-spring-1h+candle-engulfing-1h), +PUMP (wyckoff-spring-1h), +PYTH (wyckoff-spring-1h), +S (candle-engulfing-1h), +WLD (candle-engulfing-1h), +WLFI (candle-engulfing-1h) · working orders: 0
+Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −SHIB (candle-engulfing-1h), +IRYS (intraday-trend), −USELESS (candle-engulfing-1h), +APT (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +INJ (candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +NEAR (wyckoff-spring-1h+candle-engulfing-1h), +PUMP (wyckoff-spring-1h), +PYTH (wyckoff-spring-1h), +S (candle-engulfing-1h), +WLD (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), +OP (wyckoff-spring-1h), −APR (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PONS: wide-spread
+Not tradable now: COMP: wide-spread
