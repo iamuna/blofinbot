@@ -156,4 +156,11 @@ test('import: a Binance kline zip becomes swarm months; gaps listed, not filled;
   const { backtest } = require('../src/backtest/run');
   const bt = await backtest({ data: path.join(dir, 'data'), variants: [{ name: 'as5', base: 'adaptive-score', params: { tf: 5, onlyTfs: [5], minBars: 60, holdBars: 12 } }], warmupDays: 0, breakevenR: 1 });
   assert.ok(bt.strategies.as5.all.n > 0); assert.strictEqual(bt.costs.breakevenR, 1);
+  // a variant's own breakevenR overrides the run's: with and without in one pass, each as its own run would give
+  const p = { tf: 5, onlyTfs: [5], minBars: 60, holdBars: 12 };
+  const off = await backtest({ data: path.join(dir, 'data'), variants: [{ name: 'as5', base: 'adaptive-score', params: p }], warmupDays: 0 });
+  const both = await backtest({ data: path.join(dir, 'data'), variants: [{ name: 'as5', base: 'adaptive-score', params: p }, { name: 'as5be', base: 'adaptive-score', params: p, breakevenR: 1 }], warmupDays: 0 });
+  const rs = (x) => x.trades.map((t) => [t.entryT, t.exitT, t.reason, t.r]);
+  assert.deepStrictEqual(rs(both.strategies.as5), rs(off.strategies.as5));
+  assert.deepStrictEqual(rs(both.strategies.as5be), rs(bt.strategies.as5));
 });

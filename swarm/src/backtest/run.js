@@ -32,8 +32,9 @@ async function backtest(o) {
   if (o.coins) coins = coins.filter((c) => o.coins.includes(c));
   coins.sort((a, b) => (a === 'BTC' ? -1 : b === 'BTC' ? 1 : a.localeCompare(b))); // BTC first in every minute
   const months = [...new Set([...man.months, ...(man.currentMonthDays || []).map((d) => d.slice(0, 7))])].sort();
-  // variants: [{name, base, params}] — several parameter sets of the same plugin share one pass over the data
-  const plugins = o.variants ? o.variants.map((v) => Object.assign({}, strategies.byName[v.base], { name: v.name, variantParams: v.params || {} }))
+  // variants: [{name, base, params, breakevenR?}] — several parameter sets of the same plugin share one pass over the data
+  // (breakevenR on a variant overrides o.breakevenR for that variant's simulator: with and without in one pass)
+  const plugins = o.variants ? o.variants.map((v) => Object.assign({}, strategies.byName[v.base], { name: v.name, variantParams: v.params || {}, breakevenR: v.breakevenR }))
     : (o.strategies ? o.strategies.map((n) => strategies.byName[n]).filter(Boolean) : strategies.all);
   const fsx = new FeatureState(), regime = new RegimeState();
   const funding = {}, oi = {};
@@ -41,7 +42,7 @@ async function backtest(o) {
   const evalFrom = o.from || 0, evalTo = o.to || Infinity;
   const sims = {}, hosts = {};
   for (const s of plugins) {
-    const sim = new ExecSim({ funding, slipBps: o.slip, breakevenR: o.breakevenR, onClose: (idea, res) => hosts[s.name].onClose(idea.coin, idea.id, res) });
+    const sim = new ExecSim({ funding, slipBps: o.slip, breakevenR: s.breakevenR == null ? o.breakevenR : s.breakevenR, onClose: (idea, res) => hosts[s.name].onClose(idea.coin, idea.id, res) });
     sims[s.name] = sim;
     hosts[s.name] = new StrategyHost(s, { fs: fsx, regime, params: Object.assign({}, s.variantParams, (o.params || {})[s.name]) });
   }
