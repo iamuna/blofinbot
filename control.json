@@ -1,0 +1,357 @@
+{
+ "id": "ibrahim-2026-10-23-modes-1",
+ "by": "ibrahim (via Claude, approved in chat)",
+ "rule": "48h shadow to 2026-10-23T05:09:00.919Z: total R >= +10 -> trade; negative R -> off; rest -> shadow",
+ "commands": [
+  {
+   "cmd": "strategy-mode",
+   "strategy": "intraday-trend",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "session-drive",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "leader-follow",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "crowd-squeeze",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "noise-breakout",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "it-45-long",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "it-45-hold32",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "it-45-hold16",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "squeeze-ride",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "ma-retest-12h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "ma-retest-1d",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "donchian-1d-20",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "donchian-1d-60",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "donchian-1d-150",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "donchian-12h-60",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "funding-fade-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "rsi-macd-trend-12h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "trend-pullback-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "dip-reversal",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "harmonic",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "ma-21-200",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "krown-jewel-2h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "krown-jewel",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "wyckoff-spring-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "wyckoff-spring-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-engulfing-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-engulfing-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-star-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-morning-star-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-morning-star-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-piercing-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-soldiers-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-soldiers-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-harami-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-harami-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-doji-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-doji-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-marubozu-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-marubozu-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-inside-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-inside-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-outside-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-outside-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-methods-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-methods-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-doji-star-1h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-doji-star-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "wykoff-spring",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candel-harami-4h",
+   "mode": "shadow"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "intraday-trend",
+   "mode": "trade"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "wyckoff-spring-1h",
+   "mode": "trade"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-engulfing-1h",
+   "mode": "trade"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-engulfing-4h",
+   "mode": "trade"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-harami-4h",
+   "mode": "trade"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-outside-1h",
+   "mode": "trade"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "session-drive",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "leader-follow",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "it-45-long",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "it-45-hold32",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "it-45-hold16",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "trend-pullback-1h",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "harmonic",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-morning-star-1h",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-harami-1h",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-marubozu-1h",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-methods-4h",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "wykoff-spring",
+   "mode": "off"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candel-harami-4h",
+   "mode": "off"
+  }
+ ]
+}
