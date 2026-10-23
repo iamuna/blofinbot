@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T12:54:17.290Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T13:04:17.291Z · account **PAPER** · risk mode normal
 
-Equity $10466.64 (start $10000) · today 6.40% · drawdown 1.4% · 37 trades · fees $67.83 · funding $2.56
+Equity $10443.71 (start $10000) · today 6.17% · drawdown 1.7% · 37 trades · fees $67.83 · funding $2.56
 
-Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h), +CT (candle-engulfing-1h), +XPL (candle-engulfing-4h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h) · working orders: 0
+Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h), +CT (candle-engulfing-1h), +XPL (candle-engulfing-4h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +TIA (candle-engulfing-1h) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -88,4 +88,4 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PHA: wide-spread
+Not tradable now: ENA: blofin-stale; PUMP: blofin-stale; IOST: blofin-stale; SUI: blofin-stale; TIA: blofin-stale; UNI: blofin-stale; FIL: blofin-stale; INJ: blofin-stale; STRK: blofin-stale; ADA: blofin-stale,wide-spread; AVAX: blofin-stale; ARB: blofin-stale; ZEREBRO: blofin-stale; APR: blofin-stale; DOT: blofin-stale; APT: blofin-stale; HBAR: blofin-stale; BAT: blofin-stale; CT: blofin-stale; PENGU: blofin-stale; PHA: blofin-stale; XLM: blofin-stale; ASTER: blofin-stale; VVV: blofin-stale; OP: blofin-stale; TRX: blofin-stale; CRV: blofin-stale; AERO: blofin-stale; XPL: blofin-stale; PYTH: blofin-stale; PONS: blofin-stale; DASH: blofin-stale; SHIB: blofin-stale; ETHFI: blofin-stale; USELESS: blofin-stale; WLFI: blofin-stale; ICP: blofin-stale; SEI: blofin-stale; LDO: blofin-stale; COMP: blofin-stale; US: blofin-stale; EIGEN: blofin-stale; ZK: blofin-stale; ETC: blofin-stale; NIL: blofin-stale; S: blofin-stale; PENDLE: blofin-stale; MAGIC: blofin-stale
