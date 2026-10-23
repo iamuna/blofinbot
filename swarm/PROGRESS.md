@@ -114,3 +114,17 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
   full portfolio (vol targeting, cross-coin momentum, rebalancing) is the next piece of work.
 - Found: `funding-fade` never ran live (its default listens on 45m bars; tf 240 needs onlyTfs). Now runs as
   `funding-fade-4h` (shadow); the base entry is off.
+
+## 2026-10-23 (evening) — strategies from Mitch Ray TA's videos; the golden-zone retest (branch `new-strats`)
+- Ibrahim sent 4 videos (Fibonacci, swing-trading "cake-baking", bearish AB=CD, "trade effectively"). Built as
+  plugins: `mixing-bowl`, `fib-golden`, `abcd`, `wedge-break`; and `ma-retest-plus` = ma-21-200's retest with his
+  checks as switches. Hourly harness of the deep review now in the repo (`tools/hourly_backtest.js`), study script
+  `tools/video_research.js`. Write-up: docs/VIDEO_STRATEGIES_2026-10-23.md.
+- Result: the video methods alone have no edge (like every reversal / pattern family). His golden-zone rule as a
+  filter on the 4h retest (pull-back ≥ 38.2% of the impulse) doubles avg R in all three samples: `ma-retest-4h-golden`
+  +0.139 / +0.189 / +0.111 R (t 2.3 / 3.0 / 2.7), pooled t 3.73, max DD 47 R vs 127 R; the robust-five book's
+  Sharpe 0.99/0.98/1.41 → 1.19/1.34/1.50. In config as shadow (+ two 12h / 1d watches); the four video plugins off.
+  38 tries → ~439 total, t bar 3.32.
+- Open: merge `new-strats` into `main` (Ibrahim's call); then compare `ma-retest-4h-golden` with `ma-retest-4h` in
+  shadow and trade one of them, not both. Tests/tools need approve.ps1 on the PC; plugins, config and docs install themselves.
+
