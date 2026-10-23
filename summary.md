@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T20:13:42.892Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T20:23:42.892Z · account **PAPER** · risk mode normal
 
-Equity $10872.95 (start $10000) · today 10.53% · drawdown 6.0% · 59 trades · fees $103.45 · funding $2.23
+Equity $10846.97 (start $10000) · today 10.27% · drawdown 6.2% · 60 trades · fees $105.14 · funding $2.23
 
-Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +PYTH (wyckoff-spring-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), +OP (wyckoff-spring-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h) · working orders: 0
+Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +PYTH (wyckoff-spring-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: VVV: wide-spread; PONS: wide-spread; US: wide-spread; NIL: wide-spread
+Not tradable now: APR: wide-spread; PONS: wide-spread; S: wide-spread
