@@ -396,6 +396,32 @@
       },
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): best of 101: 1,657 trades, +0.14 R, Sharpe 1.33, positive every year 2022-2026; long +80 / short +156 R"
     },
+    "ma-retest-4h": {
+      "base": "ma-21-200",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "retest",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Deep review 2026-10-23: positive in all three samples 2020-2026 (+0.058 / +0.053 / +0.075 R, validation t 2.2). docs/DEEP_REVIEW_2026-10-23.md"
+    },
+    "ma-pullback-12h": {
+      "base": "ma-21-200",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "pullback",
+        "tf": 720,
+        "onlyTfs": [
+          720
+        ]
+      },
+      "note": "Deep review 2026-10-23: positive in all three samples 2020-2026 (+0.021 / +0.010 / +0.074 R, validation t 2.1). docs/DEEP_REVIEW_2026-10-23.md"
+    },
     "ma-retest-1d": {
       "base": "ma-21-200",
       "enabled": true,

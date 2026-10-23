@@ -3,6 +3,18 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-23 — deep review of every strategy (Ibrahim: "improve them or fix them")
+
+136 variants (every family × 1h/2h/4h/12h/1d, 14 candle patterns separately) on hourly history 2020–2026, research
+and validation coins, live feature/strategy/exec code; diagnose on research 2020–23, judge on 2024–26 and on the
+validation coins. Full report: [DEEP_REVIEW_2026-10-23.md](DEEP_REVIEW_2026-10-23.md).
+- The reversal and pattern families have no direction (MFE ≈ MAE, gross ≈ 0); at 1h, costs make them clearly
+  negative. Trend-alignment filter: no rescue (3 marginal flips, 11 that fail out of sample). Not fixable by settings.
+- Positive in all three samples: ma-retest 12h / 1d / 4h, rsi-macd-trend 12h, ma-pullback 12h. As one book: Sharpe
+  1.09 / 0.92 / 1.41. Added `ma-retest-4h` and `ma-pullback-12h` to shadow.
+- The six put on paper today (48 h shadow R ≥ +10) are Sharpe −5 in every sample: recommend shadow for them, and the
+  robust five to trade (Ibrahim's call).
+
 ## 2026-10-23 — PIVOT-MATRIX v1.3 (Ibrahim's spec): no edge, in shadow at his request
 
 Swing pivots broken (break of structure, with a higher-timeframe EMA 50/200 bias) or swept (swing failure), with
