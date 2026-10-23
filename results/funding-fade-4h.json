@@ -12,34 +12,34 @@
  "idea": null,
  "source": null,
  "all": {
-  "n": 15,
-  "perDay": 0.09,
-  "winRate": 0.267,
-  "avgR": -0.32,
-  "sumR": -4.8,
-  "avgNetBps": -122.13,
-  "avgGrossBps": -131.67,
-  "avgCostBps": -9.54,
+  "n": 16,
+  "perDay": 0.1,
+  "winRate": 0.25,
+  "avgR": -0.3009,
+  "sumR": -4.81,
+  "avgNetBps": -115.49,
+  "avgGrossBps": -123.84,
+  "avgCostBps": -8.35,
   "pf": 0.36,
   "tStat": -1.7,
-  "maxDDR": 4.8,
-  "sharpe": -2.42,
-  "days": 161
+  "maxDDR": 4.81,
+  "sharpe": -2.4,
+  "days": 165
  },
  "cost15": {
-  "n": 15,
-  "perDay": 0.09,
-  "winRate": 0.267,
-  "avgR": -0.3261,
-  "sumR": -4.89,
-  "avgNetBps": -126.88,
-  "avgGrossBps": -131.67,
-  "avgCostBps": -4.79,
+  "n": 16,
+  "perDay": 0.1,
+  "winRate": 0.25,
+  "avgR": -0.3069,
+  "sumR": -4.91,
+  "avgNetBps": -120.24,
+  "avgGrossBps": -123.84,
+  "avgCostBps": -3.6,
   "pf": 0.35,
   "tStat": -1.73,
-  "maxDDR": 4.89,
-  "sharpe": -2.46,
-  "days": 161
+  "maxDDR": 4.91,
+  "sharpe": -2.43,
+  "days": 165
  },
  "thirds": [
   {
@@ -61,19 +61,19 @@
    "n": 0
   },
   {
-   "n": 10,
+   "n": 11,
    "perDay": 0.2,
-   "winRate": 0.3,
-   "avgR": -0.3039,
-   "sumR": -3.04,
-   "avgNetBps": -181.22,
-   "avgGrossBps": -192.02,
-   "avgCostBps": -10.8,
+   "winRate": 0.273,
+   "avgR": -0.2775,
+   "sumR": -3.05,
+   "avgNetBps": -166.2,
+   "avgGrossBps": -175.15,
+   "avgCostBps": -8.95,
    "pf": 0.34,
    "tStat": -1.37,
-   "maxDDR": 3.04,
-   "sharpe": -3.54,
-   "days": 51
+   "maxDDR": 3.05,
+   "sharpe": -3.43,
+   "days": 55
   }
  ],
  "months": {
@@ -138,37 +138,37 @@
    "days": 28
   },
   "2026-10": {
-   "n": 3,
-   "perDay": 0.23,
+   "n": 4,
+   "perDay": 0.24,
    "winRate": 0,
-   "avgR": -0.229,
-   "sumR": -0.69,
-   "avgNetBps": -272.96,
-   "avgGrossBps": -263.46,
+   "avgR": -0.1753,
+   "sumR": -0.7,
+   "avgNetBps": -208.72,
+   "avgGrossBps": -199.22,
    "avgCostBps": 9.5,
    "pf": 0,
-   "tStat": -2.85,
-   "maxDDR": 0.69,
-   "sharpe": -8.75,
-   "days": 13
+   "tStat": -2.24,
+   "maxDDR": 0.7,
+   "sharpe": -7.71,
+   "days": 17
   }
  },
  "gate": {
   "pass": false,
   "why": [
-   "15 trades (need 300)",
-   "average -0.3261 R at 1.5× costs (need > 0)",
-   "newest third -0.3039 R (need > 0)",
+   "16 trades (need 300)",
+   "average -0.3069 R at 1.5× costs (need > 0)",
+   "newest third -0.2775 R (need > 0)",
    "positive in fewer than 2 of 3 thirds",
-   "t -1.7 < 3.20 (bar for 248 tries)"
+   "t -1.7 < 3.21 (bar for 261 tries)"
   ],
-  "bar": 3.1972258404131084
+  "bar": 3.2083202536691404
  },
- "testedAt": "2026-10-23T03:55:07.401Z",
+ "testedAt": "2026-10-23T08:05:17.136Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
-  "to": "2026-10-18T23:59:00.000Z",
+  "to": "2026-10-21T23:59:00.000Z",
   "coins": 31,
-  "minutes": 289440
+  "minutes": 293760
  }
 }

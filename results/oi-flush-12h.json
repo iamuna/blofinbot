@@ -12,34 +12,34 @@
  "idea": "Open interest down 15%+ over 72h while price moved 2.5+ ATR means positions were closed by force (long liquidations into a drop, shorts squeezed into a rally). Forced flow overshoots; once a 12h bar closes back past the previous bar's extreme, trade the reversal. Stop 0.5 ATR beyond the flush extreme, no target, 5-day time stop.",
  "source": "Coval & Stafford, Asset fire sales (and purchases) in equity markets (JFE 2007): forced trades push price from value and reverse over weeks; Brunnermeier & Pedersen (RFS 2009) liquidity spirals. Own data: 15-minute long-flush event study 2026-10-20 (+25 bps/60 min, t 1.2, weak).",
  "all": {
-  "n": 5,
-  "perDay": 0.04,
-  "winRate": 0,
-  "avgR": -0.856,
-  "sumR": -4.28,
-  "avgNetBps": -856.46,
-  "avgGrossBps": -848.87,
-  "avgCostBps": 7.59,
-  "pf": 0,
-  "tStat": -5.52,
-  "maxDDR": 4.28,
-  "sharpe": -2.89,
-  "days": 131
+  "n": 10,
+  "perDay": 0.07,
+  "winRate": 0.2,
+  "avgR": -0.4946,
+  "sumR": -4.95,
+  "avgNetBps": -536.42,
+  "avgGrossBps": -527.87,
+  "avgCostBps": 8.55,
+  "pf": 0.02,
+  "tStat": -3.36,
+  "maxDDR": 4.95,
+  "sharpe": -3.2,
+  "days": 134
  },
  "cost15": {
-  "n": 5,
-  "perDay": 0.04,
-  "winRate": 0,
-  "avgR": -0.8608,
-  "sumR": -4.3,
-  "avgNetBps": -861.21,
-  "avgGrossBps": -848.87,
-  "avgCostBps": 12.34,
-  "pf": 0,
-  "tStat": -5.54,
-  "maxDDR": 4.3,
-  "sharpe": -2.89,
-  "days": 131
+  "n": 10,
+  "perDay": 0.07,
+  "winRate": 0.2,
+  "avgR": -0.4994,
+  "sumR": -4.99,
+  "avgNetBps": -541.17,
+  "avgGrossBps": -527.87,
+  "avgCostBps": 13.3,
+  "pf": 0.02,
+  "tStat": -3.39,
+  "maxDDR": 4.99,
+  "sharpe": -3.21,
+  "days": 134
  },
  "thirds": [
   {
@@ -73,19 +73,19 @@
    "days": 1
   },
   {
-   "n": 3,
-   "perDay": 0.5,
-   "winRate": 0,
-   "avgR": -1.0116,
-   "sumR": -3.03,
-   "avgNetBps": -831.91,
-   "avgGrossBps": -822.41,
+   "n": 8,
+   "perDay": 0.89,
+   "winRate": 0.25,
+   "avgR": -0.4626,
+   "sumR": -3.7,
+   "avgNetBps": -447.2,
+   "avgGrossBps": -437.7,
    "avgCostBps": 9.5,
-   "pf": 0,
-   "tStat": -1788.6,
-   "maxDDR": 3.03,
-   "sharpe": -11.41,
-   "days": 6
+   "pf": 0.03,
+   "tStat": -2.73,
+   "maxDDR": 3.7,
+   "sharpe": -11.05,
+   "days": 9
   }
  ],
  "months": {
@@ -120,37 +120,37 @@
    "days": 1
   },
   "2026-10": {
-   "n": 3,
-   "perDay": 0.5,
-   "winRate": 0,
-   "avgR": -1.0116,
-   "sumR": -3.03,
-   "avgNetBps": -831.91,
-   "avgGrossBps": -822.41,
+   "n": 8,
+   "perDay": 0.89,
+   "winRate": 0.25,
+   "avgR": -0.4626,
+   "sumR": -3.7,
+   "avgNetBps": -447.2,
+   "avgGrossBps": -437.7,
    "avgCostBps": 9.5,
-   "pf": 0,
-   "tStat": -1788.6,
-   "maxDDR": 3.03,
-   "sharpe": -11.41,
-   "days": 6
+   "pf": 0.03,
+   "tStat": -2.73,
+   "maxDDR": 3.7,
+   "sharpe": -11.05,
+   "days": 9
   }
  },
  "gate": {
   "pass": false,
   "why": [
-   "5 trades (need 300)",
-   "average -0.8608 R at 1.5× costs (need > 0)",
-   "newest third -1.0116 R (need > 0)",
+   "10 trades (need 300)",
+   "average -0.4994 R at 1.5× costs (need > 0)",
+   "newest third -0.4626 R (need > 0)",
    "positive in fewer than 2 of 3 thirds",
-   "t -5.52 < 3.20 (bar for 248 tries)"
+   "t -3.36 < 3.21 (bar for 261 tries)"
   ],
-  "bar": 3.1972258404131084
+  "bar": 3.2083202536691404
  },
- "testedAt": "2026-10-23T03:55:07.401Z",
+ "testedAt": "2026-10-23T08:05:17.136Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
-  "to": "2026-10-18T23:59:00.000Z",
+  "to": "2026-10-21T23:59:00.000Z",
   "coins": 31,
-  "minutes": 289440
+  "minutes": 293760
  }
 }
