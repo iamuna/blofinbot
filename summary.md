@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T14:14:18.951Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T14:24:18.960Z · account **PAPER** · risk mode normal
 
-Equity $10424.93 (start $10000) · today 5.98% · drawdown 1.8% · 39 trades · fees $74.15 · funding $2.56
+Equity $10417.92 (start $10000) · today 5.91% · drawdown 1.9% · 45 trades · fees $83.84 · funding $2.56
 
-Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h), +CT (candle-engulfing-1h), +XPL (candle-engulfing-4h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h), +OP (wyckoff-spring-1h) · working orders: 0
+Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle-engulfing-1h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -88,4 +88,4 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PUMP: wide-spread; TIA: wide-spread; ZRO: wide-spread; PHA: wide-spread; PONS: wide-spread
+Not tradable now: PUMP: wide-spread; ADA: wide-spread; APR: wide-spread; CRV: wide-spread; PONS: wide-spread; ICP: wide-spread; US: wide-spread
