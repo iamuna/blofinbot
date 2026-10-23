@@ -32,13 +32,14 @@ Write-Host 'Installing the swarm (paper account) in' $Root
 # 1. Node.js 22+ and Git
 Write-Step 'Node.js and Git'
 Refresh-Path
-$nodeOk = $false
-if (Get-Command node -ErrorAction SilentlyContinue) { $nodeOk = [int](& node -p "process.versions.node.split('.')[0]") -ge 22 }
-if (-not $nodeOk) {
-  if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { throw 'winget is missing: install "App Installer" from the Microsoft Store, or Node.js 22+ from nodejs.org, then run this again.' }
-  winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements | Out-Host
+# 22.13+: the brain runs under Node's permission model (src/core/isolate.js)
+function Test-NodeOk { if (-not (Get-Command node -ErrorAction SilentlyContinue)) { return $false }; return ((& node -p "const [a,b]=process.versions.node.split('.').map(Number); a>22||(a===22&&b>=13)") -eq 'true') }
+if (-not (Test-NodeOk)) {
+  if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { throw 'winget is missing: install "App Installer" from the Microsoft Store, or Node.js 22.13+ from nodejs.org, then run this again.' }
+  if (Get-Command node -ErrorAction SilentlyContinue) { winget upgrade -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements | Out-Host }
+  else { winget install -e --id OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements | Out-Host }
   Refresh-Path
-  if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw 'Node.js did not install: install Node.js 22+ from nodejs.org, then run this again.' }
+  if (-not (Test-NodeOk)) { throw 'Node.js 22.13 or newer is needed: install the LTS version from nodejs.org, then run this again.' }
 }
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
   winget install -e --id Git.Git --silent --accept-source-agreements --accept-package-agreements | Out-Host
@@ -99,7 +100,7 @@ if (-not $env:SWARM_NO_PROMPT -and (-not $sec.GITHUB_TOKEN -or -not $sec.TELEGRA
     $sec.GITHUB_TOKEN = (Read-Secret '   GitHub token (hidden)').Trim()
   }
   if (-not $sec.TELEGRAM_BOT_TOKEN) {
-    Write-Host '2) Telegram bot token from @BotFather (send your bot a message first).'
+    Write-Host '2) Telegram bot token from @BotFather.'
     $sec.TELEGRAM_BOT_TOKEN = (Read-Secret '   Telegram bot token (hidden)').Trim()
   }
 }
@@ -109,11 +110,25 @@ if ($sec.TELEGRAM_BOT_TOKEN) {
   try {
     $me = Invoke-RestMethod "https://api.telegram.org/bot$tg/getMe" -TimeoutSec 20
     Write-Host "   Bot: @$($me.result.username)"
-    if (-not $sec.TELEGRAM_CHAT_ID) {
-      $u = Invoke-RestMethod "https://api.telegram.org/bot$tg/getUpdates" -TimeoutSec 20
-      $m = @($u.result | Where-Object { $_.message }) | Select-Object -Last 1
-      if ($m) { $sec.TELEGRAM_CHAT_ID = [string]$m.message.chat.id; Write-Host "   Your chat: $($sec.TELEGRAM_CHAT_ID)" }
-      else { Write-Host "   No message found. Open @$($me.result.username) in Telegram, send it 'hi', then run this installer again." -ForegroundColor Yellow }
+    if (-not $sec.TELEGRAM_CHAT_ID -and $env:SWARM_NO_PROMPT) {
+      Write-Host '   No Telegram chat linked yet: run this installer again without SWARM_NO_PROMPT to link it.' -ForegroundColor Yellow
+    } elseif (-not $sec.TELEGRAM_CHAT_ID) {
+      # whoever controls the chat controls /flatten and /mode: link only the private chat that sends this one-time code
+      # (anyone can message a bot, so "the last chat that wrote" is not good enough)
+      $bytes = New-Object byte[] 4; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
+      $code = 'swarm-' + (-join ($bytes | ForEach-Object { $_.ToString('x2') }))
+      Write-Host "   In Telegram, send this to @$($me.result.username):  $code" -ForegroundColor Green
+      Write-Host '   Waiting up to 3 minutes...'
+      $offset = 0; $deadline = (Get-Date).AddMinutes(3)
+      while (-not $sec.TELEGRAM_CHAT_ID -and (Get-Date) -lt $deadline) {
+        try { $u = Invoke-RestMethod "https://api.telegram.org/bot$tg/getUpdates?offset=$offset&timeout=20" -TimeoutSec 30 } catch { Start-Sleep -Seconds 3; continue }
+        foreach ($x in @($u.result)) {
+          $offset = [int64]$x.update_id + 1
+          if ($x.message -and $x.message.chat.type -eq 'private' -and "$($x.message.text)".Trim() -eq $code) { $sec.TELEGRAM_CHAT_ID = [string]$x.message.chat.id }
+        }
+      }
+      if ($sec.TELEGRAM_CHAT_ID) { Write-Host "   Linked your chat: $($sec.TELEGRAM_CHAT_ID)" }
+      else { Write-Host '   The code did not arrive in time. Run this installer again to get a new one.' -ForegroundColor Yellow }
     } else { Write-Host "   Your chat: $($sec.TELEGRAM_CHAT_ID)" }
   } catch {
     Write-Host "   Telegram does not accept that bot token ($($_.Exception.Message)). Copy it again from @BotFather; to enter it again, delete C:\swarm\secrets.json and run this installer again." -ForegroundColor Yellow

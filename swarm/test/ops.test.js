@@ -7,6 +7,7 @@ const { Herald } = require('../src/ops/herald');
 const { Watchdog } = require('../src/ops/watchdog');
 const { Guardian } = require('../src/ops/guardian');
 const { StateSync } = require('../src/ops/state_sync');
+const { Coordinator } = require('../src/decision/coordinator');
 const { quiet, baseCfg, tap, tmpDir, sleep } = require('./helpers');
 
 test('herald: sends alerts, rate-limits repeats, takes commands only from Ibrahim\'s chat', async () => {
@@ -35,6 +36,34 @@ test('herald: sends alerts, rate-limits repeats, takes commands only from Ibrahi
     assert.deepStrictEqual(cmds.map((m) => [m.src, m.data.cmd, m.data.by]), [['herald', 'pause', 'ibrahim']], 'the stranger\'s /flatten was ignored');
     assert.ok(sent.some((t) => /^📊 Swarm status/.test(t) && /Equity/.test(t) && /Agents:/.test(t) && /it-4h \(/.test(t) && /shadow: 1 trades · win 100% · \+1\.50 R/.test(t)), '/status answers with the full report (it once collided with the agent\'s own status field)');
   } finally { await h.stop(); delete process.env.TELEGRAM_BOT_TOKEN; delete process.env.TELEGRAM_CHAT_ID; }
+});
+
+test('herald: /mode takes only real strategies; `/mode <typo> off` clears a listed typo', async () => {
+  process.env.TELEGRAM_BOT_TOKEN = 'T'; process.env.TELEGRAM_CHAT_ID = '42';
+  const msg = (id, text) => ({ update_id: id, message: { chat: { id: 42 }, text } });
+  const sent = [], updates = [[msg(1, '/mode candel-harami-4h trade'), msg(2, '/mode candle-harami-4h trade'), msg(3, '/mode candel-harami-4h off')]];
+  const fakeFetch = async (url, o) => {
+    if (url.endsWith('/sendMessage')) { sent.push(JSON.parse(o.body).text); return { json: async () => ({ ok: true, result: {} }) }; }
+    if (url.endsWith('/getUpdates')) { await sleep(5); return { json: async () => ({ ok: true, result: updates.shift() || [] }) }; }
+    throw new Error(url);
+  };
+  const bus = new MemoryBus(), cfg = baseCfg();
+  const co = new Coordinator({ bus, cfg, dataDir: tmpDir('forget'), heartbeats: false, logSink: quiet });
+  await co.start();
+  co.modes['candel-harami-4h'] = 'trade'; await bus.kv.set('strategyModes', co.modes); // the typo already listed
+  const cmds = tap(bus, 'sys.command');
+  const h = new Herald({ bus, cfg, fetch: fakeFetch, heartbeats: false, logSink: quiet });
+  await h.start();
+  try {
+    for (let k = 0; k < 100 && sent.length < 3; k++) { await sleep(10); await bus.drain(); }
+    assert.match(sent[0], /no strategy called candel-harami-4h - did you mean candle-harami-4h/);
+    assert.deepStrictEqual(cmds.map((m) => [m.data.cmd, m.data.strategy, m.data.mode]), [['strategy-mode', 'candle-harami-4h', 'trade'], ['strategy-forget', 'candel-harami-4h', undefined]]);
+    assert.strictEqual(co.modes['candle-harami-4h'], 'trade');
+    assert.ok(!('candel-harami-4h' in co.modes), 'the typo is gone');
+    assert.ok(!('candel-harami-4h' in (await bus.kv.get('strategyModes'))));
+    await bus.publish('sys.command', { cmd: 'strategy-forget', by: 'x', strategy: 'candle-harami-4h' }, { src: 'herald' }); await bus.drain();
+    assert.strictEqual(co.modes['candle-harami-4h'], 'trade', 'a configured strategy is never forgotten');
+  } finally { await h.stop(); await co.stop(); delete process.env.TELEGRAM_BOT_TOKEN; delete process.env.TELEGRAM_CHAT_ID; }
 });
 
 test('watchdog: an agent that stops reporting raises an alert, and its return too', async () => {

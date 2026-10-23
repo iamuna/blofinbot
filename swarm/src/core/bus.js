@@ -182,4 +182,4 @@ async function createBus(o = {}) {
   return new RedisBus(o).connect();
 }
 
-module.exports = { MemoryBus, RedisBus, createBus, envelope, newId };
+module.exports = { MemoryBus, RedisBus, createBus, envelope, newId, Lane };

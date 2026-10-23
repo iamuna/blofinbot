@@ -67,20 +67,23 @@ test('loader: a plugin that fails the check is never required (its top-level cod
   assert.ok(require('../src/strategies').rejected.length === 0, 'every shipped plugin loads');
 });
 
-test('update gate: strategy plugins, shadow-mode config, tests and docs install themselves; the rest waits for Ibrahim', () => {
+test('update gate: strategy plugins, shadow-mode config, candidates and docs install themselves; tests and the rest wait for Ibrahim', () => {
   const plugin = (body) => `'use strict';\nconst { cooldown } = require('./kit');\nmodule.exports = { name: 'abc', tfs: [5], params: {}, onBar(ev, api) { ${body} } };\n`;
   const cfg = (extra) => JSON.stringify(Object.assign({ trading: { account: 'paper' }, strategies: { a: { enabled: true, mode: 'shadow', params: { x: 1 } } } }, extra), null, 1);
   const index = (names) => `'use strict';\nconst PLUGINS = [\n${names.map((n) => `  '${n}',`).join('\n')}\n];\nmodule.exports = require('./loader').loadPlugins(PLUGINS);\n`;
   const r = repo();
   const c0 = r.commit({ 'swarm/src/strategies/abc.js': plugin('return null;'), 'swarm/src/strategies/index.js': index(['abc']), 'swarm/config/swarm.json': cfg(), 'swarm/config/risk.json': '{"maxOpenRiskPct":0.06}', 'swarm/src/exec/trader.js': '// trader', 'lab/x.js': '1' }, 'base');
   const judge = (c1, c2, account) => gate({ repo: r.dir, oldSha: c1, newSha: c2, account });
-  // a new plugin, an index line for it, a candidate, a test, a doc, a shadow-mode config change → auto
-  const c1 = r.commit({ 'swarm/src/strategies/def.js': plugin('return ev.f.ret > 0 ? null : null;'), 'swarm/src/strategies/index.js': index(['abc', 'def']), 'swarm/factory/candidates/def.json': '{}', 'swarm/test/def.test.js': '//', 'swarm/docs/NOTE.md': 'x', 'swarm/config/swarm.json': cfg({ strategies: { a: { enabled: true, mode: 'shadow', params: { x: 2 } }, def: { mode: 'shadow' } } }), 'lab/x.js': '2' }, 'auto');
+  // a new plugin, an index line for it, a candidate, a doc, a shadow-mode config change → auto
+  const c1 = r.commit({ 'swarm/src/strategies/def.js': plugin('return ev.f.ret > 0 ? null : null;'), 'swarm/src/strategies/index.js': index(['abc', 'def']), 'swarm/factory/candidates/def.json': '{}', 'swarm/docs/NOTE.md': 'x', 'swarm/config/swarm.json': cfg({ strategies: { a: { enabled: true, mode: 'shadow', params: { x: 2 } }, def: { mode: 'shadow' } } }), 'lab/x.js': '2' }, 'auto');
   assert.strictEqual(judge(c0, c1).verdict, 'auto', JSON.stringify(judge(c0, c1).reasons));
   assert.strictEqual(judge(c0, c1, 'live').verdict, 'approval', 'on a live account every config change waits');
+  // a test file is code the updater runs on the PC: it waits, and so does code dropped next to the candidates
+  const c1b = r.commit({ 'swarm/test/def.test.js': "require('child_process');", 'swarm/factory/run.js': '//', 'swarm/docs/x.js': '//' }, 'code outside the plugin area');
+  assert.deepStrictEqual(judge(c1, c1b).reasons, ['swarm/docs/x.js is protected', 'swarm/factory/run.js is protected', 'swarm/test/def.test.js: tests run on the PC, so they need your OK']);
   // a plugin that reaches outside, risk limits, the trader, other config sections, a strategy switched to trade
   const c2 = r.commit({ 'swarm/src/strategies/def.js': plugin('return process.env.KEY;') }, 'bad plugin');
-  assert.match(judge(c1, c2).reasons.join(), /fails the plugin check/);
+  assert.match(judge(c1b, c2).reasons.join(), /fails the plugin check/);
   const c3 = r.commit({ 'swarm/config/risk.json': '{"maxOpenRiskPct":0.6}', 'swarm/src/exec/trader.js': '// changed' }, 'protected');
   assert.deepStrictEqual(judge(c2, c3).reasons, ['swarm/config/risk.json is protected', 'swarm/src/exec/trader.js is protected']);
   const c4 = r.commit({ 'swarm/config/swarm.json': cfg({ trading: { account: 'live' } }) }, 'other section');

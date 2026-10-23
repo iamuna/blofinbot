@@ -68,12 +68,26 @@ if [ ! -f "$ETC/secrets.env" ]; then
   echo " 1) GitHub fine-grained token — repository iamuna/blofinbot only, Contents: Read and write."
   echo "    Lets the swarm publish its state (dashboard, Claude's daily review)."
   read -r -s -p "    GitHub token: " GH < /dev/tty || GH=""; echo
-  echo " 2) Telegram bot for alerts and commands — create one with @BotFather, then send it any message."
+  echo " 2) Telegram bot for alerts and commands — create one with @BotFather."
   read -r -s -p "    Telegram bot token: " TG < /dev/tty || TG=""; echo
   CHAT=""
   if [ -n "$TG" ]; then
-    CHAT=$(curl -fsS "https://api.telegram.org/bot${TG}/getUpdates" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{const u=JSON.parse(s).result;const m=u.reverse().find(x=>x.message);console.log(m?m.message.chat.id:"")}catch(e){console.log("")}})')
-    [ -n "$CHAT" ] && echo "    Telegram chat id: $CHAT" || echo "    No message found: send your bot a message, then edit $ETC/secrets.env (TELEGRAM_CHAT_ID)."
+    # whoever controls the chat controls /flatten and /mode: link only the private chat that sends a one-time code
+    # (anyone can message a bot, so "the last chat that wrote" is not good enough)
+    CODE="swarm-$(node -e 'process.stdout.write(require("crypto").randomBytes(4).toString("hex"))')"
+    echo "    In Telegram, send this to your bot:  $CODE   (waiting up to 3 minutes)"
+    CHAT=$(TG="$TG" CODE="$CODE" node -e '
+      const end = Date.now() + 180000; let offset = 0;
+      (async () => {
+        while (Date.now() < end) {
+          try {
+            const j = await (await fetch(`https://api.telegram.org/bot${process.env.TG}/getUpdates?offset=${offset}&timeout=20`)).json();
+            for (const u of j.result || []) { offset = u.update_id + 1; const m = u.message; if (m && m.chat.type === "private" && String(m.text || "").trim() === process.env.CODE) { console.log(m.chat.id); return; } }
+          } catch (e) { await new Promise((r) => setTimeout(r, 3000)); }
+        }
+        console.log("");
+      })();')
+    [ -n "$CHAT" ] && echo "    Linked your chat: $CHAT" || echo "    The code did not arrive in time: run the installer again after deleting $ETC/secrets.env, or set TELEGRAM_CHAT_ID there yourself."
   fi
   umask 077
   printf 'GITHUB_TOKEN=%s\nTELEGRAM_BOT_TOKEN=%s\nTELEGRAM_CHAT_ID=%s\n' "$GH" "$TG" "$CHAT" > "$ETC/secrets.env"

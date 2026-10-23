@@ -135,6 +135,41 @@ test('trader: unfilled orders end, stops exit at the bid, flatten closes everyth
   } finally { await R.stop(); }
 });
 
+test('coordinator: the ideas of one bar close share the limits (orders in flight count), until the trader reports', async () => {
+  let now = Date.UTC(2026, 9, 23, 3);
+  const bus = new MemoryBus({ now: () => now }), cfg = baseCfg();
+  cfg.strategies = { s1: { mode: 'trade' } }; cfg.trading = { account: 'paper', cycleMs: 20 };
+  await bus.kv.set('universe', { coins: ['BTC', 'ETH', 'SOL', 'XRP'].map((c) => ({ coin: c, instId: `${c}-USDT`, ct: 0.01, min: 1 })) });
+  const co = new Coordinator({ bus, cfg, dataDir: tmpDir('inflight'), now: () => now, heartbeats: false, logSink: quiet });
+  await co.start();
+  try {
+    const got = tap(bus, ['order', 'risk.decision']);
+    co.account = { equity: 10000, dayStart: 10000, peak: 10000 };
+    co.positions = { ts: now, open: [{ coin: 'BTC', side: 1, qty: 1, px: 1000, stop: 440, orderId: 'old' }], working: [] }; // 5.6% of 6% open risk used
+    for (const c of ['ETH', 'SOL', 'XRP']) await bus.publish('idea', Object.assign(idea(`i-${c}`, 's1', c, 1, 100, 99), { mode: 'trade', riskPct: 0.01 }));
+    await bus.drain(); await sleep(80); await bus.drain();
+    const orders = got.filter((m) => m.type === 'order').map((m) => m.data);
+    const risk = orders.reduce((a, o) => a + o.qty * Math.abs(o.entry.px - o.stop), 0);
+    assert.ok(risk <= 40 + 1e-9, `the three orders together stay within the $40 left (${risk})`);
+    assert.deepStrictEqual(orders.map((o) => o.qty), [25, 15], 'first gets its 0.25%, the second the rest');
+    assert.match(got.filter((m) => m.type === 'risk.decision').pop().data.reasons.join(), /total open risk/);
+    assert.strictEqual(co.inflight.size, 2);
+    // a new idea on a coin with an order in flight is not sized again
+    await bus.publish('idea', Object.assign(idea('i-ETH-2', 's1', 'ETH', 1, 100, 99), { mode: 'trade', riskPct: 0.01 }));
+    await bus.drain(); await sleep(80); await bus.drain();
+    assert.strictEqual(got.filter((m) => m.type === 'order').length, 2);
+    // the trader reports one as working: it counts there instead; a later report without the other ends it
+    now += 1000;
+    await bus.publish('positions', { ts: now, open: co.positions.open, working: [{ coin: 'ETH', side: 1, qty: 25, px: 100, stop: 99, orderId: orders[0].id }] });
+    await bus.drain();
+    assert.deepStrictEqual([...co.inflight.keys()], [orders[1].id]);
+    now += 5000;
+    await bus.publish('positions', { ts: now, open: co.positions.open, working: [] });
+    await bus.drain();
+    assert.strictEqual(co.inflight.size, 0);
+  } finally { await co.stop(); }
+});
+
 test('coordinator: the loss ladder flattens; only Ibrahim (via the Herald) can resume after a halt', async () => {
   const R = await rig();
   try {

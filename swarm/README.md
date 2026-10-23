@@ -11,7 +11,10 @@ Launch on the home PC: [docs/LAUNCH.md](docs/LAUNCH.md). What the scheduled Clau
 ## Who may change what
 
 - Strategy plugins are pure functions of the bars they get (checked by `src/factory/plugin_check.js` before they are
-  loaded) and run in the brain group, as their own user, without keys.
+  loaded) and run in the brain, away from the keys: on Linux the brain group runs as its own user; on Windows the
+  brain runs in its own Node process under Node's permission model — it can read only `src/`, start nothing, and
+  has no tokens in its environment (`--isolate brain`, `src/core/isolate.js`).
+- Tests are code the PC runs before each install, so new or changed tests wait for Ibrahim like protected code.
 - Orders, commands and account updates are signed with a key only the trusted groups hold (`src/core/auth.js`).
 - The home PC installs new strategies and shadow-mode settings on its own after the tests pass; changes to risk,
   execution, the guardian, the bus or the installer wait for Ibrahim (`sudo swarm-approve`; `src/tools/update_gate.js`).

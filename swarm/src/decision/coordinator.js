@@ -8,6 +8,10 @@
  * The risk agent also watches the account every few seconds: the loss ladders switch the swarm to no-new, flatten
  * (it orders the trader to close everything) or halt (closes everything and waits for Ibrahim's resume).
  * Inputs it keeps current: kv account (accountant), kv positions (trader), guard, events, md.book, kv betas (brain).
+ * Orders it sent that the trader has not reported yet (in flight) count as working orders in every risk check, so
+ * the ideas of one bar close (often dozens at once on 1h/4h) share the limits instead of each seeing the same room.
+ * An order stays in flight until a positions report lists it, until a report made ≥ 5 s after it does not (the
+ * trader has taken and ended it), or for 60 s at most.
  */
 'use strict';
 const fs = require('fs'), path = require('path'), crypto = require('crypto');
@@ -34,14 +38,14 @@ class Coordinator extends Agent {
     this.modes = {}; for (const [k, v] of Object.entries(this.cfg.strategies || {})) this.modes[k] = v.enabled === false ? 'off' : v.mode || 'shadow';
     Object.assign(this.modes, saved.modes || {});
     await this.bus.kv.set('strategyModes', this.modes);
-    this.queue = []; this.timer = null; this.books = new Map();
+    this.queue = []; this.timer = null; this.books = new Map(); this.inflight = new Map();
     this.account = await this.bus.kv.get('account'); this.positions = (await this.bus.kv.get('positions')) || { open: [], working: [] };
     this.guard = ((await this.bus.kv.get('guard')) || {}).coins || {}; this.events = ((await this.bus.kv.get('events')) || {}).windows || [];
     this.betas = (await this.bus.kv.get('betas')) || {}; this.universe = new Map((((await this.bus.kv.get('universe')) || {}).coins || []).map((c) => [c.coin, c]));
     this.alloc.load(saved.results || {}); // its own record of closed trades (signed trade.closed), not the kv store
     this.subscribe('idea', (m) => this.onIdea(m.data));
     this.subscribe('account', (m) => { this.account = m.data; });
-    this.subscribe('positions', (m) => { this.positions = m.data; });
+    this.subscribe('positions', (m) => { this.positions = m.data; this.settleInflight(m.data); });
     this.subscribe('trade.closed', (m) => { for (const s of m.data.strategies || []) this.alloc.record(s.name, m.data.r); this.save(); });
     this.subscribe('guard.status', (m) => { this.guard = m.data.coins; });
     this.subscribe('event.window', (m) => { this.events = m.data.windows; });
@@ -62,12 +66,20 @@ class Coordinator extends Agent {
 
   riskMode() { const m = this.risk.mode(this.account, { halted: this.halted, paused: this.paused }); return m; }
 
+  // orders the trader has reported (or must have handled by now) stop counting as in flight
+  settleInflight(p) {
+    const now = this.now(), seen = new Set([...(p.open || []), ...(p.working || [])].map((x) => x.orderId));
+    for (const [id, leg] of this.inflight) if (seen.has(id) || (p.ts >= leg.t + 5000) || now - leg.t > 60000) this.inflight.delete(id);
+    this.gauge('inflight', this.inflight.size);
+  }
+
   async cycle() {
     const ideas = this.queue.splice(0), t0 = Date.now();
     if (!ideas.length) return;
     const rm = this.riskMode();
     this.alloc.scale = rm.budgetScale;
-    const busy = new Set([...(this.positions.open || []), ...(this.positions.working || [])].map((p) => p.coin));
+    this.settleInflight({ ts: 0 }); // drop the expired ones
+    const busy = new Set([...(this.positions.open || []), ...(this.positions.working || []), ...this.inflight.values()].map((p) => p.coin));
     const budget = (name) => { if (rm.provenOnly && this.alloc.stats(name).n < this.alloc.minTrades) return 0; return this.alloc.budget(name); };
     const { intents, dropped } = fuse(ideas, { busy, budget, maxStackX: this.T.maxStackX });
     for (const d of dropped) this.count('ideasDropped');
@@ -76,7 +88,7 @@ class Coordinator extends Agent {
     for (const it of intents) {
       const size = this.alloc.size(it, eq);
       const s = {
-        equity: eq, mode: rm.mode, positions: this.positions.open || [], working: this.positions.working || [], inWindow,
+        equity: eq, mode: rm.mode, positions: this.positions.open || [], working: [...(this.positions.working || []), ...this.inflight.values()], inWindow,
         // betas come from the brain (untrusted zone): an alt counts as at least 0.5 and at most 3 BTC
         tradable: (c) => !this.guard[c] || this.guard[c].tradable, beta: (c) => (c === 'BTC' ? 1 : Number.isFinite(this.betas[c]) ? Math.min(3, Math.max(0.5, this.betas[c])) : 1),
         book: (c) => { const b = this.books.get(c); return b && now - b.ts < 30000 ? b : null; }, inst: (c) => this.universe.get(c),
@@ -88,6 +100,8 @@ class Coordinator extends Agent {
       this.count(`risk_${d.verdict}`);
       if (d.verdict === 'reject') continue;
       const inst = this.universe.get(it.coin);
+      // reserve before publishing: the next intent of this cycle is checked against it
+      this.inflight.set(`ord-${it.id}`, { orderId: `ord-${it.id}`, coin: it.coin, side: it.side, qty: d.qty, px: it.entry.px, stop: it.stop, t: this.now() });
       await this.publish('order', {
         id: `ord-${it.id}`, intentId: it.id, coin: it.coin, instId: inst ? inst.instId : `${it.coin}-USDT`, side: it.side, qty: d.qty, entry: it.entry, stop: it.stop, target: it.target, trail: it.trail,
         timeStopMin: it.timeStopMin, t: it.t, strategies: it.strategies, riskPct: (d.qty * Math.abs(it.entry.px - it.stop)) / eq, why: it.why,
@@ -118,6 +132,13 @@ class Coordinator extends Agent {
       if (!ok || !['off', 'shadow', 'trade'].includes(c.mode)) { this.warn(`ignored strategy-mode ${c.strategy}=${c.mode} from ${src}`); return; }
       this.modes[c.strategy] = c.mode; this.save(); await this.bus.kv.set('strategyModes', this.modes);
       this.log.info(`${c.strategy} → ${c.mode} (by ${c.by} via ${src})`);
+      return;
+    }
+    if (c.cmd === 'strategy-forget') {
+      // a name listed by mistake (a /mode typo); only Ibrahim, and never a configured strategy
+      if (src !== 'herald' || (this.cfg.strategies || {})[c.strategy]) { this.warn(`ignored strategy-forget ${c.strategy} from ${src}`); return; }
+      delete this.modes[c.strategy]; this.save(); await this.bus.kv.set('strategyModes', this.modes);
+      this.log.info(`${c.strategy} removed from the strategy list (by ${c.by})`);
       return;
     }
     if (c.cmd === 'pause') this.paused = true;

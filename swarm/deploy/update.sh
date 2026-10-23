@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Updater (root, every 10 minutes). New commits on the swarm branch are installed only when:
 #   1. the update gate — run from the code ALREADY installed — says they stay in the self-service area (strategy
-#      plugins that pass the plugin check, shadow-mode strategy settings, candidates, tests, docs), or Ibrahim
+#      plugins that pass the plugin check, shadow-mode strategy settings, candidates, docs), or Ibrahim
 #      approved this exact commit on the PC (sudo swarm-approve);
 #   2. every offline test passes in a scratch checkout, run as the unprivileged user `nobody` (a test file
 #      cannot read the keys);

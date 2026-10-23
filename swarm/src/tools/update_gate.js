@@ -11,9 +11,10 @@
  *   - strategies/index.js when only names in its PLUGINS list changed;
  *   - config/swarm.json when only the `strategies` section changed, no strategy is switched to "trade", and the
  *     account is not live;
- *   - factory candidates, tests, docs.
- * Everything else — risk limits, the risk/coordinator/trader/accountant code, the guardian, the Herald, the bus,
- * the feeds, the installer and this gate — waits until Ibrahim runs `sudo swarm-approve` on the PC.
+ *   - factory candidates (data, used in CI only), docs.
+ * Everything else — tests (they are code the updater runs on the PC, unscreened), risk limits, the
+ * risk/coordinator/trader/accountant code, the guardian, the Herald, the bus, the feeds, the installer and this
+ * gate — waits until Ibrahim approves it on the PC (`sudo swarm-approve`, approve.ps1 on Windows).
  * Paths outside swarm/ (the trend bot, workflows) are not part of the swarm and are ignored here.
  */
 'use strict';
@@ -23,7 +24,8 @@ const { checkPlugin } = require('../factory/plugin_check');
 function git(repo, args) { return cp.execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8', maxBuffer: 64 << 20, stdio: ['ignore', 'pipe', 'pipe'] }); }
 function show(repo, sha, file) { try { return git(repo, ['show', `${sha}:${file}`]); } catch (e) { return null; } }
 
-const AUTO_ANY = [/^swarm\/factory\//, /^swarm\/test\//, /^swarm\/docs\//, /^swarm\/[^/]+\.md$/];
+// not swarm/test/: a test file is any code at all, and the updater runs every test before it installs
+const AUTO_ANY = [/^swarm\/factory\/candidates\/[^/]+\.json$/, /^swarm\/factory\/[^/]+\.md$/, /^swarm\/docs\/[^/]+\.md$/, /^swarm\/[^/]+\.md$/];
 const PLUGIN = /^swarm\/src\/strategies\/([a-z0-9_]+)\.js$/;
 
 function judgeIndex(oldSrc, newSrc) {
@@ -62,7 +64,7 @@ function gate({ repo, oldSha, newSha, account = 'paper' }) {
       if (why.length) reasons.push(...why); else auto.push(f);
       continue;
     }
-    reasons.push(`${f} is protected`);
+    reasons.push(/^swarm\/test\//.test(f) ? `${f}: tests run on the PC, so they need your OK` : `${f} is protected`);
   }
   return { verdict: reasons.length ? 'approval' : 'auto', reasons, auto, files };
 }

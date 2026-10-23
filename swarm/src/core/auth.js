@@ -6,6 +6,8 @@
  * or position update would be unsigned, and every agent that holds the key drops unsigned authority messages.
  *
  * Signed types: order, intent, risk.decision, risk.state, sys.command, account, positions, trade.closed.
+ * On Windows (one process, in-memory bus) the brain runs in its own locked-down process instead (core/isolate.js),
+ * and the bridge never forwards a signed type from it.
  * Without a key (tests, CI, a paper run on a laptop) nothing is signed and nothing is checked; run.js refuses to
  * start a demo or live trader without one.
  */

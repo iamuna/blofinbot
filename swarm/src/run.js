@@ -5,7 +5,8 @@
  *   node swarm/src/run.js --agents universe,blofin-feed --bus memory --data-dir /tmp/sw --minutes 5
  *
  * Options: --config FILE (default swarm/config/swarm.json; SWARM_CONFIG), --bus redis|memory, --redis URL,
- *          --data-dir DIR (SWARM_DATA_DIR), --minutes N (stop after N minutes), --log-samples.
+ *          --data-dir DIR (SWARM_DATA_DIR), --minutes N (stop after N minutes), --log-samples,
+ *          --isolate a,b (SWARM_ISOLATE: run these agents in their own locked-down process, core/isolate.js).
  * SIGINT/SIGTERM stop the agents in reverse order, flush the recorder and close the bus.
  */
 'use strict';
@@ -64,9 +65,14 @@ async function main() {
   if (account !== 'paper' && names.includes('trader') && !busKey) throw new Error(`a ${account} trader needs the bus key (SWARM_BUS_KEY_FILE): it only accepts signed orders`);
   const bus = await createBus({ kind: busKind, url: A.redis || process.env.SWARM_REDIS || cfg.bus.url, prefix: cfg.bus.prefix, key: busKey });
   const ctx = { bus, cfg, dataDir, busKey };
+  const isolate = new Set(String(A.isolate || process.env.SWARM_ISOLATE || '').split(',').filter(Boolean));
+  for (const n of isolate) if (!names.includes(n)) throw new Error(`--isolate ${n}: not one of the agents being started`);
   const agents = [];
-  for (const n of names) { const C = REGISTRY[n](cfg); const a = new C(ctx, { name: n }); await a.start(); agents.push(a); }
-  log.info(`running ${names.join(', ')} on the ${busKind} bus, data in ${dataDir}, ${busKey ? 'signing and checking authority messages' : 'no bus key'}`);
+  for (const n of names) {
+    const C = isolate.has(n) ? require('./core/isolate').IsolatedAgent : REGISTRY[n](cfg);
+    const a = new C(ctx, { name: n }); await a.start(); agents.push(a);
+  }
+  log.info(`running ${names.join(', ')} on the ${busKind} bus, data in ${dataDir}, ${busKey ? 'signing and checking authority messages' : 'no bus key'}${isolate.size ? `, isolated: ${[...isolate].join(', ')}` : ''}`);
   let stopping = false;
   const stop = async (why) => {
     if (stopping) return; stopping = true;

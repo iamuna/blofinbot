@@ -9,7 +9,11 @@ update gate (`src/tools/update_gate.js`):
 |---|---|
 | Strategy plugins in `src/strategies/` that pass `src/factory/plugin_check.js`; names in `src/strategies/index.js` | Risk limits, risk / coordinator / trader / accountant code, guardian, Herald, bus, feeds, installer, the gate itself |
 | `config/swarm.json` → `strategies` (new ones in `shadow`, parameters, `enabled: false`) on paper/demo | Switching any strategy to `trade` in git (the promotion gate does that at run time on paper/demo) |
-| Factory candidates, tests, docs | Anything on a live account |
+| Factory candidates (`factory/candidates/*.json`), docs (`*.md`) | Tests (`test/`): the PC runs them before every install, and a test file can do anything |
+| | Anything on a live account |
+
+A new plugin's test file therefore waits for Ibrahim, and holds up everything pushed with it: put new tests on a
+`swarm-fix/<topic>` branch (CI runs them there) and let the plugin go to `swarm` on its own.
 
 Protected fixes go to a branch `swarm-fix/<topic>` with a pull request into `swarm`, so the self-service updates
 on `swarm` keep flowing while the fix waits for Ibrahim. Every commit ends with the attribution lines.

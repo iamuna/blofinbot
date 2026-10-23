@@ -70,3 +70,26 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 - Not yet run through the 5-year sweep: add them to history/sweep.js GROUPS to test.
 - `/status` (99c031e): per-strategy shadow/paper stats (trades, win %, total/avg/best/worst R, 24 h), only running strategies listed, long reports split. Approved by Ibrahim 05:02; confirm it runs (66 agents ok expected).
 - Open next: shadow results need days on 1h/4h; then add the new plugins (krown-jewel, wyckoff-spring, candles) to history/sweep.js GROUPS for the 5-year test; dragon (W) pattern was offered, not built.
+
+## 2026-10-23 (morning) — safety fixes from a code review (protected: needs approve.ps1, then a runner restart)
+- Update gate: tests are no longer self-service. The PC runs every test before it installs, and a test file is any
+  code at all, so a push touching only `swarm/test/` could run code on the PC with the tokens in reach. Factory and
+  docs are narrowed to `factory/candidates/*.json` and `*.md`. Windows runner: the tests run without the tokens and
+  keys in their environment.
+- Brain isolated on Windows (`--isolate brain`, src/core/isolate.js): its own Node process under Node's permission
+  model (reads only swarm/src; no secrets.json, bus.key, blofin-demo.json, config or data folder; cannot start
+  programs or threads; no tokens in its environment). The bridge forwards only idea/feat.bar/regime.state/shadow.*/
+  heartbeat/log under its own name, kv write only `betas`. It checks its own lock-down first and does not start
+  without it (needs Node 22.13+; the installer now upgrades older Node). Before this, every plugin ran in the one
+  process that holds the tokens and the bus key; the README's "own user" was true only on Linux.
+- Coordinator: orders in flight count in every risk check. All ideas of one bar close were checked against the same
+  portfolio, so dozens of 1h/4h ideas could each pass the open-risk / gross / BTC-exposure caps that only fit one of
+  them (seen live: 22 longs ≈ 4× equity with a 2× BTC-exposure cap). Test reproduces it ($75 risked with $40 room).
+- Herald `/mode`: only names that exist (configured or reported by the brain), with a "did you mean"; `/mode <typo>
+  off` removes a typo from the list (`candel-harami-4h` is listed in trade mode today: send `/mode candel-harami-4h off`).
+- Installers (Windows and Linux): the Telegram chat is linked by a one-time code sent from a private chat, not "the
+  last chat that messaged the bot" (anyone can message a bot).
+- Runner: an update that changes run.ps1 restarts the runner itself (rollback still armed). This update is the first
+  one with that code, so the running runner must be restarted once by hand after it installs: run the installer
+  again (Terminal as Admin) — `irm https://raw.githubusercontent.com/iamuna/blofinbot/swarm/swarm/deploy/windows/install.ps1 | iex`
+  — it keeps the tokens and chat. Check after: /status lists `brain-host` ok and the strategies report again.

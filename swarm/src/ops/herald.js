@@ -4,7 +4,8 @@
  * digest when anything traded, and a daily summary at 21:00 Amsterdam time.
  * Takes commands only from Ibrahim's chat: /status · /pause · /resume · /flatten · /mode <strategy> <off|shadow|trade>
  * and publishes them as sys.command (by: ibrahim). Only the Herald may publish resume — the risk agent and the
- * trader ignore a resume from anyone else.
+ * trader ignore a resume from anyone else. /mode only takes a strategy that exists (configured, or reported by the
+ * brain); `/mode <name> off` on a listed name that does not exist removes it (strategy-forget).
  * Secrets: TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID from the environment (/etc/swarm/secrets.env). Without them
  * the Herald only logs what it would have sent.
  */
@@ -164,9 +165,31 @@ class Herald extends Agent {
     if (cmd === '/pause') { await send('pause'); return this.say('Paused: working orders cancelled, no new ones. Positions keep their stops. /resume to continue.'); }
     if (cmd === '/resume') { await send('resume'); return this.say('Resumed.'); }
     if (cmd === '/flatten') { await send('flatten', { why: 'Ibrahim' }); await send('pause'); return this.say('Closing everything and pausing. /resume to continue.'); }
-    if (cmd === '/mode' && args.length === 2 && ['off', 'shadow', 'trade'].includes(args[1])) { await send('strategy-mode', { strategy: args[0], mode: args[1] }); return this.say(`${args[0]} → ${args[1]} (takes effect within a minute)`); }
+    if (cmd === '/mode' && args.length === 2 && ['off', 'shadow', 'trade'].includes(args[1])) {
+      const [name, mode] = args, known = this.knownStrategies();
+      if (!known.has(name)) {
+        // a name that only exists because of an earlier typo: `/mode <it> off` removes it from the list
+        const listed = (await this.bus.kv.get('strategyModes').catch(() => null)) || {};
+        if (mode === 'off' && listed[name] !== undefined) { await send('strategy-forget', { strategy: name }); return this.say(`${name} removed from the list (there is no such strategy)`); }
+        const near = [...known].filter((k) => editDistance(k, name) <= 2).slice(0, 3);
+        return this.say(`There is no strategy called ${name}${near.length ? ` - did you mean ${near.join(' or ')}?` : ''} Nothing changed.`);
+      }
+      await send('strategy-mode', { strategy: name, mode }); return this.say(`${name} → ${mode} (takes effect within a minute)`);
+    }
     return this.say('Commands: /status /pause /resume /flatten /mode <strategy> <off|shadow|trade>');
   }
+  // configured strategies and variants, and every strategy the brain reports as loaded
+  knownStrategies() { return new Set([...Object.keys(this.cfg.strategies || {}), ...Object.keys(this.hb || {}).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9))]); }
+}
+
+function editDistance(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
 }
 
 module.exports = { Herald };
