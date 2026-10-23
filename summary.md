@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-23T12:42:38.457Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T12:54:17.290Z · account **PAPER** · risk mode normal
 
-Equity $10448.7 (start $10000) · today 6.22% · drawdown 1.6% · 37 trades · fees $67.83 · funding $2.56
+Equity $10466.64 (start $10000) · today 6.40% · drawdown 1.4% · 37 trades · fees $67.83 · funding $2.56
 
 Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h), +CT (candle-engulfing-1h), +XPL (candle-engulfing-4h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h) · working orders: 0
 
@@ -14,12 +14,13 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | brain | ok |  |
 | brain-host | ok |  |
 | coordinator | ok |  |
-| events | degraded | calendar feed: fetch failed (keeping 0 saved events) |
+| events | ok |  |
 | guard | ok |  |
 | guardian | ok |  |
 | herald | ok |  |
 | recorder | ok |  |
 | state-sync | ok |  |
+| strategy:adaptive-score-12h | ok |  |
 | strategy:candle-doji-1h | ok |  |
 | strategy:candle-doji-4h | ok |  |
 | strategy:candle-doji-star-1h | ok |  |
@@ -65,11 +66,16 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | strategy:krown-jewel-2h | ok |  |
 | strategy:leader-follow | ok |  |
 | strategy:ma-21-200 | ok |  |
+| strategy:ma-pullback-12h | ok |  |
 | strategy:ma-retest-12h | ok |  |
 | strategy:ma-retest-1d | ok |  |
+| strategy:ma-retest-4h | ok |  |
 | strategy:noise-breakout | ok |  |
 | strategy:oi-flush | ok |  |
 | strategy:overshoot-fade | ok |  |
+| strategy:pivot-matrix | ok |  |
+| strategy:pivot-matrix-1h | ok |  |
+| strategy:pivot-matrix-4h | ok |  |
 | strategy:rsi-macd | ok |  |
 | strategy:rsi-macd-trend-12h | ok |  |
 | strategy:session-drive | ok |  |
@@ -79,7 +85,7 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | strategy:wyckoff-spring-1h | ok |  |
 | strategy:wyckoff-spring-4h | ok |  |
 | trader | ok |  |
-| universe | degraded | refresh failed: fetch failed |
+| universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PHA: wide-spread; PONS: wide-spread
+Not tradable now: PHA: wide-spread
