@@ -69,3 +69,9 @@
 {"ts":1792720806213,"id":"int-candle-three-outside-1h-mvkboe80-64","coin":"WLFI","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 93.0"],"mode":"normal"}
 {"ts":1792720806214,"id":"int-candle-three-outside-1h-mvkboe80-65","coin":"XPL","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 65.5"],"mode":"normal"}
 {"ts":1792721706210,"id":"int-intraday-trend-mvkc7oo0-180","coin":"DASH","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 0.100"],"mode":"normal"}
+{"ts":1792724406253,"id":"int-candle-engulfing-1h-mvkdtk00-129","coin":"BTC","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.000100"],"mode":"normal"}
+{"ts":1792724406255,"id":"int-candle-engulfing-1h-mvkdtk00-130","coin":"AERO","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 6.29"],"mode":"normal"}
+{"ts":1792724406257,"id":"int-candle-engulfing-1h-mvkdtk00-131","coin":"PYTH","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 68.6"],"mode":"normal"}
+{"ts":1792724406258,"id":"int-wyckoff-spring-1h-mvkdtk00-76","coin":"STRK","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 94.3"],"mode":"normal"}
+{"ts":1792724406260,"id":"int-candle-three-outside-1h-mvkdtk00-66","coin":"TIA","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 8.87"],"mode":"normal"}
+{"ts":1792724406262,"id":"int-candle-engulfing-1h-mvkdtk00-132","coin":"ZK","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 380"],"mode":"normal"}
