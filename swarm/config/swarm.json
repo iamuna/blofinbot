@@ -987,21 +987,21 @@
     },
     "adaptive-score": {
       "enabled": false,
-      "note": "ported 2026-10-23 from the 1-minute bot (branch possible-expansion, expansion/README.md); off until the 5-year sweep group adaptive-score has run"
+      "note": "ported 2026-10-23 from the 1-minute bot (expansion/README.md). 5-year sweep, 60 coins: 4h -0.009 R, 12h +0.024 (t 0.56), 1d +0.036 (t 0.65): no edge beyond rsi-macd-trend-12h (+0.123, t 2.5). Stays off (expansion/RESULTS_2026-10-23.md)"
     },
     "adaptive-score-4h": {
       "base": "adaptive-score",
       "enabled": false,
       "mode": "shadow",
       "params": { "tf": 240, "onlyTfs": [240] },
-      "note": "to shadow only if the sweep shows it positive at 1.5x costs in both halves; switch enabled to true"
+      "note": "rejected 2026-10-23: 5-year sweep -0.009 R (expansion/RESULTS_2026-10-23.md)"
     },
     "adaptive-score-12h": {
       "base": "adaptive-score",
       "enabled": false,
       "mode": "shadow",
       "params": { "tf": 720, "onlyTfs": [720], "holdBars": 30 },
-      "note": "as adaptive-score-4h"
+      "note": "rejected 2026-10-23: 5-year sweep +0.024 R, t 0.56 (expansion/RESULTS_2026-10-23.md)"
     }
   },
   "trading": {
@@ -1012,7 +1012,8 @@
     "makerBps": 2,
     "takerBps": 6,
     "slipBps": 1.5,
-    "breakevenR": 1,
+    "breakevenR": 0,
+    "breakevenNote": "0 since 2026-10-23: paper/demo now exit as shadow and backtests do. Break-even at +1 R cost the robust five 10% of their R over 5 years (ma-retest-12h +0.183 -> +0.133 R a trade): expansion/RESULTS_2026-10-23.md",
     "staleBookMs": 10000
   },
   "watch": {

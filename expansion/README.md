@@ -4,6 +4,12 @@ Branch `possible-expansion` (git branch names can't have spaces), made 2026-10-2
 **iamuna/1-min-blofin-bot** (`main` = the Python BTC 1-minute research core, `handoff-ready` = its handoff and
 lessons docs). The file map is in [INDEX.md](INDEX.md); the lessons and data facts are in [LESSONS.md](LESSONS.md).
 
+**Results (same day, after running the tools on the 5-year data): [RESULTS_2026-10-23.md](RESULTS_2026-10-23.md).**
+Break-even at +1 R cost the robust five 10% of their R, so paper and demo now run without it (`trading.breakevenR: 0`)
+and exit the way shadow does. adaptive-score has no edge on slow bars (t < 0.7) and stays off. The loss-streak rule
+costs more than it saves; its replay tool had a look-ahead bug, now fixed. The 2017–2021 era test is the
+`swarm-era.yml` workflow.
+
 **Short version.** The swarm is already far ahead of the 1-minute bot: it has the risk ladders, the signed limits,
 the factory gate with a multiple-testing bar, shadow mode, the demo trader's intent journal and the 5-year sweep.
 And its own research has already settled most of the 1-minute bot's *strategy* content: candle patterns, harmonics

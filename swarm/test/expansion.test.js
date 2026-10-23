@@ -110,6 +110,12 @@ test('streak rule: replays a trade list with and without it; the chance-level lo
   // sizes: 1,1,1,.5(win 2→1),1,1,1,.5,.5,.5,0,0(win 3, shadow),1(3)
   assert.strictEqual(x.with.sumR, -1 - 1 - 1 + 1 - 1 - 1 - 1 - 0.5 - 0.5 - 0.5 + 0 + 0 + 3);
   assert.strictEqual(x.tradesStopped, 2); assert.strictEqual(x.longestLosingStreak, 7);
+  // overlapping trades (many coins at once): the size is set at entry, so trades already open when a cluster of
+  // stops hits are not "skipped" after the fact
+  const open = [-1, -1, -1, -1, -1, -1, -1].map((r, k) => ({ r, entryT: 0, exitT: k + 1 })).concat([{ r: 1, entryT: 10, exitT: 11 }]);
+  const y = replay(open);
+  assert.strictEqual(y.tradesStopped, 1, 'only the trade opened after the 7 losses is skipped');
+  assert.strictEqual(y.with.sumR, -7);
   assert.ok(Math.abs(expectedLongestStreak(300, 0.38) - 9.9) < 0.1, 'a 38% strategy runs ~10 losses in a row by chance in 300 trades');
 });
 

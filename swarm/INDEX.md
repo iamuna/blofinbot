@@ -96,7 +96,7 @@ All start in shadow; trade mode is Ibrahim's call (`/mode <name> trade`). Eviden
 | candles | [candles.js](src/strategies/candles.js) | 14 candlestick families | 23 of 28 lose; every 1h version loses |
 | session-drive, overshoot-fade, leader-follow, crowd-squeeze, noise-breakout | `src/strategies/` | the starting 1–45 minute set | all lose after costs |
 | dip-reversal | [dip_reversal.js](src/strategies/dip_reversal.js) | buy an outsized 15m drop | fails once it has a stop (−0.12 R) |
-| adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | off; sweep group `adaptive-score` (on 1m it lost: [../expansion/README.md](../expansion/README.md)) |
+| adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | off, rejected: 5-year sweep −0.009 / +0.024 / +0.036 R at 4h / 12h / 1d, t < 0.7 ([../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)) |
 | probe | [probe.js](src/strategies/probe.js) | CI only: exercises the trade path | — |
 
 The lesson across all of it: below 1h, costs eat every edge we found; the slow (12h–1d) edges are mostly short.
@@ -110,13 +110,14 @@ The lesson across all of it: below 1h, costs eat every edge we found; the slow (
 | `swarm-state` | live state from the PC every 10 min (state.json, summary.md, trades, shadow trades) | the PC (state-sync) |
 | `swarm-data` | 6.5 months × 31 coins of 1m bars, open interest, funding | workflow `swarm-data.yml` |
 | `swarm-factory` | tester results, try log (`trials.jsonl`), promotion decisions | workflow `swarm-factory.yml` |
-| `swarm-reports` | smoke-run reports, 5-year sweep reports | workflows `swarm-ci.yml`, `swarm-history.yml` |
+| `swarm-reports` | smoke-run reports, 5-year sweep reports, era-test reports (`era/`) | workflows `swarm-ci.yml`, `swarm-history.yml`, `swarm-era.yml` |
 | release `swarm-history-v1` | 5 years × 665 coins of 1m data (19.4 GB) | workflow `swarm-history.yml` |
 | `research-data`, `validation-data`, `history-data` | the retired trend bot's data (1h bars 2020–2026, BTC 1m) — needed to port its full portfolio | (no longer updated) |
 | tags `archive/*` | the retired code and its state branches: `archive/trend-bot-2026-10-20` (Python core, trend bot, dashboards, its research) | — |
 
 Workflows ([../.github/workflows/](../.github/workflows)): `swarm-ci` (tests + live smoke run, Linux and Windows),
-`swarm-factory` (tester + promotion gate), `swarm-history` (5-year sweep), `swarm-data` (dataset). None run on a timer.
+`swarm-factory` (tester + promotion gate), `swarm-history` (5-year sweep), `swarm-data` (dataset), `swarm-era` (slow
+strategies on Binance spot 2017–2021, by hand: [../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)). None run on a timer.
 
 ## Tests
 

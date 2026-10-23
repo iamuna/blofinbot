@@ -6,9 +6,11 @@
  * cuts size at random times and loses R in proportion; it pays only if losses cluster (a regime the strategy does not
  * fit). So this replays a strategy's real trade list with and without the rule.
  *
- * Replay (per strategy, trades in exit order): size 1; after `reduceAfter` losses in a row size × `reduceTo`; after
- * `stopAfter` losses in a row size 0 — trades still happen in shadow and count toward the streak, and the first win
- * (shadow or not) resets it. A loss is r ≤ 0.
+ * Replay (per strategy): size 1; after `reduceAfter` losses in a row size × `reduceTo`; after `stopAfter` losses in a
+ * row size 0 — trades still happen in shadow and count toward the streak, and the first win (shadow or not) resets it.
+ * A loss is r ≤ 0. The size is fixed when a trade OPENS, from the trades that closed before that (in exit order):
+ * with many coins open at once, sizing from everything closed before a trade's exit would "skip" trades that were
+ * already open when a cluster of correlated stops hit — look-ahead that makes any streak rule look brilliant.
  *
  *   node swarm/src/research/streak_rules.js <trades-<strategy>.csv from backtest/run.js> [...] [--reduce-after 3]
  *        [--reduce-to 0.5] [--stop-after 6]
@@ -19,13 +21,18 @@ const fs = require('fs');
 function replay(trades, o = {}) {
   const reduceAfter = o.reduceAfter == null ? 3 : o.reduceAfter, reduceTo = o.reduceTo == null ? 0.5 : o.reduceTo, stopAfter = o.stopAfter == null ? 6 : o.stopAfter;
   const order = [...trades].sort((a, b) => a.exitT - b.exitT || a.entryT - b.entryT);
-  let streak = 0, base = 0, ruled = 0, pkB = 0, pkR = 0, ddB = 0, ddR = 0, reduced = 0, stopped = 0, longest = 0;
+  const size = new Map(); let streak = 0, j = 0, reduced = 0, stopped = 0;
+  for (const t of [...trades].sort((a, b) => a.entryT - b.entryT)) {
+    while (j < order.length && order[j].exitT < t.entryT) { streak = order[j].r > 0 ? 0 : streak + 1; j++; }
+    const z = streak >= stopAfter ? 0 : streak >= reduceAfter ? reduceTo : 1;
+    if (z === 0) stopped++; else if (z < 1) reduced++;
+    size.set(t, z);
+  }
+  let run = 0, longest = 0, base = 0, ruled = 0, pkB = 0, pkR = 0, ddB = 0, ddR = 0;
   for (const t of order) {
-    const size = streak >= stopAfter ? 0 : streak >= reduceAfter ? reduceTo : 1;
-    if (size === 0) stopped++; else if (size < 1) reduced++;
-    base += t.r; ruled += size * t.r;
+    base += t.r; ruled += size.get(t) * t.r;
     pkB = Math.max(pkB, base); ddB = Math.max(ddB, pkB - base); pkR = Math.max(pkR, ruled); ddR = Math.max(ddR, pkR - ruled);
-    streak = t.r > 0 ? 0 : streak + 1; longest = Math.max(longest, streak);
+    run = t.r > 0 ? 0 : run + 1; longest = Math.max(longest, run);
   }
   const n = order.length, r2 = (x) => +x.toFixed(2);
   return { n, longestLosingStreak: longest, without: { sumR: r2(base), maxDDR: r2(ddB), retOverDD: ddB > 0 ? r2(base / ddB) : null },

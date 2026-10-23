@@ -16,16 +16,20 @@ chosen: [README.md](README.md). Lessons and data facts: [LESSONS.md](LESSONS.md)
 | [swarm/tools/import_binance_1m.js](../swarm/tools/import_binance_1m.js) | `btc_bot/ingest.py` (bootstrap_zip, parse_time_ms, verify_continuity) | Streams a Binance 1m kline ZIP/CSV into the swarm dataset layout; lists gaps, fills none | No (tool) |
 | [swarm/test/expansion.test.js](../swarm/test/expansion.test.js) | `tests/test_engine.py` (spirit) | 9 tests: plugin, break-even, excursions, tags, streak replay, tuner, importer → event study → backtest | In `npm test` |
 | [expansion/README.md](README.md), [INDEX.md](INDEX.md), [LESSONS.md](LESSONS.md) | `handoff-ready` docs | Why, what, how; this map; lessons and data facts | — |
+| [expansion/RESULTS_2026-10-23.md](RESULTS_2026-10-23.md) | — | The tools run on the 5-year data: break-even, adaptive-score, streak rule, event study, long/short | — |
+| [.github/workflows/swarm-era.yml](../.github/workflows/swarm-era.yml) | `ingest.py` + the README's era question | Binance spot 1m 2017–2021 on a GitHub runner → importer → slow strategies ± break-even → `swarm-reports/era/` | No (GitHub, by hand) |
 
 ## Changed files
 
 | File | Change | Effect on live trading |
 |---|---|---|
 | [swarm/src/backtest/exec_sim.js](../swarm/src/backtest/exec_sim.js) | Opt-in `breakevenR`: stop to entry + fees after +1 R for no-trail ideas, as the paper/demo traders already do | None (default off) |
-| [swarm/src/backtest/run.js](../swarm/src/backtest/run.js) | `--breakeven <R>` flag → ExecSim; recorded in `results.json` costs | None |
+| [swarm/src/backtest/run.js](../swarm/src/backtest/run.js) | `--breakeven <R>` flag → ExecSim; recorded in `results.json` costs; a variant's own `breakevenR` overrides it | None |
 | [swarm/src/strategies/index.js](../swarm/src/strategies/index.js) | `'adaptive_score'` added to PLUGINS | Plugin loaded, not run (config off) |
 | [swarm/config/swarm.json](../swarm/config/swarm.json) | `adaptive-score`, `adaptive-score-4h`, `adaptive-score-12h`, all `enabled: false` | None |
-| [history/sweep.js](../history/sweep.js) | Sweep group `adaptive-score` at 4h, 12h, 1d | None (sweep runs on GitHub) |
+| [history/sweep.js](../history/sweep.js) | Sweep group `adaptive-score` at 4h, 12h, 1d; `--frames`, `--breakeven R\|both` | None (sweep runs on GitHub) |
+| [swarm/src/research/streak_rules.js](../swarm/src/research/streak_rules.js) | (results pass) size fixed at entry, not at exit: look-ahead fix for overlapping trades | None |
+| [swarm/config/swarm.json](../swarm/config/swarm.json) `trading` | (results pass) `breakevenR: 0`: paper/demo exit as shadow and backtests do | **Yes**: no break-even on paper/demo (update gate asks for approval) |
 
 ## Update gate (what the PC does if this is merged)
 
