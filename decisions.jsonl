@@ -145,3 +145,6 @@
 {"ts":1792782004130,"id":"int-intraday-trend-mvlc44g0-1","coin":"APR","verdict":"approve","qty":38663.53517240428,"reasons":[],"mode":"normal"}
 {"ts":1792782004137,"id":"int-candle-engulfing-1h-mvlc44g0-15","coin":"ENA","verdict":"trim","qty":3842,"reasons":["trimmed by book depth"],"mode":"normal"}
 {"ts":1792782004145,"id":"int-wyckoff-spring-1h-mvlc44g0-7","coin":"OP","verdict":"approve","qty":12022.605214178891,"reasons":[],"mode":"normal"}
+{"ts":1792785604140,"id":"int-candle-engulfing-1h-mvle9a80-16","coin":"IRYS","verdict":"reject","qty":0,"reasons":["spread 114.4 bps > 10"],"mode":"normal"}
+{"ts":1792785604141,"id":"int-candle-engulfing-1h-mvle9a80-17","coin":"PENDLE","verdict":"trim","qty":179.5,"reasons":["trimmed by book depth"],"mode":"normal"}
+{"ts":1792785604148,"id":"int-candle-engulfing-4h-mvle9a80-2","coin":"TRX","verdict":"approve","qty":31973.92138513627,"reasons":[],"mode":"normal"}

@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T19:53:42.862Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T20:03:42.862Z · account **PAPER** · risk mode normal
 
-Equity $10177.37 (start $10000) · today 3.46% · drawdown 4.2% · 57 trades · fees $100.83 · funding $2.23
+Equity $10868.47 (start $10000) · today 10.49% · drawdown 6.0% · 59 trades · fees $103.45 · funding $2.23
 
-Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), +IRYS (intraday-trend), −USELESS (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +INJ (candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +PYTH (wyckoff-spring-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), +OP (wyckoff-spring-1h) · working orders: 0
+Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +ARB (wyckoff-spring-1h+candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +LTC (wyckoff-spring-1h+candle-engulfing-1h), +PYTH (wyckoff-spring-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −ENA (candle-engulfing-1h), +OP (wyckoff-spring-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -82,7 +82,7 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h
 | strategy:rsi-macd-trend-12h | ok |  |
 | strategy:session-drive | ok |  |
 | strategy:squeeze-ride | ok |  |
-| strategy:trend-pullback | ok |  |
+| strategy:trend-pullback | ok | IRYS: missing side/entry/stop |
 | strategy:trend-pullback-1h | ok |  |
 | strategy:wyckoff-spring-1h | ok |  |
 | strategy:wyckoff-spring-4h | ok |  |
@@ -90,4 +90,4 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: QNT: wide-spread
+Not tradable now: IOST: wide-spread; ADA: wide-spread; IRYS: wide-spread,price-divergence; ALT: wide-spread; COMP: wide-spread
