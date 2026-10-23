@@ -84,8 +84,8 @@ It is in shadow, as Ibrahim asked, so its live record can be compared with these
 Note: the promotion gate's out-of-sample route (150 shadow trades with t ≥ 2) could still move a variant to
 `trade` on paper after a lucky run. With these backtests, `/mode pivot-matrix-1h off` is the safer setting.
 
-Tries logged: 5 factory variants, 4 on hourly history (pm-1h/4h/bos/sweep, same parameters on other data) and
-2 spec-exit variants.
+Tries logged on `swarm-factory` (cff248f): 7 (the 5 factory variants and the 2 spec-exit variants; the hourly runs
+reuse the factory variants' parameters, so they are not new tries). 266 tries in all.
 
 Scripts used (scratch, not in the repo): the factory run is `backtest()` from `src/backtest/run.js` with the five
 variants above, `warmupDays` 21. The hourly harness drives the plugin through `StrategyHost` and `ExecSim`, with the

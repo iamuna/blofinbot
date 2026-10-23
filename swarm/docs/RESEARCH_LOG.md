@@ -17,7 +17,7 @@ structure stops. Plugin `pivot-matrix`; full write-up in [PIVOT_MATRIX_2026-10-2
   (1h −0.09 / −0.075 R, t −15; 4h −0.014 / −0.031 R).
 - Lesson, again: discretionary price-action structure (candles, Wyckoff, now pivots/BOS/sweeps) has no measurable edge
   on these coins once it is mechanical and look-ahead-free. Its 1h and 4h variants are in shadow only because Ibrahim
-  asked for the strategy; 11 tries logged.
+  asked for the strategy; 7 tries logged (266 in all).
 
 ## 2026-10-23 03:45 — funding-fade verdict; new try: open-interest flush reversal (12h, 1d)
 
