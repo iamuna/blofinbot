@@ -22,5 +22,6 @@ const PLUGINS = [
   'donchian_trend',
   'oi_flush',
   'pivot_matrix',
+  'adaptive_score',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

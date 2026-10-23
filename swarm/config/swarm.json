@@ -984,6 +984,24 @@
     "candles": {
       "enabled": false,
       "note": "plugin default; one variant per pattern runs (candle-*)"
+    },
+    "adaptive-score": {
+      "enabled": false,
+      "note": "ported 2026-10-23 from the 1-minute bot (branch possible-expansion, expansion/README.md); off until the 5-year sweep group adaptive-score has run"
+    },
+    "adaptive-score-4h": {
+      "base": "adaptive-score",
+      "enabled": false,
+      "mode": "shadow",
+      "params": { "tf": 240, "onlyTfs": [240] },
+      "note": "to shadow only if the sweep shows it positive at 1.5x costs in both halves; switch enabled to true"
+    },
+    "adaptive-score-12h": {
+      "base": "adaptive-score",
+      "enabled": false,
+      "mode": "shadow",
+      "params": { "tf": 720, "onlyTfs": [720], "holdBars": 30 },
+      "note": "as adaptive-score-4h"
     }
   },
   "trading": {

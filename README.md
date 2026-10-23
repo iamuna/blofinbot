@@ -12,6 +12,7 @@ built and off; live money is not possible in this build.
 | Install on the home PC | [swarm/docs/LAUNCH.md](swarm/docs/LAUNCH.md) |
 | Research | [swarm/docs/RESEARCH_LOG.md](swarm/docs/RESEARCH_LOG.md), 5-year sweep in [history/](history/README.md) |
 | What the scheduled Claude agents do | [swarm/docs/CLAUDE_AGENTS.md](swarm/docs/CLAUDE_AGENTS.md) |
+| What the 1-minute bot adds (branch `possible-expansion`) | [expansion/README.md](expansion/README.md), [expansion/INDEX.md](expansion/INDEX.md) |
 
 ## Layout
 
