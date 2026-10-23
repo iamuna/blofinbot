@@ -75,3 +75,4 @@
 {"ts":1792724406258,"id":"int-wyckoff-spring-1h-mvkdtk00-76","coin":"STRK","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 94.3"],"mode":"normal"}
 {"ts":1792724406260,"id":"int-candle-three-outside-1h-mvkdtk00-66","coin":"TIA","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 8.87"],"mode":"normal"}
 {"ts":1792724406262,"id":"int-candle-engulfing-1h-mvkdtk00-132","coin":"ZK","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 380"],"mode":"normal"}
+{"ts":1792726206262,"id":"int-ma-21-200-mvkew4w0-9","coin":"COMP","verdict":"reject","qty":0,"reasons":["spread 12.2 bps > 10"],"mode":"normal"}
