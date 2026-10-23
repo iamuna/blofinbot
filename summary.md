@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T16:33:42.841Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T16:43:42.840Z · account **PAPER** · risk mode normal
 
-Equity $10394.19 (start $10000) · today 5.67% · drawdown 2.1% · 46 trades · fees $83.87 · funding $2.56
+Equity $10393.13 (start $10000) · today 5.66% · drawdown 2.1% · 47 trades · fees $84.05 · funding $2.58
 
-Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle-engulfing-1h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −SHIB (candle-engulfing-1h), +IRYS (intraday-trend) · working orders: 0
+Open: −DASH (candle-three-outside-1h), +CT (candle-engulfing-1h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −SHIB (candle-engulfing-1h), +IRYS (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ZEREBRO: wide-spread; PONS: wide-spread; ICP: wide-spread
+Not tradable now: LDO: wide-spread; COMP: wide-spread
