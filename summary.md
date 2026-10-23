@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T09:16:36.089Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T09:26:36.091Z · account **PAPER** · risk mode normal
 
-Equity $10281.91 (start $10000) · today 4.53% · drawdown 3.2% · 34 trades · fees $62.76 · funding $1.96
+Equity $10383.85 (start $10000) · today 5.56% · drawdown 2.2% · 35 trades · fees $64.65 · funding $1.87
 
-Open: −DASH (candle-three-outside-1h), −HBAR (candle-engulfing-1h), −SAND (candle-three-outside-1h), −PONS (candle-engulfing-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h) · working orders: 0
+Open: −DASH (candle-three-outside-1h), −SAND (candle-three-outside-1h), −PONS (candle-engulfing-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -82,4 +82,4 @@ Open: −DASH (candle-three-outside-1h), −HBAR (candle-engulfing-1h), −SAND 
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: EIGEN: wide-spread
+Not tradable now: PEPE: price-divergence
