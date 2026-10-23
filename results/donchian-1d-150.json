@@ -1,0 +1,142 @@
+{
+ "name": "donchian-1d-150",
+ "base": "donchian-trend",
+ "params": {
+  "tf": 1440,
+  "onlyTfs": [
+   1440
+  ],
+  "look": 150
+ },
+ "ph": "909900e17f",
+ "origin": "config",
+ "idea": null,
+ "source": null,
+ "all": {
+  "n": 30,
+  "perDay": 0.71,
+  "winRate": 0.3,
+  "avgR": -0.024,
+  "sumR": -0.72,
+  "avgNetBps": -163.43,
+  "avgGrossBps": -127.42,
+  "avgCostBps": 36.02,
+  "pf": 0.92,
+  "tStat": -0.17,
+  "maxDDR": 4.68,
+  "sharpe": -0.51,
+  "days": 42
+ },
+ "cost15": {
+  "n": 30,
+  "perDay": 0.71,
+  "winRate": 0.3,
+  "avgR": -0.0256,
+  "sumR": -0.77,
+  "avgNetBps": -168.18,
+  "avgGrossBps": -127.42,
+  "avgCostBps": 40.77,
+  "pf": 0.91,
+  "tStat": -0.19,
+  "maxDDR": 4.7,
+  "sharpe": -0.54,
+  "days": 42
+ },
+ "thirds": [
+  {
+   "n": 6,
+   "perDay": 0.43,
+   "winRate": 0.333,
+   "avgR": -0.0851,
+   "sumR": -0.51,
+   "avgNetBps": -319.63,
+   "avgGrossBps": -251.79,
+   "avgCostBps": 67.84,
+   "pf": 0.65,
+   "tStat": -0.43,
+   "maxDDR": 1.29,
+   "sharpe": -2.31,
+   "days": 14
+  },
+  {
+   "n": 10,
+   "perDay": 1,
+   "winRate": 0.4,
+   "avgR": 0.292,
+   "sumR": 2.92,
+   "avgNetBps": 547.01,
+   "avgGrossBps": 583.33,
+   "avgCostBps": 36.33,
+   "pf": 2.22,
+   "tStat": 0.87,
+   "maxDDR": 1.21,
+   "sharpe": 5.62,
+   "days": 10
+  },
+  {
+   "n": 14,
+   "perDay": 1.27,
+   "winRate": 0.214,
+   "avgR": -0.2236,
+   "sumR": -3.13,
+   "avgNetBps": -603.95,
+   "avgGrossBps": -581.8,
+   "avgCostBps": 22.16,
+   "pf": 0.33,
+   "tStat": -1.61,
+   "maxDDR": 3.74,
+   "sharpe": -7.51,
+   "days": 11
+  }
+ ],
+ "months": {
+  "2026-09": {
+   "n": 15,
+   "perDay": 0.65,
+   "winRate": 0.4,
+   "avgR": 0.2134,
+   "sumR": 3.2,
+   "avgNetBps": 570.4,
+   "avgGrossBps": 609.39,
+   "avgCostBps": 38.98,
+   "pf": 2.04,
+   "tStat": 0.93,
+   "maxDDR": 1.42,
+   "sharpe": 3.98,
+   "days": 23
+  },
+  "2026-10": {
+   "n": 15,
+   "perDay": 0.88,
+   "winRate": 0.2,
+   "avgR": -0.2615,
+   "sumR": -3.92,
+   "avgNetBps": -897.27,
+   "avgGrossBps": -864.22,
+   "avgCostBps": 33.05,
+   "pf": 0.28,
+   "tStat": -1.94,
+   "maxDDR": 4.26,
+   "sharpe": -7.28,
+   "days": 17
+  }
+ },
+ "gate": {
+  "pass": false,
+  "why": [
+   "30 trades (need 300)",
+   "average -0.0256 R at 1.5× costs (need > 0)",
+   "newest third -0.2236 R (need > 0)",
+   "positive in fewer than 2 of 3 thirds",
+   "t -0.17 < 3.19 (bar for 245 tries)"
+  ],
+  "bar": 3.1945830421822663
+ },
+ "testedAt": "2026-10-23T03:46:14.366Z",
+ "data": {
+  "from": "2026-04-01T00:00:00.000Z",
+  "to": "2026-10-18T23:59:00.000Z",
+  "coins": 31,
+  "minutes": 289440
+ }
+}
