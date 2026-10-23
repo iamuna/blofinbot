@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T22:43:42.907Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T22:53:42.908Z · account **PAPER** · risk mode normal
 
-Equity $10799.47 (start $10000) · today 9.79% · drawdown 6.6% · 70 trades · fees $114.52 · funding $2.17
+Equity $10793.24 (start $10000) · today 9.72% · drawdown 6.7% · 74 trades · fees $119.85 · funding $1.94
 
-Open: +LIT (ma-retest-12h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +ETHFI (wyckoff-spring-1h), −PHA (intraday-trend) · working orders: 0
+Open: +LIT (ma-retest-12h), −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), −PHA (intraday-trend), −BTC (intraday-trend), −ETH (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: +LIT (ma-retest-12h), −PENGU (candle-engulfing-1h), −PEPE (candle-engu
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: WLD: wide-spread; ADA: wide-spread; IRYS: wide-spread; PONS: wide-spread; ICP: wide-spread; SEI: wide-spread
+Not tradable now: ZRO: wide-spread; PENGU: wide-spread; COMP: wide-spread; US: wide-spread; ZK: price-divergence
