@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T15:14:19.393Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T15:32:38.459Z · account **PAPER** · risk mode normal
 
-Equity $10410.91 (start $10000) · today 5.84% · drawdown 2.0% · 45 trades · fees $83.84 · funding $2.56
+Equity $10394.63 (start $10000) · today 5.67% · drawdown 2.1% · 45 trades · fees $83.84 · funding $2.56
 
-Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle-engulfing-1h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −SHIB (candle-engulfing-1h) · working orders: 0
+Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle-engulfing-1h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h), +STRK (candle-three-outside-1h), +COMP (wyckoff-spring-1h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −SHIB (candle-engulfing-1h), +IRYS (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -12,7 +12,6 @@ Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle
 | binance-feed | ok |  |
 | blofin-feed | ok |  |
 | brain | ok |  |
-| brain-host | ok |  |
 | coordinator | ok |  |
 | events | ok |  |
 | guard | ok |  |
@@ -20,7 +19,6 @@ Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle
 | herald | ok |  |
 | recorder | ok |  |
 | state-sync | ok |  |
-| strategy:adaptive-score-12h | ok |  |
 | strategy:candle-doji-1h | ok |  |
 | strategy:candle-doji-4h | ok |  |
 | strategy:candle-doji-star-1h | ok |  |
@@ -51,11 +49,7 @@ Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle
 | strategy:candle-tweezer-4h | ok |  |
 | strategy:crowd-squeeze | ok |  |
 | strategy:dip-reversal | ok |  |
-| strategy:donchian-12h-60 | ok |  |
-| strategy:donchian-1d-150 | ok |  |
-| strategy:donchian-1d-20 | ok |  |
-| strategy:donchian-1d-60 | ok |  |
-| strategy:funding-fade-4h | ok |  |
+| strategy:funding-fade | ok |  |
 | strategy:harmonic | ok |  |
 | strategy:intraday-trend | ok |  |
 | strategy:it-45-hold16 | ok |  |
@@ -66,16 +60,10 @@ Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle
 | strategy:krown-jewel-2h | ok |  |
 | strategy:leader-follow | ok |  |
 | strategy:ma-21-200 | ok |  |
-| strategy:ma-pullback-12h | ok |  |
 | strategy:ma-retest-12h | ok |  |
 | strategy:ma-retest-1d | ok |  |
-| strategy:ma-retest-4h | ok |  |
 | strategy:noise-breakout | ok |  |
-| strategy:oi-flush | ok |  |
 | strategy:overshoot-fade | ok |  |
-| strategy:pivot-matrix | ok |  |
-| strategy:pivot-matrix-1h | ok |  |
-| strategy:pivot-matrix-4h | ok |  |
 | strategy:rsi-macd | ok |  |
 | strategy:rsi-macd-trend-12h | ok |  |
 | strategy:session-drive | ok |  |
@@ -88,4 +76,4 @@ Open: −DASH (candle-three-outside-1h), +BAT (candle-engulfing-4h), +CT (candle
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: IRYS: wide-spread; PHA: wide-spread; CRV: wide-spread; PONS: wide-spread; USELESS: wide-spread
+Not tradable now: COMP: wide-spread
