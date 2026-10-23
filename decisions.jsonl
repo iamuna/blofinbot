@@ -35,3 +35,11 @@
 {"ts":1792706404826,"id":"int-candle-engulfing-1h-mvk33r40-115","coin":"XRP","verdict":"approve","qty":1564.8941162299727,"reasons":[],"mode":"normal"}
 {"ts":1792707306062,"id":"int-intraday-trend-mvk3n1k0-176","coin":"WLFI","verdict":"reject","qty":0,"reasons":["total open risk leaves 0.00 < exchange minimum 93.4"],"mode":"normal"}
 {"ts":1792710006139,"id":"int-wyckoff-spring-1h-mvk58ww0-65","coin":"XPL","verdict":"reject","qty":0,"reasons":["total open risk leaves 0.00 < exchange minimum 66.2"],"mode":"normal"}
+{"ts":1792713605523,"id":"int-candle-engulfing-1h-mvk7e2o0-116","coin":"APR","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 190"],"mode":"normal"}
+{"ts":1792713605524,"id":"int-candle-star-4h-mvk7e2o0-10","coin":"ARC","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 90.4"],"mode":"normal"}
+{"ts":1792713605524,"id":"int-wyckoff-spring-1h-mvk7e2o0-66","coin":"CT","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 22.1"],"mode":"normal"}
+{"ts":1792713605525,"id":"int-candle-engulfing-1h-mvk7e2o0-117","coin":"PONS","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 20.2"],"mode":"normal"}
+{"ts":1792713605525,"id":"int-wyckoff-spring-1h-mvk7e2o0-67","coin":"SAND","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 93.1"],"mode":"normal"}
+{"ts":1792713605526,"id":"int-candle-engulfing-1h-mvk7e2o0-119","coin":"STRK","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 94.0"],"mode":"normal"}
+{"ts":1792713605527,"id":"int-candle-engulfing-1h-mvk7e2o0-120","coin":"VVV","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 0.191"],"mode":"normal"}
+{"ts":1792713605527,"id":"int-wyckoff-spring-1h-mvk7e2o0-69","coin":"ZEC","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 0.0100"],"mode":"normal"}
