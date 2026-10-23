@@ -1,5 +1,6 @@
 {
  "shard": "5/40",
+ "breakevenR": null,
  "coins": [
   "ETH",
   "TON",
@@ -18,7 +19,7 @@
   "FIO",
   "BNC"
  ],
- "minutes": 44,
+ "minutes": 66,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 42,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 792,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 794,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "adaptive-score@720": {
+   "n": 213,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 214,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 104,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 106,
     "rejected": 0,
     "errors": 0
    },

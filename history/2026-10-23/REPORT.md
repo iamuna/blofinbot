@@ -1,6 +1,6 @@
 # 5-year sweep: every strategy × every timeframe, walk-forward selection
 
-Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 108 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
+Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 111 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
 
 ## The honest result: walk-forward (12-month window, top 5, re-picked every quarter)
 
@@ -14,7 +14,7 @@ Out-of-sample 2022-10-01 → 2026-09-30: **130.93 R, Sharpe 0.12, t 0.24**, max 
 | 2025 | 569.8 | +17.0% | 1.27 | 127.94 |
 | 2026 | 53.22 | +1.6% | 0.35 | 173.05 |
 
-Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 108 variants together (scaled to 5 slots) -476133.61 R (Sharpe -48.54).
+Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 111 variants together (scaled to 5 slots) -463261.47 R (Sharpe -48.4).
 
 Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 
@@ -23,14 +23,14 @@ Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 | Window | Top | From | R | Sharpe | Max DD | t |
 |---|---|---|---|---|---|---|
 | 6 months | 3 | 2022-04-01 | 788.3 | 0.67 | 333.08 | 1.43 |
-| 6 months | 5 | 2022-04-01 | 277.88 | 0.16 | 997.57 | 0.33 |
-| 6 months | 10 | 2022-04-01 | 1621.16 | 0.36 | 1208.55 | 0.77 |
+| 6 months | 5 | 2022-04-01 | 209.8 | 0.12 | 1013.19 | 0.25 |
+| 6 months | 10 | 2022-04-01 | 1347.98 | 0.29 | 1437.8 | 0.62 |
 | 12 months | 3 | 2022-10-01 | 165.33 | 0.17 | 507.47 | 0.33 |
 | 12 months | 5 | 2022-10-01 | 130.93 | 0.12 | 671.02 | 0.24 |
-| 12 months | 10 | 2022-10-01 | 551.49 | 0.21 | 1646.1 | 0.43 |
+| 12 months | 10 | 2022-10-01 | 664.4 | 0.26 | 1498.36 | 0.53 |
 | 24 months | 3 | 2023-10-01 | 98.42 | 0.26 | 250.62 | 0.45 |
 | 24 months | 5 | 2023-10-01 | 134.57 | 0.23 | 346.1 | 0.39 |
-| 24 months | 10 | 2023-10-01 | 1322.81 | 0.76 | 585.19 | 1.31 |
+| 24 months | 10 | 2023-10-01 | 1218.96 | 0.69 | 585.19 | 1.2 |
 
 ### Picks per quarter (out-of-sample R in brackets)
 
@@ -74,6 +74,7 @@ Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 | donchian-20 |  |  |  |  |  |  |  |  | -0.89 / -0.0324 (12658) | 0.27 / 0.0107 (11196) |
 | donchian-60 |  |  |  |  |  |  |  |  | -0.43 / -0.018 (5124) | -0.09 / -0.0033 (3997) |
 | donchian-150 |  |  |  |  |  |  |  |  |  | -0.29 / -0.017 (1478) |
+| adaptive-score |  |  |  |  |  |  |  | -0.23 / -0.0113 (34254) | 0.18 / 0.016 (9702) | 0.32 / 0.037 (4312) |
 
 ## Best 15 in hindsight (same out-of-sample period; for reference, not a result)
 
@@ -91,6 +92,6 @@ Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 | ma-pullback@720 | 4873 | 0.0248 | 120.88 | 102.8 | -91 / 212 | 0.34 | 175.01 | 2021: -76, 2022: 255, 2023: -18, 2024: -24, 2025: 48, 2026: 29 |
 | rsi-macd-rev@720 | 1991 | 0.0336 | 66.96 | 57.99 | 110 / -43 | 0.32 | 95.57 | 2021: -1, 2022: 15, 2023: 33, 2024: 73, 2025: -37, 2026: -14 |
 | rsi-macd-trend@240 | 18021 | 0.0121 | 218.93 | 58.97 | -336 / 554 | 0.24 | 410.65 | 2021: -20, 2022: 165, 2023: 2, 2024: -60, 2025: 217, 2026: -116 |
+| adaptive-score@1440 | 3251 | 0.0242 | 78.61 | 61.15 | -62 / 141 | 0.22 | 170.91 | 2021: -47, 2022: 214, 2023: -5, 2024: -35, 2025: -31, 2026: 64 |
 | crowd-squeeze@5 | 6231 | 0.0053 | 32.98 | -142.73 | 54 / -21 | 0.15 | 120.26 | 2021: -31, 2022: -205, 2023: -47, 2024: 39, 2025: 116, 2026: -20 |
 | intraday-trend@720 | 3582 | 0.008 | 28.66 | 12.85 | 113 / -84 | 0.13 | 132.52 | 2021: -35, 2022: -59, 2023: 2, 2024: -19, 2025: -35, 2026: 116 |
-| ma-retest@240 | 6297 | 0.0092 | 58.17 | 10.06 | -235 / 293 | 0.13 | 182.75 | 2021: -24, 2022: 191, 2023: 87, 2024: 31, 2025: -62, 2026: -5 |

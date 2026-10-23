@@ -1,5 +1,6 @@
 {
  "shard": "10/40",
+ "breakevenR": null,
  "coins": [
   "SOL",
   "LIT",
@@ -18,7 +19,7 @@
   "SWELL",
   "TURTLE"
  ],
- "minutes": 79,
+ "minutes": 49,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 47,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 868,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 869,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 246,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 246,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 118,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 118,
     "rejected": 0,
     "errors": 0
    },

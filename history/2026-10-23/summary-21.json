@@ -1,5 +1,6 @@
 {
  "shard": "21/40",
+ "breakevenR": null,
  "coins": [
   "OP",
   "WAVES",
@@ -19,7 +20,7 @@
   "NULS",
   "OL"
  ],
- "minutes": 71,
+ "minutes": 79,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 39,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 813,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 813,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 220,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 220,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 81,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 82,
     "rejected": 0,
     "errors": 0
    },

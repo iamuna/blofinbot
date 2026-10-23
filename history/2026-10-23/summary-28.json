@@ -1,5 +1,6 @@
 {
  "shard": "28/40",
+ "breakevenR": null,
  "coins": [
   "ATOM",
   "PEOPLE",
@@ -19,7 +20,7 @@
   "FIGHT",
   "ORDER"
  ],
- "minutes": 86,
+ "minutes": 81,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 39,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 860,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 862,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 238,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 239,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 108,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 108,
     "rejected": 0,
     "errors": 0
    },

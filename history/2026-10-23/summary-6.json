@@ -1,5 +1,6 @@
 {
  "shard": "6/40",
+ "breakevenR": null,
  "coins": [
   "FIL",
   "KAVA",
@@ -18,7 +19,7 @@
   "SAFE",
   "TOSHI"
  ],
- "minutes": 44,
+ "minutes": 66,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 34,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 845,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 845,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 255,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 256,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 116,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 116,
     "rejected": 0,
     "errors": 0
    },

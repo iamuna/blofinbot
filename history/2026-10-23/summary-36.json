@@ -1,5 +1,6 @@
 {
  "shard": "36/40",
+ "breakevenR": null,
  "coins": [
   "AXS",
   "BONK",
@@ -19,7 +20,7 @@
   "2Z",
   "FORTH"
  ],
- "minutes": 50,
+ "minutes": 55,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 34,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 832,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 834,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 219,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 219,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 99,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 100,
     "rejected": 0,
     "errors": 0
    },

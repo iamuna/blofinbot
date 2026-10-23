@@ -1,5 +1,6 @@
 {
  "shard": "0/40",
+ "breakevenR": null,
  "coins": [
   "ADA",
   "EGLD",
@@ -18,7 +19,7 @@
   "IBM",
   "42"
  ],
- "minutes": 76,
+ "minutes": 63,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 38,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 887,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 887,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 248,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 248,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 115,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 115,
     "rejected": 0,
     "errors": 0
    },

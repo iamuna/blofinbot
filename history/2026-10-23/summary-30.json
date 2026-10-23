@@ -1,5 +1,6 @@
 {
  "shard": "30/40",
+ "breakevenR": null,
  "coins": [
   "INJ",
   "CHZ",
@@ -19,7 +20,7 @@
   "BDXN",
   "AKT"
  ],
- "minutes": 82,
+ "minutes": 79,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 54,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 841,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 842,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 249,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 249,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 101,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 101,
     "rejected": 0,
     "errors": 0
    },

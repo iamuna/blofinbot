@@ -1,5 +1,6 @@
 {
  "shard": "1/40",
+ "breakevenR": null,
  "coins": [
   "AVAX",
   "JASMY",
@@ -18,7 +19,7 @@
   "DEEP",
   "BRETT"
  ],
- "minutes": 74,
+ "minutes": 61,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 31,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 892,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 892,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 260,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 261,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 106,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 106,
     "rejected": 0,
     "errors": 0
    },

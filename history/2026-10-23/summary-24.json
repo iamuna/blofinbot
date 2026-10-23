@@ -1,5 +1,6 @@
 {
  "shard": "24/40",
+ "breakevenR": null,
  "coins": [
   "EOS",
   "XMR",
@@ -19,7 +20,7 @@
   "SLP",
   "SLERF"
  ],
- "minutes": 62,
+ "minutes": 82,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 41,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 855,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 857,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 219,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 220,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 98,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 98,
     "rejected": 0,
     "errors": 0
    },

@@ -1,5 +1,6 @@
 {
  "shard": "4/40",
+ "breakevenR": null,
  "coins": [
   "DOGE",
   "XTZ",
@@ -18,7 +19,7 @@
   "INX",
   "MBOX"
  ],
- "minutes": 51,
+ "minutes": 77,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 53,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 870,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 870,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 224,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 226,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 101,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 101,
     "rejected": 0,
     "errors": 0
    },

@@ -1,5 +1,6 @@
 {
  "shard": "16/40",
+ "breakevenR": null,
  "coins": [
   "TRX",
   "ORDI",
@@ -18,7 +19,7 @@
   "CFG",
   "REI"
  ],
- "minutes": 81,
+ "minutes": 68,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 39,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 942,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 943,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 288,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 288,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 153,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 153,
     "rejected": 0,
     "errors": 0
    },

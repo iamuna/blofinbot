@@ -1,5 +1,6 @@
 {
  "shard": "33/40",
+ "breakevenR": null,
  "coins": [
   "MATIC",
   "ONDO",
@@ -19,7 +20,7 @@
   "SCRT",
   "NOK"
  ],
- "minutes": 58,
+ "minutes": 90,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 37,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 825,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 827,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 2
+  },
+  "adaptive-score@720": {
+   "n": 243,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 243,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 130,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 130,
     "rejected": 0,
     "errors": 0
    },

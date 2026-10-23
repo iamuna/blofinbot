@@ -1,5 +1,6 @@
 {
  "shard": "14/40",
+ "breakevenR": null,
  "coins": [
   "SHIB",
   "SNX",
@@ -18,7 +19,7 @@
   "YFII",
   "VFY"
  ],
- "minutes": 75,
+ "minutes": 60,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 40,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 866,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 866,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 233,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 234,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 94,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 94,
     "rejected": 0,
     "errors": 0
    },

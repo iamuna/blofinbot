@@ -1,5 +1,6 @@
 {
  "shard": "31/40",
+ "breakevenR": null,
  "coins": [
   "WLD",
   "HBAR",
@@ -19,7 +20,7 @@
   "BOB_BOBUSDT",
   "VELODROME"
  ],
- "minutes": 91,
+ "minutes": 86,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 41,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 831,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 832,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 235,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 236,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 94,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 94,
     "rejected": 0,
     "errors": 0
    },

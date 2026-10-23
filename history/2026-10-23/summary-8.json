@@ -1,5 +1,6 @@
 {
  "shard": "8/40",
+ "breakevenR": null,
  "coins": [
   "LTC",
   "CFX",
@@ -18,7 +19,7 @@
   "IR",
   "BTS"
  ],
- "minutes": 68,
+ "minutes": 41,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 31,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 874,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 874,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 271,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 271,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 103,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 103,
     "rejected": 0,
     "errors": 0
    },

@@ -1,5 +1,6 @@
 {
  "shard": "3/40",
+ "breakevenR": null,
  "coins": [
   "BTC",
   "LUNC",
@@ -18,7 +19,7 @@
   "ETHW",
   "KMNO"
  ],
- "minutes": 69,
+ "minutes": 56,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1101,6 +1102,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 45,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 777,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 779,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "adaptive-score@720": {
+   "n": 205,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 207,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 91,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 92,
     "rejected": 0,
     "errors": 0
    },

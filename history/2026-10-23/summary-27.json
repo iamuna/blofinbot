@@ -1,5 +1,6 @@
 {
  "shard": "27/40",
+ "breakevenR": null,
  "coins": [
   "ARB",
   "MANA",
@@ -19,7 +20,7 @@
   "B2",
   "TAIKO"
  ],
- "minutes": 56,
+ "minutes": 73,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 39,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 899,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 899,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 248,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 248,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 109,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 109,
     "rejected": 0,
     "errors": 0
    },

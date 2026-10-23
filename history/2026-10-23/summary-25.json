@@ -1,5 +1,6 @@
 {
  "shard": "25/40",
+ "breakevenR": null,
  "coins": [
   "SUI",
   "SUSHI",
@@ -19,7 +20,7 @@
   "ELSA",
   "MANTRA"
  ],
- "minutes": 59,
+ "minutes": 76,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1102,6 +1103,36 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 43,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@240": {
+   "n": 876,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 876,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@720": {
+   "n": 248,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 248,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "adaptive-score@1440": {
+   "n": 110,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 110,
     "rejected": 0,
     "errors": 0
    },
