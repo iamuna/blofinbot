@@ -1,18 +1,18 @@
 {
- "updatedAt": "2026-10-23T14:34:18.962Z",
+ "updatedAt": "2026-10-23T14:44:18.960Z",
  "account": {
-  "ts": 1792766058958,
+  "ts": 1792766653989,
   "mode": "paper",
-  "equity": 10424.59,
+  "equity": 10433.09,
   "cash": 10431.65,
-  "upl": -7.06,
+  "upl": 1.45,
   "peak": 10619.11,
   "dayStart": 9836.74,
-  "dd": 0.0183,
-  "dayPnlPct": 0.0598,
-  "gross": 4193.22,
-  "grossX": 0.402,
-  "openRiskPct": 0.0109,
+  "dd": 0.0175,
+  "dayPnlPct": 0.0606,
+  "gross": 4199.63,
+  "grossX": 0.403,
+  "openRiskPct": 0.0117,
   "positions": 8,
   "trades": 45,
   "winRate": 0.733,
@@ -65,7 +65,7 @@
   }
  },
  "positions": {
-  "ts": 1792766056769,
+  "ts": 1792766656774,
   "open": [
    {
     "coin": "DASH",
@@ -76,7 +76,7 @@
     "stop": 54.298374022,
     "target": 51.379210025538725,
     "entryT": 1792735204249,
-    "last": 53.51,
+    "last": 53.48,
     "strategies": [
      "candle-three-outside-1h"
     ],
@@ -91,7 +91,7 @@
     "stop": 0.1699971766641267,
     "target": 0.18380564667174662,
     "entryT": 1792742404240,
-    "last": 0.17404,
+    "last": 0.17371,
     "strategies": [
      "candle-engulfing-4h"
     ],
@@ -106,7 +106,7 @@
     "stop": 0.2033694742757125,
     "target": 0.218281051448575,
     "entryT": 1792756804304,
-    "last": 0.21018,
+    "last": 0.21202,
     "strategies": [
      "candle-engulfing-1h"
     ],
@@ -121,7 +121,7 @@
     "stop": 1189.7137483119293,
     "target": 1307.6325033761414,
     "entryT": 1792756804347,
-    "last": 1232.74,
+    "last": 1237,
     "strategies": [
      "candle-engulfing-4h"
     ],
@@ -136,7 +136,7 @@
     "stop": 3.1083945839651013,
     "target": 3.9664108320697977,
     "entryT": 1792756806354,
-    "last": 3.3489,
+    "last": 3.3714,
     "strategies": [
      "ma-retest-12h"
     ],
@@ -151,7 +151,7 @@
     "stop": 1.0884395899412305,
     "target": 1.3550208201175389,
     "entryT": 1792756824617,
-    "last": 1.1268,
+    "last": 1.1298,
     "strategies": [
      "rsi-macd-trend-12h"
     ],
@@ -166,7 +166,7 @@
     "stop": 0.05099951641650472,
     "target": 0.05688096716699056,
     "entryT": 1792760403691,
-    "last": 0.05243,
+    "last": 0.05246,
     "strategies": [
      "candle-three-outside-1h"
     ],
@@ -181,7 +181,7 @@
     "stop": 24.139031079080148,
     "target": 26.54290676275955,
     "entryT": 1792764004058,
-    "last": 24.76,
+    "last": 24.8,
     "strategies": [
      "wyckoff-spring-1h"
     ],
@@ -193,13 +193,13 @@
   "account": "paper"
  },
  "risk": {
-  "ts": 1792766056711,
+  "ts": 1792766656726,
   "mode": "normal",
   "budgetScale": 1,
   "provenOnly": false,
   "reasons": [],
-  "dd": 0.01832545288635301,
-  "dayLoss": -0.05975251963557038,
+  "dd": 0.017517475569986618,
+  "dayLoss": -0.060624759828967756,
   "limitsHash": "00fb82bc38ee8f7f"
  },
  "universe": {
@@ -282,30 +282,29 @@
   ]
  },
  "guard": {
-  "ts": 1792766053964,
+  "ts": 1792766657693,
   "notTradable": [
    "ADA: wide-spread",
-   "LIT: wide-spread",
-   "IRYS: wide-spread",
-   "PHA: wide-spread",
+   "APR: wide-spread",
    "PONS: wide-spread",
-   "ICP: wide-spread"
+   "USELESS: wide-spread",
+   "EIGEN: wide-spread"
   ]
  },
  "agents": {
   "state-sync": {
-   "at": 1792766055880,
+   "at": 1792766655882,
    "agent": "state-sync",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759457220,
    "metrics": {
-    "pushes": 10
+    "pushes": 11
    }
   },
   "universe": {
-   "at": 1792766055886,
+   "at": 1792766655900,
    "agent": "universe",
    "pid": 6816,
    "status": "ok",
@@ -317,28 +316,28 @@
    }
   },
   "blofin-feed": {
-   "at": 1792766055899,
+   "at": 1792766655903,
    "agent": "blofin-feed",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759456885,
    "metrics": {
-    "opens": 135,
-    "msgs": 5584433,
-    "trades": 55887,
+    "opens": 148,
+    "msgs": 6130912,
+    "trades": 62978,
     "coins": 73,
     "sockets": "7/7",
-    "lastMsgAgeMs": 0,
-    "bars": 7795,
-    "closes": 164,
+    "lastMsgAgeMs": 1,
+    "bars": 8525,
+    "closes": 177,
     "errors": 42,
     "restBars": 927,
     "wsErrors": 69
    }
   },
   "binance-feed": {
-   "at": 1792766055903,
+   "at": 1792766655913,
    "agent": "binance-feed",
    "pid": 6816,
    "status": "ok",
@@ -346,46 +345,46 @@
    "startedAt": 1792759456898,
    "metrics": {
     "opens": 21,
-    "msgs": 2334315,
-    "flowMsgs": 5505,
-    "liqOther": 2495,
-    "lastMsgAgeMs": 1,
+    "msgs": 2610633,
+    "flowMsgs": 6102,
+    "liqOther": 2697,
+    "lastMsgAgeMs": 2,
     "coins": 73,
     "sockets": "2/2",
-    "liqs": 1648,
-    "bars": 7224,
+    "liqs": 1770,
+    "bars": 7954,
     "wsErrors": 20,
     "closes": 26,
     "oiErrors": 1
    }
   },
   "guard": {
-   "at": 1792766055906,
+   "at": 1792766655914,
    "agent": "guard",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759456906,
    "metrics": {
-    "lagMedMs": -340,
-    "tradable": "67/73"
+    "lagMedMs": -383,
+    "tradable": "68/73"
    }
   },
   "recorder": {
-   "at": 1792766055907,
+   "at": 1792766655915,
    "agent": "recorder",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759456908,
    "metrics": {
-    "lines": 667671,
-    "bytes": 210214884,
+    "lines": 740103,
+    "bytes": 232999817,
     "compressed": 51
    }
   },
   "events": {
-   "at": 1792766055907,
+   "at": 1792766655916,
    "agent": "events",
    "pid": 6816,
    "status": "ok",
@@ -396,7 +395,7 @@
    }
   },
   "strategy:intraday-trend": {
-   "at": 1792766049240,
+   "at": 1792766649258,
    "agent": "strategy:intraday-trend",
    "pid": 6904,
    "status": "ok",
@@ -415,19 +414,19 @@
    }
   },
   "brain-host": {
-   "at": 1792766055913,
+   "at": 1792766655917,
    "agent": "brain-host",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759457037,
    "metrics": {
-    "forwarded": 45836,
+    "forwarded": 49882,
     "childPid": 6904
    }
   },
   "strategy:trend-pullback": {
-   "at": 1792766049241,
+   "at": 1792766649259,
    "agent": "strategy:trend-pullback",
    "pid": 6904,
    "status": "ok",
@@ -446,7 +445,7 @@
    }
   },
   "strategy:session-drive": {
-   "at": 1792766049241,
+   "at": 1792766649259,
    "agent": "strategy:session-drive",
    "pid": 6904,
    "status": "ok",
@@ -465,7 +464,7 @@
    }
   },
   "strategy:overshoot-fade": {
-   "at": 1792766049241,
+   "at": 1792766649260,
    "agent": "strategy:overshoot-fade",
    "pid": 6904,
    "status": "ok",
@@ -484,7 +483,7 @@
    }
   },
   "strategy:leader-follow": {
-   "at": 1792766049242,
+   "at": 1792766649260,
    "agent": "strategy:leader-follow",
    "pid": 6904,
    "status": "ok",
@@ -503,7 +502,7 @@
    }
   },
   "strategy:crowd-squeeze": {
-   "at": 1792766049242,
+   "at": 1792766649260,
    "agent": "strategy:crowd-squeeze",
    "pid": 6904,
    "status": "ok",
@@ -522,7 +521,7 @@
    }
   },
   "strategy:noise-breakout": {
-   "at": 1792766049242,
+   "at": 1792766649261,
    "agent": "strategy:noise-breakout",
    "pid": 6904,
    "status": "ok",
@@ -541,7 +540,7 @@
    }
   },
   "strategy:dip-reversal": {
-   "at": 1792766049243,
+   "at": 1792766649261,
    "agent": "strategy:dip-reversal",
    "pid": 6904,
    "status": "ok",
@@ -560,7 +559,7 @@
    }
   },
   "strategy:squeeze-ride": {
-   "at": 1792766049244,
+   "at": 1792766649262,
    "agent": "strategy:squeeze-ride",
    "pid": 6904,
    "status": "ok",
@@ -579,7 +578,7 @@
    }
   },
   "strategy:rsi-macd": {
-   "at": 1792766049244,
+   "at": 1792766649262,
    "agent": "strategy:rsi-macd",
    "pid": 6904,
    "status": "ok",
@@ -598,7 +597,7 @@
    }
   },
   "strategy:harmonic": {
-   "at": 1792766049244,
+   "at": 1792766649262,
    "agent": "strategy:harmonic",
    "pid": 6904,
    "status": "ok",
@@ -617,7 +616,7 @@
    }
   },
   "strategy:ma-21-200": {
-   "at": 1792766049245,
+   "at": 1792766649263,
    "agent": "strategy:ma-21-200",
    "pid": 6904,
    "status": "ok",
@@ -636,7 +635,7 @@
    }
   },
   "strategy:oi-flush": {
-   "at": 1792766049245,
+   "at": 1792766649263,
    "agent": "strategy:oi-flush",
    "pid": 6904,
    "status": "ok",
@@ -655,7 +654,7 @@
    }
   },
   "strategy:pivot-matrix": {
-   "at": 1792766049246,
+   "at": 1792766649264,
    "agent": "strategy:pivot-matrix",
    "pid": 6904,
    "status": "ok",
@@ -674,7 +673,7 @@
    }
   },
   "strategy:it-45-long": {
-   "at": 1792766049246,
+   "at": 1792766649264,
    "agent": "strategy:it-45-long",
    "pid": 6904,
    "status": "ok",
@@ -693,7 +692,7 @@
    }
   },
   "coordinator": {
-   "at": 1792766055916,
+   "at": 1792766655921,
    "agent": "coordinator",
    "pid": 6816,
    "status": "ok",
@@ -711,7 +710,7 @@
    }
   },
   "strategy:it-45-hold32": {
-   "at": 1792766049246,
+   "at": 1792766649264,
    "agent": "strategy:it-45-hold32",
    "pid": 6904,
    "status": "ok",
@@ -730,7 +729,7 @@
    }
   },
   "strategy:it-45-hold16": {
-   "at": 1792766049246,
+   "at": 1792766649265,
    "agent": "strategy:it-45-hold16",
    "pid": 6904,
    "status": "ok",
@@ -749,7 +748,7 @@
    }
   },
   "strategy:ma-retest-12h": {
-   "at": 1792766049247,
+   "at": 1792766649265,
    "agent": "strategy:ma-retest-12h",
    "pid": 6904,
    "status": "ok",
@@ -768,7 +767,7 @@
    }
   },
   "strategy:ma-retest-4h": {
-   "at": 1792766049247,
+   "at": 1792766649266,
    "agent": "strategy:ma-retest-4h",
    "pid": 6904,
    "status": "ok",
@@ -787,7 +786,7 @@
    }
   },
   "strategy:ma-pullback-12h": {
-   "at": 1792766049247,
+   "at": 1792766649266,
    "agent": "strategy:ma-pullback-12h",
    "pid": 6904,
    "status": "ok",
@@ -806,7 +805,7 @@
    }
   },
   "strategy:ma-retest-1d": {
-   "at": 1792766049248,
+   "at": 1792766649266,
    "agent": "strategy:ma-retest-1d",
    "pid": 6904,
    "status": "ok",
@@ -825,7 +824,7 @@
    }
   },
   "strategy:donchian-1d-20": {
-   "at": 1792766049248,
+   "at": 1792766649267,
    "agent": "strategy:donchian-1d-20",
    "pid": 6904,
    "status": "ok",
@@ -844,7 +843,7 @@
    }
   },
   "strategy:donchian-1d-60": {
-   "at": 1792766049248,
+   "at": 1792766649267,
    "agent": "strategy:donchian-1d-60",
    "pid": 6904,
    "status": "ok",
@@ -863,7 +862,7 @@
    }
   },
   "trader": {
-   "at": 1792766055917,
+   "at": 1792766655921,
    "agent": "trader",
    "pid": 6816,
    "status": "ok",
@@ -877,7 +876,7 @@
    }
   },
   "strategy:donchian-1d-150": {
-   "at": 1792766049248,
+   "at": 1792766649268,
    "agent": "strategy:donchian-1d-150",
    "pid": 6904,
    "status": "ok",
@@ -896,7 +895,7 @@
    }
   },
   "strategy:donchian-12h-60": {
-   "at": 1792766049248,
+   "at": 1792766649268,
    "agent": "strategy:donchian-12h-60",
    "pid": 6904,
    "status": "ok",
@@ -915,7 +914,7 @@
    }
   },
   "strategy:funding-fade-4h": {
-   "at": 1792766049248,
+   "at": 1792766649268,
    "agent": "strategy:funding-fade-4h",
    "pid": 6904,
    "status": "ok",
@@ -934,7 +933,7 @@
    }
   },
   "strategy:it-4h": {
-   "at": 1792766049249,
+   "at": 1792766649269,
    "agent": "strategy:it-4h",
    "pid": 6904,
    "status": "ok",
@@ -953,19 +952,19 @@
    }
   },
   "accountant": {
-   "at": 1792766055918,
+   "at": 1792766655922,
    "agent": "accountant",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759457204,
    "metrics": {
-    "equity": 10424.59,
+    "equity": 10433.09,
     "positions": 8
    }
   },
   "strategy:rsi-macd-trend-12h": {
-   "at": 1792766049249,
+   "at": 1792766649269,
    "agent": "strategy:rsi-macd-trend-12h",
    "pid": 6904,
    "status": "ok",
@@ -984,7 +983,7 @@
    }
   },
   "watchdog": {
-   "at": 1792766055918,
+   "at": 1792766655922,
    "agent": "watchdog",
    "pid": 6816,
    "status": "ok",
@@ -992,14 +991,14 @@
    "startedAt": 1792759457206,
    "metrics": {
     "diskFreePct": 73.1,
-    "memFreeMb": 6168,
+    "memFreeMb": 6167,
     "memTotalMb": 8117,
-    "rssMb": 287,
+    "rssMb": 295,
     "down": "none"
    }
   },
   "guardian": {
-   "at": 1792766055921,
+   "at": 1792766655925,
    "agent": "guardian",
    "pid": 6816,
    "status": "ok",
@@ -1012,7 +1011,7 @@
    }
   },
   "strategy:trend-pullback-1h": {
-   "at": 1792766049249,
+   "at": 1792766649270,
    "agent": "strategy:trend-pullback-1h",
    "pid": 6904,
    "status": "ok",
@@ -1031,7 +1030,7 @@
    }
   },
   "strategy:krown-jewel-1h": {
-   "at": 1792766049249,
+   "at": 1792766649270,
    "agent": "strategy:krown-jewel-1h",
    "pid": 6904,
    "status": "ok",
@@ -1050,7 +1049,7 @@
    }
   },
   "strategy:krown-jewel-2h": {
-   "at": 1792766049249,
+   "at": 1792766649270,
    "agent": "strategy:krown-jewel-2h",
    "pid": 6904,
    "status": "ok",
@@ -1069,7 +1068,7 @@
    }
   },
   "strategy:wyckoff-spring-1h": {
-   "at": 1792766049249,
+   "at": 1792766649271,
    "agent": "strategy:wyckoff-spring-1h",
    "pid": 6904,
    "status": "ok",
@@ -1088,7 +1087,7 @@
    }
   },
   "strategy:wyckoff-spring-4h": {
-   "at": 1792766049249,
+   "at": 1792766649271,
    "agent": "strategy:wyckoff-spring-4h",
    "pid": 6904,
    "status": "ok",
@@ -1107,7 +1106,7 @@
    }
   },
   "strategy:pivot-matrix-1h": {
-   "at": 1792766049250,
+   "at": 1792766649272,
    "agent": "strategy:pivot-matrix-1h",
    "pid": 6904,
    "status": "ok",
@@ -1126,7 +1125,7 @@
    }
   },
   "strategy:pivot-matrix-4h": {
-   "at": 1792766049250,
+   "at": 1792766649273,
    "agent": "strategy:pivot-matrix-4h",
    "pid": 6904,
    "status": "ok",
@@ -1145,7 +1144,7 @@
    }
   },
   "strategy:candle-engulfing-1h": {
-   "at": 1792766049250,
+   "at": 1792766649274,
    "agent": "strategy:candle-engulfing-1h",
    "pid": 6904,
    "status": "ok",
@@ -1164,7 +1163,7 @@
    }
   },
   "strategy:candle-engulfing-4h": {
-   "at": 1792766049250,
+   "at": 1792766649274,
    "agent": "strategy:candle-engulfing-4h",
    "pid": 6904,
    "status": "ok",
@@ -1183,7 +1182,7 @@
    }
   },
   "strategy:candle-hammer-1h": {
-   "at": 1792766049250,
+   "at": 1792766649274,
    "agent": "strategy:candle-hammer-1h",
    "pid": 6904,
    "status": "ok",
@@ -1202,7 +1201,7 @@
    }
   },
   "strategy:candle-hammer-4h": {
-   "at": 1792766049250,
+   "at": 1792766649275,
    "agent": "strategy:candle-hammer-4h",
    "pid": 6904,
    "status": "ok",
@@ -1221,7 +1220,7 @@
    }
   },
   "strategy:candle-star-1h": {
-   "at": 1792766049251,
+   "at": 1792766649275,
    "agent": "strategy:candle-star-1h",
    "pid": 6904,
    "status": "ok",
@@ -1240,7 +1239,7 @@
    }
   },
   "strategy:candle-star-4h": {
-   "at": 1792766049251,
+   "at": 1792766649276,
    "agent": "strategy:candle-star-4h",
    "pid": 6904,
    "status": "ok",
@@ -1259,7 +1258,7 @@
    }
   },
   "strategy:candle-morning-star-1h": {
-   "at": 1792766049251,
+   "at": 1792766649276,
    "agent": "strategy:candle-morning-star-1h",
    "pid": 6904,
    "status": "ok",
@@ -1278,7 +1277,7 @@
    }
   },
   "strategy:candle-morning-star-4h": {
-   "at": 1792766049251,
+   "at": 1792766649277,
    "agent": "strategy:candle-morning-star-4h",
    "pid": 6904,
    "status": "ok",
@@ -1297,7 +1296,7 @@
    }
   },
   "strategy:candle-piercing-1h": {
-   "at": 1792766049251,
+   "at": 1792766649277,
    "agent": "strategy:candle-piercing-1h",
    "pid": 6904,
    "status": "ok",
@@ -1316,7 +1315,7 @@
    }
   },
   "strategy:candle-piercing-4h": {
-   "at": 1792766049251,
+   "at": 1792766649278,
    "agent": "strategy:candle-piercing-4h",
    "pid": 6904,
    "status": "ok",
@@ -1335,7 +1334,7 @@
    }
   },
   "strategy:candle-soldiers-1h": {
-   "at": 1792766049251,
+   "at": 1792766649278,
    "agent": "strategy:candle-soldiers-1h",
    "pid": 6904,
    "status": "ok",
@@ -1354,7 +1353,7 @@
    }
   },
   "strategy:candle-soldiers-4h": {
-   "at": 1792766049252,
+   "at": 1792766649279,
    "agent": "strategy:candle-soldiers-4h",
    "pid": 6904,
    "status": "ok",
@@ -1373,7 +1372,7 @@
    }
   },
   "strategy:candle-harami-1h": {
-   "at": 1792766049252,
+   "at": 1792766649279,
    "agent": "strategy:candle-harami-1h",
    "pid": 6904,
    "status": "ok",
@@ -1392,7 +1391,7 @@
    }
   },
   "strategy:candle-harami-4h": {
-   "at": 1792766049252,
+   "at": 1792766649279,
    "agent": "strategy:candle-harami-4h",
    "pid": 6904,
    "status": "ok",
@@ -1411,7 +1410,7 @@
    }
   },
   "strategy:candle-tweezer-1h": {
-   "at": 1792766049252,
+   "at": 1792766649280,
    "agent": "strategy:candle-tweezer-1h",
    "pid": 6904,
    "status": "ok",
@@ -1430,7 +1429,7 @@
    }
   },
   "strategy:candle-tweezer-4h": {
-   "at": 1792766049252,
+   "at": 1792766649280,
    "agent": "strategy:candle-tweezer-4h",
    "pid": 6904,
    "status": "ok",
@@ -1449,7 +1448,7 @@
    }
   },
   "strategy:candle-doji-1h": {
-   "at": 1792766049253,
+   "at": 1792766649281,
    "agent": "strategy:candle-doji-1h",
    "pid": 6904,
    "status": "ok",
@@ -1468,7 +1467,7 @@
    }
   },
   "strategy:candle-doji-4h": {
-   "at": 1792766049253,
+   "at": 1792766649281,
    "agent": "strategy:candle-doji-4h",
    "pid": 6904,
    "status": "ok",
@@ -1487,7 +1486,7 @@
    }
   },
   "strategy:candle-marubozu-1h": {
-   "at": 1792766049253,
+   "at": 1792766649282,
    "agent": "strategy:candle-marubozu-1h",
    "pid": 6904,
    "status": "ok",
@@ -1506,20 +1505,20 @@
    }
   },
   "herald": {
-   "at": 1792766055935,
+   "at": 1792766655944,
    "agent": "herald",
    "pid": 6816,
    "status": "ok",
    "why": "",
    "startedAt": 1792759457208,
    "metrics": {
-    "messages": 58,
+    "messages": 59,
     "sendErrors": 44,
     "pollErrors": 26
    }
   },
   "strategy:candle-marubozu-4h": {
-   "at": 1792766049253,
+   "at": 1792766649282,
    "agent": "strategy:candle-marubozu-4h",
    "pid": 6904,
    "status": "ok",
@@ -1538,7 +1537,7 @@
    }
   },
   "strategy:candle-three-inside-1h": {
-   "at": 1792766049253,
+   "at": 1792766649282,
    "agent": "strategy:candle-three-inside-1h",
    "pid": 6904,
    "status": "ok",
@@ -1557,7 +1556,7 @@
    }
   },
   "strategy:candle-three-inside-4h": {
-   "at": 1792766049253,
+   "at": 1792766649283,
    "agent": "strategy:candle-three-inside-4h",
    "pid": 6904,
    "status": "ok",
@@ -1576,7 +1575,7 @@
    }
   },
   "strategy:candle-three-outside-1h": {
-   "at": 1792766049254,
+   "at": 1792766649283,
    "agent": "strategy:candle-three-outside-1h",
    "pid": 6904,
    "status": "ok",
@@ -1595,7 +1594,7 @@
    }
   },
   "strategy:candle-three-outside-4h": {
-   "at": 1792766049254,
+   "at": 1792766649284,
    "agent": "strategy:candle-three-outside-4h",
    "pid": 6904,
    "status": "ok",
@@ -1614,7 +1613,7 @@
    }
   },
   "strategy:candle-three-methods-1h": {
-   "at": 1792766049254,
+   "at": 1792766649284,
    "agent": "strategy:candle-three-methods-1h",
    "pid": 6904,
    "status": "ok",
@@ -1633,7 +1632,7 @@
    }
   },
   "strategy:candle-three-methods-4h": {
-   "at": 1792766049254,
+   "at": 1792766649285,
    "agent": "strategy:candle-three-methods-4h",
    "pid": 6904,
    "status": "ok",
@@ -1652,7 +1651,7 @@
    }
   },
   "strategy:candle-doji-star-1h": {
-   "at": 1792766049254,
+   "at": 1792766649285,
    "agent": "strategy:candle-doji-star-1h",
    "pid": 6904,
    "status": "ok",
@@ -1671,7 +1670,7 @@
    }
   },
   "strategy:candle-doji-star-4h": {
-   "at": 1792766049255,
+   "at": 1792766649285,
    "agent": "strategy:candle-doji-star-4h",
    "pid": 6904,
    "status": "ok",
@@ -1690,7 +1689,7 @@
    }
   },
   "strategy:adaptive-score-12h": {
-   "at": 1792766049255,
+   "at": 1792766649286,
    "agent": "strategy:adaptive-score-12h",
    "pid": 6904,
    "status": "ok",
@@ -1709,7 +1708,7 @@
    }
   },
   "brain": {
-   "at": 1792766049409,
+   "at": 1792766649417,
    "agent": "brain",
    "pid": 6904,
    "status": "ok",
@@ -1719,7 +1718,7 @@
     "coins": 73,
     "seededBars": 134423,
     "warmedCoins": 73,
-    "bars_binance": 6802,
+    "bars_binance": 7532,
     "ideas_pivot-matrix": 16,
     "bars_blofin": 1057,
     "errors": 1,
