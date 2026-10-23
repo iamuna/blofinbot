@@ -1,15 +1,15 @@
 # Swarm — live status
 
-Updated 2026-10-23T23:23:43.080Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T23:33:43.079Z · account **PAPER** · risk mode normal
 
-Equity $10786.95 (start $10000) · today 9.66% · drawdown 6.7% · 77 trades · fees $124.63 · funding $1.97
+Equity $10781.04 (start $10000) · today 9.60% · drawdown 6.8% · 77 trades · fees $124.63 · funding $1.97
 
 Open: −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), −PHA (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
 | accountant | ok |  |
-| binance-feed | degraded | no Binance data for 122 s |
+| binance-feed | ok |  |
 | blofin-feed | ok |  |
 | brain | ok |  |
 | brain-host | ok |  |
@@ -90,4 +90,4 @@ Open: −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (can
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: BTC: blofin-stale,bars-missing; ETH: blofin-stale,bars-missing; ZEC: blofin-stale,bars-missing; SOL: blofin-stale,bars-missing; NEAR: blofin-stale,bars-missing; XRP: blofin-stale,bars-missing; Q: blofin-stale,bars-missing; HYPE: blofin-stale,bars-missing; WLD: blofin-stale,bars-missing; DOGE: blofin-stale,bars-missing; PEPE: blofin-stale,bars-missing; BNB: blofin-stale,bars-missing; TAO: blofin-stale,bars-missing; XMR: blofin-stale,bars-missing; LINK: blofin-stale,bars-missing; SAND: blofin-stale,bars-missing; QNT: blofin-stale,bars-missing; AAVE: blofin-stale,bars-missing; LIT: blofin-stale,bars-missing; ONDO: blofin-stale,bars-missing; ZRO: blofin-stale,bars-missing; BCH: blofin-stale,bars-missing; ALT: blofin-stale,bars-missing; LTC: blofin-stale,bars-missing; ZEREBRO: blofin-stale,bars-missing; APR: blofin-stale,bars-missing,wide-spread; DOT: blofin-stale,bars-missing; APT: blofin-stale,bars-missing; HBAR: blofin-stale,bars-missing; BAT: blofin-stale,bars-missing; CT: blofin-stale,bars-missing; PENGU: blofin-stale,bars-missing; PHA: blofin-stale,bars-missing; XLM: blofin-stale,bars-missing; ASTER: blofin-stale,bars-missing; VVV: blofin-stale,bars-missing; OP: blofin-stale,bars-missing; TRX: blofin-stale,bars-missing; CRV: blofin-stale,bars-missing; AERO: blofin-stale,bars-missing; XPL: blofin-stale,bars-missing; PYTH: blofin-stale,bars-missing; PONS: blofin-stale,bars-missing,wide-spread; DASH: blofin-stale,bars-missing; SHIB: blofin-stale,bars-missing; ETHFI: blofin-stale,bars-missing; USELESS: blofin-stale,bars-missing; WLFI: blofin-stale,bars-missing; ICP: blofin-stale,bars-missing; SEI: blofin-stale,bars-missing; LDO: blofin-stale,bars-missing; COMP: blofin-stale,bars-missing; US: blofin-stale,bars-missing; ZK: blofin-stale,bars-missing; ETC: blofin-stale,bars-missing; NIL: blofin-stale,bars-missing; S: blofin-stale,bars-missing; PENDLE: blofin-stale,bars-missing; MAGIC: blofin-stale,bars-missing
+Not tradable now: ADA: wide-spread; PONS: wide-spread; NIL: wide-spread
