@@ -1,5 +1,5 @@
 {
- "ts": 1792754492532,
+ "ts": 1792755929479,
  "coins": [
   {
    "coin": "BTC",
@@ -18,7 +18,7 @@
    "vol7d": 10292671790,
    "days": 7,
    "spreadBps": 0.02,
-   "blofinVolQ": 210133307
+   "blofinVolQ": 203531254
   },
   {
    "coin": "ETH",
@@ -36,8 +36,8 @@
    },
    "vol7d": 7308108042,
    "days": 7,
-   "spreadBps": 0.67,
-   "blofinVolQ": 87828631
+   "spreadBps": 0.13,
+   "blofinVolQ": 87962230
   },
   {
    "coin": "ZEC",
@@ -55,8 +55,8 @@
    },
    "vol7d": 1697011688,
    "days": 7,
-   "spreadBps": 0.08,
-   "blofinVolQ": 92733672
+   "spreadBps": 1.55,
+   "blofinVolQ": 93246707
   },
   {
    "coin": "SOL",
@@ -74,8 +74,8 @@
    },
    "vol7d": 1399464645,
    "days": 7,
-   "spreadBps": 1.92,
-   "blofinVolQ": 19345674
+   "spreadBps": 2.88,
+   "blofinVolQ": 19338080
   },
   {
    "coin": "XRP",
@@ -93,8 +93,8 @@
    },
    "vol7d": 577247314,
    "days": 7,
-   "spreadBps": 0.76,
-   "blofinVolQ": 22832028
+   "spreadBps": 1.51,
+   "blofinVolQ": 22801620
   },
   {
    "coin": "Q",
@@ -112,8 +112,8 @@
    },
    "vol7d": 528681404,
    "days": 7,
-   "spreadBps": 0.17,
-   "blofinVolQ": 953397
+   "spreadBps": 2.03,
+   "blofinVolQ": 950804
   },
   {
    "coin": "HYPE",
@@ -131,8 +131,27 @@
    },
    "vol7d": 444091368,
    "days": 7,
-   "spreadBps": 0.13,
-   "blofinVolQ": 9544039
+   "spreadBps": 1.03,
+   "blofinVolQ": 9589652
+  },
+  {
+   "coin": "SOXS",
+   "instId": "SOXS-USDT",
+   "ct": 0.01,
+   "lot": 1,
+   "min": 1,
+   "tick": 0.01,
+   "maxLev": 25,
+   "maxMkt": 930000,
+   "maxLmt": 9000000,
+   "binance": {
+    "symbol": "SOXSUSDT",
+    "scale": 1
+   },
+   "vol7d": 399246367,
+   "days": 7,
+   "spreadBps": 3.8,
+   "blofinVolQ": 472480
   },
   {
    "coin": "DOGE",
@@ -150,27 +169,8 @@
    },
    "vol7d": 282427296,
    "days": 7,
-   "spreadBps": 1.25,
-   "blofinVolQ": 5114026
-  },
-  {
-   "coin": "PEPE",
-   "instId": "PEPE-USDT",
-   "ct": 10000000,
-   "lot": 0.01,
-   "min": 0.01,
-   "tick": 1e-9,
-   "maxLev": 75,
-   "maxMkt": 10000,
-   "maxLmt": 100000,
-   "binance": {
-    "symbol": "1000PEPEUSDT",
-    "scale": 1000
-   },
-   "vol7d": 226124024,
-   "days": 7,
-   "spreadBps": 2.03,
-   "blofinVolQ": 8168546
+   "spreadBps": 2.49,
+   "blofinVolQ": 5189236
   },
   {
    "coin": "BNB",
@@ -188,8 +188,8 @@
    },
    "vol7d": 223100706,
    "days": 7,
-   "spreadBps": 0.27,
-   "blofinVolQ": 1498119
+   "spreadBps": 2.01,
+   "blofinVolQ": 1506911
   },
   {
    "coin": "ENA",
@@ -207,27 +207,27 @@
    },
    "vol7d": 218927478,
    "days": 7,
-   "spreadBps": 1.51,
-   "blofinVolQ": 2779129
+   "spreadBps": 1.5,
+   "blofinVolQ": 2651831
   },
   {
-   "coin": "PUMP",
-   "instId": "PUMP-USDT",
+   "coin": "IOST",
+   "instId": "IOST-USDT",
    "ct": 1000,
    "lot": 1,
    "min": 1,
-   "tick": 0.000001,
-   "maxLev": 75,
-   "maxMkt": 20000,
-   "maxLmt": 200000,
+   "tick": 1e-7,
+   "maxLev": 50,
+   "maxMkt": 40000,
+   "maxLmt": 400000,
    "binance": {
-    "symbol": "PUMPUSDT",
+    "symbol": "IOSTUSDT",
     "scale": 1
    },
-   "vol7d": 210169038,
+   "vol7d": 198724719,
    "days": 7,
-   "spreadBps": 2.19,
-   "blofinVolQ": 5350300
+   "spreadBps": 2.5,
+   "blofinVolQ": 3325006
   },
   {
    "coin": "SUI",
@@ -245,27 +245,8 @@
    },
    "vol7d": 193873809,
    "days": 7,
-   "spreadBps": 1.01,
-   "blofinVolQ": 4714315
-  },
-  {
-   "coin": "TIA",
-   "instId": "TIA-USDT",
-   "ct": 1,
-   "lot": 1,
-   "min": 1,
-   "tick": 0.0001,
-   "maxLev": 75,
-   "maxMkt": 40000,
-   "maxLmt": 4500000,
-   "binance": {
-    "symbol": "TIAUSDT",
-    "scale": 1
-   },
-   "vol7d": 189816433,
-   "days": 7,
-   "spreadBps": 3.64,
-   "blofinVolQ": 3039232
+   "spreadBps": 2.02,
+   "blofinVolQ": 4693911
   },
   {
    "coin": "UNI",
@@ -283,8 +264,8 @@
    },
    "vol7d": 174676349,
    "days": 7,
-   "spreadBps": 4.18,
-   "blofinVolQ": 1656759
+   "spreadBps": 1.39,
+   "blofinVolQ": 1647662
   },
   {
    "coin": "FIL",
@@ -302,8 +283,8 @@
    },
    "vol7d": 148063627,
    "days": 7,
-   "spreadBps": 1.01,
-   "blofinVolQ": 443275
+   "spreadBps": 3.03,
+   "blofinVolQ": 443251
   },
   {
    "coin": "INJ",
@@ -321,8 +302,8 @@
    },
    "vol7d": 143432525,
    "days": 7,
-   "spreadBps": 2.5,
-   "blofinVolQ": 4661001
+   "spreadBps": 2.51,
+   "blofinVolQ": 4608556
   },
   {
    "coin": "STRK",
@@ -340,8 +321,8 @@
    },
    "vol7d": 128365889,
    "days": 7,
-   "spreadBps": 3.89,
-   "blofinVolQ": 568752
+   "spreadBps": 1.94,
+   "blofinVolQ": 575261
   },
   {
    "coin": "ADA",
@@ -359,8 +340,8 @@
    },
    "vol7d": 124196526,
    "days": 7,
-   "spreadBps": 4.64,
-   "blofinVolQ": 1386948
+   "spreadBps": 4.62,
+   "blofinVolQ": 1391058
   },
   {
    "coin": "AVAX",
@@ -378,8 +359,8 @@
    },
    "vol7d": 119614648,
    "days": 7,
-   "spreadBps": 1.09,
-   "blofinVolQ": 1859677
+   "spreadBps": 2.18,
+   "blofinVolQ": 1890287
   },
   {
    "coin": "ARB",
@@ -397,8 +378,8 @@
    },
    "vol7d": 114449632,
    "days": 7,
-   "spreadBps": 1.66,
-   "blofinVolQ": 1339659
+   "spreadBps": 2.77,
+   "blofinVolQ": 1314417
   },
   {
    "coin": "TAO",
@@ -416,8 +397,8 @@
    },
    "vol7d": 109473756,
    "days": 7,
-   "spreadBps": 1.92,
-   "blofinVolQ": 4323645
+   "spreadBps": 0.38,
+   "blofinVolQ": 4259924
   },
   {
    "coin": "XMR",
@@ -435,8 +416,8 @@
    },
    "vol7d": 104809742,
    "days": 7,
-   "spreadBps": 1.15,
-   "blofinVolQ": 8962874
+   "spreadBps": 0.66,
+   "blofinVolQ": 8912335
   },
   {
    "coin": "LINK",
@@ -454,27 +435,8 @@
    },
    "vol7d": 100660382,
    "days": 7,
-   "spreadBps": 2.49,
-   "blofinVolQ": 3208266
-  },
-  {
-   "coin": "SAND",
-   "instId": "SAND-USDT",
-   "ct": 10,
-   "lot": 1,
-   "min": 1,
-   "tick": 0.00001,
-   "maxLev": 75,
-   "maxMkt": 90000,
-   "maxLmt": 3000000,
-   "binance": {
-    "symbol": "SANDUSDT",
-    "scale": 1
-   },
-   "vol7d": 88468333,
-   "days": 7,
-   "spreadBps": 1.89,
-   "blofinVolQ": 140280
+   "spreadBps": 1.66,
+   "blofinVolQ": 3187217
   },
   {
    "coin": "QNT",
@@ -492,8 +454,8 @@
    },
    "vol7d": 80171276,
    "days": 7,
-   "spreadBps": 2.74,
-   "blofinVolQ": 1750872
+   "spreadBps": 1.1,
+   "blofinVolQ": 1725849
   },
   {
    "coin": "AAVE",
@@ -511,8 +473,8 @@
    },
    "vol7d": 78666709,
    "days": 7,
-   "spreadBps": 2.02,
-   "blofinVolQ": 3145453
+   "spreadBps": 1.35,
+   "blofinVolQ": 3087594
   },
   {
    "coin": "LIT",
@@ -530,8 +492,8 @@
    },
    "vol7d": 70924777,
    "days": 7,
-   "spreadBps": 2.96,
-   "blofinVolQ": 2364051
+   "spreadBps": 0.89,
+   "blofinVolQ": 2370166
   },
   {
    "coin": "ONDO",
@@ -549,8 +511,8 @@
    },
    "vol7d": 68206127,
    "days": 7,
-   "spreadBps": 2.31,
-   "blofinVolQ": 1497841
+   "spreadBps": 4.62,
+   "blofinVolQ": 1432089
   },
   {
    "coin": "LITE",
@@ -568,8 +530,27 @@
    },
    "vol7d": 68024495,
    "days": 7,
-   "spreadBps": 1.28,
-   "blofinVolQ": 411953
+   "spreadBps": 2.56,
+   "blofinVolQ": 414897
+  },
+  {
+   "coin": "ZRO",
+   "instId": "ZRO-USDT",
+   "ct": 1,
+   "lot": 1,
+   "min": 1,
+   "tick": 0.0001,
+   "maxLev": 75,
+   "maxMkt": 200000,
+   "maxLmt": 2000000,
+   "binance": {
+    "symbol": "ZROUSDT",
+    "scale": 1
+   },
+   "vol7d": 66339454,
+   "days": 7,
+   "spreadBps": 4.51,
+   "blofinVolQ": 671388
   },
   {
    "coin": "BCH",
@@ -588,7 +569,7 @@
    "vol7d": 66086519,
    "days": 7,
    "spreadBps": 0.35,
-   "blofinVolQ": 3512246
+   "blofinVolQ": 3526823
   },
   {
    "coin": "LTC",
@@ -606,8 +587,8 @@
    },
    "vol7d": 62482676,
    "days": 7,
-   "spreadBps": 3.39,
-   "blofinVolQ": 2696111
+   "spreadBps": 1.69,
+   "blofinVolQ": 2710243
   },
   {
    "coin": "DOT",
@@ -626,7 +607,7 @@
    "vol7d": 54975882,
    "days": 7,
    "spreadBps": 1.7,
-   "blofinVolQ": 1112344
+   "blofinVolQ": 1093513
   },
   {
    "coin": "HBAR",
@@ -644,8 +625,8 @@
    },
    "vol7d": 51523889,
    "days": 7,
-   "spreadBps": 3.79,
-   "blofinVolQ": 3068352
+   "spreadBps": 3.78,
+   "blofinVolQ": 3094310
   },
   {
    "coin": "PENGU",
@@ -663,8 +644,8 @@
    },
    "vol7d": 44576818,
    "days": 7,
-   "spreadBps": 1.25,
-   "blofinVolQ": 917706
+   "spreadBps": 1.23,
+   "blofinVolQ": 929310
   },
   {
    "coin": "XLM",
@@ -683,26 +664,7 @@
    "vol7d": 39553584,
    "days": 7,
    "spreadBps": 1.13,
-   "blofinVolQ": 3089656
-  },
-  {
-   "coin": "ASTER",
-   "instId": "ASTER-USDT",
-   "ct": 1,
-   "lot": 1,
-   "min": 1,
-   "tick": 0.0001,
-   "maxLev": 75,
-   "maxMkt": 200000,
-   "maxLmt": 2000000,
-   "binance": {
-    "symbol": "ASTERUSDT",
-    "scale": 1
-   },
-   "vol7d": 39422452,
-   "days": 7,
-   "spreadBps": 1.41,
-   "blofinVolQ": 743219
+   "blofinVolQ": 3101145
   },
   {
    "coin": "VVV",
@@ -720,8 +682,8 @@
    },
    "vol7d": 39183229,
    "days": 7,
-   "spreadBps": 0.77,
-   "blofinVolQ": 847565
+   "spreadBps": 0.76,
+   "blofinVolQ": 843575
   },
   {
    "coin": "BE",
@@ -739,8 +701,8 @@
    },
    "vol7d": 35050884,
    "days": 7,
-   "spreadBps": 2.79,
-   "blofinVolQ": 381003
+   "spreadBps": 1.9,
+   "blofinVolQ": 375561
   },
   {
    "coin": "TRX",
@@ -759,26 +721,7 @@
    "vol7d": 34591382,
    "days": 7,
    "spreadBps": 0.91,
-   "blofinVolQ": 2858086
-  },
-  {
-   "coin": "CRV",
-   "instId": "CRV-USDT",
-   "ct": 1,
-   "lot": 1,
-   "min": 1,
-   "tick": 0.0001,
-   "maxLev": 75,
-   "maxMkt": 110000,
-   "maxLmt": 15787000,
-   "binance": {
-    "symbol": "CRVUSDT",
-    "scale": 1
-   },
-   "vol7d": 33452210,
-   "days": 7,
-   "spreadBps": 2.78,
-   "blofinVolQ": 534094
+   "blofinVolQ": 2897143
   },
   {
    "coin": "AERO",
@@ -796,65 +739,27 @@
    },
    "vol7d": 31987293,
    "days": 7,
-   "spreadBps": 3.82,
-   "blofinVolQ": 403424
-  },
-  {
-   "coin": "DASH",
-   "instId": "DASH-USDT",
-   "ct": 0.1,
-   "lot": 1,
-   "min": 1,
-   "tick": 0.01,
-   "maxLev": 75,
-   "maxMkt": 24000,
-   "maxLmt": 119000,
-   "binance": {
-    "symbol": "DASHUSDT",
-    "scale": 1
-   },
-   "vol7d": 28635848,
-   "days": 7,
    "spreadBps": 3.81,
-   "blofinVolQ": 2076571
+   "blofinVolQ": 399742
   },
   {
-   "coin": "SHIB",
-   "instId": "SHIB-USDT",
-   "ct": 1000000,
-   "lot": 0.1,
-   "min": 0.1,
-   "tick": 1e-9,
-   "maxLev": 50,
-   "maxMkt": 35000,
-   "maxLmt": 793700,
-   "binance": {
-    "symbol": "1000SHIBUSDT",
-    "scale": 1000
-   },
-   "vol7d": 25255108,
-   "days": 7,
-   "spreadBps": 3.95,
-   "blofinVolQ": 314973
-  },
-  {
-   "coin": "ICP",
-   "instId": "ICP-USDT",
-   "ct": 0.01,
+   "coin": "USELESS",
+   "instId": "USELESS-USDT",
+   "ct": 10,
    "lot": 1,
    "min": 1,
-   "tick": 0.001,
-   "maxLev": 75,
-   "maxMkt": 3200000,
-   "maxLmt": 103642000,
+   "tick": 0.00001,
+   "maxLev": 12,
+   "maxMkt": 50000,
+   "maxLmt": 50000,
    "binance": {
-    "symbol": "ICPUSDT",
+    "symbol": "USELESSUSDT",
     "scale": 1
    },
-   "vol7d": 20918561,
+   "vol7d": 21322667,
    "days": 7,
-   "spreadBps": 3.63,
-   "blofinVolQ": 850544
+   "spreadBps": 0.6,
+   "blofinVolQ": 907893
   }
  ],
  "added": [
@@ -865,13 +770,12 @@
   "XRP",
   "Q",
   "HYPE",
+  "SOXS",
   "DOGE",
-  "PEPE",
   "BNB",
   "ENA",
-  "PUMP",
+  "IOST",
   "SUI",
-  "TIA",
   "UNI",
   "FIL",
   "INJ",
@@ -882,27 +786,23 @@
   "TAO",
   "XMR",
   "LINK",
-  "SAND",
   "QNT",
   "AAVE",
   "LIT",
   "ONDO",
   "LITE",
+  "ZRO",
   "BCH",
   "LTC",
   "DOT",
   "HBAR",
   "PENGU",
   "XLM",
-  "ASTER",
   "VVV",
   "BE",
   "TRX",
-  "CRV",
   "AERO",
-  "DASH",
-  "SHIB",
-  "ICP"
+  "USELESS"
  ],
  "removed": [],
  "stale": false,
