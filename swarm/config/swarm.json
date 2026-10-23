@@ -994,14 +994,14 @@
       "enabled": false,
       "mode": "shadow",
       "params": { "tf": 240, "onlyTfs": [240] },
-      "note": "rejected 2026-10-23: 5-year sweep -0.009 R (expansion/RESULTS_2026-10-23.md)"
+      "note": "off: 2021-26 sweep -0.009 R; 2018-21 era test +0.109 R (t 5.2). Regime-dependent and the 12h variant is the better one (expansion/RESULTS_2026-10-23.md)"
     },
     "adaptive-score-12h": {
       "base": "adaptive-score",
-      "enabled": false,
+      "enabled": true,
       "mode": "shadow",
       "params": { "tf": 720, "onlyTfs": [720], "holdBars": 30 },
-      "note": "rejected 2026-10-23: 5-year sweep +0.024 R, t 0.56 (expansion/RESULTS_2026-10-23.md)"
+      "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
     }
   },
   "trading": {
