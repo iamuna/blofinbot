@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T11:56:36.092Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T12:22:38.459Z · account **PAPER** · risk mode normal
 
-Equity $10433.5 (start $10000) · today 6.07% · drawdown 1.8% · 37 trades · fees $67.83 · funding $2.56
+Equity $10452.83 (start $10000) · today 6.26% · drawdown 1.6% · 37 trades · fees $67.83 · funding $2.56
 
-Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h) · working orders: 0
+Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (candle-engulfing-4h), −ETH (candle-engulfing-1h), −FIL (candle-engulfing-1h), −INJ (candle-engulfing-1h), −LINK (candle-engulfing-1h), +CT (candle-engulfing-1h), +XPL (candle-engulfing-4h), +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), +DOT (rsi-macd-trend-12h) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -14,7 +14,7 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | brain | ok |  |
 | brain-host | ok |  |
 | coordinator | ok |  |
-| events | ok |  |
+| events | degraded | calendar feed: fetch failed (keeping 0 saved events) |
 | guard | ok |  |
 | guardian | ok |  |
 | herald | ok |  |
@@ -79,7 +79,7 @@ Open: −DASH (candle-three-outside-1h), −AVAX (candle-engulfing-1h), +BAT (ca
 | strategy:wyckoff-spring-1h | ok |  |
 | strategy:wyckoff-spring-4h | ok |  |
 | trader | ok |  |
-| universe | ok |  |
+| universe | degraded | refresh failed: fetch failed |
 | watchdog | ok |  |
 
-Not tradable now: APR: wide-spread; COMP: wide-spread
+Not tradable now: ADA: wide-spread; US: wide-spread; CHIP: wide-spread
