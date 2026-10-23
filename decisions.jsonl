@@ -68,3 +68,4 @@
 {"ts":1792720806213,"id":"int-candle-engulfing-1h-mvkboe80-128","coin":"TIA","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 8.90"],"mode":"normal"}
 {"ts":1792720806213,"id":"int-candle-three-outside-1h-mvkboe80-64","coin":"WLFI","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 93.0"],"mode":"normal"}
 {"ts":1792720806214,"id":"int-candle-three-outside-1h-mvkboe80-65","coin":"XPL","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 65.5"],"mode":"normal"}
+{"ts":1792721706210,"id":"int-intraday-trend-mvkc7oo0-180","coin":"DASH","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 0.100"],"mode":"normal"}
