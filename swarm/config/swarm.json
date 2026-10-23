@@ -16,7 +16,8 @@
     ],
     "brain": [
       "events",
-      "brain"
+      "brain",
+      "trend-sleeve"
     ],
     "decision": [
       "coordinator"
@@ -934,6 +935,22 @@
     "candles": {
       "enabled": false,
       "note": "plugin default; one variant per pattern runs (candle-*)"
+    }
+  },
+  "sleeves": {
+    "trend": {
+      "enabled": true,
+      "mode": "shadow",
+      "maxCoins": 20,
+      "historyDays": 560,
+      "warmDays": 400,
+      "shadowSince": "2026-10-23",
+      "rules": {
+        "capitalShare": 0.5,
+        "stopK": 8,
+        "riskShare": 1
+      },
+      "note": "The retired trend bot's portfolio as a sleeve (docs/TREND_SLEEVE_DESIGN.md). Shadow only: trade mode needs the coordinator/trader changes of phase 2, and Ibrahim. Backtest 2020-2026 under risk.json: Sharpe 1.10 (top-20), 0.84 (30 unseen coins)."
     }
   },
   "trading": {
