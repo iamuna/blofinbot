@@ -14,6 +14,8 @@
  *   - missing minutes are NOT invented: they are listed in the manifest as gaps (the ZIP has 35 of them), and the
  *     feature code already treats a missing boundary minute as a partial bar;
  *   - a duplicated minute keeps the last row; rows are sorted within each month;
+ *   - an open time off the minute is snapped down to it and counted (`realigned`): Binance's spot archive has ~20 h
+ *     of BTC rows 14.789 s late after the February 2018 outage, which would otherwise read as gaps and odd bars;
  *   - this is SPOT data: no funding, a different venue from BloFin perpetuals. Use it for long-range questions
  *     (does a slow strategy hold up in 2018–2019, an era the 5-year sweep never saw?), not as proof of BloFin fills.
  */
@@ -87,7 +89,7 @@ async function importFile(o) {
   fs.mkdirSync(dir, { recursive: true });
   const fmt = (a) => a.map((x) => (Number.isInteger(x) ? x : +x.toPrecision(10))).join(',');
   const months = [], gaps = [];
-  let cur = null, curM = null, rows = 0, dups = 0, first = null, last = null, bad = 0;
+  let cur = null, curM = null, rows = 0, dups = 0, first = null, last = null, bad = 0, realigned = 0;
   const flush = () => {
     if (!cur) return;
     const list = [...cur.values()].sort((a, b) => a[0] - b[0]);
@@ -99,6 +101,7 @@ async function importFile(o) {
   for await (const line of rl) {
     if (!line || !/^\d/.test(line)) continue; // header or blank
     let r; try { r = convRow(line.split(',')); } catch (e) { bad++; continue; }
+    if (r[0] % MIN) { r[0] -= r[0] % MIN; realigned++; }
     if (r[0] < from) continue;
     const m = new Date(r[0]).toISOString().slice(0, 7);
     if (m !== curM) {
@@ -111,7 +114,7 @@ async function importFile(o) {
   flush();
   fs.writeFileSync(path.join(dir, 'funding.csv.gz'), zlib.gzipSync('t,rate\n'));
   const iso = (t) => (t == null ? null : new Date(t).toISOString());
-  const info = { status: rows ? 'ok' : 'empty', source: o.source || `binance klines from ${path.basename(o.in)}`, venue: o.venue || 'binance-spot', rows1m: rows, first: iso(first), last: iso(last), duplicates: dups, unreadableRows: bad,
+  const info = { status: rows ? 'ok' : 'empty', source: o.source || `binance klines from ${path.basename(o.in)}`, venue: o.venue || 'binance-spot', rows1m: rows, first: iso(first), last: iso(last), duplicates: dups, realigned, unreadableRows: bad,
     gaps: gaps.map((g) => ({ after: iso(g.after), next: iso(g.next), missingMinutes: g.missingMinutes })), missingMinutes: gaps.reduce((a, g) => a + g.missingMinutes, 0), missing: [] };
   const manFile = path.join(o.out, 'manifest.json');
   const man = fs.existsSync(manFile) ? JSON.parse(fs.readFileSync(manFile, 'utf8')) : { months: [], currentMonthDays: [], coins: {} };
@@ -126,7 +129,7 @@ if (require.main === module) {
   for (let i = 0; i < argv.length; i++) if (argv[i].startsWith('--')) A[argv[i].slice(2)] = argv[++i];
   if (!A.in || !A.out) { console.error('usage: import_binance_1m.js --in <file.zip|.csv|.csv.gz> --out <dir> [--coin BTC] [--from YYYY-MM-DD]'); process.exit(2); }
   importFile({ in: path.resolve(A.in), out: path.resolve(A.out), coin: A.coin, from: A.from ? Date.parse(A.from) : 0 })
-    .then((x) => { const g = x.gaps; console.log(`${x.rows1m} bars ${x.first} → ${x.last}; ${g.length} gaps (${x.missingMinutes} minutes missing), ${x.duplicates} duplicates, ${x.unreadableRows} unreadable rows`); })
+    .then((x) => { const g = x.gaps; console.log(`${x.rows1m} bars ${x.first} → ${x.last}; ${g.length} gaps (${x.missingMinutes} minutes missing), ${x.duplicates} duplicates, ${x.realigned} realigned to the minute, ${x.unreadableRows} unreadable rows`); })
     .catch((e) => { console.error(e.message); process.exit(1); });
 }
 module.exports = { importFile, parseTimeMs, convRow };

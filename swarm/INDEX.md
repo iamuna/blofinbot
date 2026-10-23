@@ -96,7 +96,7 @@ All start in shadow; trade mode is Ibrahim's call (`/mode <name> trade`). Eviden
 | candles | [candles.js](src/strategies/candles.js) | 14 candlestick families | 23 of 28 lose; every 1h version loses |
 | session-drive, overshoot-fade, leader-follow, crowd-squeeze, noise-breakout | `src/strategies/` | the starting 1–45 minute set | all lose after costs |
 | dip-reversal | [dip_reversal.js](src/strategies/dip_reversal.js) | buy an outsized 15m drop | fails once it has a stop (−0.12 R) |
-| adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | off, rejected: 5-year sweep −0.009 / +0.024 / +0.036 R at 4h / 12h / 1d, t < 0.7 ([../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)) |
+| adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | `adaptive-score-12h` shadow (watch), 4h off: flat on 2021–26 (t < 0.7), +0.11 / +0.19 R at t 5 on 2018–21 ([../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)) |
 | probe | [probe.js](src/strategies/probe.js) | CI only: exercises the trade path | — |
 
 The lesson across all of it: below 1h, costs eat every edge we found; the slow (12h–1d) edges are mostly short.

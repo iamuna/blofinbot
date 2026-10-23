@@ -6,9 +6,10 @@ lessons docs). The file map is in [INDEX.md](INDEX.md); the lessons and data fac
 
 **Results (same day, after running the tools on the 5-year data): [RESULTS_2026-10-23.md](RESULTS_2026-10-23.md).**
 Break-even at +1 R cost the robust five 10% of their R, so paper and demo now run without it (`trading.breakevenR: 0`)
-and exit the way shadow does. adaptive-score has no edge on slow bars (t < 0.7) and stays off. The loss-streak rule
-costs more than it saves; its replay tool had a look-ahead bug, now fixed. The 2017–2021 era test is the
-`swarm-era.yml` workflow.
+and exit the way shadow does. The loss-streak rule costs more than it saves; its replay tool had a look-ahead bug,
+now fixed. The 2018–2021 era test (`swarm-era.yml`, run on GitHub): four of the robust five hold up (ma-retest-1d
+fails, so trade the robust four). adaptive-score is regime-dependent: flat on 2021–26 (t < 0.7), +0.19 R at t 5 on
+2018–21. Its 12h variant is in shadow as a watch.
 
 **Short version.** The swarm is already far ahead of the 1-minute bot: it has the risk ladders, the signed limits,
 the factory gate with a multiple-testing bar, shadow mode, the demo trader's intent journal and the 5-year sweep.

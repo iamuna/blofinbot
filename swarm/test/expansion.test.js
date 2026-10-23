@@ -32,11 +32,12 @@ function rig(ret, params, last) {
 // zig-zag trends: +0.8% / −0.4% bars ending on an up bar (or on a down bar), and −0.8% / +0.4% down
 const upTrend = (k) => (k % 2 ? -0.004 : 0.008), upEndingDown = (k) => (k % 2 ? 0.008 : -0.004), downTrend = (k) => (k % 2 ? 0.004 : -0.008);
 
-test('adaptive-score: loads, passes the plugin check, is registered but off in config', () => {
+test('adaptive-score: loads, passes the plugin check, is registered; only the 12h watch runs, in shadow', () => {
   assert.ok(plugin, 'in the plugin list');
   assert.strictEqual(checkPlugin(fs.readFileSync(path.join(__dirname, '..', 'src', 'strategies', 'adaptive_score.js'), 'utf8')).ok, true);
   const cfg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'config', 'swarm.json'), 'utf8')).strategies;
-  for (const k of ['adaptive-score', 'adaptive-score-4h', 'adaptive-score-12h']) assert.strictEqual(cfg[k].enabled, false, `${k} stays off until the sweep has spoken`);
+  for (const k of ['adaptive-score', 'adaptive-score-4h']) assert.strictEqual(cfg[k].enabled, false, `${k} stays off (expansion/RESULTS_2026-10-23.md)`);
+  assert.strictEqual(cfg['adaptive-score-12h'].mode, 'shadow', 'a watch strategy: shadow only, paper only through the promotion gate');
 });
 
 test('adaptive-score: a steady uptrend gives a long with an ATR stop and a 1.8 R target; a downtrend a short', () => {
@@ -143,13 +144,14 @@ test('import: a Binance kline zip becomes swarm months; gaps listed, not filled;
   for (let k = 0; k < 2880; k++) {
     if (k >= 100 && k < 103) continue; // a 3-minute hole
     const o = c; c = c * (1 + (Math.floor(k / 5) % 2 ? -0.0008 : 0.0016)); // 5m bars: +0.8%, −0.4%, …
-    const d = new Date(t0 + k * MIN).toISOString().replace('T', ' ').slice(0, 19);
+    const d = new Date(t0 + k * MIN + (k === 200 ? 14789 : 0)).toISOString().replace('T', ' ').slice(0, 19); // one row 14.8 s late (as Binance's Feb 2018 rows)
     lines.push([d, o, Math.max(o, c) * 1.0002, Math.min(o, c) * 0.9998, c, 2, d, 2 * c, 30, 1, c, 0].join(','));
   }
   const dir = tmpDir('import'), zip = path.join(dir, 'BTC.zip');
   fs.writeFileSync(zip, makeZip('BTCUSD_1m.csv', lines.join('\n') + '\n'));
   const info = await importFile({ in: zip, out: path.join(dir, 'data'), coin: 'BTC' });
   assert.strictEqual(info.rows1m, 2877); assert.strictEqual(info.gaps.length, 1); assert.strictEqual(info.gaps[0].missingMinutes, 3);
+  assert.strictEqual(info.realigned, 1, 'the late row is snapped to its minute, not read as a gap');
   const man = JSON.parse(fs.readFileSync(path.join(dir, 'data', 'manifest.json'), 'utf8'));
   assert.deepStrictEqual(man.months, ['2020-01', '2020-02']);
   const jan = zlib.gunzipSync(fs.readFileSync(path.join(dir, 'data', 'BTC', '1m-2020-01.csv.gz'))).toString().split('\n');

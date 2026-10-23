@@ -15,8 +15,11 @@ with `--breakeven both`. Full report: [../../expansion/RESULTS_2026-10-23.md](..
   (look-ahead with overlapping trades), fixed.
 - Event study works as a screen: winners have edge (MFE ÷ |MAE|) 1.3–1.6 with forward R positive in both halves,
   losers ≤ 1. Rule: edge ≥ ~1.2 and both halves positive before writing a factory candidate.
-- Both sides earn, by regime (longs in 2023/24, shorts in 2022/25): no side filter. The 2017–2021 era test is
-  `swarm-era.yml` (by hand).
+- Both sides earn, by regime (longs in 2023/24, shorts in 2022/25): no side filter.
+- Era test (`swarm-era.yml`, Binance spot 2018-03 → 2021-09, 12 majors): ma-retest-12h +0.30, rsi-macd-trend-12h
+  +0.37, ma-retest-4h +0.13, ma-pullback-12h +0.15 R, all positive in nearly every third. **ma-retest-1d −0.16**
+  (2020–21 −0.34, t −2.8): keep it in shadow, trade the robust four. adaptive-score +0.11 / +0.19 R (4h / 12h, t 5)
+  there vs flat on 2021–26: regime-dependent, `adaptive-score-12h` in shadow as a watch. Break-even a wash there.
 
 ## 2026-10-23 — deep review of every strategy (Ibrahim: "improve them or fix them")
 
