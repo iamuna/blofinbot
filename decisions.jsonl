@@ -58,3 +58,13 @@
 {"ts":1792717206196,"id":"int-candle-engulfing-1h-mvk9j8g0-126","coin":"WLFI","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 93.1"],"mode":"normal"}
 {"ts":1792717206196,"id":"int-candle-engulfing-1h-mvk9j8g0-127","coin":"XPL","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 65.8"],"mode":"normal"}
 {"ts":1792719006254,"id":"int-intraday-trend-mvkaltc0-178","coin":"IOST","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 6.24e+3"],"mode":"normal"}
+{"ts":1792720806207,"id":"int-intraday-trend-mvkboe80-179","coin":"DOT","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 4.34"],"mode":"normal"}
+{"ts":1792720806208,"id":"int-candle-three-outside-1h-mvkboe80-60","coin":"ETHFI","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 7.72"],"mode":"normal"}
+{"ts":1792720806209,"id":"int-candle-three-outside-1h-mvkboe80-61","coin":"ICP","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 1.83"],"mode":"normal"}
+{"ts":1792720806209,"id":"int-wyckoff-spring-1h-mvkboe80-73","coin":"INJ","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 0.626"],"mode":"normal"}
+{"ts":1792720806210,"id":"int-candle-three-outside-1h-mvkboe80-62","coin":"LDO","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 12.9"],"mode":"normal"}
+{"ts":1792720806211,"id":"int-wyckoff-spring-1h-mvkboe80-75","coin":"S","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 97.2"],"mode":"normal"}
+{"ts":1792720806212,"id":"int-candle-three-outside-1h-mvkboe80-63","coin":"SUI","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 5.10"],"mode":"normal"}
+{"ts":1792720806213,"id":"int-candle-engulfing-1h-mvkboe80-128","coin":"TIA","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 8.90"],"mode":"normal"}
+{"ts":1792720806213,"id":"int-candle-three-outside-1h-mvkboe80-64","coin":"WLFI","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 93.0"],"mode":"normal"}
+{"ts":1792720806214,"id":"int-candle-three-outside-1h-mvkboe80-65","coin":"XPL","verdict":"reject","qty":0,"reasons":["gross notional leaves 0.00 < exchange minimum 65.5"],"mode":"normal"}
