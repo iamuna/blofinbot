@@ -97,6 +97,7 @@ All start in shadow; trade mode is Ibrahim's call (`/mode <name> trade`). Eviden
 | session-drive, overshoot-fade, leader-follow, crowd-squeeze, noise-breakout | `src/strategies/` | the starting 1–45 minute set | all lose after costs |
 | dip-reversal | [dip_reversal.js](src/strategies/dip_reversal.js) | buy an outsized 15m drop | fails once it has a stop (−0.12 R) |
 | adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | `adaptive-score-12h` shadow (watch), 4h off: flat on 2021–26 (t < 0.7), +0.11 / +0.19 R at t 5 on 2018–21 ([../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)) |
+| orb-retest | [orb_retest.js](src/strategies/orb_retest.js) | 5m close outside the 9:30–9:45 New York range, limit at the retest of a flip / demand zone, stop beyond the range, 2R (Trade with Pat video; TradingView version [docs/pine/](docs/pine/orb_common_sense_scalper.pine)) | new 2026-10-23, shadow; not in the sweep yet (sub-1h strategies have all lost after costs) |
 | probe | [probe.js](src/strategies/probe.js) | CI only: exercises the trade path | — |
 
 The lesson across all of it: below 1h, costs eat every edge we found; the slow (12h–1d) edges are mostly short.
@@ -131,6 +132,6 @@ strategies on Binance spot 2017–2021, by hand: [../expansion/RESULTS_2026-10-2
 | security, isolate | plugin check, update gate, signed messages, the isolated brain's lock-down |
 | ops | herald (commands, /mode), watchdog, guardian, state sync |
 | feeds, guard_recorder, universe | feeds with fake sockets, data guard, recorder, universe rules |
-| brain, strategy_engine, *strategies*, donchian_trend, funding_fade | features, regime, every plugin |
+| brain, strategy_engine, *strategies*, donchian_trend, funding_fade, orb_retest | features, regime, every plugin |
 | factory | tester, gate, promotion |
 | expansion | adaptive-score, ExecSim break-even, excursions, tags, streak replay, tuner, importer |

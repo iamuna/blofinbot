@@ -1019,6 +1019,12 @@
       "mode": "shadow",
       "params": { "tf": 720, "onlyTfs": [720], "holdBars": 30 },
       "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
+    },
+    "orb-retest": {
+      "enabled": true,
+      "mode": "shadow",
+      "params": {},
+      "note": "NY opening-range breakout entered on a retest of a flip / demand zone (Trade with Pat video, 2026-10-23; Pine version docs/pine/). 5m: untested in the sweep, and every sub-1h strategy so far loses after costs; shadow only"
     }
   },
   "trading": {

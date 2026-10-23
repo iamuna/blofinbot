@@ -1,0 +1,320 @@
+//@version=5
+// ORB + Common-Sense Level 5-minute scalper
+// Based on "If I Could Only Trade ONE 5 Minute Scalping Strategy" (Trade with Pat).
+//
+// Step 1  Opening range: high/low of the 9:30-9:45 New York 15-minute candle.
+// Step 2  Break & close: the first 5m candle that CLOSES outside the range sets the direction.
+// Step 3  Common-sense level: don't chase the break. Place a limit order at
+//           a) a flip zone  - old resistance that price just broke (support for longs), or vice versa
+//           b) a demand/supply zone - the base candle before 3+ strong candles in the break direction
+//           c) the range edge itself (fallback)
+//         Stop beyond the range (or beyond the zone), partial at 1R with stop to break-even,
+//         rest runs to the final target.
+//
+// Use on a 5-minute chart (anything 15m or lower works). Built for forex/gold/indices during NY.
+strategy("ORB Common-Sense Level Scalper", shorttitle="ORB-CSL", overlay=true, initial_capital=10000, pyramiding=0, max_bars_back=500, max_lines_count=200, max_labels_count=200, commission_type=strategy.commission.percent, commission_value=0.0)
+
+// ───────────────────────── Inputs
+grpS = "Session (New York time)"
+tz        = input.string("America/New_York", "Timezone", group=grpS)
+orSess    = input.session("0930-0945", "Opening range (step 1)", group=grpS)
+entrySess = input.session("0945-1200", "Entry window", group=grpS, tooltip="Breaks and limit fills only count inside this window. Unfilled orders are cancelled when it ends.")
+daySess   = input.session("0930-1555", "Trading day", group=grpS, tooltip="Any open trade is closed once a bar falls outside this session.")
+
+grpE = "Break & entry level"
+levelMode    = input.string("Auto", "Entry level", options=["Auto", "Flip zone", "Demand/supply zone", "Range edge"], group=grpE, tooltip="Auto tries a flip zone first, then a demand/supply zone, then the range edge.")
+dirFilter    = input.string("Both", "Direction", options=["Both", "Long only", "Short only"], group=grpE)
+pivLen       = input.int(3, "Swing pivot length", minval=1, group=grpE)
+flipLook     = input.int(120, "Flip zone lookback (bars)", minval=10, maxval=450, group=grpE)
+minTouches   = input.int(2, "Flip zone minimum touches", minval=1, group=grpE, tooltip="How many swing highs/lows must sit on the level for it to count as proven.")
+tolMult      = input.float(0.25, "Level tolerance (x ATR)", minval=0.01, step=0.05, group=grpE)
+impulseN     = input.int(3, "Demand/supply: impulse candles", minval=2, group=grpE)
+impulseBody  = input.float(1.0, "Demand/supply: min body (x avg body)", minval=0.0, step=0.1, group=grpE)
+zoneLook     = input.int(60, "Demand/supply lookback (bars)", minval=5, maxval=400, group=grpE)
+allowRebreak = input.bool(true, "Allow a new break after a setup ends", group=grpE, tooltip="Price must close back inside the range first, then break out again.")
+maxTrades    = input.int(1, "Max trades per day", minval=1, group=grpE)
+
+grpR = "Risk & exits"
+riskPct    = input.float(1.0, "Risk per trade (% of equity)", minval=0.01, step=0.25, group=grpR)
+stopMode   = input.string("Opposite side of range", "Stop loss", options=["Opposite side of range", "Beyond entry zone"], group=grpR)
+stopBuf    = input.float(0.1, "Stop buffer (x ATR)", minval=0.0, step=0.05, group=grpR)
+tgtMode    = input.string("R multiple", "Final target", options=["R multiple", "Recent swing"], group=grpR, tooltip="Recent swing targets the nearest swing high (long) / low (short) at least the minimum R away, else falls back to the R multiple.")
+tgtR       = input.float(2.0, "Final target (R)", minval=0.5, step=0.1, group=grpR)
+minSwingR  = input.float(1.5, "Recent swing: minimum R", minval=0.5, step=0.1, group=grpR)
+usePartial = input.bool(true, "Partial at TP1, then stop to break-even", group=grpR)
+tp1R       = input.float(1.0, "TP1 (R)", minval=0.2, step=0.1, group=grpR)
+tp1Pct     = input.int(50, "TP1 size (%)", minval=1, maxval=99, group=grpR)
+
+grpF = "Higher-timeframe filter"
+useHtf = input.bool(false, "Trade only with the higher-timeframe trend", group=grpF)
+htfTf  = input.timeframe("60", "HTF timeframe", group=grpF)
+htfLen = input.int(50, "HTF EMA length", minval=2, group=grpF)
+
+grpV = "Visuals"
+showOR = input.bool(true, "Show opening range", group=grpV)
+showLv = input.bool(true, "Show entry, stop and targets", group=grpV)
+
+// ───────────────────────── Series
+if timeframe.in_seconds() > 900
+    runtime.error("Use a 15-minute or lower chart. The strategy is built for 5 minutes.")
+
+atrV    = ta.atr(14)
+bodyAvg = ta.sma(math.abs(close - open), 20)
+inOR    = not na(time(timeframe.period, orSess, tz))
+inEntry = not na(time(timeframe.period, entrySess, tz))
+inDay   = not na(time(timeframe.period, daySess, tz))
+orStart = inOR and not inOR[1]
+
+htfEma   = request.security(syminfo.tickerid, htfTf, ta.ema(close, htfLen)[1], lookahead=barmerge.lookahead_on)
+htfClose = request.security(syminfo.tickerid, htfTf, close[1], lookahead=barmerge.lookahead_on)
+
+// Swing points, kept for flip zones and swing targets
+ph = ta.pivothigh(high, pivLen, pivLen)
+pl = ta.pivotlow(low, pivLen, pivLen)
+var pivPrice = array.new_float()
+var pivBar   = array.new_int()
+var pivHigh  = array.new_bool()
+if not na(ph)
+    array.push(pivPrice, ph)
+    array.push(pivBar, bar_index - pivLen)
+    array.push(pivHigh, true)
+if not na(pl)
+    array.push(pivPrice, pl)
+    array.push(pivBar, bar_index - pivLen)
+    array.push(pivHigh, false)
+while array.size(pivPrice) > 200
+    array.shift(pivPrice)
+    array.shift(pivBar)
+    array.shift(pivHigh)
+
+// ───────────────────────── Level finders
+// Number of swing highs/lows sitting within `tol` of a price.
+touchCount(float lvl, float tol, int fromBar) =>
+    int n = 0
+    int sz = array.size(pivPrice)
+    if sz > 0
+        for i = 0 to sz - 1
+            if array.get(pivBar, i) >= fromBar and math.abs(array.get(pivPrice, i) - lvl) <= tol
+                n += 1
+    n
+
+// Flip zone: old resistance below the breakout close (long) / old support above it (short),
+// between the breakout and the far side of the range. Returns the nearest one.
+findFlip(int d, float brk, float bound, float tol) =>
+    float best = na
+    int bestBar = na
+    int fromBar = bar_index - flipLook
+    int sz = array.size(pivPrice)
+    if sz > 0
+        for i = 0 to sz - 1
+            float p = array.get(pivPrice, i)
+            int b = array.get(pivBar, i)
+            bool isH = array.get(pivHigh, i)
+            bool side = d == 1 ? (isH and p < brk and p > bound) : (not isH and p > brk and p < bound)
+            if b >= fromBar and side and touchCount(p, tol, fromBar) >= minTouches
+                if na(best) or (d == 1 ? p > best : p < best)
+                    best := p
+                    bestBar := b
+    [best, bestBar]
+
+// Demand (long) / supply (short) zone: the base candle right before `impulseN` strong candles
+// in the trade direction, which price has not traded back into since. Returns the most recent one.
+findZone(int d, float brk, float bound) =>
+    float top = na
+    float bot = na
+    int zBar = na
+    int maxK = math.min(zoneLook, bar_index - 1)
+    if maxK > impulseN
+        for k = impulseN + 1 to maxK
+            bool ok = true
+            for j = 1 to impulseN
+                int o = k - j
+                float body = close[o] - open[o]
+                if (d == 1 ? body <= 0 : body >= 0) or math.abs(body) < impulseBody * bodyAvg[o]
+                    ok := false
+            if ok
+                float zt = d == 1 ? high[k] : low[k]
+                float zb = d == 1 ? low[k] : high[k]
+                bool fresh = true
+                for m = 0 to k - impulseN - 1
+                    if d == 1 ? low[m] <= zt : high[m] >= zt
+                        fresh := false
+                if fresh and (d == 1 ? zt < brk and zb > bound : zt > brk and zb < bound)
+                    top := zt
+                    bot := zb
+                    zBar := bar_index - k
+                    break
+    [top, bot, zBar]
+
+// Nearest swing in the trade direction at least `minDist` from the entry.
+findSwingTarget(int d, float entry, float minDist) =>
+    float best = na
+    int sz = array.size(pivPrice)
+    if sz > 0
+        for i = 0 to sz - 1
+            float p = array.get(pivPrice, i)
+            bool isH = array.get(pivHigh, i)
+            if array.get(pivBar, i) >= bar_index - flipLook
+                if d == 1 and isH and p - entry >= minDist and (na(best) or p < best)
+                    best := p
+                if d == -1 and not isH and entry - p >= minDist and (na(best) or p > best)
+                    best := p
+    best
+
+// ───────────────────────── State
+var float orH = na
+var float orL = na
+var int   orStartBar = na
+var bool  orBuilt = false
+var bool  armed = false
+var bool  needInside = false
+var int   tradesToday = 0
+var int   dir = 0
+var bool  pending = false
+var bool  partialOn = false
+var bool  beMoved = false
+var float entryPx = na
+var float stopPx = na
+var float curStop = na
+var float tp1Px = na
+var float tp2Px = na
+var float posQty = na
+
+// Step 1: build the opening range
+if orStart
+    strategy.cancel_all()
+    orH := high
+    orL := low
+    orStartBar := bar_index
+    orBuilt := true
+    armed := true
+    needInside := false
+    tradesToday := 0
+    pending := false
+    dir := 0
+else if inOR and orBuilt
+    orH := math.max(orH, high)
+    orL := math.min(orL, low)
+orReady = orBuilt and not inOR
+
+// Fills and trade lifecycle
+posSize   = strategy.position_size
+newFill   = strategy.opentrades > strategy.opentrades[1] or (strategy.closedtrades > strategy.closedtrades[1] and posSize[1] == 0)
+tradeOver = posSize == 0 and (posSize[1] != 0 or newFill)
+setupEnded = false
+
+if newFill
+    pending := false
+    beMoved := false
+    tradesToday += 1
+if partialOn and not beMoved and posSize != 0 and math.abs(posSize) < posQty * 0.999
+    beMoved := true
+    curStop := strategy.position_avg_price
+if tradeOver
+    setupEnded := true
+
+// Flatten at the end of the trading day
+if not inDay and (posSize != 0 or pending)
+    strategy.cancel_all()
+    strategy.close_all(comment="Session end")
+    if pending
+        setupEnded := true
+
+// Cancel an unfilled order when the window ends, price closes through the stop,
+// or the move reaches the target without us.
+if pending and posSize == 0 and not newFill and inDay
+    bool invalid = not inEntry or (dir == 1 ? (close < stopPx or high >= tp2Px) : (close > stopPx or low <= tp2Px))
+    if invalid
+        strategy.cancel_all()
+        setupEnded := true
+
+if setupEnded
+    pending := false
+    dir := 0
+    if allowRebreak and tradesToday < maxTrades
+        needInside := true
+
+if needInside and orReady and close <= orH and close >= orL
+    needInside := false
+    armed := true
+
+// Step 2 + 3: break & close outside the range, then find the common-sense level
+if orReady and inEntry and armed and not needInside and not pending and posSize == 0 and tradesToday < maxTrades and (close > orH or close < orL)
+    armed := false
+    bool made = false
+    int d = close > orH ? 1 : -1
+    bool dirOk = (d == 1 and dirFilter != "Short only") or (d == -1 and dirFilter != "Long only")
+    bool htfOk = not useHtf or (d == 1 ? htfClose > htfEma : htfClose < htfEma)
+    if dirOk and htfOk
+        float tol = atrV * tolMult
+        float bound = d == 1 ? orL : orH
+        float e = na
+        float zoneEdge = na
+        int lvlBar = na
+        string nm = ""
+        if levelMode == "Auto" or levelMode == "Flip zone"
+            [fp, fb] = findFlip(d, close, bound, tol)
+            if not na(fp)
+                e := fp
+                zoneEdge := d == 1 ? fp - tol : fp + tol
+                lvlBar := fb
+                nm := "Flip zone"
+        if na(e) and (levelMode == "Auto" or levelMode == "Demand/supply zone")
+            [zt, zb, zbar] = findZone(d, close, bound)
+            if not na(zt)
+                e := zt
+                zoneEdge := zb
+                lvlBar := zbar
+                nm := d == 1 ? "Demand zone" : "Supply zone"
+        if na(e) and (levelMode == "Auto" or levelMode == "Range edge")
+            e := d == 1 ? orH : orL
+            zoneEdge := (orH + orL) / 2
+            lvlBar := orStartBar
+            nm := "Range edge"
+        if not na(e)
+            float s = stopMode == "Opposite side of range" ? (d == 1 ? orL - atrV * stopBuf : orH + atrV * stopBuf) : (d == 1 ? zoneEdge - atrV * stopBuf : zoneEdge + atrV * stopBuf)
+            float dist = math.abs(e - s)
+            if dist > syminfo.mintick and (d == 1 ? s < e : s > e)
+                float t2 = e + d * tgtR * dist
+                if tgtMode == "Recent swing"
+                    float sw = findSwingTarget(d, e, minSwingR * dist)
+                    if not na(sw)
+                        t2 := sw
+                dir := d
+                entryPx := e
+                stopPx := s
+                curStop := s
+                tp1Px := e + d * tp1R * dist
+                tp2Px := t2
+                partialOn := usePartial and (d == 1 ? tp1Px < tp2Px : tp1Px > tp2Px)
+                posQty := (strategy.equity * riskPct / 100) / (dist * syminfo.pointvalue)
+                pending := true
+                made := true
+                label.new(bar_index, e, nm + (d == 1 ? " buy" : " sell"), color=d == 1 ? color.new(color.green, 20) : color.new(color.red, 20), textcolor=color.white, style=d == 1 ? label.style_label_up : label.style_label_down, size=size.small)
+                if not na(lvlBar)
+                    line.new(lvlBar, e, bar_index, e, color=color.new(color.blue, 30), style=line.style_dotted, width=2)
+                alert("ORB-CSL " + syminfo.ticker + (d == 1 ? " BUY LIMIT " : " SELL LIMIT ") + str.tostring(e, format.mintick) + " | SL " + str.tostring(s, format.mintick) + " | TP " + str.tostring(t2, format.mintick) + " | " + nm, alert.freq_once_per_bar_close)
+    if not made and allowRebreak
+        needInside := true
+
+// ───────────────────────── Orders
+if pending and posSize == 0
+    if dir == 1
+        strategy.entry("Long", strategy.long, qty=posQty, limit=entryPx)
+    else
+        strategy.entry("Short", strategy.short, qty=posQty, limit=entryPx)
+if dir != 0 and (pending or posSize != 0)
+    string eid = dir == 1 ? "Long" : "Short"
+    if partialOn and not beMoved
+        strategy.exit("TP1", eid, qty_percent=tp1Pct, limit=tp1Px, stop=curStop, comment_profit="TP1", comment_loss="SL")
+    strategy.exit("TP2", eid, limit=tp2Px, stop=curStop, comment_profit="TP2", comment_loss=beMoved ? "BE" : "SL")
+
+// ───────────────────────── Visuals
+active = dir != 0 and (pending or posSize != 0)
+bgcolor(showOR and inOR ? color.new(color.yellow, 85) : na, title="Opening range candle")
+plot(showOR and orReady and inDay ? orH : na, "OR high", color=color.yellow, style=plot.style_linebr, linewidth=2)
+plot(showOR and orReady and inDay ? orL : na, "OR low", color=color.yellow, style=plot.style_linebr, linewidth=2)
+plot(showLv and active ? entryPx : na, "Entry", color=color.blue, style=plot.style_linebr)
+plot(showLv and active ? curStop : na, "Stop", color=color.red, style=plot.style_linebr)
+plot(showLv and active and partialOn and not beMoved ? tp1Px : na, "TP1", color=color.teal, style=plot.style_linebr)
+plot(showLv and active ? tp2Px : na, "TP2", color=color.green, style=plot.style_linebr, linewidth=2)
