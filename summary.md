@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-23T22:33:42.908Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T22:43:42.907Z · account **PAPER** · risk mode normal
 
-Equity $10774.9 (start $10000) · today 9.54% · drawdown 6.8% · 67 trades · fees $113.18 · funding $2.09
+Equity $10799.47 (start $10000) · today 9.79% · drawdown 6.6% · 70 trades · fees $114.52 · funding $2.17
 
-Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), −USELESS (candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +ETHFI (wyckoff-spring-1h), +BAT (candle-engulfing-1h) · working orders: 1
+Open: +LIT (ma-retest-12h), −PENGU (candle-engulfing-1h), −PEPE (candle-engulfing-1h), +AVAX (wyckoff-spring-1h+candle-engulfing-1h), +S (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +ETHFI (wyckoff-spring-1h), −PHA (intraday-trend) · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: +ZEC (candle-engulfing-4h), +LIT (ma-retest-12h), −PENGU (candle-engulfi
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: PUMP: wide-spread; TIA: wide-spread; INJ: wide-spread; SAND: price-divergence; QNT: price-divergence; LIT: price-divergence; ONDO: price-divergence; IRYS: wide-spread,price-divergence; APR: wide-spread; PENGU: wide-spread; CRV: wide-spread; PYTH: wide-spread; USELESS: wide-spread; ICP: wide-spread; SEI: wide-spread; NIL: wide-spread
+Not tradable now: WLD: wide-spread; ADA: wide-spread; IRYS: wide-spread; PONS: wide-spread; ICP: wide-spread; SEI: wide-spread
