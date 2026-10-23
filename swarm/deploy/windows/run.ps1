@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Continue'
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $App = Join-Path $Root 'app'; $Data = Join-Path $Root 'data'; $Logs = Join-Path $Root 'logs'; $Approved = Join-Path $Root 'approved'
 $Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'main' }
-$Agents = 'universe,blofin-feed,binance-feed,guard,recorder,events,brain,coordinator,trader,accountant,watchdog,guardian,herald,state-sync'
+$Agents = 'universe,blofin-feed,binance-feed,guard,recorder,events,brain,trend-sleeve,coordinator,trader,accountant,watchdog,guardian,herald,state-sync'
 New-Item -ItemType Directory -Force -Path $Data, $Logs, $Approved | Out-Null
 
 function Write-Log($t) { Add-Content -Path (Join-Path $Logs 'runner.log') -Value ("{0:u} {1}" -f (Get-Date).ToUniversalTime(), $t) }
@@ -62,7 +62,7 @@ function Start-Swarm {
   $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
   $out = Join-Path $Logs "swarm-$stamp.log"; $err = Join-Path $Logs "swarm-$stamp.err.log"
   # no heap cap: Node uses what is free on the PC (the watchdog reports the swarm's memory and the PC's free RAM)
-  $argList = @("`"$App\swarm\src\run.js`"", '--agents', $Agents, '--isolate', 'brain', '--bus', 'memory', '--data-dir', "`"$Data`"")
+  $argList = @("`"$App\swarm\src\run.js`"", '--agents', $Agents, '--isolate', 'brain,trend-sleeve', '--bus', 'memory', '--data-dir', "`"$Data`"")
   $p = Start-Process -FilePath 'node' -ArgumentList $argList -WorkingDirectory $App -RedirectStandardOutput $out -RedirectStandardError $err -WindowStyle Hidden -PassThru
   $null = $p.Handle   # keeps the exit code readable after the process ends
   Write-Log "started node pid $($p.Id) at $(& git -C $App rev-parse --short HEAD) ($(Account) account)"

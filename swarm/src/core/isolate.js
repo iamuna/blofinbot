@@ -9,17 +9,20 @@
  *   - an environment without tokens or keys (ENV_KEEP only);
  *   - the bridge forwards the messages it subscribes to, and lets through only what it may say (RULES: never an
  *     order, command, account or position message), always under its own name. kv: it reads any key, writes only
- *     its own (the brain: betas).
+ *     its own (the brain: betas; the trend sleeve: sleeve:trend).
+ * The trend sleeve (src/sleeve/agent.js) runs the same way (`--isolate brain,trend-sleeve`).
  * The child checks its own lock-down before it starts the agent; if the lock-down is missing it stops and the host
  * reports it (the strategies stay off rather than running with the keys in reach). A child that dies is restarted.
  */
 'use strict';
-const cp = require('child_process'), path = require('path');
+const cp = require('child_process'), path = require('path'), fs = require('fs');
 const { Agent } = require('./agent');
 const auth = require('./auth');
 
 const RULES = {
   brain: { types: ['idea', 'feat.bar', 'regime.state', 'shadow.trade', 'shadow.end', 'sys.heartbeat', 'sys.log'], kvSet: ['betas'] },
+  // the trend sleeve asks (sleeve.target) and reports (sleeve.state); the risk agent decides (docs/TREND_SLEEVE_DESIGN.md)
+  'trend-sleeve': { types: ['sleeve.target', 'sleeve.state', 'sys.heartbeat', 'sys.log'], kvSet: ['sleeve:trend'] },
 };
 const ENV_KEEP = ['PATH', 'Path', 'PATHEXT', 'SystemRoot', 'SYSTEMROOT', 'windir', 'WINDIR', 'ComSpec', 'TEMP', 'TMP', 'TMPDIR', 'HOME', 'USERPROFILE', 'LANG', 'TZ', 'SWARM_DEBUG'];
 const SRC = path.join(__dirname, '..');
@@ -64,6 +67,8 @@ class IsolatedAgent extends Agent {
     this.child = child;
     // the config without anything secret-looking; the child cannot read the files it came from
     const cfg = Object.assign({}, this.cfg); delete cfg.herald;
+    // the hard limits (not secret) for agents that size against them; the child cannot read config/
+    try { cfg.riskLimits = JSON.parse(fs.readFileSync(this.ctx.riskFile || path.join(SRC, '..', 'config', 'risk.json'), 'utf8')); } catch (e) { /* the agent reports it */ }
     const deny = [path.join(SRC, '..', 'config'), this.ctx.dataDir].filter(Boolean);
     return new Promise((resolve) => {
       let ready = false;
