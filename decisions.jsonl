@@ -100,3 +100,5 @@
 {"ts":1792742404281,"id":"int-candle-engulfing-1h-mvkojcw0-17","coin":"XPL","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 64.0"],"mode":"normal"}
 {"ts":1792742404282,"id":"int-candle-engulfing-1h-mvkojcw0-18","coin":"XRP","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 3.78"],"mode":"normal"}
 {"ts":1792742404282,"id":"int-candle-engulfing-1h-mvkojcw0-19","coin":"ZEREBRO","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 170"],"mode":"normal"}
+{"ts":1792746002589,"id":"int-candle-three-outside-1h-mvkqoio0-5","coin":"EIGEN","verdict":"reject","qty":0,"reasons":["spread 13.6 bps > 10"],"mode":"normal"}
+{"ts":1792746002590,"id":"int-candle-three-outside-1h-mvkqoio0-7","coin":"OP","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 41.9"],"mode":"normal"}
