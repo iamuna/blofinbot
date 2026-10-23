@@ -948,9 +948,9 @@
       "rules": {
         "capitalShare": 0.5,
         "stopK": 8,
-        "riskShare": 1
+        "riskShare": 0.5
       },
-      "note": "The retired trend bot's portfolio as a sleeve (docs/TREND_SLEEVE_DESIGN.md). Shadow only: trade mode needs the coordinator/trader changes of phase 2, and Ibrahim. Backtest 2020-2026 under risk.json: Sharpe 1.10 (top-20), 0.84 (30 unseen coins)."
+      "note": "The retired trend bot's portfolio as a sleeve (docs/TREND_SLEEVE_DESIGN.md). Starts in shadow; it trades only after Ibrahim's /mode sleeve:trend trade (the coordinator plans and signs every leg; 'mode' here cannot make it trade). riskShare 0.5 since idea strategies trade too. Backtest 2020-2026 under risk.json: Sharpe 1.07 (top-20), 0.78 (30 unseen coins) at riskShare 0.5."
     }
   },
   "trading": {

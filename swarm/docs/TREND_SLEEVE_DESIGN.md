@@ -9,9 +9,10 @@ Shorts only from the 1d-and-slower layer. Code at tag `archive/trend-bot-2026-10
 **Why.** It is the best-evidenced strategy in the repo: Sharpe 0.86 after costs on 30 coins it never saw (2020–2026,
 delisted coins included), while the swarm's 5-year sweep found nothing below 1h that survives costs.
 
-**Status.** Phase 1 (this change): shadow only. The agent computes the portfolio every hour from live BloFin candles,
+**Status.** Phase 1: shadow. The agent computes the portfolio every hour from live BloFin candles,
 runs it under every limit of `config/risk.json` on a shadow book, and publishes what it would ask for. It sends no
-order and holds no key. Phase 2 (trading) is designed below and needs Ibrahim.
+order and holds no key. Phase 2 (trading, §5): built on 2026-10-23 with Ibrahim's go-ahead. The sleeve still
+starts in shadow; it trades (paper or demo) only after Ibrahim sends `/mode sleeve:trend trade`.
 
 ## 1. Why it does not fit the idea path, and what a sleeve is
 
@@ -62,8 +63,8 @@ Why 8σ, risk share 100%, capital share 0.5 (sweep in the backtest report):
 - wider stops make the stop-risk budget bind most of the time and the sleeve gets small (12σ: 5.7% vol);
 - capital share 1.0 runs into the account's own ladders (budgets halved ~2% of the time, a brush with no-new) and a
   worst day of 3.9–4.7%, close to the 5% flatten. 0.5 never touched a ladder in 6.8 years on any of the three coin sets;
-- `riskShare` 1 lets the sleeve use all of the 6% while nothing else trades (today: every strategy is in shadow).
-  **Lower it to 0.5 once other strategies trade** (Sharpe 1.07 / 0.78 instead of 1.10 / 0.84; config change, needs Ibrahim).
+- `riskShare` 1 lets the sleeve use all of the 6% while nothing else trades. Since 2026-10-23 six idea strategies
+  trade on paper, so the config now has **`riskShare` 0.5** (Sharpe 1.07 / 0.78 instead of 1.10 / 0.84).
 
 ## 3. Backtest (research-data and validation-data, 1h bars, 2020-01 → 2026-10)
 
@@ -112,27 +113,62 @@ Config `sleeves.trend` in `config/swarm.json` (a section other than `strategies`
 `enabled`, `mode`, `maxCoins`, `historyDays`, `warmDays`, `shadowSince`, `rules` (`capitalShare`, `stopK`,
 `riskShare`; other defaults in `RULES`, `sleeve.js`).
 
-## 5. Phase 2 — trading (not built; needs Ibrahim)
+## 5. Phase 2: trading (built 2026-10-23)
 
-1. **Coordinator** subscribes to `sleeve.target` (only from src `trend-sleeve`; mode from its own `modes`, key
-   `sleeve:trend`, set only by Ibrahim's `/mode`). Each hour it runs `plan()` itself, with *its* state (account,
-   positions, in-flight orders, books, instruments, data guard, news windows, betas), the same `RiskEngine` instance
-   it uses for ideas, and its own `halted`/`paused`. It never trusts the sleeve's own plan. Each approved or trimmed
-   leg becomes a signed `order` with `owner: 'sleeve:trend'`, `stop`, `reduceOnly` for reductions, `entry` = chase
-   the best price 30 minutes then market (the measured 5.9 bps), counted in flight like any order. Stop tightening
-   becomes a new signed type `stop.move` (risk agent → trader; it can only move a stop toward the price).
-2. **Trader**: positions keyed by owner (`sleeve:trend:<coin>` next to idea positions), resizing an existing position
-   (average entry, fees), reduce-only legs, `stop.move`. Exits by the sleeve publish `trade.closed` with
-   `strategies: [{name: 'sleeve:trend'}]` so the accountant books the money; the allocator ignores sleeves (they
-   are sized by weight, not R). The demo trader needs the same, plus BloFin's net position per instrument: either
-   hedge mode, or **one owner per coin** (fusion treats a coin the sleeve holds as busy, and the sleeve skips a coin
-   an idea trade holds until it closes). `liveCheck` in shadow already shows how often that would bite.
-3. **Flatten / pause / halt** need nothing new: the trader closes everything, the coordinator's ladders refuse adds.
-4. **Promotion**: the sleeve's evidence is a daily return series, not trades in R. Proposal: ≥ 60 days of shadow,
-   live shadow daily returns tracking a backtest of the same days (correlation ≥ 0.9), no limit breach in `liveCheck`;
-   then Ibrahim decides. Not automatic: the promotion gate in `src/factory/` is for idea strategies.
-5. Before any real money: `riskShare` back to 0.5 if other strategies trade, and the live first-month cap applies
-   to the capital share (`liveFirstMonthCapPct` ÷ `maxTradeRiskPct` × capitalShare).
+**Turning it on.** After this change is installed on the PC (protected code: `approve.ps1`), the sleeve is still in
+shadow. Ibrahim sends `/mode sleeve:trend trade` on Telegram; `/mode sleeve:trend shadow` stops new legs (positions
+keep their stops; `/flatten` closes them). The config's `mode` and the promotion gate (`control.json` via state-sync)
+cannot make a sleeve trade; the coordinator accepts a sleeve mode change from the Herald only.
+
+1. **Coordinator** ([coordinator.js](../src/decision/coordinator.js), `onSleeveTarget` / `sleeveCycle`). It takes
+   `sleeve.target` only from src `trend-sleeve` (anything else is counted as `sleeveRefused`), only in mode `trade`,
+   each hour once and only while the hour is current (≤ 30 min old). It runs `plan()` itself on *its* state:
+   account, open positions, working orders and orders in flight (the 675c556 accounting), fresh books, instruments,
+   data guard, news windows, its clamped betas, `halted`/`paused`, and the risk limits it checks ideas against. It never
+   uses the sleeve's own plan. From the sleeve it takes only the weights (clamped to ±3) and each coin's daily
+   volatility (`sigma`, clamped to 0.5–25%, default 5%), which sets the 8σ stop; every limit is still checked on the
+   coordinator's state. Each approved or trimmed leg becomes a signed `order`: `owner: 'sleeve:trend'`, a stop,
+   `reduceOnly` for reductions, entry = maker chasing the best price for 30 min, then market; additions are reserved in
+   flight before they are published. A tightened stop becomes a signed `stop.move` (src `risk`). Every leg, including
+   rejects, is published as a `risk.decision` with `owner` and `kind`.
+   - A coin whose sleeve order is still working or in flight waits for the next hour (its position counts as another leg).
+   - A flip (long to short) closes this hour and opens the other side next hour, from what is then held.
+   - After a stop-out, no new sleeve position in that coin before 00:00 UTC (as the backtest).
+   - In flatten or halt it plans nothing (the flatten command closes the sleeve's positions). In no-new or
+     proven-only mode (day loss ≥ 3%, pause, drawdown ≥ 15%), only reductions go out.
+   - `trade.closed` of a sleeve is not recorded by the allocator (sleeves are sized by weight, not R).
+2. **Paper trader** ([trader.js](../src/exec/trader.js)): positions keyed by owner (idea trades by coin, the sleeve by
+   `sleeve:trend:<coin>`), so on paper both can hold a coin. A sleeve order grows its position (average entry, fees
+   added, the whole position takes the new stop, as in the backtest) or, `reduceOnly`, shrinks or closes it; each
+   reduction books its share of the entry fees, funding and risk as a `trade.closed` (`reason: 'rebalance'`,
+   `partial: true`, `strategies: [{name: 'sleeve:trend'}]`), so the accountant books the money. Sleeve positions have no
+   target, time stop (`timeStopMin: 0`), trail or break-even: only the stop. `stop.move` is taken only from the
+   risk agent, and only toward the price and not past it.
+3. **Demo trader** ([demo_trader.js](../src/exec/demo_trader.js)): BloFin nets one position per instrument
+   (one-way mode), so a coin has **one owner**. Fusion already treats a coin the sleeve holds as busy, the coordinator
+   skips a coin an idea trade holds (on any account other than paper), and the demo trader ends an order for a coin
+   another owner holds as `coin busy`. Grow and reduce work as on paper, with `reduceOnly` sent to BloFin; after
+   each resize the exchange stop is replaced for the new size (the new stop first, then the old one is cancelled; if
+   the new one fails, the old one stays and it is tried again). A reduce leg's own fills are never mistaken for the
+   stop. Hedge mode is **not built**.
+4. **Flatten / pause / halt**: nothing new. The traders close sleeve positions with everything else; the coordinator
+   refuses additions.
+5. **Messages**: `stop.move` {coin, stop, owner?} is a new signed type (`auth.js`); `order` takes `owner?` and
+   `reduceOnly?`; `sleeve.target` takes `sigma?`. The sleeve agent still cannot say `order` or `stop.move` (isolation
+   rules unchanged), and with the bus key an unsigned order or `stop.move` is dropped by the traders.
+6. **Tests** ([test/sleeve_trade.test.js](../test/sleeve_trade.test.js), offline):
+   - limits: 200 random books (other strategies' positions, working orders, orders in flight, held sleeve
+     positions, random weights, vols and betas); in every one that starts inside the limits, the account after every
+     sleeve leg fills is still within open risk, gross, net BTC, coin notional and risk per position;
+   - wrong source, stale, repeated targets, shadow mode and a mode change from state-sync never trade;
+   - unsigned orders or `stop.move` never reach a position;
+   - paper and demo: open, grow, reduce, `stop.move`, one owner per coin, no-new, flatten and halt.
+
+**Still open.** Promotion: the sleeve's evidence is a daily return series, not trades in R. Proposal: ≥ 60 days of
+shadow, live daily returns tracking a backtest of the same days (correlation ≥ 0.9), no limit breach in `liveCheck`;
+then Ibrahim decides (not automatic; the gate in `src/factory/` is for idea strategies). Before any real money, the live
+first-month cap applies to the capital share (`liveFirstMonthCapPct` ÷ `maxTradeRiskPct` × capitalShare); live
+trading of a sleeve is not wired, and `liveEnabled` is untouched.
 
 ## 6. Caveats
 
@@ -157,3 +193,5 @@ Config `sleeves.trend` in `config/swarm.json` (a section other than `strategies`
 | [tools/trend_sleeve_backtest.js](../tools/trend_sleeve_backtest.js) | the backtest and the exactness checks | protected |
 | `src/core/schemas.js`, `src/core/isolate.js`, `src/run.js`, `deploy/windows/run.ps1`, `config/swarm.json` (groups, sleeves), `.github/workflows/swarm-ci.yml` | message types, isolation rules (and the risk limits passed to isolated agents), registry, the PC's agent list, CI smoke run | protected |
 | [test/trend_sleeve.test.js](../test/trend_sleeve.test.js) | engine, exactness, limits fuzz, ladders, stops, the agent end to end with a fake BloFin | protected (tests) |
+| [src/decision/coordinator.js](../src/decision/coordinator.js), [src/exec/trader.js](../src/exec/trader.js), [src/exec/demo_trader.js](../src/exec/demo_trader.js), `src/core/auth.js`, `src/ops/herald.js` | phase 2: the sleeve's legs planned, signed and traded; `stop.move`; `/mode sleeve:trend` | protected |
+| [test/sleeve_trade.test.js](../test/sleeve_trade.test.js) | phase 2: limits fuzz with ideas and orders in flight, sources and signatures, paper and demo resizing, ladders | protected (tests) |

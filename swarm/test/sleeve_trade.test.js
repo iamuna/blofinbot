@@ -63,7 +63,8 @@ function breaches(legs, eq, beta) {
 
 test('sleeve trade: a sleeve leg never takes the account past any risk.json limit, with ideas and orders in flight', async () => {
   let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-  for (let k = 0; k < 60; k++) {
+  let cases = 0, adds = 0, reduces = 0;
+  for (let k = 0; k < 200; k++) {
     const R = await coordinator();
     try {
       await R.mode('trade');
@@ -92,6 +93,7 @@ test('sleeve trade: a sleeve leg never takes the account past any risk.json limi
       for (const c of COINS) { if (rnd() < 0.8) weights[c] = (rnd() < 0.75 ? 1 : -1) * rnd() * 2.5; sigma[c] = 0.01 + rnd() * 0.08; }
       await R.target(weights, sigma);
       const orders = got.filter((m) => m.type === 'order').map((m) => m.data);
+      cases++; adds += orders.filter((o) => !o.reduceOnly).length; reduces += orders.filter((o) => o.reduceOnly).length;
       const workAll = working.concat(fly ? [R.co.inflight.get('ord-x')] : []);
       const legs = after(open, workAll, orders, px), bad = breaches(legs, eq, (c) => R.co.beta(c));
       assert.deepStrictEqual(bad, [], `case ${k}: ${bad.join(', ')}`);
@@ -99,12 +101,14 @@ test('sleeve trade: a sleeve leg never takes the account past any risk.json limi
       for (const o of orders) {
         assert.strictEqual(o.owner, 'sleeve:trend'); assert.deepStrictEqual(o.strategies.map((s) => s.name), ['sleeve:trend']);
         assert.deepStrictEqual([o.entry.kind, o.entry.waitMin, o.entry.chase, o.entry.fallback], ['maker', 30, true, 'taker'], 'chase 30 min, then market');
-        assert.ok(o.side * (px[o.coin] - o.stop) > 0, 'every leg has a stop on the right side');
+        assert.ok((o.reduceOnly ? -o.side : o.side) * (px[o.coin] - o.stop) > 0, 'every leg has a stop on the right side of the position');
         if (o.reduceOnly) assert.ok(open.some((p) => p.owner === 'sleeve:trend' && p.coin === o.coin && p.side === -o.side), 'reduce-only only against a sleeve position');
         else assert.ok(R.co.inflight.has(o.id), 'an add is counted in flight');
       }
     } finally { await R.co.stop(); }
   }
+  console.log(`limits fuzz: ${cases} books, ${adds} adds, ${reduces} reductions`);
+  assert.ok(cases >= 40 && adds >= 100 && reduces >= 5, 'the fuzz exercises real legs');
 });
 
 test('sleeve trade: shadow by default; wrong source, stale or repeated targets, and a non-Ibrahim mode change never trade', async () => {
@@ -169,7 +173,7 @@ test('sleeve trade (paper): open, grow at an average entry, reduce-only partial 
     const got = tap(R.bus, ['order', 'trade.closed', 'exec.fill', 'stop.move', 'order.end']);
     await R.mode('trade');
     await R.books({ ETH: 2000 });
-    await R.target({ ETH: 0.4 }, { ETH: 0.03 });
+    await R.target({ ETH: 0.1 }, { ETH: 0.01 });
     const o1 = got.find((m) => m.type === 'order').data;
     assert.strictEqual(o1.reduceOnly, false);
     // nothing fills at the bid within 30 min: then market (the fallback)
@@ -182,7 +186,7 @@ test('sleeve trade (paper): open, grow at an average entry, reduce-only partial 
     assert.ok(R.co.positions.open.some((x) => x.owner === 'sleeve:trend' && x.coin === 'ETH'));
     // next hour: the engine wants more; the price moved up
     R.advance(H - 31 * 60000); await R.books({ ETH: 2100 });
-    await R.target({ ETH: 0.8 }, { ETH: 0.03 });
+    await R.target({ ETH: 0.2 }, { ETH: 0.01 });
     const o2 = got.filter((m) => m.type === 'order').pop().data;
     assert.ok(o2.id !== o1.id && o2.side === 1 && !o2.reduceOnly, 'an add');
     await R.bus.publish('md.trade', { coin: 'ETH', trades: [[R.now, 2099.5, 1, -1]] }); await R.bus.drain(); // a sell through the bid fills the maker add
@@ -194,7 +198,7 @@ test('sleeve trade (paper): open, grow at an average entry, reduce-only partial 
     await R.sync();
     // hour 3: the engine wants less → a reduce-only leg; its share is booked as a trade of sleeve:trend
     R.advance(H); await R.books({ ETH: 2050 });
-    await R.target({ ETH: 0.2 }, { ETH: 0.03 });
+    await R.target({ ETH: 0.05 }, { ETH: 0.01 });
     const o3 = got.filter((m) => m.type === 'order').pop().data;
     assert.ok(o3.reduceOnly && o3.side === -1, 'a reduce-only sell');
     await R.bus.publish('md.trade', { coin: 'ETH', trades: [[R.now, 2051, 1, 1]] }); await R.bus.drain();
@@ -284,7 +288,7 @@ test('demo trader: a sleeve position grows and shrinks on BloFin with its stop r
     await order('s1'); await bus.drain(); await settle();
     let p = t.S.positions.ETH;
     assert.ok(p && p.owner === 'sleeve:trend' && p.contracts === 100, 'opened 1 ETH = 100 contracts');
-    const sl = () => Object.values(fake.tpsl).filter((x) => x.state === 'live');
+    const sl = () => Object.values(fake.tpsl); // the fake deletes a stop when it is cancelled or triggers
     assert.deepStrictEqual(sl().map((x) => x.size), ['100']);
     // grow by 0.5 ETH: average entry, one stop for 150 contracts
     await order('s2', { qty: 0.5, stop: 1600 }); await bus.drain(); await settle();
