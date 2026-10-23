@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-23T02:18:03.300Z · account **PAPER** · risk mode normal
+Updated 2026-10-23T02:28:03.299Z · account **PAPER** · risk mode normal
 
-Equity $10043.18 (start $10000) · today 2.10% · drawdown 1.6% · 10 trades · fees $12.89 · funding $-0.19
+Equity $10143.21 (start $10000) · today 3.12% · drawdown 0.7% · 10 trades · fees $12.89 · funding $-0.19
 
 Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h), +LTC (candle-engulfing-1h), +ONDO (candle-three-outside-1h), −US (candle-engulfing-1h), +XLM (candle-three-outside-1h), +ZRO (candle-three-outside-1h), +ARB (wyckoff-spring-1h), +BNB (wyckoff-spring-1h), +DOGE (wyckoff-spring-1h), +ETC (candle-engulfing-1h), +ETH (wyckoff-spring-1h+candle-engulfing-1h), +FIL (candle-three-outside-1h), +HBAR (candle-engulfing-1h), +HYPE (wyckoff-spring-1h+candle-engulfing-1h), +LINK (wyckoff-spring-1h), +NIL (candle-engulfing-1h), +OP (candle-engulfing-1h), +PENDLE (wyckoff-spring-1h+candle-engulfing-1h), +SEI (candle-engulfing-1h), +SHIB (candle-engulfing-1h), +TRX (candle-engulfing-1h), +XRP (candle-engulfing-1h) · working orders: 0
 
@@ -76,4 +76,4 @@ Open: +BAT (candle-engulfing-4h+candle-star-4h), +DUSK (candle-three-outside-1h)
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: COMP: wide-spread; S: wide-spread
+Not tradable now: ADA: wide-spread; ALT: wide-spread; APR: wide-spread; PONS: wide-spread; WLFI: wide-spread; COMP: wide-spread
