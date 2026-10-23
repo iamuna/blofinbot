@@ -21,5 +21,6 @@ const PLUGINS = [
   'funding_fade',
   'donchian_trend',
   'oi_flush',
+  'pivot_matrix',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);

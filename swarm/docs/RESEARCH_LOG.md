@@ -3,6 +3,22 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-23 — PIVOT-MATRIX v1.3 (Ibrahim's spec): no edge, in shadow at his request
+
+Swing pivots broken (break of structure, with a higher-timeframe EMA 50/200 bias) or swept (swing failure), with
+structure stops. Plugin `pivot-matrix`; full write-up in [PIVOT_MATRIX_2026-10-23.md](PIVOT_MATRIX_2026-10-23.md).
+- The spec's Python backtester looks ahead twice: the higher-timeframe EMA uses closes up to 3¾ h in the future,
+  and the ZigZag list drops pivots that a later, more extreme one replaced. The plugin judges each pivot when it is
+  confirmed, and uses closed higher-timeframe bars only.
+- Factory (2026, 31 coins): 15m −0.129 R (t −12.9), 1h −0.067 (t −3.4), 4h −0.059 (t −1.4); break-of-structure
+  only −0.037, sweep only −0.084.
+- 2020–2026 hourly (top 20 and 30 validation coins): every variant negative, in nearly every year, both sides. Before
+  costs −11 to +2 bps a trade: no edge to lose. The spec's own exits (trail to each swing) lose as well
+  (1h −0.09 / −0.075 R, t −15; 4h −0.014 / −0.031 R).
+- Lesson, again: discretionary price-action structure (candles, Wyckoff, now pivots/BOS/sweeps) has no measurable edge
+  on these coins once it is mechanical and look-ahead-free. Its 1h and 4h variants are in shadow only because Ibrahim
+  asked for the strategy; 11 tries logged.
+
 ## 2026-10-23 03:45 — funding-fade verdict; new try: open-interest flush reversal (12h, 1d)
 
 **Tries: 244 (factory `trials.jsonl` after today's log) → t bar 3.19.** Nothing passes the backtest gate. Logged today:

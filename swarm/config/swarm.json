@@ -563,6 +563,30 @@
       },
       "note": "Wyckoff spring/upthrust with a test, 3:1 (Mitch Ray TA video), 2026-10-21"
     },
+    "pivot-matrix-1h": {
+      "base": "pivot-matrix",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "onlyTfs": [
+          60
+        ],
+        "htf": 720
+      },
+      "note": "PIVOT-MATRIX v1.3 (Ibrahim's spec, 2026-10-23): break of structure + sweep at swing pivots, 12h EMA bias. Shadow only to compare live with the backtests, which all lose (-0.067 R t -3.4 on 2026; -0.06/-0.08 R over 2020-2026): docs/PIVOT_MATRIX_2026-10-23.md"
+    },
+    "pivot-matrix-4h": {
+      "base": "pivot-matrix",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "onlyTfs": [
+          240
+        ],
+        "htf": 1440
+      },
+      "note": "PIVOT-MATRIX v1.3 (Ibrahim's spec, 2026-10-23), 4h with a 1d EMA bias. Shadow only: backtests lose (-0.059 R t -1.4 on 2026; -0.06/-0.03 R over 2020-2026): docs/PIVOT_MATRIX_2026-10-23.md"
+    },
     "wyckoff-spring": {
       "enabled": false,
       "note": "plugin default; the 1h and 4h variants run"
