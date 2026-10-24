@@ -36,6 +36,16 @@ const SWEEP_OF = {
   'funding-fade-4h': 'funding-fade@240', 'adaptive-score-4h': 'adaptive-score@240', 'adaptive-score-12h': 'adaptive-score@720',
 };
 
+const TF = { '1h': 60, '2h': 120, '4h': 240, '12h': 720, '1d': 1440 };
+// the sweep variant of a strategy: its config's `sweep`, the map above, or <name without the timeframe>@<minutes>
+// (candle-engulfing-1h → candle-engulfing@60, wyckoff-spring-4h → wyckoff-spring@240)
+function sweepName(name, sc = {}) {
+  if (sc.sweep) return sc.sweep;
+  if (SWEEP_OF[name]) return SWEEP_OF[name];
+  const m = String(name).match(/^(.+)-(1h|2h|4h|12h|1d)$/);
+  return m ? `${m[1]}@${TF[m[2]]}` : null;
+}
+
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }
 const jsonl = (f) => (fs.existsSync(f) ? fs.readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch (e) { return null; } }).filter(Boolean) : []);
 const readJ = (f) => (f && fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : null);
@@ -56,7 +66,7 @@ function decide({ state = {}, shadow = [], paper = [], sweep = {}, era = {}, fac
   const rows = [];
   for (const name of [...names].filter((n) => !String(n).startsWith('sleeve:')).sort()) {
     const sc = strategies[name] || {}, mode = modes[name] || (sc.enabled === false ? 'off' : sc.mode || (strategies[name] ? 'shadow' : '—'));
-    const v = sweep[sc.sweep || SWEEP_OF[name]], y = (v && v.years) || {};
+    const v = sweep[sweepName(name, sc)], y = (v && v.years) || {};
     const posYears = YEARS.filter((k) => (y[k] || 0) > 0).length, e = era[name], eraOk = !e || ((e.cost15 || e.all || {}).avgR > 0);
     const prior = v ? { variant: v.name, n: v.full.n, avgR: v.full.avgR, sumR15: v.full.sumR15, posYears, era: e ? (e.cost15 || e.all).avgR : null } : null;
     if (prior) prior.ok = prior.sumR15 > 0 && posYears >= 3 && prior.avgR >= minEdge && eraOk;
@@ -126,4 +136,4 @@ if (require.main === module) {
   }
   process.stdout.write(md);
 }
-module.exports = { decide, markdown, changed, sweepFile, SWEEP_OF };
+module.exports = { decide, markdown, changed, sweepFile, sweepName, SWEEP_OF };

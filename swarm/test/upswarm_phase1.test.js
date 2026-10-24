@@ -181,6 +181,16 @@ test('promotion rule v2: the long history selects, the live record only vetoes',
   assert.strictEqual(P2.decide({ state: { strategyModes: { 'new-1h': 'shadow' } }, shadow: oos, now }).find((r) => r.name === 'new-1h').verdict, 'trade');
 });
 
+test('promotion rule v2: strategy → sweep variant', () => {
+  assert.strictEqual(P2.sweepName('ma-retest-12h'), 'ma-retest@720');
+  assert.strictEqual(P2.sweepName('candle-engulfing-1h'), 'candle-engulfing@60');
+  assert.strictEqual(P2.sweepName('krown-jewel-2h'), 'krown-jewel@120');
+  assert.strictEqual(P2.sweepName('it-4h'), 'intraday-trend@240');
+  assert.strictEqual(P2.sweepName('x', { sweep: 'y@1' }), 'y@1');
+  assert.strictEqual(P2.sweepName('donchian-1d-20'), 'donchian-20@1440');
+  assert.strictEqual(P2.sweepName('oi-flush'), null);
+});
+
 test('promotion rule v2: the newest dated sweep in a history folder is used', () => {
   const dir = tmpDir('sweeps');
   for (const d of ['2026-10-20', '2026-10-23']) { fs.mkdirSync(path.join(dir, d)); fs.writeFileSync(path.join(dir, d, 'results.json'), '{"variants":{}}'); }
