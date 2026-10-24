@@ -1,10 +1,10 @@
 # Swarm — live status
 
-Updated 2026-10-24T06:33:43.094Z · account **PAPER** · risk mode normal
+Updated 2026-10-24T06:43:43.093Z · account **PAPER** · risk mode normal
 
-Equity $10775.56 (start $10000) · today -0.22% · drawdown 6.8% · 78 trades · fees $125.02 · funding $2.02
+Equity $10752.38 (start $10000) · today -0.43% · drawdown 7.0% · 92 trades · fees $151.53 · funding $2.82
 
-Open: −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +DOGE (wyckoff-spring-1h), +ENA (wyckoff-spring-1h), +ETH (wyckoff-spring-1h), +FIL (wyckoff-spring-1h), +SHIB (wyckoff-spring-1h), +PENGU (wyckoff-spring-1h), −PHA (intraday-trend), +ADA (wyckoff-spring-1h), +CRV (wyckoff-spring-1h), +PONS (candle-harami-4h) · working orders: 0
+Open: none · working orders: 0
 
 | Agent | Status | Note |
 |---|---|---|
@@ -90,4 +90,4 @@ Open: −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (can
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: XMR: blofin-stale; TAO: blofin-stale; LINK: blofin-stale; SAND: blofin-stale; QNT: blofin-stale; AAVE: blofin-stale; ALT: blofin-stale; LIT: blofin-stale; BCH: blofin-stale; ONDO: blofin-stale; LTC: blofin-stale; ZRO: blofin-stale; CRV: blofin-stale; SHIB: blofin-stale; PYTH: blofin-stale; COMP: blofin-stale; SEI: blofin-stale
+Not tradable now: PONS: wide-spread
