@@ -1,6 +1,6 @@
 # 5-year sweep: every strategy × every timeframe, walk-forward selection
 
-Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 111 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
+Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 113 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
 
 ## The honest result: walk-forward (12-month window, top 5, re-picked every quarter)
 
@@ -14,7 +14,7 @@ Out-of-sample 2022-10-01 → 2026-09-30: **130.93 R, Sharpe 0.12, t 0.24**, max 
 | 2025 | 569.8 | +17.0% | 1.27 | 127.94 |
 | 2026 | 53.22 | +1.6% | 0.35 | 173.05 |
 
-Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 111 variants together (scaled to 5 slots) -463261.47 R (Sharpe -48.4).
+Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 113 variants together (scaled to 5 slots) -455067.77 R (Sharpe -48.4).
 
 Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 
@@ -75,6 +75,7 @@ Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 | donchian-60 |  |  |  |  |  |  |  |  | -0.43 / -0.018 (5124) | -0.09 / -0.0033 (3997) |
 | donchian-150 |  |  |  |  |  |  |  |  |  | -0.29 / -0.017 (1478) |
 | adaptive-score |  |  |  |  |  |  |  | -0.23 / -0.0113 (34254) | 0.18 / 0.016 (9702) | 0.32 / 0.037 (4312) |
+| oi-flush |  |  |  |  |  |  |  |  | -1.33 / -0.0971 (1241) | -0.72 / -0.0941 (322) |
 
 ## Best 15 in hindsight (same out-of-sample period; for reference, not a result)
 
