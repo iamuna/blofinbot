@@ -83,7 +83,7 @@ class UniverseAgent extends Agent {
         const sp = medSpread[coin] != null ? medSpread[coin] : tick[inst[coin].instId].spreadBps;
         const enter = v.avg >= U.enterVolQ && sp != null && sp <= U.enterSpreadBps;
         const stay = prev.has(coin) && v.avg >= U.exitVolQ && sp != null && sp <= U.exitSpreadBps;
-        if (enter || stay) coins.push(Object.assign({}, inst[coin], { binance: { symbol: v.symbol, scale: v.scale }, vol7d: Math.round(v.avg), days: v.days, spreadBps: +sp.toFixed(2), blofinVolQ: Math.round(tick[inst[coin].instId].volQ) }));
+        if (enter || stay) coins.push(Object.assign({}, inst[coin], { binance: { symbol: v.symbol, scale: v.scale }, vol7d: Math.round(v.avg), days: v.days, spreadBps: +sp.toFixed(2), blofinVolQ: Math.round(tick[inst[coin].instId].volQ) }, v.listedAt ? { listedAt: v.listedAt } : {}));
       }
       coins.sort((a, b) => b.vol7d - a.vol7d);
       coins = coins.slice(0, U.maxCoins || 80);
@@ -125,6 +125,7 @@ class UniverseAgent extends Agent {
     const info = await this.http.getJSON(`${N.rest}/fapi/v1/exchangeInfo`, { retries: 1 });
     // crypto only: Binance tags stock and commodity perpetuals with another underlyingType than COIN
     const live = new Set((info.symbols || []).filter((s) => s.status === 'TRADING' && s.contractType === 'PERPETUAL' && s.quoteAsset === 'USDT' && (!s.underlyingType || s.underlyingType === 'COIN')).map((s) => s.symbol));
+    const onboard = {}; for (const s of info.symbols || []) if (+s.onboardDate > 0) onboard[s.symbol] = +s.onboardDate; // listing date: the sentinel's coin-age check
     const t24 = {};
     for (const t of await this.http.getJSON(`${N.rest}/fapi/v1/ticker/24hr`, { retries: 1 })) t24[t.symbol] = { last: +t.lastPrice, qv: +t.quoteVolume };
     const out = {}, today0 = Math.floor(this.now() / DAY) * DAY;
@@ -137,7 +138,7 @@ class UniverseAgent extends Agent {
       const rows = await this.http.getJSON(`${N.rest}/fapi/v1/klines?symbol=${symbol}&interval=1d&limit=${(U.days || 7) + 1}`, { retries: 2 });
       const done = rows.filter((r) => +r[0] < today0).slice(-(U.days || 7)); // complete UTC days only
       if (done.length < Math.min(5, U.days || 7)) continue;
-      out[coin] = { symbol, scale, avg: done.reduce((a, r) => a + +r[7], 0) / done.length, days: done.length };
+      out[coin] = { symbol, scale, avg: done.reduce((a, r) => a + +r[7], 0) / done.length, days: done.length, listedAt: onboard[symbol] || null };
       if (this.ctx.paceMs !== 0) await net.sleep(this.ctx.paceMs || 60);
     }
     return out;

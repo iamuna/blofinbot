@@ -16,7 +16,8 @@
     ],
     "brain": [
       "events",
-      "brain"
+      "brain",
+      "trend-sleeve"
     ],
     "decision": [
       "coordinator"
@@ -291,28 +292,32 @@
       "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "trend-pullback": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21",
+      "retired": "2026-10-24: backtest -0.1721 R over 11726 trades (t -16.34); shadow -0.326 R over 166 — decisively negative"
     },
     "session-drive": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21",
+      "retired": "2026-10-24: backtest -0.1732 R over 951 trades (t -5.12); shadow -0.039 R over 14 — decisively negative"
     },
     "overshoot-fade": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21",
+      "retired": "2026-10-24: backtest -0.3426 R over 4804 trades (t -14.45); shadow -0.498 R over 240 — decisively negative"
     },
     "leader-follow": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21",
+      "retired": "2026-10-24: backtest -0.2917 R over 1589 trades (t -12.32); shadow -0.227 R over 57 — decisively negative"
     },
     "crowd-squeeze": {
       "enabled": true,
@@ -321,10 +326,11 @@
       "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
     },
     "noise-breakout": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21"
+      "note": "5-year sweep 2026-10-20 (swarm-reports history/2026-10-20): every 1m-30m variant loses after costs; retired from shadow; back in shadow at Ibrahim's request 2026-10-21",
+      "retired": "2026-10-24: backtest -0.3032 R over 32928 trades (t -48.45) — decisively negative"
     },
     "it-45-long": {
       "base": "intraday-trend",
@@ -446,28 +452,53 @@
       "base": "donchian-trend",
       "enabled": true,
       "mode": "shadow",
-      "params": { "tf": 1440, "onlyTfs": [1440], "look": 20 },
+      "params": {
+        "tf": 1440,
+        "onlyTfs": [
+          1440
+        ],
+        "look": 20
+      },
       "note": "trend bot component (Sharpe 1.40 ensemble, 0.86 on unseen coins); shadow until the 5-year sweep and its shadow record judge it"
     },
     "donchian-1d-60": {
       "base": "donchian-trend",
       "enabled": true,
       "mode": "shadow",
-      "params": { "tf": 1440, "onlyTfs": [1440], "look": 60 },
+      "params": {
+        "tf": 1440,
+        "onlyTfs": [
+          1440
+        ],
+        "look": 60
+      },
       "note": "trend bot component; shadow"
     },
     "donchian-1d-150": {
       "base": "donchian-trend",
       "enabled": true,
       "mode": "shadow",
-      "params": { "tf": 1440, "onlyTfs": [1440], "look": 150 },
+      "params": {
+        "tf": 1440,
+        "onlyTfs": [
+          1440
+        ],
+        "look": 150
+      },
       "note": "trend bot component; shadow"
     },
     "donchian-12h-60": {
       "base": "donchian-trend",
       "enabled": true,
       "mode": "shadow",
-      "params": { "tf": 720, "onlyTfs": [720], "look": 60, "shorts": false },
+      "params": {
+        "tf": 720,
+        "onlyTfs": [
+          720
+        ],
+        "look": 60,
+        "shorts": false
+      },
       "note": "trend bot component, long only (the research kept shorts to 1d and slower); shadow"
     },
     "funding-fade": {
@@ -478,7 +509,12 @@
       "base": "funding-fade",
       "enabled": true,
       "mode": "shadow",
-      "params": { "tf": 240, "onlyTfs": [240] },
+      "params": {
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
       "note": "researcher 2026-10-21 (factory candidate funding-fade-4h, 5-year sweep group funding-fade); shadow"
     },
     "it-4h": {
@@ -496,14 +532,22 @@
       "base": "intraday-trend",
       "enabled": true,
       "mode": "shadow",
-      "params": { "onlyTfs": [720] },
+      "params": {
+        "onlyTfs": [
+          720
+        ]
+      },
       "note": "deep review 2026-10-23: intraday-trend@720 positive in all three samples (+0.07 / +0.11 / +0.03 R); shadow"
     },
     "it-1d": {
       "base": "intraday-trend",
       "enabled": true,
       "mode": "shadow",
-      "params": { "onlyTfs": [1440] },
+      "params": {
+        "onlyTfs": [
+          1440
+        ]
+      },
       "note": "deep review 2026-10-23: intraday-trend@1440 positive in all three samples (+0.08 / +0.19 / +0.01 R); shadow"
     },
     "rsi-macd-trend-12h": {
@@ -535,9 +579,10 @@
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 10,966 trades, +0.03 R, Sharpe 0.60 (minute settings scaled x12 from 5m)"
     },
     "dip-reversal": {
-      "enabled": true,
+      "enabled": false,
       "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
-      "mode": "shadow"
+      "mode": "shadow",
+      "retired": "2026-10-24: backtest -0.1207 R over 3777 trades (t -10.45); shadow 0.175 R over 47 — decisively negative"
     },
     "harmonic": {
       "enabled": true,
@@ -545,14 +590,16 @@
       "mode": "shadow"
     },
     "ma-21-200": {
-      "enabled": true,
+      "enabled": false,
       "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
-      "mode": "shadow"
+      "mode": "shadow",
+      "retired": "2026-10-24: backtest -0.1078 R over 6523 trades (t -6.46); shadow 0.983 R over 8 — decisively negative"
     },
     "rsi-macd": {
-      "enabled": true,
+      "enabled": false,
       "note": "plugin default settings: off (5-year sweep 2026-10-20: 1-45 minute variants lose; the configured slow variants use this plugin); back in shadow at Ibrahim's request 2026-10-21",
-      "mode": "shadow"
+      "mode": "shadow",
+      "retired": "2026-10-24: backtest -0.1066 R over 3962 trades (t -5.13); shadow -0.657 R over 104 — decisively negative"
     },
     "krown-jewel-1h": {
       "base": "krown-jewel",
@@ -584,7 +631,7 @@
     },
     "wyckoff-spring-1h": {
       "base": "wyckoff-spring",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "tf": 60,
@@ -592,7 +639,8 @@
           60
         ]
       },
-      "note": "Wyckoff spring/upthrust with a test, 3:1 (Mitch Ray TA video), 2026-10-21"
+      "note": "Wyckoff spring/upthrust with a test, 3:1 (Mitch Ray TA video), 2026-10-21",
+      "retired": "2026-10-24: backtest -0.143 R over 1750 trades (t -3.84); shadow 0.346 R over 62 — decisively negative"
     },
     "wyckoff-spring-4h": {
       "base": "wyckoff-spring",
@@ -608,7 +656,7 @@
     },
     "pivot-matrix-1h": {
       "base": "pivot-matrix",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "onlyTfs": [
@@ -616,7 +664,8 @@
         ],
         "htf": 720
       },
-      "note": "PIVOT-MATRIX v1.3 (Ibrahim's spec, 2026-10-23): break of structure + sweep at swing pivots, 12h EMA bias. Shadow only to compare live with the backtests, which all lose (-0.067 R t -3.4 on 2026; -0.06/-0.08 R over 2020-2026): docs/PIVOT_MATRIX_2026-10-23.md"
+      "note": "PIVOT-MATRIX v1.3 (Ibrahim's spec, 2026-10-23): break of structure + sweep at swing pivots, 12h EMA bias. Shadow only to compare live with the backtests, which all lose (-0.067 R t -3.4 on 2026; -0.06/-0.08 R over 2020-2026): docs/PIVOT_MATRIX_2026-10-23.md",
+      "retired": "2026-10-24: backtest -0.0666 R over 3885 trades (t -3.4); shadow -0.592 R over 38 — decisively negative"
     },
     "pivot-matrix-4h": {
       "base": "pivot-matrix",
@@ -662,7 +711,7 @@
     },
     "candle-hammer-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "hammer",
@@ -671,11 +720,12 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.3666 R over 2818 trades (t -13.67); shadow -0.370 R over 95 — decisively negative"
     },
     "candle-hammer-4h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "hammer",
@@ -684,11 +734,12 @@
           240
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.2716 R over 666 trades (t -5.27); shadow -0.204 R over 16 — decisively negative"
     },
     "candle-star-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "star",
@@ -697,7 +748,8 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.2935 R over 2613 trades (t -10.22); shadow -0.262 R over 78 — decisively negative"
     },
     "candle-star-4h": {
       "base": "candles",
@@ -714,7 +766,7 @@
     },
     "candle-morning-star-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "morning-star",
@@ -723,7 +775,8 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.165 R over 703 trades (t -3.39); shadow -0.189 R over 17 — decisively negative"
     },
     "candle-morning-star-4h": {
       "base": "candles",
@@ -792,7 +845,7 @@
     },
     "candle-harami-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "harami",
@@ -801,11 +854,12 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.1691 R over 1883 trades (t -5.23); shadow -0.622 R over 90 — decisively negative"
     },
     "candle-harami-4h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "harami",
@@ -814,11 +868,12 @@
           240
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.2392 R over 504 trades (t -4.03); shadow 1.453 R over 13 — decisively negative"
     },
     "candle-tweezer-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "tweezer",
@@ -827,7 +882,8 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.2489 R over 4030 trades (t -11.27); shadow -0.311 R over 144 — decisively negative"
     },
     "candle-tweezer-4h": {
       "base": "candles",
@@ -844,7 +900,7 @@
     },
     "candle-doji-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "doji",
@@ -853,7 +909,8 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.2343 R over 351 trades (t -3.22); shadow -0.058 R over 11 — decisively negative"
     },
     "candle-doji-4h": {
       "base": "candles",
@@ -922,7 +979,7 @@
     },
     "candle-three-outside-1h": {
       "base": "candles",
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {
         "pattern": "three-outside",
@@ -931,7 +988,8 @@
           60
         ]
       },
-      "note": "Japanese candlestick pattern, 2026-10-21"
+      "note": "Japanese candlestick pattern, 2026-10-21",
+      "retired": "2026-10-24: backtest -0.1498 R over 2487 trades (t -5.82); shadow 0.752 R over 48 — decisively negative"
     },
     "candle-three-outside-4h": {
       "base": "candles",
@@ -1010,14 +1068,25 @@
       "base": "adaptive-score",
       "enabled": false,
       "mode": "shadow",
-      "params": { "tf": 240, "onlyTfs": [240] },
+      "params": {
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
       "note": "off: 2021-26 sweep -0.009 R; 2018-21 era test +0.109 R (t 5.2). Regime-dependent and the 12h variant is the better one (expansion/RESULTS_2026-10-23.md)"
     },
     "adaptive-score-12h": {
       "base": "adaptive-score",
       "enabled": true,
       "mode": "shadow",
-      "params": { "tf": 720, "onlyTfs": [720], "holdBars": 30 },
+      "params": {
+        "tf": 720,
+        "onlyTfs": [
+          720
+        ],
+        "holdBars": 30
+      },
       "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
     },
     "orb-retest": {
@@ -1066,6 +1135,22 @@
     "wedge-break": {
       "enabled": false,
       "note": "falling / rising wedge break with RSI divergence, target 50% of the pattern (Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md)). Rare (20-200 trades) and inconsistent: 4h -0.01 / -0.02 / -0.21 R, 12h -0.14 / +0.48 / +0.09. Off"
+    }
+  },
+  "sleeves": {
+    "trend": {
+      "enabled": true,
+      "mode": "shadow",
+      "maxCoins": 20,
+      "historyDays": 560,
+      "warmDays": 400,
+      "shadowSince": "2026-10-23",
+      "rules": {
+        "capitalShare": 0.5,
+        "stopK": 8,
+        "riskShare": 0.5
+      },
+      "note": "The retired trend bot's portfolio as a sleeve (docs/TREND_SLEEVE_DESIGN.md). Starts in shadow; it trades only after Ibrahim's /mode sleeve:trend trade (the coordinator plans and signs every leg; 'mode' here cannot make it trade). riskShare 0.5 since idea strategies trade too. Backtest 2020-2026 under risk.json: Sharpe 1.07 (top-20), 0.78 (30 unseen coins) at riskShare 0.5."
     }
   },
   "trading": {

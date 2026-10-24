@@ -47,6 +47,7 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 
 ## Log
 
+- 2026-10-24 07:45 — Daily review: agent manager retired 19 strategies with decisively negative backtests (b278683; list in swarm-reports daily/2026-10-24.md). Trade now: it-4h, ma-retest-12h, ma-retest-4h, rsi-macd-trend-12h (Ibrahim's Phase 0). Rule v2 dry run disagrees on two: ma-retest-4h → shadow (edge 0.0275 < 0.03 R), ma-retest-1d → trade. Paper +$441, but −$252 without the one IRYS trade; drawdown 6.6%.
 - 2026-10-20 11:10 — 5-year sweep built and launched (see "Now"). Universe: Binance archive daily volumes of every
   USDT perpetual, the live rules day by day, coins that later died kept (LUNA 230 days, FTT 21 days in it).
 - 2026-10-20 09:20 — Ibrahim's retail strategies tested (plugins rsi-macd, harmonic, ma-21-200; not configured to
@@ -70,6 +71,22 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 - Not yet run through the 5-year sweep: add them to history/sweep.js GROUPS to test.
 - `/status` (99c031e): per-strategy shadow/paper stats (trades, win %, total/avg/best/worst R, 24 h), only running strategies listed, long reports split. Approved by Ibrahim 05:02; confirm it runs (66 agents ok expected).
 - Open next: shadow results need days on 1h/4h; then add the new plugins (krown-jewel, wyckoff-spring, candles) to history/sweep.js GROUPS for the 5-year test; dragon (W) pattern was offered, not built.
+
+## 2026-10-24 — upswarm Phase 0 and Phase 1 (upswarm/GUIDE.md §12)
+- Phase 0 (Ibrahim: "do as the guide says"): the last five strategies with negative backtests still in trade
+  (intraday-trend, dip-reversal, candle-morning-star-4h, candle-harami-4h, candle-three-outside-1h) → shadow through
+  control.json on swarm-state; trading now: it-4h, ma-retest-12h, ma-retest-4h, rsi-macd-trend-12h (rule v2). PR #4
+  (trend sleeve, in shadow) and this Phase 1 PR merged on Ibrahim's OK in chat (08:50); both are protected, so the PC
+  installs them after approve.ps1. Sleeve: 2 weeks of shadow tracking, then `/mode sleeve:trend trade`.
+- Phase 1 (branch swarm-fix/upswarm-phase1, protected → pull request): t-stats clustered by day in the gate, the
+  backtest rows (`tDay`), the report cards and /status (which no longer ranks strategies by total R); sentinel in the
+  coordinator (target > 0, stop ≤ 25% away and ≥ 2× the round-trip cost, coin listed ≥ 30 days); coin-shock rule in
+  the data guard; execution-cost tracker (`exec.cost`, kv `execCost`, swarm-state costs.jsonl); promotion rule v2
+  (src/factory/promote_v2.js) replaces the old gate in the factory workflow as a dry run (report in swarm-factory
+  PROMOTION.md, no control.json). The guide, its tools and results come to main in `upswarm/`.
+- Rule v2 on the newest sweep (2026-10-23) differs from the guide's run (2026-10-20) on one strategy: ma-retest-4h
+  now averages +0.0275 R a trade, just under the +0.03 minimum edge (era test 2018–21 +0.125 R). It stays in trade
+  (Ibrahim's Phase 0 choice); the dry-run report shows it as shadow until he decides.
 
 ## 2026-10-23 (morning) — safety fixes from a code review (protected: needs approve.ps1, then a runner restart)
 - Update gate: tests are no longer self-service. The PC runs every test before it installs, and a test file is any

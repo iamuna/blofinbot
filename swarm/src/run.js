@@ -23,6 +23,7 @@ const REGISTRY = {
   recorder: () => require('./market/recorder').Recorder,
   events: () => require('./agents/event_calendar').EventCalendar,
   brain: () => require('./agents/brain').Brain,
+  'trend-sleeve': () => require('./sleeve/agent').TrendSleeve,
   coordinator: () => require('./decision/coordinator').Coordinator,
   trader: (cfg) => ((cfg.trading || {}).account === 'demo' ? require('./exec/demo_trader').DemoTrader : require('./exec/trader').Trader),
   accountant: () => require('./exec/accountant').Accountant,

@@ -13,6 +13,7 @@
 const { Agent } = require('../core/agent');
 const net = require('../core/net');
 const fs = require('fs'), path = require('path');
+const { dailyStats } = require('../factory/gate');
 
 class Herald extends Agent {
   static agentName = 'herald';
@@ -76,7 +77,10 @@ class Herald extends Agent {
       const b = (by[t.s] = by[t.s] || { n: 0, w: 0, r: 0, best: -Infinity, worst: Infinity, n24: 0, r24: 0 });
       b.n++; b.r += t.r; if (t.r > 0) b.w++; b.best = Math.max(b.best, t.r); b.worst = Math.min(b.worst, t.r);
       if (t.x >= day) { b.n24++; b.r24 += t.r; }
+      (b.list = b.list || []).push({ r: t.r, exitT: t.x });
     }
+    // the honest t: R summed per UTC day (days without a trade count as 0) — trades of one hour are one bet
+    for (const b of Object.values(by)) { const d = dailyStats(b.list, this.now()); b.tDay = d.days >= 2 ? d.t : null; b.active = d.active; delete b.list; }
     return by;
   }
   async statusText() {
@@ -106,13 +110,14 @@ class Herald extends Agent {
     const sh = this.shadowStats(), bs = a.byStrategy || {}, md = modes || {};
     const sg = (x) => (x >= 0 ? '+' : '') + x.toFixed(2);
     const names = [...new Set([...loaded, ...Object.keys(sh), ...Object.keys(bs)])];
-    const score = (k) => (sh[k] ? sh[k].r : 0) + (bs[k] ? Number(bs[k].sumR) || 0 : 0);
-    const traded = names.filter((k) => sh[k] || bs[k]).sort((x, y) => score(y) - score(x)), quiet = names.filter((k) => !sh[k] && !bs[k]).sort();
-    L.push('', '🧠 Strategies: ' + loaded.length + ' running · ' + traded.length + ' with trades (best first)');
+    // trading ones first, then by the daily-clustered t (not by total R: that ranks one lucky market swing first)
+    const rank = (k) => (md[k] === 'trade' ? 1e6 : 0) + (sh[k] && sh[k].tDay != null ? sh[k].tDay : -1e3);
+    const traded = names.filter((k) => sh[k] || bs[k]).sort((x, y) => rank(y) - rank(x) || x.localeCompare(y)), quiet = names.filter((k) => !sh[k] && !bs[k]).sort();
+    L.push('', '🧠 Strategies: ' + loaded.length + ' running · ' + traded.length + ' with trades (trading first, then by t per day)');
     for (const k of traded) {
       const b = sh[k], st = bs[k], on = loaded.includes(k) ? (md[k] || 'shadow') : 'not running';
       L.push('• ' + k + ' (' + on + ')');
-      if (b) L.push('   shadow: ' + b.n + ' trades · win ' + Math.round(100 * b.w / b.n) + '% · ' + sg(b.r) + ' R · avg ' + sg(b.r / b.n) + ' R · best ' + sg(b.best) + ' · worst ' + sg(b.worst) + ' · 24h ' + b.n24 + ' (' + sg(b.r24) + ' R)');
+      if (b) L.push('   shadow: ' + b.n + ' trades · win ' + Math.round(100 * b.w / b.n) + '% · ' + sg(b.r) + ' R · avg ' + sg(b.r / b.n) + ' R · best ' + sg(b.best) + ' · worst ' + sg(b.worst) + ' · 24h ' + b.n24 + ' (' + sg(b.r24) + ' R)' + ' · t/day ' + (b.tDay != null ? sg(b.tDay) : '—') + ' over ' + b.active + ' active day' + (b.active === 1 ? '' : 's'));
       if (st) L.push('   paper: ' + st.trades + ' trades · ' + sg(Number(st.sumR) || 0) + ' R · ' + usd(st.netUsd));
     }
     if (quiet.length) L.push('No trades yet (' + quiet.length + '): ' + quiet.join(', '));
@@ -180,7 +185,8 @@ class Herald extends Agent {
     return this.say('Commands: /status /pause /resume /flatten /mode <strategy> <off|shadow|trade>');
   }
   // configured strategies and variants, and every strategy the brain reports as loaded
-  knownStrategies() { return new Set([...Object.keys(this.cfg.strategies || {}), ...Object.keys(this.hb || {}).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9))]); }
+  // strategies, plus the sleeves (/mode sleeve:trend trade: the only way a sleeve trades)
+  knownStrategies() { return new Set([...Object.keys(this.cfg.strategies || {}), ...Object.keys(this.cfg.sleeves || {}).map((k) => `sleeve:${k}`),...Object.keys(this.hb || {}).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9))]); }
 }
 
 function editDistance(a, b) {
