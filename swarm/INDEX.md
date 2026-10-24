@@ -34,14 +34,14 @@ locked-down process, [src/core/isolate.js](src/core/isolate.js)).
 | universe | [src/market/universe.js](src/market/universe.js) | market | which coins: Binance 7-day volume ≥ $20M, listed on BloFin, spread ≤ 5 bps |
 | blofin-feed | [src/market/blofin_feed.js](src/market/blofin_feed.js) | market | BloFin trades, top-5 book, 1m bars, tickers, funding |
 | binance-feed | [src/market/binance_feed.js](src/market/binance_feed.js) | market | Binance taker flow, bars, liquidations, mark/funding, open interest |
-| guard | [src/market/data_guard.js](src/market/data_guard.js) | market | per coin: is the data good enough to trade on |
+| guard | [src/market/data_guard.js](src/market/data_guard.js) | market | per coin: is the data good enough to trade on; a coin that jumps or crashes in an hour (> 8 daily σ) gets no new risk for 24 h |
 | recorder | [src/market/recorder.js](src/market/recorder.js) | market | keeps every market message (gzipped hourly, 60 days) |
 | events | [src/agents/event_calendar.js](src/agents/event_calendar.js) | brain | no-new-risk windows around scheduled news |
 | brain | [src/agents/brain.js](src/agents/brain.js) | brain | features + regime + every strategy plugin; shadow-simulates every idea |
 | trend-sleeve | [src/sleeve/agent.js](src/sleeve/agent.js) | brain | the retired trend bot's portfolio as a sleeve: hourly weights for the top 20, a shadow book under every risk.json limit (shadow only; [design](docs/TREND_SLEEVE_DESIGN.md)) |
-| coordinator | [src/decision/coordinator.js](src/decision/coordinator.js) | decision | fusion → allocator → risk engine; loss ladders; strategy modes |
+| coordinator | [src/decision/coordinator.js](src/decision/coordinator.js) | decision | sentinel → fusion → allocator → risk engine; loss ladders; strategy modes |
 | trader | [src/exec/trader.js](src/exec/trader.js) / [src/exec/demo_trader.js](src/exec/demo_trader.js) | trader | paper broker / BloFin demo orders; stops, targets, trailing, time stops |
-| accountant | [src/exec/accountant.js](src/exec/accountant.js) | trader | equity, drawdown, fees, funding; per-strategy results |
+| accountant | [src/exec/accountant.js](src/exec/accountant.js) | trader | equity, drawdown, fees, funding; per-strategy results; the execution cost of every fill (`exec.cost`, kv `execCost`, [cost_tracker.js](src/exec/cost_tracker.js)) |
 | guardian | [src/ops/guardian.js](src/ops/guardian.js) | ops | risk limits must match Ibrahim's signature, else flatten + halt |
 | watchdog | [src/ops/watchdog.js](src/ops/watchdog.js) | ops | silent agents, disk, memory |
 | herald | [src/ops/herald.js](src/ops/herald.js) | ops | Telegram: alerts, digests; /status /pause /resume /flatten /mode |
@@ -62,11 +62,11 @@ Started by [src/run.js](src/run.js) (`--group` / `--agents`, `--isolate brain`).
 | `src/agents/` | brain, event calendar |
 | `src/sleeve/` | the trend sleeve: [trend_engine.js](src/sleeve/trend_engine.js) (the archived engine, ported exactly), [sleeve.js](src/sleeve/sleeve.js) (risk.json on its weights, the book), [agent.js](src/sleeve/agent.js) |
 | `src/strategies/` | strategy plugins (pure functions of bars; [kit.js](src/strategies/kit.js) = the interface, [index.js](src/strategies/index.js) = the list, [loader.js](src/strategies/loader.js) checks before loading) |
-| `src/decision/` | coordinator, [fusion.js](src/decision/fusion.js), [allocator.js](src/decision/allocator.js) (quarter-Kelly), [risk.js](src/decision/risk.js) |
+| `src/decision/` | coordinator, [sentinel.js](src/decision/sentinel.js) (idea and coin sanity), [fusion.js](src/decision/fusion.js), [allocator.js](src/decision/allocator.js) (quarter-Kelly), [risk.js](src/decision/risk.js) |
 | `src/exec/` | paper trader, demo trader, accountant; `blofin/` = signed BloFin client + contract precision |
 | `src/backtest/` | [exec_sim.js](src/backtest/exec_sim.js) (fills/exits for backtests and shadow; opt-in `breakevenR`), [run.js](src/backtest/run.js), [stats.js](src/backtest/stats.js) |
 | `src/research/` | from the 1-minute bot (branch possible-expansion): [event_study.js](src/research/event_study.js) (MFE/MAE in R per idea + condition tags: does a signal point anywhere?), [excursions.js](src/research/excursions.js), [trade_tags.js](src/research/trade_tags.js), [streak_rules.js](src/research/streak_rules.js) |
-| `src/factory/` | [plugin_check.js](src/factory/plugin_check.js), tester, promotion gate, live gate, try log, [tuner.js](src/factory/tuner.js) (challengers inside `bounds`) |
+| `src/factory/` | [plugin_check.js](src/factory/plugin_check.js), tester, gate (t-stats clustered by day), [promote_v2.js](src/factory/promote_v2.js) (rule v2: the 5-year sweep selects, live only vetoes; dry run in the factory workflow), live gate, try log, [tuner.js](src/factory/tuner.js) (challengers inside `bounds`) |
 | `src/ops/` | guardian, watchdog, herald, state sync |
 | `src/tools/` | [update_gate.js](src/tools/update_gate.js) (what installs itself vs. waits for Ibrahim), review, agent manager, smoke report |
 | `deploy/windows/` | the home PC: [install.ps1](deploy/windows/install.ps1), [run.ps1](deploy/windows/run.ps1) (runner + updater), [approve.ps1](deploy/windows/approve.ps1), enable-demo, sign-risk, uninstall |

@@ -6,6 +6,7 @@
  *   state.json        account, positions, risk state, universe, guard summary, agent heartbeats, strategy stats
  *   trades.jsonl      every closed trade (appended)       shadow.jsonl  every shadow trade (appended)
  *   ideas.jsonl       ideas of the last 24 h               decisions.jsonl  risk decisions (appended)
+ *   costs.jsonl       the implementation shortfall of every fill (exec.cost, appended)
  * Commands back: the slow agents write control.json on the branch (e.g. strategy modes they are allowed to set);
  * the sync pulls it and publishes it as sys.command from 'state-sync' (the coordinator only accepts what that
  * source may change). Pushing needs GITHUB_TOKEN (fine-grained, Contents read/write on the repo).
@@ -21,11 +22,12 @@ class StateSync extends Agent {
     this.Y = Object.assign({ everyMin: 10, branch: process.env.SWARM_STATE_BRANCH || 'swarm-state', repo: process.env.SWARM_REPO || 'github.com/iamuna/blofinbot.git' }, this.cfg.stateSync || {});
     this.dir = path.join(this.ctx.dataDir, 'state-repo');
     this.token = process.env.GITHUB_TOKEN || '';
-    this.hb = {}; this.buf = { trades: [], shadow: [], decisions: [] }; this.ideas = [];
+    this.hb = {}; this.buf = { trades: [], shadow: [], decisions: [], costs: [] }; this.ideas = [];
     this.subscribe('sys.heartbeat', (m) => { this.hb[m.data.agent] = Object.assign({ at: m.ts }, m.data); });
     this.subscribe('trade.closed', (m) => this.buf.trades.push(m.data), { durable: true });
     this.subscribe('shadow.trade', (m) => this.buf.shadow.push(m.data), { durable: true });
     this.subscribe('risk.decision', (m) => this.buf.decisions.push(Object.assign({ ts: m.ts }, m.data)));
+    this.subscribe('exec.cost', (m) => this.buf.costs.push(m.data), { durable: true });
     this.subscribe('idea', (m) => { this.ideas.push(m.data); const cut = this.now() - 86400000; while (this.ideas.length && this.ideas[0].t < cut) this.ideas.shift(); });
     this.subscribe('risk.state', (m) => { this.risk = m.data; });
     this.ensureRepo();
@@ -54,7 +56,7 @@ class StateSync extends Agent {
     };
     writeAtomic(path.join(this.dir, 'state.json'), JSON.stringify(state, null, 1));
     writeAtomic(path.join(this.dir, 'ideas.jsonl'), this.ideas.map((i) => JSON.stringify(i)).join('\n') + '\n');
-    this.append('trades.jsonl', this.buf.trades.splice(0)); this.append('shadow.jsonl', this.buf.shadow.splice(0)); this.append('decisions.jsonl', this.buf.decisions.splice(0));
+    this.append('trades.jsonl', this.buf.trades.splice(0)); this.append('shadow.jsonl', this.buf.shadow.splice(0)); this.append('decisions.jsonl', this.buf.decisions.splice(0)); this.append('costs.jsonl', this.buf.costs.splice(0));
     writeAtomic(path.join(this.dir, 'summary.md'), this.summary(state));
     if (!this.token) { this.setStatus('degraded', 'no GITHUB_TOKEN: state written locally only'); return; }
     try {

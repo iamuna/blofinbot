@@ -1,9 +1,11 @@
 name: Swarm factory (tester + promotion gate)
 
 # Backtests every configured strategy and every candidate in swarm/factory/candidates on the swarm dataset, logs
-# each try (the multiple-testing count), applies the backtest gate, then combines it with live shadow evidence from
-# the swarm-state branch and writes strategy-mode changes to swarm-state/control.json (paper/demo only).
-# Results go to the swarm-factory branch.
+# each try (the multiple-testing count) and applies the backtest gate. Results go to the swarm-factory branch.
+# Promotion: rule v2 (swarm/src/factory/promote_v2.js, upswarm GUIDE §9) — the 5-year sweep and the era test select,
+# the live record only vetoes. It runs as a DRY RUN: its report goes to swarm-factory PROMOTION.md and nothing is
+# written to swarm-state/control.json (the old gate's shadow → trade route judged a few days of shadow, the thing the
+# guide's replay showed loses money). Switching rule v2 on is Ibrahim's call after two weeks of dry runs.
 
 on:
   push:
@@ -44,13 +46,14 @@ jobs:
           # others append to trials.jsonl too (log_tries.js): rebase onto them before pushing
           W="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
           for i in 1 2 3; do git pull -q --rebase "$W" swarm-factory && git push -q "$W" HEAD:swarm-factory && exit 0; sleep 5; done; exit 1
-      - name: Promotion gate
+      - name: Promotion rule v2 (dry run — report only)
         if: hashFiles('state/state.json') != ''
         run: |
-          node swarm/src/factory/promote.js --factory factory --state state --write
-          cd state && git config user.name "swarm promotion gate" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if ! git diff --quiet -- control.json 2>/dev/null || [ -n "$(git ls-files --others control.json)" ]; then
-            git add control.json && git commit -q -m "promotion gate $(date -u +%FT%TZ)"
-            W="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
-            for i in 1 2 3; do git pull -q --rebase "$W" swarm-state && git push -q "$W" HEAD:swarm-state && break; sleep 5; done
-          fi
+          R="https://github.com/${{ github.repository }}.git"
+          git clone -q --depth 1 --branch swarm-reports "$R" reports || { echo "no swarm-reports branch"; exit 0; }
+          era=$(ls -d reports/era/*/results.json 2>/dev/null | sort | tail -1)
+          node swarm/src/factory/promote_v2.js --state state --sweep reports/history ${era:+--era "$era"} --factory factory --out factory/PROMOTION.md > /dev/null
+          cd factory && git config user.name "swarm promotion v2 (dry run)" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PROMOTION.md && git commit -q -m "promotion rule v2 dry run $(date -u +%FT%TZ)" || { echo "nothing new"; exit 0; }
+          W="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          for i in 1 2 3; do git pull -q --rebase "$W" swarm-factory && git push -q "$W" HEAD:swarm-factory && exit 0; sleep 5; done; exit 1

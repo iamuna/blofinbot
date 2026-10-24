@@ -42,6 +42,7 @@ const TYPES = {
   'stop.move': { keep: 50000, req: { coin: 's', stop: 'n', owner: '?s' } }, // risk agent → trader: move a position's stop, only toward the price
   'order.end': { keep: 50000, req: { id: 's', coin: 's', outcome: 's' } }, // an order that ended without a position
   'exec.fill': { keep: 100000, req: { orderId: 's', coin: 's', side: 'n', qty: 'n', px: 'n', feeUsd: 'n', kind: 's', role: 's', ts: 'n' } },
+  'exec.cost': { keep: 100000, req: { orderId: 's', coin: 's', role: 's', decPx: 'n', px: 'n', costBps: 'n', ts: 'n' } }, // implementation shortfall (exec/cost_tracker.js)
   'positions': { keep: 20000, req: { ts: 'n', open: 'a', working: 'a' } },
   'trade.closed': { keep: 50000, req: { orderId: 's', coin: 's', side: 'n', qty: 'n', entry: 'n', exit: 'n', netUsd: 'n', r: 'n', reason: 's', strategies: 'a' } },
   'account': { keep: 50000, req: { ts: 'n', equity: 'n', cash: 'n', upl: 'n', peak: 'n', dayStart: 'n', mode: 's' } },
