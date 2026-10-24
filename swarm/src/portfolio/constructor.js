@@ -9,7 +9,8 @@
  * combine() then, in order:
  *   1. each sleeve × its share (the conductor's sleeve shares) × the conductor's dial;
  *   2. adds the sleeves up per coin — opposite views net out by size, no fee paid twice;
- *   3. cluster cap: coins whose daily returns correlate ≥ clusterRho form one group (majors, memes …); no group may
+ *   3. cluster cap (off by default: it did not help the trend sleeve on 2020–2026, docs/PORTFOLIO_BACKTEST_2026-10-24.md):
+ *      coins whose daily returns correlate ≥ clusterRho form one group (majors, memes …); no group may
  *      be more than maxClusterGrossFrac of the gross (never less than 1 ÷ the number of groups) — the excess is
  *      scaled away inside that group. Groups use the raw correlations; the volatility forecast the shrunk ones;
  *   4. portfolio volatility: the book's forecast volatility (daily σ per coin, correlations of daily returns shrunk
@@ -25,7 +26,7 @@ const S = require('../sleeve/sleeve');
 
 const RULES = {
   portVolTargetPct: 0.10, // the book's forecast volatility a year, at most (GUIDE §6.3: 10% on paper to start)
-  maxClusterGrossFrac: 0.4, // one correlated group at most this share of the gross
+  maxClusterGrossFrac: 1, // one correlated group at most this share of the gross (1 = off: tested, see config note)
   clusterRho: 0.7, // daily-return correlation that puts two coins in one group
   shrink: 0.5, // correlations shrunk this far toward their average
   defaultRho: 0.5, // between coins with too few common days of returns

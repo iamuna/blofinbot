@@ -72,13 +72,15 @@ test('constructor: sleeves net by size; volatility is only scaled down; one corr
   for (let d = 0; d < 60; d++) { const m = (r() - 0.5) * 0.06; for (const k of ['A', 'B', 'C']) ret[k].push([d, m + (r() - 0.5) * 0.005]); ret.D.push([d, (r() - 0.5) * 0.06]); }
   // three groups: A+B+C together, D and E on their own → the group is cut to 40% of the gross
   for (let d = 0; d < 60; d++) (ret.E = ret.E || []).push([d, (r() - 0.5) * 0.06]);
-  c = PC.combine({ s: { A: 1000, B: 1000, C: 1000, D: 1000, E: 1000 } }, { equity: 100000, sigma: { A: 0.03, B: 0.03, C: 0.03, D: 0.03, E: 0.03 }, returns: ret });
+  const cap40 = { maxClusterGrossFrac: 0.4 };
+  assert.strictEqual(PC.RULES.maxClusterGrossFrac, 1, 'the cluster cap is off unless configured');
+  c = PC.combine({ s: { A: 1000, B: 1000, C: 1000, D: 1000, E: 1000 } }, { equity: 100000, sigma: { A: 0.03, B: 0.03, C: 0.03, D: 0.03, E: 0.03 }, returns: ret, rules: cap40 });
   assert.strictEqual(c.clusterOf.B, c.clusterOf.A); assert.strictEqual(c.clusterOf.C, c.clusterOf.A); assert.notStrictEqual(c.clusterOf.D, c.clusterOf.A);
   const g = (Math.abs(c.book.A) + Math.abs(c.book.B) + Math.abs(c.book.C)), tot = g + Math.abs(c.book.D) + Math.abs(c.book.E);
   assert.ok(Math.abs(g / tot - 0.4) < 1e-6, `group share ${g / tot}`); assert.strictEqual(c.book.D, 1000);
   assert.match(c.reasons.join(), /of the gross > 40%/);
   // two groups: neither can be under 40%, so the cap is 50%
-  const two = PC.combine({ s: { A: 1000, B: 1000, C: 1000, D: 1000 } }, { equity: 100000, sigma: { A: 0.03, B: 0.03, C: 0.03, D: 0.03 }, returns: ret });
+  const two = PC.combine({ s: { A: 1000, B: 1000, C: 1000, D: 1000 } }, { equity: 100000, sigma: { A: 0.03, B: 0.03, C: 0.03, D: 0.03 }, returns: ret, rules: cap40 });
   assert.ok(Math.abs(Math.abs(two.book.A) * 3 / (Math.abs(two.book.A) * 3 + 1000) - 0.5) < 1e-6);
 });
 
@@ -175,7 +177,7 @@ test('constructor: several sleeves at once never take the book past any risk.jso
     // other strategies' legs inside the limits
     const others = [];
     for (const c of COINS) if (rnd() < 0.25) { const side = rnd() < 0.6 ? 1 : -1, n = 500 + rnd() * 2000; others.push({ coin: c, side, qty: n / px[c], px: px[c], stop: px[c] * (1 - side * (0.005 + rnd() * 0.02)) }); }
-    const comb = PC.combine(sleeves, { equity: eq, sigma, rules: PC.RULES, dial: 0.25 + rnd() * 0.75 });
+    const comb = PC.combine(sleeves, { equity: eq, sigma, rules: { maxClusterGrossFrac: 0.4 }, dial: 0.25 + rnd() * 0.75 });
     assert.ok(comb.vol <= PC.RULES.portVolTargetPct + 1e-9, `forecast vol ${comb.vol}`);
     const mkt = Object.fromEntries(COINS.map((c) => [c, { px: px[c], sigma: sigma[c], beta: beta[c], cool: false }]));
     const p = S.plan(PC.weightsOf(comb.book, eq), {}, mkt, { equity: eq, peak: eq, dayStart: eq }, LIMITS, others, pr);

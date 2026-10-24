@@ -1112,10 +1112,11 @@
     "note": "Phase 2 of the upswarm guide, in SHADOW: the portfolio constructor and the conductor build the one book the swarm would hold (trend sleeve + open ideas of the strategies in trade), cap its volatility and correlated groups, and run a simulated book next to the coordinator. It sends no orders. Switching it to trade is Ibrahim's call after two weeks of shadow (docs/PORTFOLIO_CORE.md).",
     "rules": {
       "portVolTargetPct": 0.1,
-      "maxClusterGrossFrac": 0.4,
+      "maxClusterGrossFrac": 1,
       "clusterRho": 0.7,
       "ideaRiskPct": 0.0025,
-      "riskShare": 1
+      "riskShare": 1,
+      "_note": "maxClusterGrossFrac 1 = the cluster cap off: on the trend sleeve 2020-2026 a 40% cap at rho 0.7 cut Sharpe 1.07 -> 0.85 on the top 20 (drawdown 5.6% -> 8.4%) and lifted it 0.78 -> 0.84 on 30 unseen coins; rho 0.85 or a 60% cap helped on neither (docs/PORTFOLIO_BACKTEST_2026-10-24.md). Revisit when a second sleeve trades. The 10% volatility cap is neutral on both and stays."
     },
     "shares": {
       "sleeve:trend": 1

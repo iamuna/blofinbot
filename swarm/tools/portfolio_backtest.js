@@ -80,8 +80,8 @@ function main() {
     log(`## ${label}`, '', ok ? `**Check passed:** through the constructor (caps open) the book is the sleeve's own — ${direct.events.legs} legs, final equity $${direct.state.eq.toFixed(2)} both ways.` : `**Check FAILED:** ${same.events.legs} vs ${direct.events.legs} legs, $${same.state.eq.toFixed(2)} vs $${direct.state.eq.toFixed(2)}.`, '');
     const variants = [
       ['sleeve as configured (risk share 0.5)', direct, null],
-      ['+ volatility and cluster caps', viaConstructor(grid, sim, rules, limits, { ref, caps: true, prules }), 'caps'],
-      ['+ caps + conductor (dial, weekly cap)', viaConstructor(grid, sim, rules, limits, { ref, caps: true, prules, conductor: true, crules }), 'all'],
+      ['+ portfolio caps as configured', viaConstructor(grid, sim, rules, limits, { ref, caps: true, prules }), 'caps'],
+      ['+ caps as configured + conductor (dial, weekly cap)', viaConstructor(grid, sim, rules, limits, { ref, caps: true, prules, conductor: true, crules }), 'all'],
       ['+ conductor only', viaConstructor(grid, sim, rules, limits, { ref, conductor: true, crules }), 'cond'],
     ];
     log('| Variant | Sharpe | Return a year | Volatility | Max drawdown | Positive weeks | Positive quarters | Worst week | Hours cut by: vol cap / cluster cap / dial / weekly cap |', '|---|---|---|---|---|---|---|---|---|');

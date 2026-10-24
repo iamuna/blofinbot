@@ -75,17 +75,19 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 ## 2026-10-24 (morning) — upswarm Phase 2: the portfolio core, in shadow (branch swarm-fix/upswarm-phase2)
 - Ibrahim (08:44): merge #4 and #10, then build Phase 2. Both merged; approve.ps1 on the PC installs them.
 - New `src/portfolio/`: the adapter (an idea in trade = a target its stop sizes at 0.25%), the constructor (sleeves
-  net per coin; correlated groups ≤ 40% of the gross; forecast volatility ≤ 10% a year, scaled down only) on top of
+  net per coin; a cluster cap, built but off; forecast volatility ≤ 10% a year, scaled down only) on top of
   the trend sleeve's planner, and the conductor (the dial from 60-day realised volatility, floored at 0.25; the weekly
   loss cap; a CUSUM per sleeve against its backtest). The `portfolio` agent runs it once an hour as a simulated
   account (decision group, sends nothing): `portfolio.target` / `portfolio.state`, kv `portfolio`, swarm-state
   `state.json → portfolio`, a line in /status. docs/PORTFOLIO_CORE.md.
 - Checks: the trend sleeve alone through the constructor is the sleeve's own book leg for leg (synthetic data and
   2020–2026 research-data: 9,298 legs, same final equity); 150 random three-sleeve books stay inside every risk.json
-  limit. 120/120 tests.
+  limit. 120/120 tests. On the trend sleeve 2020–2026 (docs/PORTFOLIO_BACKTEST_2026-10-24.md) the volatility cap and
+  the conductor change nothing (Sharpe 1.07 top-20, 0.78 unseen, as before); a 40% cluster cap moved it to 0.85 / 0.84
+  (worse on one sample, better on the other), so it stays off.
 - Risk v2: the weekly loss cap is in the risk engine and the accountant keeps the week, but nothing changes until
   Ibrahim signs the new keys (docs/RISK_V2.md: weekLossStopPct 0.025, weekLossHalvePct 0.04, maxStopDistPct 0.25,
-  portVolTargetPct 0.10, maxClusterGrossFrac 0.4).
+  portVolTargetPct 0.10).
 - Next: two weeks of shadow; then compare the shadow book with the paper account and the sleeve, and a protected
   change lets the coordinator trade `portfolio.target` behind Ibrahim's /mode.
 

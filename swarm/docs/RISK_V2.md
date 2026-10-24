@@ -11,7 +11,10 @@ them on, add the keys below to `swarm/config/risk.json` (or ask Claude to open t
 | `weekLossHalvePct` | `0.04` | a week that ended ≤ −4% → every budget at half the next week | `decision/risk.js` mode() |
 | `maxStopDistPct` | `0.25` | the sentinel rejects an idea whose stop is more than 25% from its entry (today a code default) | `decision/sentinel.js` |
 | `portVolTargetPct` | `0.10` | the portfolio core's forecast volatility cap, 10% a year (the conductor may only scale down from it) | `portfolio/constructor.js`, `portfolio/conductor.js` |
-| `maxClusterGrossFrac` | `0.4` | one correlated group of coins at most 40% of the gross | `portfolio/constructor.js` |
+
+Not proposed: `maxClusterGrossFrac` (one correlated group ≤ 40% of the gross). The code is there, but on the trend
+sleeve 2020–2026 it helped on one sample and hurt on the other (docs/PORTFOLIO_BACKTEST_2026-10-24.md); it is off
+until a second sleeve trades and it can be tested on a real multi-sleeve book.
 
 Not built yet (GUIDE §6.4, next): `esLimitPct` (97.5% one-day expected shortfall of the book ≤ 4%) and `liqBufferX`
 (a stop at most a third of the way to the liquidation price).
@@ -29,7 +32,6 @@ off — nothing is decided on one week's sign.
   "weekLossStopPct": 0.025,
   "weekLossHalvePct": 0.04,
   "maxStopDistPct": 0.25,
-  "portVolTargetPct": 0.10,
-  "maxClusterGrossFrac": 0.4
+  "portVolTargetPct": 0.10
 }
 ```

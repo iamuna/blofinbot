@@ -9,7 +9,7 @@ each coin should the book hold now, given every signal and the risk?" (GUIDE §4
 | Part | File | What |
 |---|---|---|
 | Adapter | `src/portfolio/constructor.js` `ideaTargets` | an idea of a strategy in trade asks for side × the notional whose stop costs 0.25% of equity (today's size), from the moment it is published until its shadow trade ends |
-| Constructor | `src/portfolio/constructor.js` `combine` | sleeves × shares × dial → added up per coin (opposite views net out) → correlated groups capped at 40% of the gross → forecast volatility capped at 10% a year (scaled down only) |
+| Constructor | `src/portfolio/constructor.js` `combine` | sleeves × shares × dial → added up per coin (opposite views net out) → (cluster cap: built, off — see below) → forecast volatility capped at 10% a year (scaled down only) |
 | Planner | `src/sleeve/sleeve.js` `plan`/`step` | the trend sleeve's planner, unchanged: risk ladders, a stop 8 daily σ away on every position, the stop-risk budget, the 25% no-trade band, every added leg through the RiskEngine |
 | Conductor | `src/portfolio/conductor.js` | the dial = min(1, 10% ÷ the book's 60-day realised volatility), floored at 0.25; the weekly loss cap; a CUSUM per sleeve against what its backtest expects (`portfolio.expect` in config): an alarm halves its share, two in 60 days propose shadow |
 | Agent | `src/portfolio/agent.js` (`portfolio`, decision group) | once an hour: the book above, advanced as a simulated account; publishes `portfolio.target` and `portfolio.state`; kv `portfolio`; on swarm-state in `state.json` → `portfolio` and in `summary.md` |
@@ -24,6 +24,9 @@ It sends no order, intent or command. The coordinator keeps trading exactly as b
 - **Limits:** 150 random books with three sleeves asking for up to 3× equity each, against random other positions:
   open risk, gross, coin notional, net BTC exposure and risk per position stay inside risk.json every time.
 - What the new caps and the conductor do to the trend sleeve on 2020–2026: `docs/PORTFOLIO_BACKTEST_2026-10-24.md`.
+  The 10% volatility cap is neutral (the sleeve already runs at ~4.5% a year); the conductor never binds on the sleeve
+  alone (it is the safety net for a book with more sleeves); the cluster cap helped on the unseen coins and hurt on
+  the top 20, so it is off until a second sleeve trades.
 
 ## Switching it to trade (Ibrahim, not before two weeks of shadow)
 
