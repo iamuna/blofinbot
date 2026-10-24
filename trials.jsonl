@@ -401,3 +401,4 @@
 {"key":"multi:name:deep-trend-filter-all","name":"deep-trend-filter-all","base":"multi","params":null,"at":"2026-10-23T08:13:44.957Z","n":null,"avgR":null,"tStat":null,"note":"Deep review 2026-10-23: hourly 2020-2026, research IS 2020-23 (n/avgR/t are IS); swarm/docs/DEEP_REVIEW_2026-10-23.md"}
 {"key":"ma-21-200:d7497300a037","name":"ma-retest-4h","base":"ma-21-200","params":{"mode":"retest","tf":240,"onlyTfs":[240]},"at":"2026-10-23T11:29:14.608Z","n":308,"avgR":0.0228,"tStat":0.3}
 {"key":"ma-21-200:964d44ce5552","name":"ma-pullback-12h","base":"ma-21-200","params":{"mode":"pullback","tf":720,"onlyTfs":[720]},"at":"2026-10-23T11:29:14.608Z","n":160,"avgR":0.1368,"tStat":1.27}
+{"key":"adaptive-score:ac83308ea0e6","name":"adaptive-score-12h","base":"adaptive-score","params":{"tf":720,"onlyTfs":[720],"holdBars":30},"at":"2026-10-24T03:52:22.807Z","n":295,"avgR":-0.0577,"tStat":-0.74}
