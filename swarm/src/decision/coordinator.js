@@ -2,7 +2,7 @@
  * parts inside it (in-process, so a cycle finishes within milliseconds), and each step is published for audit.
  *
  * Cycle: ideas from strategies in mode 'trade' are collected for 1.5 s after the first one arrives (a minute's
- * ideas come in one burst), then fused per coin, sized by each strategy's budget, checked by the risk agent and
+ * ideas come in one burst), checked by the sentinel (decision/sentinel.js), then fused per coin, sized by each strategy's budget, checked by the risk agent and
  * sent to the trader as orders:
  *   idea → intent (fusion + allocator) → risk.decision (approve / trim / reject + reasons) → order (to the trader)
  * The risk agent also watches the account every few seconds: the loss ladders switch the swarm to no-new, flatten
@@ -26,6 +26,7 @@ const { Agent } = require('../core/agent');
 const { fuse } = require('./fusion');
 const { Allocator } = require('./allocator');
 const { RiskEngine } = require('./risk');
+const { checkIdea } = require('./sentinel');
 const S = require('../sleeve/sleeve');
 const { readJSON, writeAtomic } = require('../core/fsx');
 
@@ -104,7 +105,15 @@ class Coordinator extends Agent {
   }
 
   async cycle() {
-    const ideas = this.queue.splice(0), t0 = Date.now();
+    const all = this.queue.splice(0), t0 = Date.now(), ideas = [];
+    if (!all.length) return;
+    // sentinel (decision/sentinel.js): nonsense ideas and coins too new to size never reach fusion
+    for (const i of all) {
+      const bad = checkIdea(i, { now: this.now(), inst: (c) => this.universe.get(c), cfg: this.cfg });
+      if (!bad) { ideas.push(i); continue; }
+      this.count('sentinelRejects');
+      await this.publish('risk.decision', { id: i.id, coin: i.coin, verdict: 'reject', qty: 0, reasons: [`sentinel: ${bad}`], strategy: i.strategy }, { src: 'risk', trace: i.id });
+    }
     if (!ideas.length) return;
     const rm = this.riskMode();
     this.alloc.scale = rm.budgetScale;

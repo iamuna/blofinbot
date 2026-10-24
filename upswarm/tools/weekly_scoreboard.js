@@ -5,10 +5,12 @@
  *   node upswarm/tools/weekly_scoreboard.js --sleeve <path to swarm/ of branch swarm-fix/sleeve-trade>
  *        --research <research-data dir> [--validation <validation-data dir>] [--out file.md]
  *   node upswarm/tools/weekly_scoreboard.js --trades <trades.json from trades_run.js> --names a,b,c [--risk 0.0025]
+ *   node upswarm/tools/weekly_scoreboard.js --live <swarm-state dir>      (the PC's paper account, for the daily review)
  *
  * Mode 1 runs the trend sleeve (as configured, under config/risk.json) from 2020-01-01 on the hourly history and
  * scores its daily returns. Mode 2 builds a daily R series from closed trades (each trade booked on its exit day, each
- * risking --risk of equity) and scores that.
+ * risking --risk of equity) and scores that. Mode 3 (--live) books each closed paper trade's net USD on its exit day as a
+ * share of the starting equity, scores it, and lists the weeks so far with the week-to-date result.
  * Also prints what theory says: with an annual Sharpe S, a week is positive with probability Φ(S/√52) (normal returns).
  */
 'use strict';
@@ -58,6 +60,21 @@ function fromTrades(file, names, risk) {
   return out;
 }
 
+function fromLive(dir) {
+  const st = JSON.parse(fs.readFileSync(path.join(dir, 'state.json'), 'utf8')), eq0 = (st.account && st.account.equity0) || 10000;
+  const T = fs.readFileSync(path.join(dir, 'trades.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch (e) { return null; } }).filter((t) => t && Number.isFinite(t.netUsd) && Number.isFinite(t.exitT));
+  if (!T.length) return { daily: [], weeks: [] };
+  const days = new Map(), wk = new Map(), week = (d) => Math.floor((d + 3) / 7);
+  let first = Infinity, last = -Infinity;
+  for (const t of T) {
+    const d = Math.floor(t.exitT / 1000 / DAY); days.set(d, (days.get(d) || 0) + t.netUsd / eq0); first = Math.min(first, d); last = Math.max(last, d);
+    const w = wk.get(week(d)) || { n: 0, usd: 0, r: 0 }; w.n++; w.usd += t.netUsd; w.r += t.r || 0; wk.set(week(d), w);
+  }
+  const daily = []; for (let d = first; d <= last; d++) daily.push([d, days.get(d) || 0]);
+  const weeks = [...wk.entries()].sort((a, b) => a[0] - b[0]).map(([w, v]) => Object.assign({ from: new Date((w * 7 - 3) * DAY * 1000).toISOString().slice(0, 10) }, v));
+  return { daily, weeks, eq0 };
+}
+
 function main() {
   const A = args(), parts = [theory()];
   if (A.sleeve) {
@@ -82,9 +99,18 @@ function main() {
     const names = String(A.names).split(','), risk = +(A.risk || 0.0025);
     parts.push(table(`Trades: ${names.join(', ')} at ${(risk * 100).toFixed(2)}% risk each`, score(fromTrades(A.trades, names, risk))));
   }
+  if (A.live) {
+    const L = fromLive(path.resolve(A.live));
+    if (!L.daily.length) parts.push('### Paper account\n\nNo closed paper trades yet.\n');
+    else {
+      parts.push(table('Paper account (each trade on its exit day, share of the starting equity)', score(L.daily)));
+      parts.push(['### Paper account by week (Monday start)', '', '| Week from | Trades | Net | R |', '|---|---|---|---|', ...L.weeks.map((w) => `| ${w.from} | ${w.n} | ${w.usd >= 0 ? '+' : '−'}$${Math.abs(w.usd).toFixed(2)} (${pct(w.usd / L.eq0, 2)}) | ${w.r >= 0 ? '+' : ''}${w.r.toFixed(1)} |`)].join('\n') + '\n');
+      parts.push('Judge by the quarter, not the week: even the best-evidenced system here wins fewer than half its weeks (GUIDE §10). A week outside the backtest\'s range is an alarm for the audit; its sign is not.\n');
+    }
+  }
   const md = parts.join('\n');
   if (A.out) fs.writeFileSync(A.out, md);
   console.log(md);
 }
 if (require.main === module) main();
-module.exports = { score, phi, fromTrades };
+module.exports = { score, phi, fromTrades, fromLive };
