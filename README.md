@@ -5,6 +5,10 @@ built and off; live money is not possible in this build.
 
 **→ [swarm/INDEX.md](swarm/INDEX.md)** — the map: every agent, file, strategy, branch and test.
 
+**→ [upswarm/GUIDE.md](upswarm/GUIDE.md)** (branch `upswarm-upG`, 2026-10-24) — deep review of the swarm and the guide
+to upgrade it: what it does and whether it does what it says, every gap, the upgraded design (portfolio constructor,
+conductor, promotion rule v2, self-running evolution inside signed limits), the roadmap, and the experiments behind it.
+
 | | |
 |---|---|
 | Rules (who may change what) | [swarm/README.md](swarm/README.md) |
