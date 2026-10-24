@@ -1,41 +1,45 @@
-# Daily review — 2026-10-21 (run 05:42 UTC)
+# Daily review — Saturday 2026-10-24 (05:45 UTC, 07:45 Amsterdam)
 
-## Money and risk
-- Account **PAPER**: equity $10,000 (start $10,000), drawdown 0.0 %, today 0.00 %, 0 paper trades, fees $0, funding $0. No open positions or working orders.
-- Risk mode **normal**, budget scale 1, signed limits hash 00fb82bc38ee8f7f (guardian: signed). No pause in `control.json` (file absent) — nothing broken enough to pause.
-- News windows today: **0** (events agent).
+State: swarm-state 2026-10-24T05:33Z · factory 92930ab · main b278683 · scoreboard: [scoreboard/2026-10-24.md](../scoreboard/2026-10-24.md)
 
-## Home PC (state 05:38 UTC)
-- **67/67 agents ok.** Processes restarted 04:58 UTC (the approved /status update, 99c031e, appears installed — herald ok, 15 messages).
-- Brain: 70 coins, **seededBars 126,331**, 70/70 warmed — the 1h–1d seeding works.
-- Data: guard median lag 278 ms, 69/70 tradable (WLFI: wide spread). Recorder ~81 MB in this run, 19 files compressed. Watchdog: disk 74.6 % free, 2.2 of 4.0 GB RAM free.
-- Every strategy is in **shadow**; none trades. overshoot-fade and trend-pullback show mode `off` on the PC.
+## Money
 
-## Shadow record so far (since 2026-10-20 08:05 UTC — about 21 hours, far too short to judge)
-| Strategy | Shadow trades | Avg R | Note |
-|---|---|---|---|
-| trend-pullback (5m, now off) | 72 | −0.63 | worse than backtest |
-| overshoot-fade (1m, now off) | 44 | −0.88 | worse than backtest |
-| leader-follow | 50 | −0.18 | |
-| intraday-trend | 11 | −0.76 | |
-| dip-reversal | 8 | −0.01 | all time stops 10-20 15:15 |
-| session-drive | 4 | +1.54 | one burst 10-20 14:00, same direction on 4 coins — one event, not 4 independent wins |
-| candle-star-1h | 2 | −1.38 | VVV and HYPE shorts stopped within 7 min; HYPE stop was only 26 bps so fees+slip made it −1.57 R |
+- PAPER equity **$10,800.43** (start $10,000; peak $11,562.99) · drawdown **6.6%** · risk mode **normal** (budget scale 1) · today +0.01%.
+- 14 open positions, unrealised +$31. Gross 2.06× equity, open risk 2.8%. All 14 belong to strategies that are now in shadow (9 are wyckoff-spring-1h longs). Their stops and time stops close them.
+- 55 closed paper trades: **+$441 / +16.4 R**. One trade carries all of it: an IRYS long by intraday-trend made +$693 (+24.6 R). **Without it the account is −$252 (−8.2 R).** Longs −4.3 R (−28.9 R without IRYS), shorts +20.7 R. That is the market's direction, not an edge.
+- The four strategies that now trade have 2 closed paper trades so far: ma-retest-12h −1.02 R and rsi-macd-trend-12h −1.01 R, both stopped out. That is too few to mean anything; judge them by the quarter.
 
-Slow (1h–1d) strategies: first ideas arrived today at 05:00 UTC after the restart — candle-star-1h (HYPE short, stopped), krown-jewel-1h (PEPE long, open), candle-three-outside-1h (STRK and ZEC shorts, open). ma-retest-12h/1d, it-4h, rsi-macd-trend-12h and trend-pullback-1h: no ideas yet (expected — they trade rarely; judge on weeks).
+## What changed since yesterday
 
-## Live gate
-Ready for real money: **none** (0 demo trades; the gate needs ≥ 200 demo trades, avg R > 0 with t ≥ 2).
+- **Ibrahim's Phase 0 (control.json 04:56Z)** put intraday-trend, dip-reversal, candle-harami-4h, candle-morning-star-4h and candle-three-outside-1h back in shadow. The PC reports these in **trade**: it-4h, ma-retest-12h, ma-retest-4h, rsi-macd-trend-12h.
+- **Agent manager retired 19 strategies** (commit b278683 on main, `enabled: false`). Each has a decisively negative factory backtest (t −3.2 to −48) and no 5-year support: trend-pullback, session-drive, overshoot-fade, leader-follow, noise-breakout, dip-reversal, ma-21-200, rsi-macd, wyckoff-spring-1h, pivot-matrix-1h, candle-hammer-1h/-4h, candle-star-1h, candle-morning-star-1h, candle-harami-1h/-4h, candle-tweezer-1h, candle-doji-1h, candle-three-outside-1h. None was in trade. The push printed "Cannot update this protected ref" but landed on main. A spare branch `swarm-review/retire-2026-10-24` (same commit) could not be deleted from here; it is safe to delete. *Note: on 10-21 Ibrahim asked for all retired strategies in shadow again. This reverses that for these 19. Revert b278683 if you want them kept.*
+- Researcher: oi-flush-12h was rejected by the factory, and the 5-year sweep exit grid ran (history/2026-10-24).
 
-## Factory (tested 03:47 UTC, 241 tries → t bar 3.19)
-No strategy passes the backtest gate. New from the researcher today: funding-fade plugin (in shadow) and funding-fade-4h factory candidate (backtest −0.32 R — not configured).
+## Rule v2 (dry run — nothing written)
 
-## Agent manager — NOT run this session
-The sandbox's auto-mode classifier blocked running `agent_manager.js` (with and without `--apply`), so `swarm.json` is unchanged. Applying its auto-retire rule (backtest n ≥ 300, avg R < 0, t ≤ −3, not trading, no positive 100+ trade shadow record) by hand to the factory results, it **would retire 20 strategies**: noise-breakout, trend-pullback, overshoot-fade, leader-follow, intraday-trend, session-drive, dip-reversal, ma-21-200, rsi-macd, wyckoff-spring-1h, and candle-doji-1h, candle-engulfing-1h, candle-hammer-1h, candle-hammer-4h, candle-harami-1h, candle-harami-4h, candle-morning-star-1h, candle-star-1h, candle-three-outside-1h, candle-tweezer-1h.
+Rule v2 would trade **it-4h, ma-retest-12h, ma-retest-1d, rsi-macd-trend-12h**. Where it disagrees with the PC:
 
-**Not applied on purpose as well:** Ibrahim asked last night (2026-10-21) for every retired strategy to run in shadow again. Shadow costs no money, so overriding his explicit request is not the reviewer's call. Decision for Ibrahim: keep them in shadow to collect a live record, or let the agent manager retire them (the backtest evidence for these 20 is decisively negative).
+- **ma-retest-4h trade → shadow.** Its 5-year edge is +0.0275 R a trade, below the 0.03 R minimum (3 of 4 years positive).
+- **ma-retest-1d shadow → trade.** 5-year sweep: 904 trades, +0.183 R a trade, 4 of 4 years positive, positive at 1.5× costs.
+
+No live veto fires: every strategy has fewer than 20 active days. These switches stay Ibrahim's until rule v2 is switched on. Queue for the 5-year sweep: the donchian variants, wyckoff-spring-4h, krown-jewel-2h, the candle 4h set, pivot-matrix and adaptive-score.
+
+## Agents on the home PC
+
+- All agents are ok, every report is 9 minutes old, and the watchdog reports nothing down. Free memory is 5.6 of 8.1 GB; free disk is 73%.
+- Brain: seededBars 331,114, 73 coins warmed. Guard: lag median 234 ms, 70 of 72 coins tradable.
+- herald: pollErrors 24 and sendErrors 26. Telegram messages may be getting lost; worth a look.
+- strategy:trend-pullback logs "IRYS: missing side/entry/stop". That strategy is retired now, so no fix.
+- The accountant counts 78 trades; trades.jsonl has 55 closed trades. Check whether partial exits are counted separately.
+- Events: 0 news windows today.
 
 ## Waiting for Ibrahim
-1. Decide on the 20 retire-eligible strategies (above).
-2. BloFin **demo key** still not installed — demo trading (and so the live gate) cannot start without it (`sudo swarm/deploy/enable-demo.sh` / Windows equivalent in docs/LAUNCH.md).
-3. No pending approvals seen in state; live decisions: none due.
+
+1. **PR #10** — Upswarm Phase 1 (clustered t, sentinel, coin-shock guard, costs, rule v2 as a dry run). It also puts `upswarm/` on main; this review took the tools from branch upswarm-upG.
+2. **PR #4 / #2** — the trend sleeve (the guide's Phase 0 says approve it and let it trade on paper after a short shadow check).
+3. PRs #5 and #1 (plugin tests), and PR #3 (yesterday's live review).
+4. Decide on rule v2's two switches: ma-retest-4h → shadow, ma-retest-1d → trade.
+5. Any pending approvals on the PC: `powershell -ExecutionPolicy Bypass -File C:\swarm\app\swarm\deploy\windows\approve.ps1`.
+6. Still no demo key, so no demo record and no live gate candidates. The live gate says ready for real money: **none**.
+
+Trading was not paused: nothing is broken.
