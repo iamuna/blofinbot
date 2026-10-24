@@ -1,12 +1,38 @@
 {
- "id": "ibrahim-2026-10-24-ma-retest-4h-trade",
- "by": "ibrahim (via Claude, asked in chat 2026-10-24 05:40)",
- "rule": "Ibrahim: /mode ma-retest-4h trade (upswarm guide Phase 0, rule v2)",
+ "id": "ibrahim-2026-10-24-phase0-rule-v2",
+ "by": "ibrahim (via Claude: \"do as the upswarm guide says\", chat 2026-10-24 06:53)",
+ "at": "2026-10-24T04:56:14.423Z",
  "commands": [
   {
    "cmd": "strategy-mode",
-   "strategy": "ma-retest-4h",
-   "mode": "trade"
+   "strategy": "candle-harami-4h",
+   "mode": "shadow",
+   "why": "no 5-year sweep result, and the factory backtest is negative (-0.2392 R a trade, t -4.03, 504 trades): retirement candidate"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-morning-star-4h",
+   "mode": "shadow",
+   "why": "no 5-year sweep result — queue it for the sweep (live: 4 trades over 1 active days, clustered t 1.00)"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "candle-three-outside-1h",
+   "mode": "shadow",
+   "why": "no 5-year sweep result, and the factory backtest is negative (-0.1498 R a trade, t -5.82, 2487 trades): retirement candidate"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "dip-reversal",
+   "mode": "shadow",
+   "why": "5-year sweep dip-reversal@5 fails the gate: -0.0493 R a trade, 0/4 years positive, negative at 1.5× costs"
+  },
+  {
+   "cmd": "strategy-mode",
+   "strategy": "intraday-trend",
+   "mode": "shadow",
+   "why": "5-year sweep intraday-trend@30 fails the gate: -0.0427 R a trade, 0/4 years positive, negative at 1.5× costs"
   }
- ]
+ ],
+ "rule": "upswarm GUIDE §12 Phase 0 step 1 + rule v2: the 5 strategies still in trade with negative backtests go back to shadow"
 }
