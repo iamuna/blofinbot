@@ -20,7 +20,7 @@
   "AKRO",
   "TANSSI"
  ],
- "minutes": 68,
+ "minutes": 81,
  "data": {
   "from": "2021-03-01T00:00:00.000Z",
   "to": "2026-09-30T23:59:00.000Z",
@@ -1153,6 +1153,426 @@
    "tinyRisk": 0,
    "ideas": {
     "ideas": 6,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-retest-notarget@240": {
+   "n": 157,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 159,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "ma-retest-notarget@720": {
+   "n": 40,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 43,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-retest-notarget@1440": {
+   "n": 18,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 20,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "ma-retest-chandelier@240": {
+   "n": 180,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 181,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "ma-retest-chandelier@720": {
+   "n": 50,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 52,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "ma-pullback-notarget@720": {
+   "n": 135,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 138,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "rsi-macd-trend-notarget@720": {
+   "n": 168,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 169,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 1
+  },
+  "rsi-macd-trend-chandelier@720": {
+   "n": 174,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 176,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 2
+  },
+  "wyckoff-spring@60": {
+   "n": 1103,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 1105,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "wyckoff-spring@240": {
+   "n": 256,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 257,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "krown-jewel@60": {
+   "n": 2204,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 2215,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 9
+  },
+  "krown-jewel@120": {
+   "n": 1040,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 1046,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 5
+  },
+  "pivot-matrix@60": {
+   "n": 2412,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 2415,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "pivot-matrix@240": {
+   "n": 612,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 623,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-engulfing@60": {
+   "n": 2712,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 2714,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-engulfing@240": {
+   "n": 689,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 689,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-hammer@60": {
+   "n": 1706,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 1706,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-hammer@240": {
+   "n": 396,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 396,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-star@60": {
+   "n": 1861,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 1862,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-star@240": {
+   "n": 452,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 452,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-morning-star@60": {
+   "n": 456,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 456,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-morning-star@240": {
+   "n": 99,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 99,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-piercing@60": {
+   "n": 612,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 613,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-piercing@240": {
+   "n": 145,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 145,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-soldiers@60": {
+   "n": 69,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 69,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-soldiers@240": {
+   "n": 12,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 12,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-harami@60": {
+   "n": 1221,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 1221,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-harami@240": {
+   "n": 279,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 279,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-tweezer@60": {
+   "n": 2791,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 2792,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-tweezer@240": {
+   "n": 708,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 708,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-doji@60": {
+   "n": 254,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 254,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-doji@240": {
+   "n": 48,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 48,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-marubozu@60": {
+   "n": 317,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 317,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-marubozu@240": {
+   "n": 52,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 52,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-three-inside@60": {
+   "n": 162,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 162,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-three-inside@240": {
+   "n": 34,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 34,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-three-outside@60": {
+   "n": 1516,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 1518,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-three-outside@240": {
+   "n": 379,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 380,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-three-methods@60": {
+   "n": 21,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 21,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-three-methods@240": {
+   "n": 10,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 10,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-doji-star@60": {
+   "n": 86,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 86,
+    "rejected": 0,
+    "errors": 0
+   },
+   "unfilled": 0
+  },
+  "candle-doji-star@240": {
+   "n": 23,
+   "tinyRisk": 0,
+   "ideas": {
+    "ideas": 23,
     "rejected": 0,
     "errors": 0
    },

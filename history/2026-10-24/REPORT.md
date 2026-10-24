@@ -1,53 +1,53 @@
 # 5-year sweep: every strategy × every timeframe, walk-forward selection
 
-Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 113 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
+Data 2021-10-01 → 2026-09-30, point-in-time universe (Binance USD-M, 7-day volume ≥ $20M, ≤ 80 coins), live code path and costs (maker 2 bps, taker 6 bps + 1.5 bps slippage, funding). 155 variants. R = profit in units of the amount risked (at least 10 bps). % = sized so the walk-forward's worst drawdown is 20% of the account, no compounding.
 
 ## The honest result: walk-forward (12-month window, top 5, re-picked every quarter)
 
-Out-of-sample 2022-10-01 → 2026-09-30: **130.93 R, Sharpe 0.12, t 0.24**, max drawdown 671.02 R. Sized for a 20% worst drawdown: **+3.9% in 4.0 years** (≈ 1.0% a year).
+Out-of-sample 2022-10-01 → 2026-09-30: **81.57 R, Sharpe 0.07, t 0.15**, max drawdown 895.03 R. Sized for a 20% worst drawdown: **+1.8% in 4.0 years** (≈ 0.5% a year).
 
 | Year | R | % | Sharpe | Max DD (R) |
 |---|---|---|---|---|
-| 2022 | 58 | +1.7% | 0.93 | 110.68 |
-| 2023 | -560.48 | -16.7% | -3.15 | 625.75 |
-| 2024 | 10.39 | +0.3% | 0.06 | 147.9 |
-| 2025 | 569.8 | +17.0% | 1.27 | 127.94 |
-| 2026 | 53.22 | +1.6% | 0.35 | 173.05 |
+| 2022 | 139.12 | +3.1% | 1.74 | 150.35 |
+| 2023 | -605.27 | -13.5% | -3.08 | 652.73 |
+| 2024 | -73.6 | -1.6% | -0.4 | 329.74 |
+| 2025 | 626.32 | +14.0% | 1.39 | 115.5 |
+| 2026 | -5.01 | -0.1% | -0.06 | 108.7 |
 
-Compare over the same period: the best 5 in hindsight 1357.08 R (Sharpe 1.17) — the gap is luck; all 113 variants together (scaled to 5 slots) -455067.77 R (Sharpe -48.4).
+Compare over the same period: the best 5 in hindsight 1067.62 R (Sharpe 1.89) — the gap is luck; all 155 variants together (scaled to 5 slots) -334342.06 R (Sharpe -48.58).
 
-Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
+Timeframes picked (quarter-slots): 5m 4, 1h 4, 2h 6, 4h 11, 12h 38, 1d 17
 
 ### Robustness (other windows and pick counts — not chosen after the fact)
 
 | Window | Top | From | R | Sharpe | Max DD | t |
 |---|---|---|---|---|---|---|
-| 6 months | 3 | 2022-04-01 | 788.3 | 0.67 | 333.08 | 1.43 |
-| 6 months | 5 | 2022-04-01 | 209.8 | 0.12 | 1013.19 | 0.25 |
-| 6 months | 10 | 2022-04-01 | 1347.98 | 0.29 | 1437.8 | 0.62 |
-| 12 months | 3 | 2022-10-01 | 165.33 | 0.17 | 507.47 | 0.33 |
-| 12 months | 5 | 2022-10-01 | 130.93 | 0.12 | 671.02 | 0.24 |
-| 12 months | 10 | 2022-10-01 | 664.4 | 0.26 | 1498.36 | 0.53 |
-| 24 months | 3 | 2023-10-01 | 98.42 | 0.26 | 250.62 | 0.45 |
-| 24 months | 5 | 2023-10-01 | 134.57 | 0.23 | 346.1 | 0.39 |
-| 24 months | 10 | 2023-10-01 | 1218.96 | 0.69 | 585.19 | 1.2 |
+| 6 months | 3 | 2022-04-01 | 472.54 | 0.43 | 389.14 | 0.91 |
+| 6 months | 5 | 2022-04-01 | 169.07 | 0.12 | 728.74 | 0.25 |
+| 6 months | 10 | 2022-04-01 | 1001.58 | 0.31 | 1311.64 | 0.67 |
+| 12 months | 3 | 2022-10-01 | -172.59 | -0.31 | 611.75 | -0.62 |
+| 12 months | 5 | 2022-10-01 | 81.57 | 0.07 | 895.03 | 0.15 |
+| 12 months | 10 | 2022-10-01 | 257.25 | 0.14 | 1247.11 | 0.27 |
+| 24 months | 3 | 2023-10-01 | 15.42 | 0.04 | 263.23 | 0.06 |
+| 24 months | 5 | 2023-10-01 | -148.27 | -0.27 | 430.87 | -0.46 |
+| 24 months | 10 | 2023-10-01 | 1100.5 | 0.77 | 695.45 | 1.33 |
 
 ### Picks per quarter (out-of-sample R in brackets)
 
-- 2022-10-01: ma-retest@1440 (-1.7), harmonic@720 (2.01), rsi-macd-trend@720 (41.97), ma-retest@240 (7.59), rsi-macd-trend@1440 (8.13) → 58 R
-- 2023-01-01: ma-pullback-ride@720 (-114.27), ma-pullback-ride@1440 (-61.82), ma-pullback@1440 (-85.74), ma-retest@1440 (-20.05), ma-pullback@720 (-147.42) → -429.3 R
-- 2023-04-01: ma-retest@240 (-57.29), ma-retest@120 (-32.92), harmonic@1440 (-0.13), funding-fade@240 (-6.73), ma-pullback-ride@1440 (51.32) → -45.75 R
-- 2023-07-01: ma-pullback-ride@1440 (-8.91), rsi-macd-rev@720 (-21.64), rsi-macd-rev@1440 (-4.87), funding-fade@720 (10.18), ma-retest@240 (-4.08) → -29.32 R
-- 2023-10-01: funding-fade@720 (-2.81), rsi-macd-rev@720 (-34.5), funding-fade@240 (-19.6), donchian-150@1440 (2.62), donchian-20@1440 (-1.83) → -56.12 R
-- 2024-01-01: funding-fade@720 (30.77), donchian-150@1440 (-11.05), ma-retest@720 (18.07), ma-retest@1440 (-5.28), donchian-20@1440 (-23.72) → 8.79 R
-- 2024-04-01: ma-retest@720 (1.38), ma-pullback-ride@1440 (-59.44), funding-fade@720 (28.75), rsi-macd-trend@1440 (30.3), ma-pullback@720 (-64.43) → -63.44 R
-- 2024-07-01: ma-retest@720 (15.04), funding-fade@720 (0.87), trend-pullback@60 (11.27), rsi-macd-trend@1440 (6.52), trend-pullback@120 (48.67) → 82.37 R
-- 2024-10-01: ma-retest@720 (8.15), trend-pullback@120 (-20.22), funding-fade@720 (5.94), ma-retest@1440 (2.81), harmonic@120 (-13.99) → -17.31 R
-- 2025-01-01: funding-fade@720 (-0.26), trend-pullback@120 (-31.84), trend-pullback@60 (93.78), rsi-macd-rev@720 (3.16), harmonic@1440 (3.02) → 67.86 R
+- 2022-10-01: ma-retest@1440 (-1.7), harmonic@720 (2.01), rsi-macd-trend-notarget@720 (73.09), rsi-macd-trend@720 (41.97), rsi-macd-trend-chandelier@720 (23.75) → 139.12 R
+- 2023-01-01: ma-pullback-ride@720 (-114.27), ma-pullback-ride@1440 (-61.82), ma-retest-notarget@1440 (-24.47), rsi-macd-trend-notarget@720 (-95.57), ma-pullback@1440 (-85.74) → -381.87 R
+- 2023-04-01: ma-retest@240 (-57.29), ma-retest-notarget@240 (-89.27), ma-retest@120 (-32.92), harmonic@1440 (-0.13), funding-fade@240 (-6.73) → -186.34 R
+- 2023-07-01: ma-pullback-ride@1440 (-8.91), rsi-macd-rev@720 (-21.64), rsi-macd-rev@1440 (-4.87), candle-doji-star@240 (15.18), funding-fade@720 (10.18) → -10.06 R
+- 2023-10-01: funding-fade@720 (-2.81), candle-doji-star@240 (6.44), candle-marubozu@240 (2.05), rsi-macd-rev@720 (-34.5), candle-three-methods@240 (1.82) → -27 R
+- 2024-01-01: funding-fade@720 (30.77), candle-doji-star@240 (-1.6), donchian-150@1440 (-11.05), candle-marubozu@240 (6.96), ma-retest@720 (18.07) → 43.15 R
+- 2024-04-01: ma-pullback-notarget@720 (-64.13), ma-retest-notarget@720 (-4.62), ma-retest@720 (1.38), ma-retest-chandelier@720 (-8.92), ma-pullback-ride@1440 (-59.44) → -135.73 R
+- 2024-07-01: ma-retest@720 (15.04), ma-retest-notarget@720 (-15.45), funding-fade@720 (0.87), ma-pullback-notarget@720 (-16.69), trend-pullback@60 (11.27) → -4.96 R
+- 2024-10-01: ma-retest-notarget@720 (36.89), ma-retest@720 (8.15), trend-pullback@120 (-20.22), ma-retest-notarget@1440 (-2.7), ma-retest-chandelier@720 (1.84) → 23.96 R
+- 2025-01-01: funding-fade@720 (-0.26), ma-retest-notarget@720 (56.4), trend-pullback@120 (-31.84), trend-pullback@60 (93.78), rsi-macd-rev@720 (3.16) → 121.24 R
 - 2025-04-01: funding-fade@240 (-2.79), trend-pullback@60 (76.17), rsi-macd-rev@720 (-11.29), funding-fade@720 (6.52), ma-retest@720 (15.71) → 84.32 R
 - 2025-07-01: rsi-macd-trend@720 (-36.03), intraday-trend@120 (118.11), ma-retest@720 (-34.46), crowd-squeeze@5 (34.78), rsi-macd-rev@720 (14.96) → 97.36 R
-- 2025-10-01: crowd-squeeze@5 (24.27), intraday-trend@120 (346.9), rsi-macd-rev@720 (-44.02), funding-fade@240 (-1.98), funding-fade@720 (-4.94) → 320.23 R
-- 2026-01-01: ma-retest@1440 (1.68), crowd-squeeze@5 (2.45), ma-retest@720 (7.31), intraday-trend@120 (81.47), rsi-macd-trend@720 (-10.97) → 81.94 R
+- 2025-10-01: candle-three-methods@60 (-9.69), candle-soldiers@240 (5.92), crowd-squeeze@5 (24.27), intraday-trend@120 (346.9), rsi-macd-rev@720 (-44.02) → 323.38 R
+- 2026-01-01: ma-retest@1440 (1.68), crowd-squeeze@5 (2.45), ma-retest-notarget@1440 (1.08), ma-retest@720 (7.31), ma-retest-notarget@720 (11.19) → 23.71 R
 - 2026-04-01: ma-pullback@1440 (-6.47), funding-fade@720 (7.8), ma-retest@1440 (0.96), crowd-squeeze@5 (18.02), intraday-trend@120 (-49.38) → -29.07 R
 - 2026-07-01: ma-pullback@1440 (-24.85), ma-retest@1440 (10.92), intraday-trend@720 (39.69), funding-fade@720 (-1.42), ma-pullback-ride@1440 (-23.99) → 0.35 R
 
@@ -76,23 +76,45 @@ Timeframes picked (quarter-slots): 5m 4, 1h 3, 2h 9, 4h 7, 12h 32, 1d 25
 | donchian-150 |  |  |  |  |  |  |  |  |  | -0.29 / -0.017 (1478) |
 | adaptive-score |  |  |  |  |  |  |  | -0.23 / -0.0113 (34254) | 0.18 / 0.016 (9702) | 0.32 / 0.037 (4312) |
 | oi-flush |  |  |  |  |  |  |  |  | -1.33 / -0.0971 (1241) | -0.72 / -0.0941 (322) |
+| ma-retest-notarget |  |  |  |  |  |  |  | 0.31 / 0.0307 (6787) | 1.28 / 0.2378 (1907) | 0.7 / 0.1318 (757) |
+| ma-retest-chandelier |  |  |  |  |  |  |  | 0.23 / 0.021 (7723) | 0.94 / 0.1205 (2181) |  |
+| ma-pullback-notarget |  |  |  |  |  |  |  |  | 0.78 / 0.0741 (5596) |  |
+| rsi-macd-trend-notarget |  |  |  |  |  |  |  |  | 0.85 / 0.0894 (6791) |  |
+| rsi-macd-trend-chandelier |  |  |  |  |  |  |  |  | 0.72 / 0.0754 (7018) |  |
+| wyckoff-spring |  |  |  |  |  | -3.99 / -0.1166 (43568) |  | -0.74 / -0.0392 (10497) |  |  |
+| krown-jewel |  |  |  |  |  | -1.1 / -0.0389 (88433) | -0.7 / -0.0341 (42810) |  |  |  |
+| pivot-matrix |  |  |  |  |  | -2.79 / -0.0568 (93089) |  | -0.7 / -0.0228 (23491) |  |  |
+| candle-engulfing |  |  |  |  |  | -5.66 / -0.114 (107476) |  | -1.93 / -0.0662 (27330) |  |  |
+| candle-hammer |  |  |  |  |  | -7.7 / -0.214 (71948) |  | -2.74 / -0.1397 (17692) |  |  |
+| candle-star |  |  |  |  |  | -6.46 / -0.1666 (69501) |  | -2.21 / -0.1006 (16778) |  |  |
+| candle-morning-star |  |  |  |  |  | -1.81 / -0.0688 (17499) |  | -0.68 / -0.0478 (4212) |  |  |
+| candle-piercing |  |  |  |  |  | -1.77 / -0.0639 (25164) |  | -1.17 / -0.0739 (5562) |  |  |
+| candle-soldiers |  |  |  |  |  | -0.05 / -0.0039 (2095) |  | 0.09 / 0.0107 (430) |  |  |
+| candle-harami |  |  |  |  |  | -4.11 / -0.124 (46025) |  | -1.79 / -0.0949 (11300) |  |  |
+| candle-tweezer |  |  |  |  |  | -6.35 / -0.1349 (109799) |  | -3.04 / -0.1106 (27997) |  |  |
+| candle-doji |  |  |  |  |  | -2.86 / -0.1427 (10065) |  | -1.39 / -0.1273 (2198) |  |  |
+| candle-marubozu |  |  |  |  |  | -0.06 / -0.0038 (11069) |  | 0.38 / 0.0574 (2290) |  |  |
+| candle-three-inside |  |  |  |  |  | -1.14 / -0.0551 (5512) |  | -0.51 / -0.0513 (1274) |  |  |
+| candle-three-outside |  |  |  |  |  | -3.75 / -0.082 (60596) |  | -0.86 / -0.0325 (15324) |  |  |
+| candle-three-methods |  |  |  |  |  | -0.09 / -0.0127 (1028) |  | -0.35 / -0.0853 (411) |  |  |
+| candle-doji-star |  |  |  |  |  | -1.27 / -0.0783 (3622) |  | 0.28 / 0.034 (825) |  |  |
 
 ## Best 15 in hindsight (same out-of-sample period; for reference, not a result)
 
 | Variant | Trades | Avg R | Sum R | Sum R at 1.5× costs | Long / short R | Sharpe | Max DD | By year |
 |---|---|---|---|---|---|---|---|---|
 | funding-fade@720 | 1024 | 0.1452 | 148.69 | 146.22 | 79 / 69 | 1.54 | 27.77 | 2021: -59, 2022: 1, 2023: 43, 2024: 66, 2025: 12, 2026: 34 |
+| ma-retest-notarget@720 | 1472 | 0.2643 | 389.08 | 381.89 | 280 / 109 | 1.33 | 101.64 | 2021: -46, 2022: 90, 2023: 62, 2024: 219, 2025: 68, 2026: 61 |
 | ma-retest@720 | 1724 | 0.1241 | 213.9 | 207.07 | 65 / 149 | 1.19 | 92.72 | 2021: -40, 2022: 73, 2023: 59, 2024: 43, 2025: 82, 2026: 39 |
 | ma-retest@1440 | 703 | 0.1623 | 114.07 | 112.14 | -16 / 130 | 0.95 | 35.65 | 2021: 2, 2022: 48, 2023: 25, 2024: 8, 2025: 69, 2026: 14 |
+| ma-retest-chandelier@720 | 1694 | 0.1192 | 201.89 | 193.72 | 38 / 164 | 0.89 | 93.3 | 2021: -32, 2022: 83, 2023: 42, 2024: 12, 2025: 102, 2026: 55 |
+| ma-pullback-notarget@720 | 4340 | 0.0693 | 300.62 | 281.79 | 85 / 216 | 0.76 | 211.51 | 2021: -86, 2022: 264, 2023: 31, 2024: 134, 2025: -7, 2026: 78 |
 | intraday-trend@240 | 9734 | 0.0564 | 548.58 | 471.38 | 85 / 463 | 0.72 | 156.53 | 2021: -0, 2022: 23, 2023: 106, 2024: 70, 2025: 321, 2026: 49 |
+| ma-retest-notarget@1440 | 589 | 0.1428 | 84.14 | 82.15 | -15 / 99 | 0.72 | 52.39 | 2021: -38, 2022: 50, 2023: -4, 2024: 32, 2025: 59, 2026: 1 |
 | rsi-macd-trend@720 | 5595 | 0.0593 | 331.85 | 303.43 | -108 / 439 | 0.7 | 143.38 | 2021: -28, 2022: 314, 2023: -16, 2024: 116, 2025: 157, 2026: 32 |
 | intraday-trend@120 | 19815 | 0.0379 | 750.13 | 524.13 | 241 / 509 | 0.65 | 315.85 | 2021: 33, 2022: -13, 2023: -37, 2024: 45, 2025: 713, 2026: 19 |
+| rsi-macd-trend-notarget@720 | 5330 | 0.0676 | 360.2 | 327.34 | 4 / 356 | 0.65 | 151.91 | 2021: -22, 2022: 342, 2023: -5, 2024: 249, 2025: 11, 2026: 32 |
 | trend-pullback@60 | 10966 | 0.0304 | 332.85 | 190.46 | 22 / 310 | 0.6 | 199.76 | 2021: -89, 2022: 99, 2023: 141, 2024: 195, 2025: 107, 2026: -80 |
+| rsi-macd-trend-chandelier@720 | 5514 | 0.0639 | 352.1 | 318.24 | -142 / 495 | 0.58 | 163.76 | 2021: -72, 2022: 273, 2023: -10, 2024: 42, 2025: 191, 2026: 105 |
+| candle-doji-star@240 | 649 | 0.0542 | 35.18 | 26.07 | -7 / 42 | 0.48 | 33.43 | 2021: -7, 2022: 11, 2023: 25, 2024: -16, 2025: 4, 2026: 11 |
 | donchian-20@1440 | 9120 | 0.0177 | 161.33 | 129.86 | -37 / 198 | 0.45 | 95.26 | 2021: -81, 2022: 20, 2023: 120, 2024: 5, 2025: 20, 2026: 35 |
-| trend-pullback@120 | 2525 | 0.0315 | 79.43 | 57.02 | 17 / 63 | 0.36 | 89.54 | 2021: 3, 2022: 30, 2023: 22, 2024: 113, 2025: -35, 2026: -4 |
-| ma-pullback@720 | 4873 | 0.0248 | 120.88 | 102.8 | -91 / 212 | 0.34 | 175.01 | 2021: -76, 2022: 255, 2023: -18, 2024: -24, 2025: 48, 2026: 29 |
-| rsi-macd-rev@720 | 1991 | 0.0336 | 66.96 | 57.99 | 110 / -43 | 0.32 | 95.57 | 2021: -1, 2022: 15, 2023: 33, 2024: 73, 2025: -37, 2026: -14 |
-| rsi-macd-trend@240 | 18021 | 0.0121 | 218.93 | 58.97 | -336 / 554 | 0.24 | 410.65 | 2021: -20, 2022: 165, 2023: 2, 2024: -60, 2025: 217, 2026: -116 |
-| adaptive-score@1440 | 3251 | 0.0242 | 78.61 | 61.15 | -62 / 141 | 0.22 | 170.91 | 2021: -47, 2022: 214, 2023: -5, 2024: -35, 2025: -31, 2026: 64 |
-| crowd-squeeze@5 | 6231 | 0.0053 | 32.98 | -142.73 | 54 / -21 | 0.15 | 120.26 | 2021: -31, 2022: -205, 2023: -47, 2024: 39, 2025: 116, 2026: -20 |
-| intraday-trend@720 | 3582 | 0.008 | 28.66 | 12.85 | 113 / -84 | 0.13 | 132.52 | 2021: -35, 2022: -59, 2023: 2, 2024: -19, 2025: -35, 2026: 116 |
