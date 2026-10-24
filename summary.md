@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-24T09:40:35.934Z · account **PAPER** · risk mode normal
+Updated 2026-10-24T09:54:09.444Z · account **PAPER** · risk mode normal
 
 Equity $10752.38 (start $10000) · today -0.43% · drawdown 7.0% · 92 trades · fees $151.53 · funding $2.82
 
@@ -14,7 +14,7 @@ Open: none · working orders: 0
 | brain | ok |  |
 | brain-host | ok |  |
 | coordinator | ok |  |
-| events | ok |  |
+| events | degraded | calendar feed: fetch failed (keeping 0 saved events) |
 | guard | ok |  |
 | guardian | ok |  |
 | herald | ok |  |
@@ -73,7 +73,5 @@ Open: none · working orders: 0
 | trader | ok |  |
 | trend-sleeve | ok |  |
 | trend-sleeve-host | ok |  |
-| universe | ok |  |
+| universe | degraded | refresh failed: fetch failed |
 | watchdog | ok |  |
-
-Not tradable now: TIA: wide-spread
