@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-24T13:04:09.468Z · account **PAPER** · risk mode normal
+Updated 2026-10-24T13:14:09.469Z · account **PAPER** · risk mode normal
 
 Equity $10752.38 (start $10000) · today -0.43% · drawdown 7.0% · 92 trades · fees $151.53 · funding $2.82
 
@@ -75,5 +75,3 @@ Open: none · working orders: 0
 | trend-sleeve-host | ok |  |
 | universe | ok |  |
 | watchdog | ok |  |
-
-Not tradable now: ALT: wide-spread
