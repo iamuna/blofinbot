@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-24T07:13:43.094Z · account **PAPER** · risk mode normal
+Updated 2026-10-24T08:19:45.440Z · account **PAPER** · risk mode normal
 
 Equity $10752.38 (start $10000) · today -0.43% · drawdown 7.0% · 92 trades · fees $151.53 · funding $2.82
 
@@ -20,7 +20,6 @@ Open: none · working orders: 0
 | herald | ok |  |
 | recorder | ok |  |
 | state-sync | ok |  |
-| strategy:adaptive-score-12h | ok |  |
 | strategy:candle-doji-1h | ok |  |
 | strategy:candle-doji-4h | ok |  |
 | strategy:candle-doji-star-1h | ok |  |
@@ -58,8 +57,6 @@ Open: none · working orders: 0
 | strategy:funding-fade-4h | ok |  |
 | strategy:harmonic | ok |  |
 | strategy:intraday-trend | ok |  |
-| strategy:it-12h | ok |  |
-| strategy:it-1d | ok |  |
 | strategy:it-45-hold16 | ok |  |
 | strategy:it-45-hold32 | ok |  |
 | strategy:it-45-long | ok |  |
@@ -68,21 +65,16 @@ Open: none · working orders: 0
 | strategy:krown-jewel-2h | ok |  |
 | strategy:leader-follow | ok |  |
 | strategy:ma-21-200 | ok |  |
-| strategy:ma-pullback-12h | ok |  |
 | strategy:ma-retest-12h | ok |  |
 | strategy:ma-retest-1d | ok |  |
-| strategy:ma-retest-4h | ok |  |
 | strategy:noise-breakout | ok |  |
 | strategy:oi-flush | ok |  |
 | strategy:overshoot-fade | ok |  |
-| strategy:pivot-matrix | ok |  |
-| strategy:pivot-matrix-1h | ok |  |
-| strategy:pivot-matrix-4h | ok |  |
 | strategy:rsi-macd | ok |  |
 | strategy:rsi-macd-trend-12h | ok |  |
 | strategy:session-drive | ok |  |
 | strategy:squeeze-ride | ok |  |
-| strategy:trend-pullback | ok | IRYS: missing side/entry/stop |
+| strategy:trend-pullback | ok |  |
 | strategy:trend-pullback-1h | ok |  |
 | strategy:wyckoff-spring-1h | ok |  |
 | strategy:wyckoff-spring-4h | ok |  |
@@ -90,4 +82,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ALT: wide-spread
+Not tradable now: PHA: wide-spread
