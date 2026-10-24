@@ -161,3 +161,13 @@
 {"ts":1792803604308,"id":"int-wyckoff-spring-1h-mvloz340-15","coin":"PENGU","verdict":"approve","qty":188575.30401545862,"reasons":[],"mode":"normal"}
 {"ts":1792803604317,"id":"int-wyckoff-spring-1h-mvloz340-16","coin":"SHIB","verdict":"trim","qty":144308886.3598006,"reasons":["trimmed by net BTC exposure"],"mode":"normal"}
 {"ts":1792805404301,"id":"int-intraday-trend-mvlq1o00-5","coin":"PHA","verdict":"approve","qty":7810.942083091722,"reasons":[],"mode":"normal"}
+{"ts":1792807204326,"id":"int-wyckoff-spring-1h-mvlr48w0-17","coin":"ADA","verdict":"trim","qty":336.92635261634973,"reasons":["trimmed by net BTC exposure"],"mode":"normal"}
+{"ts":1792807204342,"id":"int-candle-engulfing-1h-mvlr48w0-20","coin":"ASTER","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 7.11"],"mode":"normal"}
+{"ts":1792807204344,"id":"int-candle-engulfing-1h-mvlr48w0-21","coin":"DASH","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.100"],"mode":"normal"}
+{"ts":1792807204345,"id":"int-candle-engulfing-1h-mvlr48w0-22","coin":"ETC","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.644"],"mode":"normal"}
+{"ts":1792807204347,"id":"int-candle-engulfing-1h-mvlr48w0-24","coin":"ICP","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 1.83"],"mode":"normal"}
+{"ts":1792807204349,"id":"int-wyckoff-spring-1h-mvlr48w0-18","coin":"LINK","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.423"],"mode":"normal"}
+{"ts":1792807204350,"id":"int-candle-engulfing-1h-mvlr48w0-26","coin":"SEI","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 89.4"],"mode":"normal"}
+{"ts":1792807204352,"id":"int-candle-engulfing-1h-mvlr48w0-28","coin":"SUI","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 5.20"],"mode":"normal"}
+{"ts":1792807204354,"id":"int-wyckoff-spring-1h-mvlr48w0-19","coin":"UNI","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 0.717"],"mode":"normal"}
+{"ts":1792807204357,"id":"int-candle-engulfing-1h-mvlr48w0-30","coin":"XLM","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 28.8"],"mode":"normal"}
