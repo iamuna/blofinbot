@@ -25,7 +25,8 @@
   "tStat": 2.81,
   "maxDDR": 5.06,
   "sharpe": 4.96,
-  "days": 79
+  "days": 79,
+  "tDay": 2.31
  },
  "cost15": {
   "n": 54,
@@ -40,7 +41,8 @@
   "tStat": 2.78,
   "maxDDR": 5.09,
   "sharpe": 4.92,
-  "days": 79
+  "days": 79,
+  "tDay": 2.29
  },
  "thirds": [
   {
@@ -56,7 +58,8 @@
    "tStat": 1.72,
    "maxDDR": 2,
    "sharpe": 6.52,
-   "days": 27
+   "days": 27,
+   "tDay": 1.77
   },
   {
    "n": 21,
@@ -71,7 +74,8 @@
    "tStat": 0.6,
    "maxDDR": 4.87,
    "sharpe": 2.19,
-   "days": 22
+   "days": 22,
+   "tDay": 0.54
   },
   {
    "n": 19,
@@ -86,7 +90,8 @@
    "tStat": 2.56,
    "maxDDR": 5.06,
    "sharpe": 6.68,
-   "days": 27
+   "days": 27,
+   "tDay": 1.82
   }
  ],
  "months": {
@@ -103,7 +108,8 @@
    "tStat": 0.32,
    "maxDDR": 1.03,
    "sharpe": 4.37,
-   "days": 2
+   "days": 2,
+   "tDay": 0.32
   },
   "2026-08": {
    "n": 16,
@@ -118,7 +124,8 @@
    "tStat": 1.26,
    "maxDDR": 3.04,
    "sharpe": 4.46,
-   "days": 27
+   "days": 27,
+   "tDay": 1.21
   },
   "2026-09": {
    "n": 31,
@@ -133,7 +140,8 @@
    "tStat": 3.42,
    "maxDDR": 4.87,
    "sharpe": 10.02,
-   "days": 25
+   "days": 25,
+   "tDay": 2.62
   },
   "2026-10": {
    "n": 5,
@@ -148,18 +156,19 @@
    "tStat": -437.86,
    "maxDDR": 5.06,
    "sharpe": -18.04,
-   "days": 7
+   "days": 7,
+   "tDay": -2.5
   }
  },
  "gate": {
   "pass": false,
   "why": [
    "54 trades (need 300)",
-   "t 2.81 < 3.30 (bar for 402 tries)"
+   "t 2.31 < 3.31 (bar for 410 tries; daily-clustered)"
   ],
-  "bar": 3.302113026542235
+  "bar": 3.3063919283598677
  },
- "testedAt": "2026-10-24T03:52:22.807Z",
+ "testedAt": "2026-10-24T06:54:49.906Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-21T23:59:00.000Z",

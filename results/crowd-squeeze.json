@@ -19,7 +19,8 @@
   "tStat": -0.33,
   "maxDDR": 12.94,
   "sharpe": -0.65,
-  "days": 166
+  "days": 166,
+  "tDay": -0.44
  },
  "cost15": {
   "n": 26,
@@ -34,7 +35,8 @@
   "tStat": -0.47,
   "maxDDR": 13.58,
   "sharpe": -0.91,
-  "days": 166
+  "days": 166,
+  "tDay": -0.62
  },
  "thirds": [
   {
@@ -50,7 +52,8 @@
    "tStat": 1.73,
    "maxDDR": 1.08,
    "sharpe": 5.59,
-   "days": 47
+   "days": 47,
+   "tDay": 2.01
   },
   {
    "n": 4,
@@ -65,7 +68,8 @@
    "tStat": -0.38,
    "maxDDR": 3.11,
    "sharpe": -3.29,
-   "days": 44
+   "days": 44,
+   "tDay": -1.14
   },
   {
    "n": 12,
@@ -80,7 +84,8 @@
    "tStat": -2.61,
    "maxDDR": 9.82,
    "sharpe": -7.66,
-   "days": 45
+   "days": 45,
+   "tDay": -2.69
   }
  ],
  "months": {
@@ -97,7 +102,8 @@
    "tStat": null,
    "maxDDR": 0,
    "sharpe": null,
-   "days": 1
+   "days": 1,
+   "tDay": null
   },
   "2026-05": {
    "n": 5,
@@ -112,7 +118,8 @@
    "tStat": 1.37,
    "maxDDR": 1.08,
    "sharpe": 6.59,
-   "days": 25
+   "days": 25,
+   "tDay": 1.73
   },
   "2026-06": {
    "n": 7,
@@ -127,7 +134,8 @@
    "tStat": 0.39,
    "maxDDR": 2.11,
    "sharpe": 2.89,
-   "days": 20
+   "days": 20,
+   "tDay": 0.68
   },
   "2026-08": {
    "n": 5,
@@ -142,7 +150,8 @@
    "tStat": -20.98,
    "maxDDR": 5.64,
    "sharpe": -8.52,
-   "days": 29
+   "days": 29,
+   "tDay": -2.4
   },
   "2026-09": {
    "n": 5,
@@ -157,7 +166,8 @@
    "tStat": -107.53,
    "maxDDR": 5.18,
    "sharpe": -9.14,
-   "days": 26
+   "days": 26,
+   "tDay": -2.44
   },
   "2026-10": {
    "n": 3,
@@ -172,7 +182,8 @@
    "tStat": 0.44,
    "maxDDR": 1.11,
    "sharpe": 26.8,
-   "days": 2
+   "days": 2,
+   "tDay": 1.98
   }
  },
  "gate": {
@@ -182,11 +193,11 @@
    "average -0.1268 R at 1.5× costs (need > 0)",
    "newest third -0.7188 R (need > 0)",
    "positive in fewer than 2 of 3 thirds",
-   "t -0.33 < 3.30 (bar for 402 tries)"
+   "t -0.44 < 3.31 (bar for 410 tries; daily-clustered)"
   ],
-  "bar": 3.302113026542235
+  "bar": 3.3063919283598677
  },
- "testedAt": "2026-10-24T03:52:22.807Z",
+ "testedAt": "2026-10-24T06:54:49.906Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-21T23:59:00.000Z",

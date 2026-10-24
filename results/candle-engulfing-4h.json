@@ -25,7 +25,8 @@
   "tStat": -2.86,
   "maxDDR": 141.37,
   "sharpe": -2.68,
-  "days": 183
+  "days": 183,
+  "tDay": -1.9
  },
  "cost15": {
   "n": 1087,
@@ -40,7 +41,8 @@
   "tStat": -3.56,
   "maxDDR": 168.07,
   "sharpe": -3.32,
-  "days": 183
+  "days": 183,
+  "tDay": -2.35
  },
  "thirds": [
   {
@@ -56,7 +58,8 @@
    "tStat": -3.29,
    "maxDDR": 103.7,
    "sharpe": -4.87,
-   "days": 62
+   "days": 62,
+   "tDay": -2.01
   },
   {
    "n": 373,
@@ -71,7 +74,8 @@
    "tStat": -0.37,
    "maxDDR": 43.81,
    "sharpe": -0.64,
-   "days": 62
+   "days": 62,
+   "tDay": -0.26
   },
   {
    "n": 341,
@@ -86,7 +90,8 @@
    "tStat": -1.38,
    "maxDDR": 48.78,
    "sharpe": -2.28,
-   "days": 61
+   "days": 61,
+   "tDay": -0.93
   }
  ],
  "months": {
@@ -103,7 +108,8 @@
    "tStat": -1.51,
    "maxDDR": 17.38,
    "sharpe": -6.64,
-   "days": 9
+   "days": 9,
+   "tDay": -1.04
   },
   "2026-05": {
    "n": 182,
@@ -118,7 +124,8 @@
    "tStat": -4.18,
    "maxDDR": 70.38,
    "sharpe": -9.68,
-   "days": 31
+   "days": 31,
+   "tDay": -2.82
   },
   "2026-06": {
    "n": 195,
@@ -133,7 +140,8 @@
    "tStat": -1.11,
    "maxDDR": 34.98,
    "sharpe": -2.08,
-   "days": 30
+   "days": 30,
+   "tDay": -0.6
   },
   "2026-07": {
    "n": 210,
@@ -148,7 +156,8 @@
    "tStat": 0.93,
    "maxDDR": 26.36,
    "sharpe": 2.41,
-   "days": 31
+   "days": 31,
+   "tDay": 0.7
   },
   "2026-08": {
    "n": 154,
@@ -163,7 +172,8 @@
    "tStat": -0.8,
    "maxDDR": 27.99,
    "sharpe": -2.1,
-   "days": 30
+   "days": 30,
+   "tDay": -0.6
   },
   "2026-09": {
    "n": 189,
@@ -178,7 +188,8 @@
    "tStat": -1.41,
    "maxDDR": 40.95,
    "sharpe": -3.24,
-   "days": 30
+   "days": 30,
+   "tDay": -0.93
   },
   "2026-10": {
    "n": 111,
@@ -193,7 +204,8 @@
    "tStat": -0.21,
    "maxDDR": 34.25,
    "sharpe": -0.56,
-   "days": 21
+   "days": 21,
+   "tDay": -0.14
   }
  },
  "gate": {
@@ -202,11 +214,11 @@
    "average -0.144 R at 1.5× costs (need > 0)",
    "newest third -0.0979 R (need > 0)",
    "positive in fewer than 2 of 3 thirds",
-   "t -2.86 < 3.30 (bar for 402 tries)"
+   "t -2.86 < 3.31 (bar for 410 tries; daily-clustered)"
   ],
-  "bar": 3.302113026542235
+  "bar": 3.3063919283598677
  },
- "testedAt": "2026-10-24T03:52:22.807Z",
+ "testedAt": "2026-10-24T06:54:49.906Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-21T23:59:00.000Z",

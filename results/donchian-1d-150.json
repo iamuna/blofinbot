@@ -25,7 +25,8 @@
   "tStat": -0.17,
   "maxDDR": 4.68,
   "sharpe": -0.51,
-  "days": 42
+  "days": 42,
+  "tDay": -0.17
  },
  "cost15": {
   "n": 30,
@@ -40,7 +41,8 @@
   "tStat": -0.19,
   "maxDDR": 4.7,
   "sharpe": -0.54,
-  "days": 42
+  "days": 42,
+  "tDay": -0.18
  },
  "thirds": [
   {
@@ -56,7 +58,8 @@
    "tStat": -0.43,
    "maxDDR": 1.29,
    "sharpe": -2.31,
-   "days": 14
+   "days": 14,
+   "tDay": -0.45
   },
   {
    "n": 10,
@@ -71,7 +74,8 @@
    "tStat": 0.87,
    "maxDDR": 1.21,
    "sharpe": 5.62,
-   "days": 10
+   "days": 10,
+   "tDay": 0.93
   },
   {
    "n": 14,
@@ -86,7 +90,8 @@
    "tStat": -1.61,
    "maxDDR": 3.74,
    "sharpe": -7.51,
-   "days": 11
+   "days": 11,
+   "tDay": -1.3
   }
  ],
  "months": {
@@ -103,7 +108,8 @@
    "tStat": 0.93,
    "maxDDR": 1.42,
    "sharpe": 3.98,
-   "days": 23
+   "days": 23,
+   "tDay": 1
   },
   "2026-10": {
    "n": 15,
@@ -118,7 +124,8 @@
    "tStat": -1.94,
    "maxDDR": 4.26,
    "sharpe": -7.28,
-   "days": 17
+   "days": 17,
+   "tDay": -1.57
   }
  },
  "gate": {
@@ -128,11 +135,11 @@
    "average -0.0256 R at 1.5× costs (need > 0)",
    "newest third -0.2236 R (need > 0)",
    "positive in fewer than 2 of 3 thirds",
-   "t -0.17 < 3.30 (bar for 402 tries)"
+   "t -0.17 < 3.31 (bar for 410 tries; daily-clustered)"
   ],
-  "bar": 3.302113026542235
+  "bar": 3.3063919283598677
  },
- "testedAt": "2026-10-24T03:52:22.807Z",
+ "testedAt": "2026-10-24T06:54:49.906Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-21T23:59:00.000Z",

@@ -26,7 +26,8 @@
   "tStat": 3.9,
   "maxDDR": 9.83,
   "sharpe": 3,
-  "days": 165
+  "days": 165,
+  "tDay": 2.02
  },
  "cost15": {
   "n": 207,
@@ -41,7 +42,8 @@
   "tStat": 3.85,
   "maxDDR": 9.96,
   "sharpe": 2.97,
-  "days": 165
+  "days": 165,
+  "tDay": 1.99
  },
  "thirds": [
   {
@@ -57,7 +59,8 @@
    "tStat": 2.02,
    "maxDDR": 3.21,
    "sharpe": 4.09,
-   "days": 55
+   "days": 55,
+   "tDay": 1.59
   },
   {
    "n": 64,
@@ -72,7 +75,8 @@
    "tStat": 3.5,
    "maxDDR": 7.72,
    "sharpe": 3.59,
-   "days": 48
+   "days": 48,
+   "tDay": 1.3
   },
   {
    "n": 92,
@@ -87,7 +91,8 @@
    "tStat": 1.09,
    "maxDDR": 6.44,
    "sharpe": 2.56,
-   "days": 55
+   "days": 55,
+   "tDay": 0.99
   }
  ],
  "months": {
@@ -104,7 +109,8 @@
    "tStat": 2.34,
    "maxDDR": 3.21,
    "sharpe": 7.04,
-   "days": 25
+   "days": 25,
+   "tDay": 1.84
   },
   "2026-06": {
    "n": 6,
@@ -119,7 +125,8 @@
    "tStat": -1.5,
    "maxDDR": 1.96,
    "sharpe": -5.98,
-   "days": 29
+   "days": 29,
+   "tDay": -1.69
   },
   "2026-07": {
    "n": 22,
@@ -134,7 +141,8 @@
    "tStat": -3.22,
    "maxDDR": 7.72,
    "sharpe": -11,
-   "days": 23
+   "days": 23,
+   "tDay": -2.76
   },
   "2026-08": {
    "n": 51,
@@ -149,7 +157,8 @@
    "tStat": 4.44,
    "maxDDR": 3.25,
    "sharpe": 5.23,
-   "days": 31
+   "days": 31,
+   "tDay": 1.53
   },
   "2026-09": {
    "n": 63,
@@ -164,7 +173,8 @@
    "tStat": 2.03,
    "maxDDR": 3.05,
    "sharpe": 6.86,
-   "days": 29
+   "days": 29,
+   "tDay": 1.93
   },
   "2026-10": {
    "n": 20,
@@ -179,17 +189,19 @@
    "tStat": -1.49,
    "maxDDR": 4.95,
    "sharpe": -5.32,
-   "days": 17
+   "days": 17,
+   "tDay": -1.15
   }
  },
  "gate": {
   "pass": false,
   "why": [
-   "207 trades (need 300)"
+   "207 trades (need 300)",
+   "t 2.02 < 3.31 (bar for 410 tries; daily-clustered)"
   ],
-  "bar": 3.302113026542235
+  "bar": 3.3063919283598677
  },
- "testedAt": "2026-10-24T03:52:22.807Z",
+ "testedAt": "2026-10-24T06:54:49.906Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-21T23:59:00.000Z",

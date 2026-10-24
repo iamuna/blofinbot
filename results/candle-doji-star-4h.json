@@ -25,7 +25,8 @@
   "tStat": 1.77,
   "maxDDR": 4.97,
   "sharpe": 2.64,
-  "days": 162
+  "days": 162,
+  "tDay": 1.76
  },
  "cost15": {
   "n": 36,
@@ -40,7 +41,8 @@
   "tStat": 1.7,
   "maxDDR": 5.09,
   "sharpe": 2.54,
-  "days": 162
+  "days": 162,
+  "tDay": 1.69
  },
  "thirds": [
   {
@@ -56,7 +58,8 @@
    "tStat": 1.01,
    "maxDDR": 2.16,
    "sharpe": 3.32,
-   "days": 48
+   "days": 48,
+   "tDay": 1.2
   },
   {
    "n": 12,
@@ -71,7 +74,8 @@
    "tStat": 1.02,
    "maxDDR": 3.08,
    "sharpe": 2.49,
-   "days": 48
+   "days": 48,
+   "tDay": 0.9
   },
   {
    "n": 15,
@@ -86,7 +90,8 @@
    "tStat": 0.97,
    "maxDDR": 2.81,
    "sharpe": 2.97,
-   "days": 46
+   "days": 46,
+   "tDay": 1.05
   }
  ],
  "months": {
@@ -103,7 +108,8 @@
    "tStat": -0.04,
    "maxDDR": 1.06,
    "sharpe": -0.49,
-   "days": 2
+   "days": 2,
+   "tDay": -0.04
   },
   "2026-05": {
    "n": 5,
@@ -118,7 +124,8 @@
    "tStat": 1.01,
    "maxDDR": 2.08,
    "sharpe": 10.6,
-   "days": 7
+   "days": 7,
+   "tDay": 1.47
   },
   "2026-06": {
    "n": 4,
@@ -133,7 +140,8 @@
    "tStat": -0.36,
    "maxDDR": 2.05,
    "sharpe": -1.58,
-   "days": 24
+   "days": 24,
+   "tDay": -0.4
   },
   "2026-07": {
    "n": 6,
@@ -148,7 +156,8 @@
    "tStat": 2.96,
    "maxDDR": 1.03,
    "sharpe": 6.6,
-   "days": 25
+   "days": 25,
+   "tDay": 1.73
   },
   "2026-08": {
    "n": 8,
@@ -163,7 +172,8 @@
    "tStat": -1.32,
    "maxDDR": 4.97,
    "sharpe": -4.78,
-   "days": 26
+   "days": 26,
+   "tDay": -1.28
   },
   "2026-09": {
    "n": 8,
@@ -178,7 +188,8 @@
    "tStat": 1.29,
    "maxDDR": 1.01,
    "sharpe": 5.27,
-   "days": 27
+   "days": 27,
+   "tDay": 1.43
   },
   "2026-10": {
    "n": 3,
@@ -193,18 +204,19 @@
    "tStat": 0.98,
    "maxDDR": 1.01,
    "sharpe": null,
-   "days": 1
+   "days": 1,
+   "tDay": null
   }
  },
  "gate": {
   "pass": false,
   "why": [
    "36 trades (need 300)",
-   "t 1.77 < 3.30 (bar for 402 tries)"
+   "t 1.76 < 3.31 (bar for 410 tries; daily-clustered)"
   ],
-  "bar": 3.302113026542235
+  "bar": 3.3063919283598677
  },
- "testedAt": "2026-10-24T03:52:22.807Z",
+ "testedAt": "2026-10-24T06:54:49.906Z",
  "data": {
   "from": "2026-04-01T00:00:00.000Z",
   "to": "2026-10-21T23:59:00.000Z",
