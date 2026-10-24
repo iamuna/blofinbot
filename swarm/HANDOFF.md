@@ -2,7 +2,7 @@
 
 ## Where things are
 - Code: repo iamuna/blofinbot, branch `main` (deployed; it was `swarm` until 2026-10-23). Bot lives in `swarm/`. Progress notes: `swarm/PROGRESS.md` ("Now — resume here").
-- Runs on Ibrahim's Windows PC (HP ProDesk 400, i5, 4 GB RAM, DDR3 board) in `C:\swarm`. Paper account, $10,000. Logs in `C:\swarm\logs`, secrets in `C:\swarm\secrets.json` (never paste it).
+- Runs on Ibrahim's Windows PC (HP ProDesk 400, i5, 8 GB RAM since 2026-10-23 (was 4 GB), DDR3 board) in `C:\swarm`. Paper account, $10,000. Logs in `C:\swarm\logs`, secrets in `C:\swarm\secrets.json` (never paste it).
 - Status: the bot publishes `swarm-state` branch to GitHub every 10 min (state.json, summary.md, shadow.jsonl). Check with `git ls-remote origin refs/heads/swarm-state`, then fetch that commit.
 - Telegram: `/status` (full report: account, per-strategy shadow + paper stats), `/pause`, `/resume`, `/flatten`, `/mode <name> off|shadow|trade`.
 - Updates to protected code need Ibrahim's OK: Telegram tells him, he runs
@@ -24,7 +24,7 @@
 - Strategies start in shadow; promotion to trade is his call via `/mode`.
 - Keep the bot's self-adding strategies shadow-only (he has not yet confirmed building that: offered, not built).
 - No auto-approve via Telegram (declined).
-- Memory: 4 GB PC, 8 GB DDR3 upgrade is the real fix (he has 2.5 GB free now).
+- Memory: upgraded to 8 GB on 2026-10-23 (the 4 GB PC had ~2.5 GB free). The 4 GB-era limits are already gone: no Node heap cap (`deploy/windows/run.ps1`), universe back at 80 coins (`universe.maxCoins`). Using the headroom (PC reported 8,117 MB total, 6,152 MB free, swarm process 304 MB): `brain.keepBars` 1000 bars per timeframe and coin (was 400; ~+70 MB), `brain.seed4hBars` 4320 (720 days of 4h history at start-up instead of 240, so 12h/1d averages start as in the backtests; start-up ~1 min longer), two more shadow strategies (`it-12h`, `it-1d`), and the brain's own memory in `/status` ("brain N MB").
 
 ## Open items
 1. Confirm `/status` shows the per-strategy layout (commit 99c031e). If not, run approve.ps1 again.

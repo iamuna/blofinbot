@@ -40,6 +40,11 @@ and test any new idea on the 5-year history (`history/README.md`) before trustin
    (`{"name","base","params","idea","source","author":"researcher"}`); a new mechanism is a plugin
    `swarm/src/strategies/<name>.js` (pure: see the plugin check) + its name in `index.js` PLUGINS + a unit test +
    a candidate file. Run `npm test` and `node src/factory/plugin_check.js src/strategies/<name>.js` in `swarm/`.
+   Before writing the candidate, screen the idea with the event study (`node src/research/event_study.js --data
+   <swarm-data> --variants v.json`): if the edge (MFE ÷ |MAE|) stays below ~1.2 or forward R is not positive in both
+   halves, no stop, target or parameter will rescue it: log it as a try and stop there
+   ([../../expansion/RESULTS_2026-10-23.md](../../expansion/RESULTS_2026-10-23.md) §4). Tune settings with
+   `src/factory/tuner.js --factory …` only for a family that passes that screen.
 5. Commit to `main`: the factory workflow backtests it on 6.5 months × 31 coins and applies the gate.
 6. A candidate that passes the backtest gate: add it to `config/swarm.json` → `strategies` with `"mode": "shadow"`.
    It gathers live evidence; the promotion gate decides about trade. A candidate that misses the gate only on the

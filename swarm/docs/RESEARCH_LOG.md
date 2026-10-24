@@ -3,6 +3,78 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-24 03:40 — oi-flush verdict from the factory, its 5-year sweep group pushed; no new try
+
+**Tries: 401 (factory LATEST, run 2026-10-23 11:29) → t bar 3.30.** Nothing passes the backtest gate. No new tries
+today: the oi-flush sweep variants (@720, @1440) were logged on 2026-10-23 and only run now.
+
+- **oi-flush-12h (factory, 6.5 months × 31 coins, run 2026-10-23 11:29)**: 10 trades, −0.49 R, t −3.36, all three
+  thirds negative (−1.0 / −0.2 / −3.7 R). Ten trades are still too few to say much, but every one of them points the
+  wrong way. **Candidate moved to `factory/rejected/`.** The real verdict is the 5-year sweep: group
+  `oi-flush` @720/@1440 added to `history/sweep.js` today (no sweep was running; last run finished 2026-10-23 12:52).
+  Judge as declared: positive at 1.5× costs in most years, both sides reported, every third. Binance open interest
+  starts ~2021-12, so 2021-Q4 has no signals.
+- **donchian-12h-60** (shadow since the repo consolidation, not a researcher candidate): factory +0.29 R, t 3.90,
+  207 trades, positive in all thirds — misses only on trade count. The 5-year sweep says otherwise: donchian-60@12h
+  −0.018 R over 5,124 trades, donchian-20@12h −0.032 R. The 6.5-month number is this window's luck; no promotion
+  case for it. donchian-20@1d (+0.011 R, Sharpe 0.27; long −37 / short +198 R out of sample) is the only positive one.
+- **Sweep** (2026-10-23, 111 variants): walk-forward 12-month/top-5 Sharpe 0.12 (t 0.24), ≈ 1%/year; best 5 in
+  hindsight Sharpe 1.17. Unchanged lesson: the selector is not a portfolio; the robust four
+  (ma-retest 12h/4h, rsi-macd-trend 12h, ma-pullback 12h) are the only slow set that holds up across samples.
+- **Shadow record** (swarm-state, review 2026-10-24 03:39): every slow strategy has 0–1 shadow trades so far; nothing
+  to judge yet.
+- **Why no new try**: the queue's funding-fade trend-filter variant (5) would be fitted to the 2021-Q4 loss that
+  shaped it; the liquidation/book ideas (2, 3) still need the home PC's recordings, which are not on `swarm-state`;
+  a quick literature check found no new open-interest result with a forced-trader mechanism we have not tested.
+  Better to let oi-flush's sweep finish than to add another variant to the pool (every extra one costs the
+  walk-forward, see 2026-10-23).
+
+## 2026-10-23 — the 1-minute bot's tools on the 5-year data (break-even, adaptive-score, streak rule)
+
+Branch possible-expansion run for real: 60 longest-listed coins of `swarm-history-v1`, 2021-10 → 2026-09, sweep
+with `--breakeven both`. Full report: [../../expansion/RESULTS_2026-10-23.md](../../expansion/RESULTS_2026-10-23.md).
+- Break-even at +1 R (what paper/demo did, shadow did not): robust five +1,345 R → +1,198 R, Sharpe 1.33 → 1.24;
+  ma-retest-12h +0.183 → +0.133 R a trade. **`trading.breakevenR` set to 0**: paper exits as shadow and backtests.
+- adaptive-score (the 1-minute bot's trend + momentum score): 4h −0.009, 12h +0.024 (t 0.56), 1d +0.036 (t 0.65).
+  Rejected; 6 tries.
+- Loss-streak rule: −10 to −32% of R, R÷DD better in 2 of 5. Not adopted. Its replay sized trades at exit
+  (look-ahead with overlapping trades), fixed.
+- Event study works as a screen: winners have edge (MFE ÷ |MAE|) 1.3–1.6 with forward R positive in both halves,
+  losers ≤ 1. Rule: edge ≥ ~1.2 and both halves positive before writing a factory candidate.
+- Both sides earn, by regime (longs in 2023/24, shorts in 2022/25): no side filter.
+- Era test (`swarm-era.yml`, Binance spot 2018-03 → 2021-09, 12 majors): ma-retest-12h +0.30, rsi-macd-trend-12h
+  +0.37, ma-retest-4h +0.13, ma-pullback-12h +0.15 R, all positive in nearly every third. **ma-retest-1d −0.16**
+  (2020–21 −0.34, t −2.8): keep it in shadow, trade the robust four. adaptive-score +0.11 / +0.19 R (4h / 12h, t 5)
+  there vs flat on 2021–26: regime-dependent, `adaptive-score-12h` in shadow as a watch. Break-even a wash there.
+
+## 2026-10-23 — deep review of every strategy (Ibrahim: "improve them or fix them")
+
+136 variants (every family × 1h/2h/4h/12h/1d, 14 candle patterns separately) on hourly history 2020–2026, research
+and validation coins, live feature/strategy/exec code; diagnose on research 2020–23, judge on 2024–26 and on the
+validation coins. Full report: [DEEP_REVIEW_2026-10-23.md](DEEP_REVIEW_2026-10-23.md).
+- The reversal and pattern families have no direction (MFE ≈ MAE, gross ≈ 0); at 1h, costs make them clearly
+  negative. Trend-alignment filter: no rescue (3 marginal flips, 11 that fail out of sample). Not fixable by settings.
+- Positive in all three samples: ma-retest 12h / 1d / 4h, rsi-macd-trend 12h, ma-pullback 12h. As one book: Sharpe
+  1.09 / 0.92 / 1.41. Added `ma-retest-4h` and `ma-pullback-12h` to shadow.
+- The six put on paper today (48 h shadow R ≥ +10) are Sharpe −5 in every sample: recommend shadow for them, and the
+  robust five to trade (Ibrahim's call).
+
+## 2026-10-23 — PIVOT-MATRIX v1.3 (Ibrahim's spec): no edge, in shadow at his request
+
+Swing pivots broken (break of structure, with a higher-timeframe EMA 50/200 bias) or swept (swing failure), with
+structure stops. Plugin `pivot-matrix`; full write-up in [PIVOT_MATRIX_2026-10-23.md](PIVOT_MATRIX_2026-10-23.md).
+- The spec's Python backtester looks ahead twice: the higher-timeframe EMA uses closes up to 3¾ h in the future,
+  and the ZigZag list drops pivots that a later, more extreme one replaced. The plugin judges each pivot when it is
+  confirmed, and uses closed higher-timeframe bars only.
+- Factory (2026, 31 coins): 15m −0.129 R (t −12.9), 1h −0.067 (t −3.4), 4h −0.059 (t −1.4); break-of-structure
+  only −0.037, sweep only −0.084.
+- 2020–2026 hourly (top 20 and 30 validation coins): every variant negative, in nearly every year, both sides. Before
+  costs −11 to +2 bps a trade: no edge to lose. The spec's own exits (trail to each swing) lose as well
+  (1h −0.09 / −0.075 R, t −15; 4h −0.014 / −0.031 R).
+- Lesson, again: discretionary price-action structure (candles, Wyckoff, now pivots/BOS/sweeps) has no measurable edge
+  on these coins once it is mechanical and look-ahead-free. Its 1h and 4h variants are in shadow only because Ibrahim
+  asked for the strategy; 7 tries logged (266 in all).
+
 ## 2026-10-23 03:45 — funding-fade verdict; new try: open-interest flush reversal (12h, 1d)
 
 **Tries: 244 (factory `trials.jsonl` after today's log) → t bar 3.19.** Nothing passes the backtest gate. Logged today:

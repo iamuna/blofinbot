@@ -125,7 +125,8 @@ class Herald extends Agent {
     L.push('BloFin feed: ' + (feed.sockets || '?') + ' sockets, last message ' + (feed.lastMsgAgeMs != null ? feed.lastMsgAgeMs + ' ms' : '—') + ', ' + (feed.msgs || 0) + ' msgs, ' + (feed.trades || 0) + ' trades');
     L.push('Binance feed: ' + (bf.sockets || '?') + ' sockets' + (bf.msgs ? ', ' + bf.msgs + ' msgs' : ''));
     L.push('', '🖥 PC');
-    if (wd.memTotalMb) L.push('RAM ' + (wd.memTotalMb - wd.memFreeMb) + ' of ' + wd.memTotalMb + ' MB used, ' + wd.memFreeMb + ' MB free · swarm process ' + (wd.rssMb != null ? wd.rssMb + ' MB' : '?'));
+    const brainMb = ((hb.brain || {}).metrics || {}).rssMb;
+    if (wd.memTotalMb) L.push('RAM ' + (wd.memTotalMb - wd.memFreeMb) + ' of ' + wd.memTotalMb + ' MB used, ' + wd.memFreeMb + ' MB free · swarm process ' + (wd.rssMb != null ? wd.rssMb + ' MB' : '?') + (brainMb != null ? ' · brain ' + brainMb + ' MB' : ''));
     else if (wd.memFreeMb != null) L.push('RAM ' + wd.memFreeMb + ' MB free (the swarm memory figure needs the newest update)');
     else L.push('RAM: no reading yet');
     L.push('Disk free ' + (wd.diskFreePct != null ? wd.diskFreePct + '%' : '—'));

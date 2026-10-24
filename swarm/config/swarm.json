@@ -266,7 +266,10 @@
   "brain": {
     "warmup": true,
     "warmupDays": 7,
-    "batchWaitMs": 6000
+    "batchWaitMs": 6000,
+    "keepBars": 1000,
+    "seed4hBars": 4320,
+    "note": "8 GB PC (2026-10-23): 1000 bars per timeframe and coin (was 400) and 720 days of 4h history at start-up (was 240), so the 12h/1d averages start as in the backtests"
   },
   "events": {
     "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
@@ -397,6 +400,32 @@
       },
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): best of 101: 1,657 trades, +0.14 R, Sharpe 1.33, positive every year 2022-2026; long +80 / short +156 R"
     },
+    "ma-retest-4h": {
+      "base": "ma-21-200",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "retest",
+        "tf": 240,
+        "onlyTfs": [
+          240
+        ]
+      },
+      "note": "Deep review 2026-10-23: positive in all three samples 2020-2026 (+0.058 / +0.053 / +0.075 R, validation t 2.2). docs/DEEP_REVIEW_2026-10-23.md"
+    },
+    "ma-pullback-12h": {
+      "base": "ma-21-200",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "mode": "pullback",
+        "tf": 720,
+        "onlyTfs": [
+          720
+        ]
+      },
+      "note": "Deep review 2026-10-23: positive in all three samples 2020-2026 (+0.021 / +0.010 / +0.074 R, validation t 2.1). docs/DEEP_REVIEW_2026-10-23.md"
+    },
     "ma-retest-1d": {
       "base": "ma-21-200",
       "enabled": true,
@@ -463,6 +492,20 @@
         ]
       },
       "note": "5-year sweep 2026-10-20 candidate (Ibrahim approved 18:01): 9,734 trades, +0.06 R, Sharpe 0.72; long +85 / short +463 R"
+    },
+    "it-12h": {
+      "base": "intraday-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "onlyTfs": [720] },
+      "note": "deep review 2026-10-23: intraday-trend@720 positive in all three samples (+0.07 / +0.11 / +0.03 R); shadow"
+    },
+    "it-1d": {
+      "base": "intraday-trend",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "onlyTfs": [1440] },
+      "note": "deep review 2026-10-23: intraday-trend@1440 positive in all three samples (+0.08 / +0.19 / +0.01 R); shadow"
     },
     "rsi-macd-trend-12h": {
       "base": "rsi-macd",
@@ -563,6 +606,30 @@
         ]
       },
       "note": "Wyckoff spring/upthrust with a test, 3:1 (Mitch Ray TA video), 2026-10-21"
+    },
+    "pivot-matrix-1h": {
+      "base": "pivot-matrix",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "onlyTfs": [
+          60
+        ],
+        "htf": 720
+      },
+      "note": "PIVOT-MATRIX v1.3 (Ibrahim's spec, 2026-10-23): break of structure + sweep at swing pivots, 12h EMA bias. Shadow only to compare live with the backtests, which all lose (-0.067 R t -3.4 on 2026; -0.06/-0.08 R over 2020-2026): docs/PIVOT_MATRIX_2026-10-23.md"
+    },
+    "pivot-matrix-4h": {
+      "base": "pivot-matrix",
+      "enabled": true,
+      "mode": "shadow",
+      "params": {
+        "onlyTfs": [
+          240
+        ],
+        "htf": 1440
+      },
+      "note": "PIVOT-MATRIX v1.3 (Ibrahim's spec, 2026-10-23), 4h with a 1d EMA bias. Shadow only: backtests lose (-0.059 R t -1.4 on 2026; -0.06/-0.03 R over 2020-2026): docs/PIVOT_MATRIX_2026-10-23.md"
     },
     "wyckoff-spring": {
       "enabled": false,
@@ -935,6 +1002,24 @@
     "candles": {
       "enabled": false,
       "note": "plugin default; one variant per pattern runs (candle-*)"
+    },
+    "adaptive-score": {
+      "enabled": false,
+      "note": "ported 2026-10-23 from the 1-minute bot (expansion/README.md). 5-year sweep, 60 coins: 4h -0.009 R, 12h +0.024 (t 0.56), 1d +0.036 (t 0.65): no edge beyond rsi-macd-trend-12h (+0.123, t 2.5). Stays off (expansion/RESULTS_2026-10-23.md)"
+    },
+    "adaptive-score-4h": {
+      "base": "adaptive-score",
+      "enabled": false,
+      "mode": "shadow",
+      "params": { "tf": 240, "onlyTfs": [240] },
+      "note": "off: 2021-26 sweep -0.009 R; 2018-21 era test +0.109 R (t 5.2). Regime-dependent and the 12h variant is the better one (expansion/RESULTS_2026-10-23.md)"
+    },
+    "adaptive-score-12h": {
+      "base": "adaptive-score",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "tf": 720, "onlyTfs": [720], "holdBars": 30 },
+      "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
     }
   },
   "sleeves": {
@@ -961,7 +1046,8 @@
     "makerBps": 2,
     "takerBps": 6,
     "slipBps": 1.5,
-    "breakevenR": 1,
+    "breakevenR": 0,
+    "breakevenNote": "0 since 2026-10-23: paper/demo now exit as shadow and backtests do. Break-even at +1 R cost the robust five 10% of their R over 5 years (ma-retest-12h +0.183 -> +0.133 R a trade): expansion/RESULTS_2026-10-23.md",
     "staleBookMs": 10000
   },
   "watch": {

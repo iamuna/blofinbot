@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Swarm Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: a trading desk — status strip, account dials, then the books (positions, strategies, trades) in a two-column grid that stacks on narrow screens. */
+:root {
+  --bg: #eef1f4; --panel: #ffffff; --panel-2: #f6f8fa; --line: #d8dee6; --ink: #17202b; --ink-2: #4d5b6b; --ink-3: #7b8796;
+  --accent: #1d6f8f; --accent-soft: #d9ecf3;
+  --good: #1f7a4d; --good-soft: #dcefe4; --warn: #9a6400; --warn-soft: #f6ebcf; --bad: #b3261e; --bad-soft: #f7dcda;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f151c; --panel: #161e27; --panel-2: #1b2531; --line: #283442; --ink: #e4eaf0; --ink-2: #a5b1be; --ink-3: #74808e;
+  --accent: #4fb0d3; --accent-soft: #15313d;
+  --good: #4cc488; --good-soft: #143326; --warn: #e0a83c; --warn-soft: #362a12; --bad: #f0736a; --bad-soft: #3d1b19; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f151c; --panel: #161e27; --panel-2: #1b2531; --line: #283442; --ink: #e4eaf0; --ink-2: #a5b1be; --ink-3: #74808e;
+  --accent: #4fb0d3; --accent-soft: #15313d;
+  --good: #4cc488; --good-soft: #143326; --warn: #e0a83c; --warn-soft: #362a12; --bad: #f0736a; --bad-soft: #3d1b19; color-scheme: dark }
+* { box-sizing: border-box }
+html, body { margin: 0 }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 var(--f-body); padding-block: 0 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)) }
+.wrap { max-width: 1440px; margin: 0 auto; display: grid; gap: 16px }
+.num, td.n, .mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-block: 14px 10px; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px }
+.brand { font: 700 22px/1 var(--f-display); letter-spacing: .01em; margin-right: auto; display: flex; align-items: baseline; gap: 10px }
+.brand small { font: 500 12px var(--f-mono); color: var(--ink-3); letter-spacing: .04em }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 600 11px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 8px; border-radius: 4px; background: var(--panel-2); color: var(--ink-2); border: 1px solid var(--line); white-space: nowrap }
+.pill.good { background: var(--good-soft); color: var(--good); border-color: transparent }
+.pill.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent }
+.pill.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent }
+.pill.accent { background: var(--accent-soft); color: var(--accent); border-color: transparent }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor }
+button { font: 500 13px var(--f-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer }
+button:hover { border-color: var(--accent) }
+button:focus-visible, .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.alerts { display: grid; gap: 6px }
+.alert { display: flex; gap: 10px; align-items: baseline; padding: 9px 12px; border-radius: 6px; border-left: 4px solid; background: var(--panel) }
+.alert.bad { border-color: var(--bad); background: var(--bad-soft) } .alert.warn { border-color: var(--warn); background: var(--warn-soft) } .alert.info { border-color: var(--accent); background: var(--accent-soft) }
+.alert b { font-weight: 600 }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; display: grid; gap: 4px; min-width: 0 }
+.kpi .label { font: 600 11px var(--f-mono); color: var(--ink-3); letter-spacing: .07em; text-transform: uppercase }
+.kpi .value { font: 600 24px/1.1 var(--f-mono); font-variant-numeric: tabular-nums }
+.kpi .sub { font-size: 12px; color: var(--ink-2) }
+.meter { height: 6px; border-radius: 3px; background: var(--panel-2); position: relative; overflow: hidden; margin-top: 4px }
+.meter i { position: absolute; inset: 0 auto 0 0; border-radius: 3px; background: var(--accent) }
+.meter i.warn { background: var(--warn) } .meter i.bad { background: var(--bad) } .meter i.good { background: var(--good) }
+.grid2 { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 16px }
+@media (max-width: 980px) { .grid2 { grid-template-columns: minmax(0, 1fr) } }
+section.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; min-width: 0 }
+section.card > h2 { font: 700 15px/1.2 var(--f-display); letter-spacing: .02em; margin: 0 0 10px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; text-wrap: balance }
+section.card > h2 .meta { font: 400 12px var(--f-body); color: var(--ink-3); letter-spacing: 0 }
+.scroll { overflow-x: auto }
+table { width: 100%; border-collapse: collapse; font-size: 13px }
+th { text-align: left; font: 600 11px var(--f-mono); color: var(--ink-3); letter-spacing: .05em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; position: sticky; top: 0; background: var(--panel) }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; vertical-align: middle }
+td.n, th.n { text-align: right }
+tr:last-child td { border-bottom: 0 }
+.pos { color: var(--good) } .neg { color: var(--bad) } .muted { color: var(--ink-3) }
+.side { font: 600 11px var(--f-mono); padding: 2px 5px; border-radius: 3px }
+.side.L { background: var(--good-soft); color: var(--good) } .side.S { background: var(--bad-soft); color: var(--bad) }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px }
+.chip { font: 500 12px var(--f-body); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-2); cursor: pointer }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--panel); border-color: var(--ink) }
+.verdict { font: 600 11px var(--f-mono); padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: .04em }
+.verdict.robust { background: var(--good-soft); color: var(--good) } .verdict.weak { background: var(--accent-soft); color: var(--accent) }
+.verdict.mixed { background: var(--warn-soft); color: var(--warn) } .verdict.loses { background: var(--bad-soft); color: var(--bad) } .verdict.none { background: var(--panel-2); color: var(--ink-3) }
+.mode { font: 600 11px var(--f-mono); text-transform: uppercase; letter-spacing: .04em }
+.mode.trade { color: var(--accent) } .mode.shadow { color: var(--ink-2) } .mode.off { color: var(--ink-3) }
+tr.flag td:first-child { box-shadow: inset 3px 0 0 var(--bad) }
+.ladder { display: grid; gap: 14px }
+.ladder .row { display: grid; gap: 6px }
+.ladder .head { display: flex; justify-content: space-between; font-size: 13px }
+.track { position: relative; height: 10px; background: var(--panel-2); border-radius: 5px }
+.track .fill { position: absolute; inset: 0 auto 0 0; border-radius: 5px; background: var(--accent) }
+.track .tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink-3) }
+.ticks { position: relative; height: 14px; font: 500 10px var(--f-mono); color: var(--ink-3) }
+.ticks span { position: absolute; transform: translateX(-50%); white-space: nowrap }
+.agents { display: flex; flex-wrap: wrap; gap: 6px }
+svg text { fill: var(--ink-3); font: 10px var(--f-mono) }
+.empty { color: var(--ink-3); padding: 12px 0 }
+footer { color: var(--ink-3); font-size: 12px; display: flex; flex-wrap: wrap; gap: 6px 16px }
+footer a { color: var(--accent) }
+.err { color: var(--bad) }
+@media (prefers-reduced-motion: no-preference) { .meter i, .track .fill { transition: width .4s ease } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Swarm Desk <small id="acct">—</small></div>
+    <span class="pill" id="riskPill">risk —</span>
+    <span class="pill" id="fresh"><span class="dot"></span><span>loading…</span></span>
+    <button id="refresh" type="button">Refresh</button>
+    <button id="theme" type="button" title="Switch light / dark">Theme</button>
+  </header>
+
+  <div class="alerts" id="alerts"></div>
+  <div class="kpis" id="kpis"></div>
+
+  <div class="grid2">
+    <section class="card"><h2>Open positions <span class="meta" id="posMeta"></span></h2><div class="scroll" id="positions"></div></section>
+    <section class="card"><h2>Loss ladders and limits <span class="meta">config/risk.json</span></h2><div class="ladder" id="ladder"></div></section>
+  </div>
+
+  <section class="card">
+    <h2>Strategies <span class="meta" id="stratMeta"></span></h2>
+    <div class="chips" role="group" aria-label="Filter strategies">
+      <button class="chip" data-f="trade" aria-pressed="true">Trading</button>
+      <button class="chip" data-f="shadow" aria-pressed="false">Shadow</button>
+      <button class="chip" data-f="off" aria-pressed="false">Off</button>
+      <button class="chip" data-f="robust" aria-pressed="false">Robust in backtests</button>
+      <button class="chip" data-f="all" aria-pressed="false">All</button>
+    </div>
+    <div class="scroll" id="strategies"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card"><h2>Shadow R, last 7 days <span class="meta">strategies in trade, cumulative R by exit time</span></h2><div id="shadowChart"></div></section>
+    <section class="card"><h2>Risk decisions <span class="meta">last 24 h</span></h2><div id="decisions"></div></section>
+  </div>
+
+  <div class="grid2">
+    <section class="card"><h2>Closed paper trades <span class="meta" id="tradesMeta"></span></h2><div class="scroll" id="trades"></div></section>
+    <section class="card"><h2>Agents <span class="meta" id="agentsMeta"></span></h2><div id="agents"></div></section>
+  </div>
+
+  <footer>
+    <span id="source"></span>
+    <span>Refreshes every minute; the PC publishes every 10 minutes.</span>
+    <span>Backtest verdicts: <a href="https://github.com/iamuna/blofinbot/blob/main/swarm/docs/DEEP_REVIEW_2026-10-23.md" target="_blank" rel="noopener">deep review 2026-10-23</a> (2020–2026, 50 coins).</span>
+  </footer>
+</div>
+
+<script>
+'use strict';
+const REPO = 'iamuna/blofinbot', STATE = 'swarm-state', CODE = 'main';
+const RAW = (branch, file) => `https://raw.githubusercontent.com/${REPO}/${branch}/${file}?t=${Math.floor(Date.now() / 60000)}`;
+// deep review 2026-10-23: per configured strategy, avg R / t / trades on IS (top 20, 2020-23), OOS-time (2024-26), OOS-coins (30 others)
+const VERDICTS = {"intraday-trend":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"trend-pullback":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"session-drive":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"overshoot-fade":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"leader-follow":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"crowd-squeeze":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"noise-breakout":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"it-45-long":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"it-45-hold32":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"it-45-hold16":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"squeeze-ride":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"ma-retest-12h":{"v":"robust","s":[[303,0.1861,2.23],[375,0.147,1.89],[1023,0.236,4.02]],"ref":"ma-retest@720"},"ma-retest-4h":{"v":"robust","s":[[1011,0.0576,1.15],[1249,0.0534,1.03],[3581,0.0753,2.22]],"ref":"ma-retest@240"},"ma-pullback-12h":{"v":"robust","s":[[833,0.0214,0.42],[940,0.0101,0.21],[2911,0.0741,2.13]],"ref":"ma-pullback@720"},"ma-retest-1d":{"v":"robust","s":[[150,0.0946,0.84],[222,0.091,0.86],[474,0.2781,3.11]],"ref":"ma-retest@1440"},"donchian-trend":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"donchian-1d-20":{"v":"weak","s":[[1201,0.0097,0.33],[1273,0.0466,1.31],[3876,0.0196,0.91]],"ref":"donchian-20@1440"},"donchian-1d-60":{"v":"mixed","s":[[387,0.056,0.98],[445,-0.0266,-0.53],[1213,0.0353,1.17]],"ref":"donchian-60@1440"},"donchian-1d-150":{"v":"mixed","s":[[151,-0.016,-0.23],[165,0.0778,0.73],[425,0.0467,0.86]],"ref":"donchian-150@1440"},"donchian-12h-60":{"v":"weak","s":[[774,0.0498,1.3],[824,0.007,0.18],[2417,0.0369,1.51]],"ref":"donchian-60@720"},"funding-fade":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"funding-fade-4h":{"v":"mixed","s":[[592,0.0352,0.61],[197,-0.1322,-1.18],[1638,0.0133,0.28]],"ref":"funding-fade@240"},"it-4h":{"v":"weak","s":[[1678,0.0121,0.31],[1879,0.0793,1.59],[5554,0.0201,0.61]],"ref":"intraday-trend@240"},"rsi-macd-trend-12h":{"v":"robust","s":[[871,0.1539,2.58],[975,0.1189,1.58],[3038,0.1237,2.68]],"ref":"rsi-macd-trend@720"},"trend-pullback-1h":{"v":"weak","s":[[1813,0.0232,0.63],[1869,0.0323,0.8],[6045,0.0187,0.66]],"ref":"trend-pullback@60"},"dip-reversal":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"harmonic":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"ma-21-200":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"rsi-macd":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"krown-jewel-1h":{"v":"loses","s":[[10596,-0.089,-4],[11527,-0.0228,-0.88],[35767,-0.0512,-2.88]],"ref":"krown-jewel@60"},"krown-jewel-2h":{"v":"loses","s":[[5069,-0.0336,-1.06],[5688,-0.0295,-0.85],[17568,-0.0277,-1.15]],"ref":"krown-jewel@120"},"krown-jewel":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"wyckoff-spring-1h":{"v":"loses","s":[[5135,-0.0806,-2.65],[5756,-0.1316,-4.49],[17657,-0.1114,-5.66]],"ref":"wyckoff@60"},"wyckoff-spring-4h":{"v":"loses","s":[[1280,-0.0475,-0.9],[1413,0.0354,0.61],[4278,-0.0151,-0.41]],"ref":"wyckoff@240"},"pivot-matrix-1h":{"v":"loses","s":[[10728,-0.0613,-3.88],[12269,-0.0996,-6.41],[36967,-0.0586,-5.25]],"ref":"pivot-matrix@60"},"pivot-matrix-4h":{"v":"loses","s":[[2690,-0.034,-1.22],[3077,-0.0788,-2.82],[9102,-0.03,-1.58]],"ref":"pivot-matrix@240"},"wyckoff-spring":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"},"candle-engulfing-1h":{"v":"loses","s":[[12656,-0.1517,-9.12],[14283,-0.1607,-9.16],[43347,-0.1345,-11.37]],"ref":"candle-engulfing@60"},"candle-engulfing-4h":{"v":"loses","s":[[3153,-0.0924,-2.95],[3590,-0.071,-2.02],[10883,-0.0786,-3.33]],"ref":"candle-engulfing@240"},"candle-hammer-1h":{"v":"loses","s":[[9024,-0.2907,-13.87],[9688,-0.3089,-13.72],[30661,-0.2727,-17.97]],"ref":"candle-hammer@60"},"candle-hammer-4h":{"v":"loses","s":[[2298,-0.1693,-4.28],[2351,-0.2391,-5.68],[7682,-0.1746,-6.16]],"ref":"candle-hammer@240"},"candle-star-1h":{"v":"loses","s":[[7491,-0.2171,-9.95],[8841,-0.2313,-9.84],[26310,-0.2054,-13.32]],"ref":"candle-star@60"},"candle-star-4h":{"v":"loses","s":[[1751,-0.1977,-4.76],[2065,-0.1134,-2.62],[6068,-0.1178,-4.05]],"ref":"candle-star@240"},"candle-morning-star-1h":{"v":"loses","s":[[2134,-0.036,-1.04],[2370,-0.1065,-2.87],[7440,-0.0803,-3.32]],"ref":"candle-morning-star@60"},"candle-morning-star-4h":{"v":"loses","s":[[533,-0.124,-1.96],[584,-0.065,-0.84],[1899,-0.0589,-1.25]],"ref":"candle-morning-star@240"},"candle-piercing-1h":{"v":"loses","s":[[3047,-0.113,-3.82],[3513,-0.1247,-3.99],[10838,-0.0772,-3.66]],"ref":"candle-piercing@60"},"candle-piercing-4h":{"v":"loses","s":[[753,-0.0824,-1.41],[867,-0.0671,-1.06],[2473,-0.0759,-1.87]],"ref":"candle-piercing@240"},"candle-soldiers-1h":{"v":"mixed","s":[[188,0.0657,0.74],[307,-0.0457,-0.7],[882,0.0227,0.44]],"ref":"candle-soldiers@60"},"candle-soldiers-4h":{"v":"weak","s":[[49,0.2519,0.99],[65,0.2451,1.4],[179,0.1998,1.53]],"ref":"candle-soldiers@240"},"candle-harami-1h":{"v":"loses","s":[[5481,-0.1269,-5.27],[6362,-0.1714,-6.53],[19141,-0.1443,-8.44]],"ref":"candle-harami@60"},"candle-harami-4h":{"v":"loses","s":[[1394,-0.1216,-2.72],[1603,-0.1382,-2.89],[4849,-0.1046,-3.23]],"ref":"candle-harami@240"},"candle-tweezer-1h":{"v":"loses","s":[[12661,-0.1555,-8.94],[14234,-0.1668,-8.92],[43490,-0.1506,-11.93]],"ref":"candle-tweezer@60"},"candle-tweezer-4h":{"v":"loses","s":[[3125,-0.1032,-3.17],[3435,-0.1108,-3.23],[10653,-0.1087,-4.72]],"ref":"candle-tweezer@240"},"candle-doji-1h":{"v":"loses","s":[[1280,-0.1608,-3.68],[1328,-0.1447,-3.15],[4318,-0.1366,-4.72]],"ref":"candle-doji@60"},"candle-doji-4h":{"v":"loses","s":[[263,-0.2374,-2.74],[291,-0.1056,-1.13],[930,-0.1087,-1.73]],"ref":"candle-doji@240"},"candle-marubozu-1h":{"v":"loses","s":[[1219,-0.0481,-0.97],[1781,-0.0107,-0.21],[5105,-0.0126,-0.36]],"ref":"candle-marubozu@60"},"candle-marubozu-4h":{"v":"mixed","s":[[259,0.1573,1.54],[397,-0.0302,-0.27],[1101,0.0982,1.32]],"ref":"candle-marubozu@240"},"candle-three-inside-1h":{"v":"loses","s":[[600,-0.0414,-0.75],[766,-0.1235,-2.51],[2255,-0.0507,-1.49]],"ref":"candle-three-inside@60"},"candle-three-inside-4h":{"v":"loses","s":[[170,-0.0758,-0.68],[184,-0.1055,-1.01],[540,0.0366,0.52]],"ref":"candle-three-inside@240"},"candle-three-outside-1h":{"v":"loses","s":[[7236,-0.109,-5.76],[8272,-0.1108,-5.55],[24484,-0.0934,-6.94]],"ref":"candle-three-outside@60"},"candle-three-outside-4h":{"v":"loses","s":[[1785,-0.0539,-1.34],[2036,-0.0046,-0.11],[6095,-0.0328,-1.14]],"ref":"candle-three-outside@240"},"candle-three-methods-1h":{"v":"loses","s":[[157,-0.1328,-1.22],[133,0.0405,0.32],[456,-0.0301,-0.36]],"ref":"candle-three-methods@60"},"candle-three-methods-4h":{"v":"loses","s":[[53,0.2061,1.15],[69,-0.4049,-2.24],[206,-0.1055,-0.73]],"ref":"candle-three-methods@240"},"candle-doji-star-1h":{"v":"loses","s":[[439,0.0214,0.31],[504,-0.1094,-1.59],[1555,-0.0796,-1.88]],"ref":"candle-doji-star@60"},"candle-doji-star-4h":{"v":"weak","s":[[91,0.1974,1.39],[119,0.0846,0.64],[348,0.0219,0.25]],"ref":"candle-doji-star@240"},"candles":{"v":"none","note":"Runs below 1h: the 5-year sweep found every strategy loses there after costs"}};
+const STALE_MIN = 25, H = 3600000;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const fmt = (x, d = 2) => (x == null || !Number.isFinite(+x) ? '—' : (+x).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }));
+const usd = (x, d = 2) => (x == null || !Number.isFinite(+x) ? '—' : (x < 0 ? '−$' : '$') + fmt(Math.abs(x), d));
+const sgn = (x, d = 2, unit = '') => (x == null || !Number.isFinite(+x) ? '—' : (x > 0 ? '+' : x < 0 ? '−' : '') + fmt(Math.abs(x), d) + unit);
+const pct = (x, d = 2) => sgn(x * 100, d, '%');
+const share = (x, d = 2) => (x == null || !Number.isFinite(+x) ? '—' : fmt(x * 100, d) + '%'); // a level, not a change: no sign
+const cls = (x) => (x > 0 ? 'pos' : x < 0 ? 'neg' : 'muted');
+const ago = (ms) => { const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 48 * 60 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
+const hhmm = (t) => new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+const jsonl = (txt) => txt.split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch (e) { return null; } }).filter(Boolean);
+
+let D = null, filter = 'trade';
+try { filter = localStorage.getItem('desk.filter') || 'trade'; } catch (e) { /* storage unavailable */ }
+
+async function get(branch, file, kind) {
+  const r = await fetch(RAW(branch, file), { cache: 'no-store' });
+  if (!r.ok) { if (r.status === 404) return null; throw new Error(`${file}: HTTP ${r.status}`); }
+  const t = await r.text();
+  return kind === 'jsonl' ? jsonl(t) : JSON.parse(t);
+}
+async function load() {
+  $('fresh').className = 'pill'; $('fresh').lastChild.textContent = 'loading…';
+  try {
+    const [state, trades, shadow, decisions, limits] = await Promise.all([
+      get(STATE, 'state.json'), get(STATE, 'trades.jsonl', 'jsonl'), get(STATE, 'shadow.jsonl', 'jsonl'), get(STATE, 'decisions.jsonl', 'jsonl'),
+      get(CODE, 'swarm/config/risk.json').catch(() => null),
+    ]);
+    if (!state) throw new Error('state.json not found on the swarm-state branch');
+    D = { state, trades: trades || [], shadow: shadow || [], decisions: decisions || [], limits: limits || {}, loadedAt: Date.now() };
+    render();
+  } catch (e) {
+    $('fresh').className = 'pill bad'; $('fresh').lastChild.textContent = 'cannot load';
+    $('alerts').innerHTML = `<div class="alert bad"><b>Cannot read the swarm's state.</b><span>${esc(e.message)}. Check the internet connection; the data comes from github.com/${REPO}, branch ${STATE}.</span></div>`;
+  }
+}
+
+function render() {
+  const s = D.state, a = s.account || {}, L = D.limits, now = Date.now(), upd = Date.parse(s.updatedAt);
+  const ageMin = (now - upd) / 60000, stale = ageMin > STALE_MIN;
+  $('acct').textContent = `${String(a.mode || 'paper').toUpperCase()} · $${fmt(a.equity0 || 10000, 0)} start`;
+  $('fresh').className = `pill ${stale ? 'bad' : 'good'}`; $('fresh').lastChild.textContent = `PC update ${ago(now - upd)}`;
+  const rm = (s.risk && s.risk.mode) || '—';
+  $('riskPill').className = `pill ${rm === 'normal' ? 'good' : rm === 'no-new' ? 'warn' : 'bad'}`; $('riskPill').textContent = `risk ${rm}`;
+  $('source').textContent = `Data: github.com/${REPO} · ${STATE} · published ${hhmm(upd)}`;
+
+  const modes = s.strategyModes || {}, trading = Object.keys(modes).filter((k) => modes[k] === 'trade');
+  const open = (s.positions && s.positions.open) || [];
+  // ── alerts: what needs Ibrahim
+  const al = [];
+  if (stale) al.push(['bad', 'The PC has not published for ' + ago(now - upd).replace(' ago', '') + '.', 'The swarm may be stopped, asleep or offline. Everything below is from its last update.']);
+  if (rm !== 'normal' && rm !== '—') al.push([rm === 'no-new' ? 'warn' : 'bad', `Risk mode is ${rm}.`, ((s.risk && s.risk.reasons) || []).join('; ')]);
+  if (L.maxGrossX && a.grossX > L.maxGrossX) al.push(['bad', `Gross exposure ${fmt(a.grossX)}× is over the ${L.maxGrossX}× limit.`, 'New orders are refused until it falls back.']);
+  if (L.maxOpenRiskPct && a.openRiskPct > L.maxOpenRiskPct) al.push(['bad', `Open stop risk ${share(a.openRiskPct)} is over the ${share(L.maxOpenRiskPct, 0)} limit.`, '']);
+  const down = Object.values(s.agents || {}).filter((x) => x.status && x.status !== 'ok' && x.status !== 'stopped');
+  if (down.length) al.push(['warn', `${down.length} agent${down.length > 1 ? 's' : ''} not OK: ${down.map((x) => x.agent).slice(0, 5).join(', ')}${down.length > 5 ? '…' : ''}.`, down.map((x) => x.why).filter(Boolean).slice(0, 2).join(' · ')]);
+  const losers = trading.filter((k) => VERDICTS[k] && VERDICTS[k].v === 'loses');
+  if (losers.length) al.push(['warn', `${losers.length} of ${trading.length} strategies in trade lose in the 2020–2026 backtests:`, losers.join(', ') + '. See the Strategies table; /mode <name> shadow on Telegram moves one back.']);
+  const robustIdle = Object.keys(VERDICTS).filter((k) => VERDICTS[k].v === 'robust' && modes[k] && modes[k] !== 'trade');
+  if (robustIdle.length) al.push(['info', `${robustIdle.length} strategies that hold up in every backtest sample are not trading:`, robustIdle.join(', ') + '.']);
+  $('alerts').innerHTML = al.map(([k, t, d]) => `<div class="alert ${k}"><b>${esc(t)}</b><span>${esc(d)}</span></div>`).join('');
+
+  // ── account dials
+  const dayLoss = a.dayStart > 0 ? 1 - a.equity / a.dayStart : 0, dd = a.dd || 0;
+  const meter = (v, lim, inv) => { if (!lim) return ''; const f = Math.max(0, Math.min(1, v / lim)); return `<div class="meter" aria-hidden="true"><i class="${f >= 1 ? 'bad' : f >= 0.75 ? 'warn' : inv ? 'good' : ''}" style="width:${(f * 100).toFixed(1)}%"></i></div>`; };
+  const kpi = (label, value, sub, extra = '', c = '') => `<div class="kpi"><div class="label">${label}</div><div class="value ${c}">${value}</div><div class="sub">${sub}</div>${extra}</div>`;
+  const ret = a.equity0 ? a.equity / a.equity0 - 1 : 0;
+  $('kpis').innerHTML = [
+    kpi('Equity', usd(a.equity, 0), `<span class="${cls(ret)}">${pct(ret)}</span> since start · unrealised <span class="${cls(a.upl)}">${usd(a.upl, 0)}</span>`),
+    kpi('Today', pct(a.dayPnlPct), `from ${usd(a.dayStart, 0)} at 00:00 UTC`, '', cls(a.dayPnlPct)),
+    kpi('Drawdown', pct(-dd), `peak ${usd(a.peak, 0)} · halves budgets at ${share(L.ddHalvePct || 0.1, 0)}`, meter(dd, L.ddHaltPct)),
+    kpi('Gross', `${fmt(a.grossX)}×`, `${usd(a.gross, 0)} notional · limit ${L.maxGrossX || '—'}×`, meter(a.grossX, L.maxGrossX)),
+    kpi('Open stop risk', share(a.openRiskPct), `limit ${L.maxOpenRiskPct ? share(L.maxOpenRiskPct, 0) : '—'} of equity`, meter(a.openRiskPct, L.maxOpenRiskPct)),
+    kpi('Paper record', `${a.trades || 0} trades`, `win rate ${a.winRate == null ? '—' : fmt(a.winRate * 100, 0) + '%'} · fees ${usd(a.fees, 0)} · funding ${usd(a.funding, 2)}`),
+  ].join('');
+
+  // ── positions
+  $('posMeta').textContent = `${open.length} open · ${((s.positions && s.positions.working) || []).length} working`;
+  if (!open.length) $('positions').innerHTML = '<div class="empty">No open positions.</div>';
+  else {
+    const rows = open.map((p) => {
+      const last = p.last || p.entry, upl = p.side * (last - p.entry) * p.qty, risk = Math.abs(p.entry - p.stop) * p.qty, r = risk > 0 ? upl / risk : null;
+      const toStop = p.side * (last - p.stop) / last;
+      return { p, last, upl, r, toStop };
+    }).sort((x, y) => x.upl - y.upl);
+    $('positions').innerHTML = `<table><thead><tr><th>Coin</th><th>Side</th><th>Strategy</th><th class="n">Entry</th><th class="n">Last</th><th class="n">Stop</th><th class="n">To stop</th><th class="n">P&amp;L</th><th class="n">R</th><th class="n">Open</th></tr></thead><tbody>${rows.map(({ p, last, upl, r, toStop }) => {
+      const flag = p.strategies && p.strategies.some((n) => VERDICTS[n] && VERDICTS[n].v === 'loses');
+      return `<tr${flag ? ' class="flag" title="This strategy loses in the 2020–2026 backtests"' : ''}><td><b>${esc(p.coin)}</b></td><td><span class="side ${p.side > 0 ? 'L' : 'S'}">${p.side > 0 ? 'LONG' : 'SHORT'}</span></td><td>${esc((p.strategies || []).join(' + '))}</td><td class="n">${fmt(p.entry, dec(p.entry))}</td><td class="n">${fmt(last, dec(last))}</td><td class="n">${fmt(p.stop, dec(p.stop))}</td><td class="n ${toStop < 0.005 ? 'neg' : ''}">${pct(toStop, 1)}</td><td class="n ${cls(upl)}">${usd(upl)}</td><td class="n ${cls(r)}">${r == null ? '—' : sgn(r)}</td><td class="n muted">${ago(now - p.entryT).replace(' ago', '')}</td></tr>`;
+    }).join('')}</tbody></table>`;
+  }
+
+  // ── ladders
+  const lad = (label, v, marks, fmtv) => {
+    const max = marks[marks.length - 1][0] * 1.15, f = Math.max(0, Math.min(1, v / max));
+    const hit = marks.filter(([m]) => v >= m).pop();
+    return `<div class="row"><div class="head"><span>${label}</span><span class="num ${hit ? 'neg' : ''}">${fmtv}</span></div>
+      <div class="track"><div class="fill" style="width:${(f * 100).toFixed(1)}%;background:var(--${hit ? 'bad' : f > 0.6 ? 'warn' : 'accent'})"></div>${marks.map(([m]) => `<div class="tick" style="left:${(m / max * 100).toFixed(1)}%"></div>`).join('')}</div>
+      <div class="ticks">${marks.map(([m, t]) => `<span style="left:${(m / max * 100).toFixed(1)}%">${t}</span>`).join('')}</div></div>`;
+  };
+  $('ladder').innerHTML = [
+    lad('Day loss (resets 00:00 UTC)', Math.max(0, dayLoss), [[L.dayStopPct || 0.03, `${share(L.dayStopPct || 0.03, 0)} no new`], [L.dayFlattenPct || 0.05, `${share(L.dayFlattenPct || 0.05, 0)} close all`]], dayLoss > 0 ? `down ${share(dayLoss)}` : `up ${share(-dayLoss)}`),
+    lad('Drawdown from peak', dd, [[L.ddHalvePct || 0.1, 'half size'], [L.ddProvenOnlyPct || 0.15, 'proven only'], [L.ddHaltPct || 0.2, 'halt']], pct(-dd)),
+    lad('Gross exposure', a.grossX || 0, [[L.maxGrossX || 4, `${L.maxGrossX || 4}× limit`]], `${fmt(a.grossX)}×`),
+    lad('Open stop risk', a.openRiskPct || 0, [[L.maxOpenRiskPct || 0.06, `${share(L.maxOpenRiskPct || 0.06, 0)} limit`]], share(a.openRiskPct)),
+  ].join('') + `<div class="muted" style="font-size:12px">Also enforced per order: ${L.maxTradeRiskPct ? share(L.maxTradeRiskPct, 0) : '1%'} risk per trade, ${L.maxCoinNotionalX || '—'}× equity per coin, ${L.maxBtcBetaX || '—'}× net BTC exposure.</div>`;
+
+  renderStrategies();
+  renderShadowChart(trading);
+
+  // ── decisions (24 h)
+  const dec24 = D.decisions.filter((x) => now - x.ts < 24 * H), cnt = { approve: 0, trim: 0, reject: 0 }, why = {};
+  for (const x of dec24) { cnt[x.verdict] = (cnt[x.verdict] || 0) + 1; if (x.verdict !== 'approve') for (const r of x.reasons || []) { const k = r.replace(/[\d.]+/g, '#').replace(/ leaves .*/, ''); why[k] = (why[k] || 0) + 1; } }
+  const tot = dec24.length || 1;
+  $('decisions').innerHTML = dec24.length ? `<div class="chips" style="margin:0 0 10px">${['approve', 'trim', 'reject'].map((k) => `<span class="pill ${k === 'approve' ? 'good' : k === 'trim' ? 'warn' : 'bad'}">${k} ${cnt[k] || 0}</span>`).join('')}</div>
+    <div class="meter" style="height:10px;display:flex"><i style="position:static;width:${(cnt.approve / tot * 100).toFixed(1)}%;background:var(--good)"></i><i style="position:static;width:${(cnt.trim / tot * 100).toFixed(1)}%;background:var(--warn)"></i><i style="position:static;width:${(cnt.reject / tot * 100).toFixed(1)}%;background:var(--bad)"></i></div>
+    <table style="margin-top:10px"><thead><tr><th>Why trimmed or refused</th><th class="n">Times</th></tr></thead><tbody>${Object.entries(why).sort((x, y) => y[1] - x[1]).slice(0, 8).map(([k, n]) => `<tr><td style="white-space:normal">${esc(k)}</td><td class="n">${n}</td></tr>`).join('') || '<tr><td class="muted">Nothing refused.</td><td></td></tr>'}</tbody></table>`
+    : '<div class="empty">No risk decisions in the last 24 hours.</div>';
+
+  // ── closed trades
+  const tr = D.trades.slice().sort((x, y) => y.exitT - x.exitT);
+  const net = tr.reduce((x, t) => x + (t.netUsd || 0), 0);
+  $('tradesMeta').innerHTML = `${tr.length} in the published log · net <span class="${cls(net)}">${usd(net)}</span>`;
+  $('trades').innerHTML = tr.length ? `<table><thead><tr><th>Closed</th><th>Coin</th><th>Side</th><th>Strategy</th><th>Exit</th><th class="n">Net</th><th class="n">R</th></tr></thead><tbody>${tr.slice(0, 20).map((t) => `<tr><td class="muted mono">${hhmm(t.exitT)}</td><td><b>${esc(t.coin)}</b></td><td><span class="side ${t.side > 0 ? 'L' : 'S'}">${t.side > 0 ? 'LONG' : 'SHORT'}</span></td><td>${esc((t.strategies || []).map((x) => x.name).join(' + '))}</td><td class="muted">${esc(t.reason)}</td><td class="n ${cls(t.netUsd)}">${usd(t.netUsd)}</td><td class="n ${cls(t.r)}">${sgn(t.r)}</td></tr>`).join('')}</tbody></table>` : '<div class="empty">No closed paper trades yet.</div>';
+
+  // ── agents
+  const ag = Object.values(s.agents || {}), core = ag.filter((x) => !String(x.agent).startsWith('strategy:')), strat = ag.filter((x) => String(x.agent).startsWith('strategy:'));
+  const silent = (x) => upd - (x.at || 0) > 3 * 60000;
+  const okStrat = strat.filter((x) => x.status === 'ok' && !silent(x)).length;
+  $('agentsMeta').textContent = `${core.length} core · ${okStrat} of ${strat.length} strategy hosts OK`;
+  $('agents').innerHTML = `<div class="agents">${core.sort((x, y) => String(x.agent).localeCompare(y.agent)).map((x) => { const k = silent(x) ? 'bad' : x.status === 'ok' ? 'good' : x.status === 'stopped' ? '' : 'warn'; return `<span class="pill ${k}" title="${esc(x.why || (silent(x) ? 'no heartbeat for ' + ago(upd - x.at).replace(' ago', '') : x.status))}"><span class="dot"></span>${esc(x.agent)}</span>`; }).join('')}</div>
+    ${strat.filter((x) => x.status !== 'ok' || silent(x)).length ? `<div style="margin-top:10px" class="muted">Not OK: ${strat.filter((x) => x.status !== 'ok' || silent(x)).map((x) => esc(x.agent.slice(9))).join(', ')}</div>` : ''}
+    ${s.guard && s.guard.notTradable && s.guard.notTradable.length ? `<div style="margin-top:10px"><span class="muted">Not tradable now:</span> ${s.guard.notTradable.map(esc).join(', ')}</div>` : ''}`;
+}
+function dec(x) { const a = Math.abs(x); return a >= 1000 ? 1 : a >= 10 ? 2 : a >= 1 ? 3 : a >= 0.01 ? 5 : 7; }
+
+function shadowStats(name, fromT) {
+  const xs = D.shadow.filter((t) => t.strategy === name && t.exitT >= fromT);
+  const sum = xs.reduce((a, t) => a + t.r, 0);
+  return { n: xs.length, sum, avg: xs.length ? sum / xs.length : null };
+}
+function renderStrategies() {
+  const s = D.state, modes = s.strategyModes || {}, by = (s.account && s.account.byStrategy) || {}, end = Date.parse(s.updatedAt);
+  for (const b of document.querySelectorAll('.chip')) b.setAttribute('aria-pressed', String(b.dataset.f === filter));
+  const names = Object.keys(modes);
+  const rows = names.map((n) => ({ n, mode: modes[n], paper: by[n], d2: shadowStats(n, end - 48 * H), d7: shadowStats(n, end - 7 * 24 * H), v: VERDICTS[n] || { v: 'none', note: 'Not in the deep review' } }))
+    .filter((r) => filter === 'all' || (filter === 'robust' ? r.v.v === 'robust' : r.mode === filter))
+    .sort((x, y) => (x.mode === y.mode ? 0 : x.mode === 'trade' ? -1 : y.mode === 'trade' ? 1 : x.mode === 'shadow' ? -1 : 1) || (y.d7.sum - x.d7.sum));
+  const counts = names.reduce((o, n) => ((o[modes[n]] = (o[modes[n]] || 0) + 1), o), {});
+  $('stratMeta').textContent = `${counts.trade || 0} trading · ${counts.shadow || 0} shadow · ${counts.off || 0} off`;
+  const vcell = (v) => {
+    if (!v.s) return `<span class="verdict none" title="${esc(v.note || '')}">no data</span>`;
+    const tip = ['top-20 coins 2020–23', 'top-20 coins 2024–26', '30 other coins 2020–26'].map((k, i) => v.s[i] ? `${k}: ${v.s[i][0]} trades, ${sgn(v.s[i][1], 3)} R/trade, t ${v.s[i][2]}` : `${k}: no trades`).join('\n');
+    return `<span class="verdict ${v.v}" title="${esc(tip)}">${v.v}</span> <span class="mono muted">${v.s.map((x) => (x ? sgn(x[1], 2) : '—')).join(' / ')}</span>`;
+  };
+  $('strategies').innerHTML = rows.length ? `<table><thead><tr><th>Strategy</th><th>Mode</th><th class="n" title="Closed paper trades">Paper trades</th><th class="n">Paper R</th><th class="n">Paper $</th><th class="n" title="Shadow trades closed in the last 48 h">Shadow 48h</th><th class="n">R</th><th class="n" title="Shadow trades closed in the last 7 days">Shadow 7d</th><th class="n">avg R</th><th title="Hourly backtests 2020–2026: avg R per trade on top-20 2020–23 / top-20 2024–26 / 30 other coins">Backtest 2020–26</th></tr></thead><tbody>${rows.map((r) => {
+    const flag = r.mode === 'trade' && r.v.v === 'loses';
+    return `<tr${flag ? ' class="flag"' : ''}><td><b>${esc(r.n)}</b></td><td><span class="mode ${r.mode}">${esc(r.mode)}</span></td>
+      <td class="n">${r.paper ? r.paper.trades : '—'}</td><td class="n ${cls(r.paper && r.paper.sumR)}">${r.paper ? sgn(r.paper.sumR) : '—'}</td><td class="n ${cls(r.paper && r.paper.netUsd)}">${r.paper ? usd(r.paper.netUsd) : '—'}</td>
+      <td class="n">${r.d2.n || '—'}</td><td class="n ${cls(r.d2.sum)}">${r.d2.n ? sgn(r.d2.sum, 1) : '—'}</td><td class="n">${r.d7.n || '—'}</td><td class="n ${cls(r.d7.avg)}">${r.d7.n ? sgn(r.d7.avg) : '—'}</td><td>${vcell(r.v)}</td></tr>`;
+  }).join('')}</tbody></table>` : '<div class="empty">No strategies in this group.</div>';
+}
+
+function renderShadowChart(names) {
+  const end = Date.parse(D.state.updatedAt), from = end - 7 * 24 * H;
+  const series = names.map((n) => { let c = 0; return { n, pts: D.shadow.filter((t) => t.strategy === n && t.exitT >= from).sort((x, y) => x.exitT - y.exitT).map((t) => [t.exitT, (c += t.r)]) }; }).filter((x) => x.pts.length);
+  if (!series.length) { $('shadowChart').innerHTML = '<div class="empty">No shadow trades from strategies in trade in the last 7 days.</div>'; return; }
+  const W = 680, Hh = 250, P = { l: 40, r: 165, t: 10, b: 24 };
+  let lo = 0, hi = 0; for (const s of series) for (const [, v] of s.pts) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+  const pad = (hi - lo) * 0.08 || 1; lo -= pad; hi += pad;
+  const x = (t) => P.l + (t - from) / (end - from) * (W - P.l - P.r), y = (v) => P.t + (hi - v) / (hi - lo) * (Hh - P.t - P.b);
+  const step = niceStep((hi - lo) / 4), ticks = []; for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) ticks.push(v);
+  const days = []; for (let d = Math.ceil(from / (24 * H)) * 24 * H; d <= end; d += 24 * H) days.push(d);
+  const hues = ['var(--accent)', 'var(--good)', 'var(--warn)', 'var(--bad)', 'var(--ink-2)', '#8a6fd1', '#c2569b', '#3e9c9c'];
+  const ends = series.map((s, i) => ({ s, i, yv: y(s.pts[s.pts.length - 1][1]) })).sort((a, b) => a.yv - b.yv);
+  for (let k = 1; k < ends.length; k++) if (ends[k].yv - ends[k - 1].yv < 12) ends[k].yv = ends[k - 1].yv + 12; // keep end labels apart
+  $('shadowChart').innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Cumulative shadow R over the last 7 days">
+    ${ticks.map((v) => `<line x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="${v === 0 ? 1.5 : 1}"/><text x="${P.l - 6}" y="${y(v) + 3}" text-anchor="end">${v > 0 ? '+' : ''}${+v.toFixed(1)}</text>`).join('')}
+    ${days.map((d) => `<text x="${x(d)}" y="${Hh - 6}" text-anchor="middle">${new Date(d).toLocaleDateString([], { month: 'short', day: 'numeric' })}</text>`).join('')}
+    ${series.map((s, i) => `<polyline fill="none" stroke="${hues[i % hues.length]}" stroke-width="1.8" stroke-linejoin="round" points="${[[from, 0], ...s.pts].map(([t, v], k) => `${x(t).toFixed(1)},${y(k ? v : 0).toFixed(1)}`).join(' ')}"/>`).join('')}
+    ${ends.map(({ s, i, yv }) => `<circle cx="${x(s.pts[s.pts.length - 1][0])}" cy="${y(s.pts[s.pts.length - 1][1])}" r="2.5" fill="${hues[i % hues.length]}"/><text x="${W - P.r + 6}" y="${yv + 3}" style="fill:${hues[i % hues.length]}">${esc(s.n.length > 22 ? s.n.slice(0, 21) + '…' : s.n)} ${s.pts[s.pts.length - 1][1] > 0 ? '+' : ''}${s.pts[s.pts.length - 1][1].toFixed(1)}</text>`).join('')}
+  </svg>`;
+}
+function niceStep(x) { const p = Math.pow(10, Math.floor(Math.log10(x || 1))), m = x / p; return (m < 1.5 ? 1 : m < 3 ? 2 : m < 7 ? 5 : 10) * p; }
+
+document.querySelectorAll('.chip').forEach((b) => b.addEventListener('click', () => { filter = b.dataset.f; try { localStorage.setItem('desk.filter', filter); } catch (e) { /* storage unavailable */ } if (D) renderStrategies(); }));
+$('refresh').addEventListener('click', load);
+$('theme').addEventListener('click', () => {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('desk.theme', r.dataset.theme); } catch (e) { /* storage unavailable */ }
+});
+try { const t = localStorage.getItem('desk.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* storage unavailable */ }
+load();
+setInterval(load, 60000);
+setInterval(() => { if (D) { const upd = Date.parse(D.state.updatedAt); $('fresh').lastChild.textContent = `PC update ${ago(Date.now() - upd)}`; } }, 15000);
+</script>
+</body>
+</html>

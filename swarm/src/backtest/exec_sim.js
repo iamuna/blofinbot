@@ -20,6 +20,7 @@ class ExecSim {
     this.maker = o.makerBps == null ? 2 : o.makerBps; this.taker = o.takerBps == null ? 6 : o.takerBps;
     this.slip = o.slipBps == null ? 1.5 : o.slipBps; this.thru = o.thruBps == null ? 0.5 : o.thruBps;
     this.funding = o.funding || {}; // coin → [[t, rate], …] sorted
+    this.breakevenR = o.breakevenR > 0 ? o.breakevenR : null;
     this.onClose = o.onClose || (() => {}); this.onFill = o.onFill || (() => {});
     this.pending = new Map(); this.open = new Map(); this.trades = []; this.unfilled = 0;
   }
@@ -70,6 +71,9 @@ class ExecSim {
     if (i.trail && s * (pos.best - pos.entry) >= i.trail.afterR * pos.R * pos.entry) {
       const ns = pos.best - s * i.trail.dist;
       if (s * (ns - pos.stop) > 0) pos.stop = ns;
+    } else if (!i.trail && this.breakevenR && s * (pos.best - pos.entry) >= this.breakevenR * pos.R * pos.entry) {
+      const be = pos.entry * (1 + s * (this.maker + this.taker) / 1e4); // as the paper trader: entry plus round-trip fees
+      if (s * (be - pos.stop) > 0) pos.stop = be;
     }
   }
   // funding records with from < t ≤ to

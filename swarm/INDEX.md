@@ -64,8 +64,9 @@ Started by [src/run.js](src/run.js) (`--group` / `--agents`, `--isolate brain`).
 | `src/strategies/` | strategy plugins (pure functions of bars; [kit.js](src/strategies/kit.js) = the interface, [index.js](src/strategies/index.js) = the list, [loader.js](src/strategies/loader.js) checks before loading) |
 | `src/decision/` | coordinator, [fusion.js](src/decision/fusion.js), [allocator.js](src/decision/allocator.js) (quarter-Kelly), [risk.js](src/decision/risk.js) |
 | `src/exec/` | paper trader, demo trader, accountant; `blofin/` = signed BloFin client + contract precision |
-| `src/backtest/` | [exec_sim.js](src/backtest/exec_sim.js) (fills/exits for backtests and shadow), [run.js](src/backtest/run.js), [stats.js](src/backtest/stats.js) |
-| `src/factory/` | [plugin_check.js](src/factory/plugin_check.js), tester, promotion gate, live gate, try log |
+| `src/backtest/` | [exec_sim.js](src/backtest/exec_sim.js) (fills/exits for backtests and shadow; opt-in `breakevenR`), [run.js](src/backtest/run.js), [stats.js](src/backtest/stats.js) |
+| `src/research/` | from the 1-minute bot (branch possible-expansion): [event_study.js](src/research/event_study.js) (MFE/MAE in R per idea + condition tags: does a signal point anywhere?), [excursions.js](src/research/excursions.js), [trade_tags.js](src/research/trade_tags.js), [streak_rules.js](src/research/streak_rules.js) |
+| `src/factory/` | [plugin_check.js](src/factory/plugin_check.js), tester, promotion gate, live gate, try log, [tuner.js](src/factory/tuner.js) (challengers inside `bounds`) |
 | `src/ops/` | guardian, watchdog, herald, state sync |
 | `src/tools/` | [update_gate.js](src/tools/update_gate.js) (what installs itself vs. waits for Ibrahim), review, agent manager, smoke report |
 | `deploy/windows/` | the home PC: [install.ps1](deploy/windows/install.ps1), [run.ps1](deploy/windows/run.ps1) (runner + updater), [approve.ps1](deploy/windows/approve.ps1), enable-demo, sign-risk, uninstall |
@@ -73,6 +74,7 @@ Started by [src/run.js](src/run.js) (`--group` / `--agents`, `--isolate brain`).
 | `factory/` | strategy candidates for the factory tester (JSON) |
 | [tools/build_dataset.js](tools/build_dataset.js) | the 6.5-month backtest dataset → branch `swarm-data` |
 | [tools/trend_sleeve_backtest.js](tools/trend_sleeve_backtest.js) | the trend sleeve on research-data / validation-data, 2020–2026 |
+| [tools/import_binance_1m.js](tools/import_binance_1m.js) | a Binance 1m kline ZIP (e.g. the 1-minute bot's BTC spot 2017–2025) → the same layout |
 | [../history/](../history/README.md) | the 5-year sweep: build data (release `swarm-history-v1`), every strategy × timeframe, walk-forward selection |
 | `test/` | offline tests with fake exchanges (`npm test`); they need Ibrahim's OK to install on the PC |
 | `docs/` | research log, backtests, launch steps, the Claude agents' jobs, the retired trend bot's research |
@@ -99,6 +101,7 @@ All start in shadow; trade mode is Ibrahim's call (`/mode <name> trade`). Eviden
 | candles | [candles.js](src/strategies/candles.js) | 14 candlestick families | 23 of 28 lose; every 1h version loses |
 | session-drive, overshoot-fade, leader-follow, crowd-squeeze, noise-breakout | `src/strategies/` | the starting 1–45 minute set | all lose after costs |
 | dip-reversal | [dip_reversal.js](src/strategies/dip_reversal.js) | buy an outsized 15m drop | fails once it has a stop (−0.12 R) |
+| adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | `adaptive-score-12h` shadow (watch), 4h off: flat on 2021–26 (t < 0.7), +0.11 / +0.19 R at t 5 on 2018–21 ([../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)) |
 | probe | [probe.js](src/strategies/probe.js) | CI only: exercises the trade path | — |
 
 The lesson across all of it: below 1h, costs eat every edge we found; the slow (12h–1d) edges are mostly short.
@@ -112,13 +115,14 @@ The lesson across all of it: below 1h, costs eat every edge we found; the slow (
 | `swarm-state` | live state from the PC every 10 min (state.json, summary.md, trades, shadow trades) | the PC (state-sync) |
 | `swarm-data` | 6.5 months × 31 coins of 1m bars, open interest, funding | workflow `swarm-data.yml` |
 | `swarm-factory` | tester results, try log (`trials.jsonl`), promotion decisions | workflow `swarm-factory.yml` |
-| `swarm-reports` | smoke-run reports, 5-year sweep reports | workflows `swarm-ci.yml`, `swarm-history.yml` |
+| `swarm-reports` | smoke-run reports, 5-year sweep reports, era-test reports (`era/`) | workflows `swarm-ci.yml`, `swarm-history.yml`, `swarm-era.yml` |
 | release `swarm-history-v1` | 5 years × 665 coins of 1m data (19.4 GB) | workflow `swarm-history.yml` |
 | `research-data`, `validation-data`, `history-data` | the retired trend bot's data (1h bars 2020–2026, BTC 1m) — needed to port its full portfolio | (no longer updated) |
 | tags `archive/*` | the retired code and its state branches: `archive/trend-bot-2026-10-20` (Python core, trend bot, dashboards, its research) | — |
 
 Workflows ([../.github/workflows/](../.github/workflows)): `swarm-ci` (tests + live smoke run, Linux and Windows),
-`swarm-factory` (tester + promotion gate), `swarm-history` (5-year sweep), `swarm-data` (dataset). None run on a timer.
+`swarm-factory` (tester + promotion gate), `swarm-history` (5-year sweep), `swarm-data` (dataset), `swarm-era` (slow
+strategies on Binance spot 2017–2021, by hand: [../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)). None run on a timer.
 
 ## Tests
 
@@ -135,3 +139,4 @@ Workflows ([../.github/workflows/](../.github/workflows)): `swarm-ci` (tests + l
 | brain, strategy_engine, *strategies*, donchian_trend, funding_fade | features, regime, every plugin |
 | trend_sleeve | the ported engine (exactness), risk.json on its weights (fuzz), ladders, stops, the shadow agent with a fake BloFin |
 | factory | tester, gate, promotion |
+| expansion | adaptive-score, ExecSim break-even, excursions, tags, streak replay, tuner, importer |
