@@ -29,6 +29,8 @@ function summarize(trades, o = {}) {
     pf: loss.length ? +(win.reduce((a, b) => a + b, 0) / Math.abs(loss.reduce((a, b) => a + b, 0) || 1e-9)).toFixed(2) : null,
     tStat: sd > 0 ? +((mean / sd) * Math.sqrt(n)).toFixed(2) : null, maxDDR: +dd.toFixed(2),
     sharpe: dsd > 0 ? +((dm / dsd) * Math.sqrt(365)).toFixed(2) : null, days: span,
+    // daily-clustered t: trades closing on the same day count as one observation (the gate uses the lower t)
+    tDay: dsd > 0 && dr.length >= 2 ? +((dm / dsd) * Math.sqrt(dr.length)).toFixed(2) : null,
   };
 }
 // the same summary for each third of the period (stability), by month and by coin

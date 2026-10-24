@@ -4,11 +4,13 @@
  * Keeps the peak and the UTC day's starting equity (the risk ladders use both), per-strategy results in R
  * (kv 'strategyResults' — the allocator's input) and totals of fees and funding.
  * Publishes account every 5 s (and kv 'account'). State in <dataDir>/state/accountant.json.
+ * Also hosts the execution-cost tracker (exec/cost_tracker.js): `exec.cost` for every fill, kv 'execCost' per coin.
  */
 'use strict';
 const path = require('path');
 const { Agent } = require('../core/agent');
 const { readJSON, writeAtomic } = require('../core/fsx');
+const { CostTracker } = require('./cost_tracker');
 
 const DAY = 86400000;
 
@@ -22,12 +24,25 @@ class Accountant extends Agent {
     this.open = []; this.last = new Map();
     const pos = await this.bus.kv.get('positions'); if (pos) this.open = pos.open;
     this.subscribe('trade.closed', (m) => this.onTrade(m.data), { durable: true });
-    this.subscribe('positions', (m) => { this.open = m.data.open; if (m.data.equity > 0) this.exchangeEquity = m.data.equity; });
+    this.subscribe('positions', (m) => { this.open = m.data.open; if (m.data.equity > 0) this.exchangeEquity = m.data.equity; if (this.costs) this.costs.onPositions(m.data.open); });
     this.subscribe('md.ticker', (m) => this.last.set(m.data.coin, m.data.last));
+    // implementation shortfall of every fill (decision price → fill price, plus fees)
+    this.costs = new CostTracker(); this.costFile = path.join(this.ctx.dataDir, 'state', `costs-${this.X.account}.json`); this.costs.load(readJSON(this.costFile, null));
+    this.subscribe('md.book', (m) => this.costs.onBook(m.data));
+    this.subscribe('order', (m) => { if (m.src === 'risk') this.costs.onOrder(m.data, this.now()); });
+    this.subscribe('exec.fill', (m) => this.onFill(m.data), { durable: true });
     this.every(5000, () => this.snapshot());
     await this.snapshot();
   }
   save() { writeAtomic(this.file, JSON.stringify(this.A)); }
+  async onFill(f) {
+    const rec = this.costs.onFill(f);
+    if (!rec) { this.count('fillsUnjudged'); return; }
+    this.count('costRecords'); this.gauge('lastCostBps', rec.costBps);
+    await this.publish('exec.cost', rec);
+    writeAtomic(this.costFile, JSON.stringify(this.costs.dump()));
+    await this.bus.kv.set('execCost', { ts: this.now(), coins: this.costs.model() });
+  }
   async onTrade(t) {
     const A = this.A;
     A.cash += t.netUsd; A.fees += t.feeUsd; A.funding += t.fundUsd || 0; A.trades++; if (t.netUsd > 0) A.wins++;

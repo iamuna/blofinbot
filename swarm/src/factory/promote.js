@@ -26,11 +26,11 @@ function decide({ latest, state, shadow, trades, ideas, now = Date.now() }) {
     const first = sh.length ? Math.min(...sh.map((t) => t.entryT)) : id.length ? Math.min(...id.map((i) => i.t)) : now;
     if (mode === 'shadow') {
       const rs = sh.map((t) => t.r);
-      const g1 = backtestGate(bt, latest.tries || 1), g2 = shadowGate({ days: (now - first) / 86400000, ideas: Math.max(id.length, sh.length), rs }, bt, account), g3 = oosGate({ rs }, bt, account);
+      const g1 = backtestGate(bt, latest.tries || 1), g2 = shadowGate({ days: (now - first) / 86400000, ideas: Math.max(id.length, sh.length), rs }, bt, account), g3 = oosGate({ rs, trades: sh }, bt, account);
       const pass = (g1.pass && g2.pass) || g3.pass;
       out.push({ name, from: 'shadow', to: pass ? 'trade' : 'shadow', why: g1.pass && g2.pass ? ['backtest and shadow gates pass'] : g3.pass ? ['out-of-sample route: live shadow record alone is strong enough'] : [...g1.why, ...g2.why, ...g3.why] });
     } else if (mode === 'trade') {
-      const d = demoteCheck(trades.filter((t) => (t.strategies || []).some((s) => s.name === name)).map((t) => t.r), bt);
+      const d = demoteCheck(trades.filter((t) => (t.strategies || []).some((s) => s.name === name)), bt);
       out.push({ name, from: 'trade', to: d.demote ? 'shadow' : 'trade', why: d.why });
     }
   }

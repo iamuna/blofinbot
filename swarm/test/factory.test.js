@@ -39,11 +39,14 @@ test('gate: out-of-sample route — a strategy that missed the multiple-testing 
   assert.match(oosGate({ rs: live(200, 6) }, weakBt, 'live').why.join(), /only Ibrahim/);
   // only the current version's shadow trades count
   const now = Date.UTC(2026, 10, 30);
-  const shadow = live(200, 6).map((r, k) => ({ strategy: 'it', ph: k < 100 ? 'old' : 'new', entryT: now - 30 * 86400000 + k * 3600000, exitT: now - 86400000, r }));
+  // trades spread over the days (the route judges the daily-clustered t: 200 trades closing on one day are one bet)
+  const shadow = live(200, 6).map((r, k) => ({ strategy: 'it', ph: k < 100 ? 'old' : 'new', entryT: now - 30 * 86400000 + k * 3600000, exitT: now - 30 * 86400000 + k * 3600000 + 3600000, r }));
   const latest = { tries: 29, results: { it: Object.assign(weakBt, { ph: 'new' }) } };
   assert.strictEqual(decide({ latest, state: {}, shadow, trades: [], ideas: [], now })[0].to, 'shadow', '100 trades of the new version are not enough');
   for (const t of shadow) t.ph = 'new';
   assert.strictEqual(decide({ latest, state: {}, shadow, trades: [], ideas: [], now })[0].to, 'trade');
+  for (const t of shadow) t.exitT = now - 86400000;
+  assert.strictEqual(decide({ latest, state: {}, shadow, trades: [], ideas: [], now })[0].to, 'shadow', 'the same 200 trades closing on one day are one bet');
 });
 
 test('promotion: decisions from factory results and live state', () => {
