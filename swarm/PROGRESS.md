@@ -76,7 +76,8 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 - Phase 0 (Ibrahim: "do as the guide says"): the last five strategies with negative backtests still in trade
   (intraday-trend, dip-reversal, candle-morning-star-4h, candle-harami-4h, candle-three-outside-1h) → shadow through
   control.json on swarm-state; trading now: it-4h, ma-retest-12h, ma-retest-4h, rsi-macd-trend-12h (rule v2). PR #4
-  (trend sleeve) brought up to date with main (105/105 tests) and left for Ibrahim to merge.
+  (trend sleeve, in shadow) and this Phase 1 PR merged on Ibrahim's OK in chat (08:50); both are protected, so the PC
+  installs them after approve.ps1. Sleeve: 2 weeks of shadow tracking, then `/mode sleeve:trend trade`.
 - Phase 1 (branch swarm-fix/upswarm-phase1, protected → pull request): t-stats clustered by day in the gate, the
   backtest rows (`tDay`), the report cards and /status (which no longer ranks strategies by total R); sentinel in the
   coordinator (target > 0, stop ≤ 25% away and ≥ 2× the round-trip cost, coin listed ≥ 30 days); coin-shock rule in
