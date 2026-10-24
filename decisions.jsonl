@@ -186,3 +186,6 @@
 {"ts":1792810804397,"id":"int-candle-three-outside-1h-mvlt9eo0-14","coin":"XLM","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 28.8"],"mode":"normal"}
 {"ts":1792810804399,"id":"int-wyckoff-spring-1h-mvlt9eo0-27","coin":"XPL","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 65.6"],"mode":"normal"}
 {"ts":1792810804400,"id":"int-wyckoff-spring-1h-mvlt9eo0-28","coin":"ZK","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 392"],"mode":"normal"}
+{"ts":1792814404195,"id":"int-candle-harami-4h-mvlvekg0-1","coin":"PONS","verdict":"trim","qty":87.26471462758951,"reasons":["trimmed by net BTC exposure"],"mode":"normal"}
+{"ts":1792814404210,"id":"int-candle-harami-4h-mvlvekg0-2","coin":"SEI","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 89.3"],"mode":"normal"}
+{"ts":1792814404211,"id":"int-candle-harami-4h-mvlvekg0-3","coin":"SUI","verdict":"reject","qty":0,"reasons":["net BTC exposure leaves 0.00 < exchange minimum 5.20"],"mode":"normal"}
