@@ -9,8 +9,10 @@
 #      (strategy plugins that pass the plugin check, shadow-mode settings, candidates, docs); anything else,
 #      tests included, waits for approve.ps1;
 #   2. every offline test passes in a scratch checkout, with the tokens and keys taken out of their environment;
-#   3. if the new code then crashes within 3 minutes, the previous version is restored.
-# An update that changes this script restarts the runner itself (with the rollback still armed).
+#   3. if the new code then crashes within 3 minutes, the previous version is restored and that commit is never
+#      installed again (newer code still is).
+# An update that changes this script restarts the runner itself (with the rollback still armed); a rollback that
+# changes it back restarts the runner again, so the runner always matches the code it starts.
 # Ibrahim hears about each outcome on Telegram. Logs: C:\swarm\logs (kept 14 days).
 # SWARM_RUN_MINUTES (tests): stop after that many minutes.
 param([string]$RollbackTo = '')
@@ -113,21 +115,34 @@ function Try-Update {
 
 Get-ChildItem $Logs -Filter '*.log' -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-14) -and $_.Name -ne 'runner.log' } | Remove-Item -ErrorAction SilentlyContinue
 Write-Log "runner started (pid $PID)"
-$started = Get-Date; $lastCheck = Get-Date; $lastAlive = Get-Date; $rollbackTo = $null; $rollbackUntil = Get-Date
-if ($RollbackTo) { $rollbackTo = $RollbackTo; $rollbackUntil = (Get-Date).AddMinutes(3); Write-Log "runner restarted for its own update; rollback to $($RollbackTo.Substring(0,7)) armed for 3 minutes" }
+$started = Get-Date; $lastCheck = Get-Date; $lastAlive = Get-Date; $rollbackUntil = Get-Date
+# $rollbackTo IS the -RollbackTo parameter (PowerShell names ignore case): setting it to $null here, as this line
+# did until 2026-10-24, threw the parameter away, so a runner that restarted for its own update never armed its rollback
+if ($rollbackTo) { $rollbackUntil = (Get-Date).AddMinutes(3); Write-Log "runner restarted for its own update; rollback to $($rollbackTo.Substring(0,7)) armed for 3 minutes" } else { $rollbackTo = $null }
 $proc = Start-Swarm
 while ($true) {
   Start-Sleep -Seconds 20
   if ($env:SWARM_RUN_MINUTES -and ((Get-Date) - $started).TotalMinutes -ge [double]$env:SWARM_RUN_MINUTES) { Stop-Swarm $proc; Write-Log 'runner stopped (SWARM_RUN_MINUTES)'; break }
   if ($proc.HasExited) {
     if ($rollbackTo -and (Get-Date) -lt $rollbackUntil) {
+      $bad = "$(& git -C $App rev-parse HEAD)".Trim()
       & git -C $App reset -q --hard $rollbackTo
-      Say "Swarm update rolled back to $($rollbackTo.Substring(0,7)): the new code stopped within 3 minutes (exit code $($proc.ExitCode))."
+      # like failed tests: never install this commit again, wait for newer code (else it comes back in 10 minutes)
+      New-Item -ItemType File -Force -Path (Join-Path $Approved ".failed-$bad") | Out-Null
+      Say "Swarm update $($bad.Substring(0,7)) rolled back to $($rollbackTo.Substring(0,7)): the new code stopped within 3 minutes (exit code $($proc.ExitCode)). It will not be installed again; newer code will be."
       $rollbackTo = $null
+      # this runner may be the new code's run.ps1, whose agent list the restored code does not know (2026-10-24:
+      # trend-sleeve): if the rollback changed run.ps1, start the restored one and end here
+      & git -C $App diff --quiet $bad HEAD -- swarm/deploy/windows/run.ps1
+      if ($LASTEXITCODE -ne 0) {
+        Write-Log 'run.ps1 rolled back too: restarting the runner'
+        Start-Process -FilePath 'powershell.exe' -ArgumentList @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-WindowStyle', 'Hidden', '-File', "`"$PSCommandPath`"") -WindowStyle Hidden
+        break
+      }
     } else { Write-Log "node exited (code $($proc.ExitCode)); restarting" }
     Start-Sleep -Seconds 5
     $proc = Start-Swarm
-    continue
+    # no `continue`: a swarm that keeps crashing must still look for new code, or a fix on main never reaches it
   }
   if (((Get-Date) - $lastAlive).TotalMinutes -ge 60) { $lastAlive = Get-Date; Write-Log "alive: node pid $($proc.Id), code $(& git -C $App rev-parse --short HEAD)" }
   if (((Get-Date) - $lastCheck).TotalMinutes -ge 10) {
