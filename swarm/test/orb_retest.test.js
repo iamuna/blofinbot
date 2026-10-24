@@ -25,15 +25,24 @@ function morning(r, breakout) {
   if (r < 120) return lerp(r, 49, 119, 100.95, 104);
   return 104;
 }
+// the video's demand-zone case: a 99.0–100.0 range, a quiet base candle at 99.3, then three strong green 5m candles,
+// the third of which closes above the range
+function zoneMorning(r) {
+  if (r < 0) return 99.5;
+  if (r < 15) return [100, 99, 99.5][r % 3];
+  if (r < 20) return 99.3;
+  if (r < 35) return [99.55, 99.8, 100.4][Math.floor((r - 20) / 5)];
+  return 100.4;
+}
 // day0 = 00:00 UTC of the day; open = 9:30 New York in UTC minutes (13:30 in summer, 14:30 in winter)
-function run({ day0, open, breakout = true, params }) {
+function run({ day0, open, breakout = true, params, path = morning }) {
   const fs_ = new FeatureState({ tfs: [1, 5] }), host = new StrategyHost(strategies.byName['orb-retest'], { fs: fs_, params });
   const sim = new ExecSim({ onClose: (i, res) => host.onClose(i.coin, i.id, res) });
   const ideas = [];
   let px = 100;
   for (let k = 0; k < open + 200; k++) {
     const t = day0 + k * MIN, o = px;
-    px = morning(k - open, breakout);
+    px = path(k - open, breakout);
     const bar = { t, o, h: Math.max(o, px) * 1.0002, l: Math.min(o, px) * 0.9998, c: px, v: 10, q: 1e5, bq: 5e4, n: 10 };
     sim.onBar('XYZ', bar);
     for (const ev of fs_.onBar1m('XYZ', bar)) for (const i of host.onEvent(ev)) { ideas.push(i); sim.submit(i); }
@@ -72,4 +81,12 @@ test('orb-retest: no break, no idea; range-edge setting rests the limit at the r
   assert.strictEqual(ideas.length, 1);
   assert.match(ideas[0].why, /range edge/);
   assert.ok(Math.abs(ideas[0].entry.px - 100.6 * 1.0002) < 1e-6, `limit at the range high, got ${ideas[0].entry.px}`);
+});
+
+test('orb-retest: the breakout candle can be the last of the three that make a demand zone', () => {
+  const { ideas } = run({ day0: Date.UTC(2026, 4, 4), open: 810, path: zoneMorning, params: { level: 'zone' } });
+  assert.strictEqual(ideas.length, 1);
+  assert.match(ideas[0].why, /demand zone/);
+  assert.strictEqual(ideas[0].t, Date.UTC(2026, 4, 4) + (810 + 35) * MIN, 'decided at the close of the breakout candle');
+  assert.ok(Math.abs(ideas[0].entry.px - 99.5 * 1.0002) < 1e-6, `limit at the high of the base candle (it opens at 99.5, closes 99.3), got ${ideas[0].entry.px}`);
 });

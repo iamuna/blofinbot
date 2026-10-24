@@ -118,14 +118,15 @@ findFlip(int d, float brk, float bound, float tol) =>
     [best, bestBar]
 
 // Demand (long) / supply (short) zone: the base candle right before `impulseN` strong candles
-// in the trade direction, which price has not traded back into since. Returns the most recent one.
+// in the trade direction (the breakout candle may be the last of them), which price has not
+// traded back into since. Returns the most recent one.
 findZone(int d, float brk, float bound) =>
     float top = na
     float bot = na
     int zBar = na
     int maxK = math.min(zoneLook, bar_index - 1)
-    if maxK > impulseN
-        for k = impulseN + 1 to maxK
+    if maxK >= impulseN
+        for k = impulseN to maxK
             bool ok = true
             for j = 1 to impulseN
                 int o = k - j
@@ -136,9 +137,10 @@ findZone(int d, float brk, float bound) =>
                 float zt = d == 1 ? high[k] : low[k]
                 float zb = d == 1 ? low[k] : high[k]
                 bool fresh = true
-                for m = 0 to k - impulseN - 1
-                    if d == 1 ? low[m] <= zt : high[m] >= zt
-                        fresh := false
+                if k > impulseN
+                    for m = 0 to k - impulseN - 1
+                        if d == 1 ? low[m] <= zt : high[m] >= zt
+                            fresh := false
                 if fresh and (d == 1 ? zt < brk and zb > bound : zt > brk and zb < bound)
                     top := zt
                     bot := zb

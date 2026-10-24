@@ -75,6 +75,7 @@ Started by [src/run.js](src/run.js) (`--group` / `--agents`, `--isolate brain`).
 | [tools/build_dataset.js](tools/build_dataset.js) | the 6.5-month backtest dataset → branch `swarm-data` |
 | [tools/hourly_backtest.js](tools/hourly_backtest.js) | the deep review's method on hourly bars (research-data / validation-data): live FeatureState → regime → StrategyHost → ExecSim, 1h–1d strategies, IS / OOS splits |
 | [tools/video_research.js](tools/video_research.js) | re-runs the 2026-10-23 video-strategies study (every table of docs/VIDEO_STRATEGIES_2026-10-23*.md) |
+| [tools/subhour_backtest.js](tools/subhour_backtest.js) | the deep review's method for 5–45m strategies: research-data 5m bars or swarm-data 1m bars through the live path, IS / OOS splits, gross R (docs/DEEP_REVIEW_2026-10-24.md) |
 | [tools/trend_sleeve_backtest.js](tools/trend_sleeve_backtest.js) | the trend sleeve on research-data / validation-data, 2020–2026 |
 | [tools/import_binance_1m.js](tools/import_binance_1m.js) | a Binance 1m kline ZIP (e.g. the 1-minute bot's BTC spot 2017–2025) → the same layout |
 | [../history/](../history/README.md) | the 5-year sweep: build data (release `swarm-history-v1`), every strategy × timeframe, walk-forward selection |

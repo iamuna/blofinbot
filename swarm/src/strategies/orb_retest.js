@@ -59,25 +59,26 @@ function flipLevel(sw, side, close, bound, tol, minTouches) {
   return best;
 }
 
-// demand (long) / supply (short) zone: the base candle before n strong candles the trade's way, untouched since
-function zoneLevel(h, first, side, close, bound, n, minBody, look) {
+// demand (long) / supply (short) zone: the base candle before n strong candles the trade's way (the breakout candle
+// may be the last of them), untouched since. at(0) = the breakout bar, at(1) the bar before it …
+function zoneLevel(at, len, side, close, bound, n, minBody, look) {
   let bodySum = 0, cnt = 0;
-  for (let k = first; k < first + 20 && k < h.len; k++) { bodySum += Math.abs(h.at(k).c - h.at(k).o); cnt++; }
+  for (let i = 1; i <= 20 && i < len; i++) { bodySum += Math.abs(at(i).c - at(i).o); cnt++; }
   const avgBody = cnt ? bodySum / cnt : 0;
-  for (let k = first + n + 1; k <= first + look && k < h.len; k++) {
+  for (let k = n; k <= look && k < len; k++) {
     let ok = true;
-    for (let j = 1; j <= n && ok; j++) { const b = h.at(k - j), body = b.c - b.o; if (side * body <= 0 || Math.abs(body) < minBody * avgBody) ok = false; }
+    for (let j = 1; j <= n && ok; j++) { const b = at(k - j), body = b.c - b.o; if (side * body <= 0 || Math.abs(body) < minBody * avgBody) ok = false; }
     if (!ok) continue;
-    const base = h.at(k), top = side > 0 ? base.h : base.l, bot = side > 0 ? base.l : base.h;
+    const base = at(k), top = side > 0 ? base.h : base.l, bot = side > 0 ? base.l : base.h;
     let fresh = true;
-    for (let m = first; m < k - n && fresh; m++) if (side > 0 ? h.at(m).l <= top : h.at(m).h >= top) fresh = false;
+    for (let m = 0; m < k - n && fresh; m++) if (side > 0 ? at(m).l <= top : at(m).h >= top) fresh = false;
     if (fresh && side * (close - top) > 0 && side * (bot - bound) > 0) return { top, bot, k };
   }
   return null;
 }
 
 module.exports = {
-  name: 'orb-retest', version: 1, tfs: [5], needsRef: false,
+  name: 'orb-retest', version: 2, tfs: [5], needsRef: false, // v2: the zone finder sees the newest zones, breakout candle included
   params: {
     orStart: 570, orMin: 15, entryEnd: 720, dayEnd: 955, // New York minutes of the day: 9:30, 15 min, 12:00, 15:55
     level: 'auto', // 'auto' (flip → zone → edge), 'flip', 'zone', 'edge'
@@ -121,7 +122,7 @@ module.exports = {
       if (s) lvl = { px: s.px, edge: s.px - side * tol, kind: 'flip zone' };
     }
     if (!lvl && (p.level === 'auto' || p.level === 'zone')) {
-      const z = zoneLevel(h, first, side, c, bound, p.impulseN, p.impulseBody, p.zoneLook);
+      const z = zoneLevel((i) => (i === 0 ? bar : h.at(first + i - 1)), h.len - first + 1, side, c, bound, p.impulseN, p.impulseBody, p.zoneLook);
       if (z) lvl = { px: z.top, edge: z.bot, kind: side > 0 ? 'demand zone' : 'supply zone' };
     }
     if (!lvl && (p.level === 'auto' || p.level === 'edge')) lvl = { px: side > 0 ? st.orH : st.orL, edge: (st.orH + st.orL) / 2, kind: 'range edge' };
