@@ -31,11 +31,15 @@ const TYPES = {
   'idea': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', side: 'n', entry: 'o', stop: 'n', timeStopMin: 'n', t: 'n', mode: 's', riskPct: 'n' } },
   'shadow.trade': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', side: 'n', entryT: 'n', exitT: 'n', netBps: 'n', r: 'n', reason: 's' } },
   'shadow.end': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', outcome: 's' } }, // an idea that never filled
+  // ── sleeves: portfolios with their own capital share (src/sleeve/). Unsigned: they ask, the risk agent decides.
+  'sleeve.target': { keep: 20000, req: { sleeve: 's', ts: 'n', mode: 's', weights: 'o', capitalShare: 'n', sigma: '?o' } }, // weights: {coin: fraction of the sleeve's capital}, sigma: {coin: daily vol}, every hour
+  'sleeve.state': { keep: 20000, req: { sleeve: 's', ts: 'n', mode: 's', equity: 'n', holdings: 'o', legs: 'a' } }, // the shadow book after the hour's legs
   // ── decisions, orders, positions, accounts
   'intent': { keep: 50000, req: { id: 's', coin: 's', side: 'n', entry: 'o', stop: 'n', riskPct: 'n', qty: 'n', strategies: 'a' } },
   'risk.decision': { keep: 50000, req: { id: 's', coin: 's', verdict: 's', qty: 'n', reasons: 'a' } },
   'risk.state': { keep: 20000, req: { ts: 'n', mode: 's', budgetScale: 'n', reasons: 'a' } },
-  'order': { keep: 50000, req: { id: 's', coin: 's', side: 'n', qty: 'n', entry: 'o', stop: 'n', timeStopMin: 'n', strategies: 'a' } },
+  'order': { keep: 50000, req: { id: 's', coin: 's', side: 'n', qty: 'n', entry: 'o', stop: 'n', timeStopMin: 'n', strategies: 'a', owner: '?s', reduceOnly: '?b' } }, // owner: a sleeve ('sleeve:trend'); timeStopMin 0 = none
+  'stop.move': { keep: 50000, req: { coin: 's', stop: 'n', owner: '?s' } }, // risk agent → trader: move a position's stop, only toward the price
   'order.end': { keep: 50000, req: { id: 's', coin: 's', outcome: 's' } }, // an order that ended without a position
   'exec.fill': { keep: 100000, req: { orderId: 's', coin: 's', side: 'n', qty: 'n', px: 'n', feeUsd: 'n', kind: 's', role: 's', ts: 'n' } },
   'positions': { keep: 20000, req: { ts: 'n', open: 'a', working: 'a' } },

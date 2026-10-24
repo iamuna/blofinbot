@@ -16,7 +16,8 @@
     ],
     "brain": [
       "events",
-      "brain"
+      "brain",
+      "trend-sleeve"
     ],
     "decision": [
       "coordinator"
@@ -1087,6 +1088,22 @@
         "holdBars": 30
       },
       "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
+    }
+  },
+  "sleeves": {
+    "trend": {
+      "enabled": true,
+      "mode": "shadow",
+      "maxCoins": 20,
+      "historyDays": 560,
+      "warmDays": 400,
+      "shadowSince": "2026-10-23",
+      "rules": {
+        "capitalShare": 0.5,
+        "stopK": 8,
+        "riskShare": 0.5
+      },
+      "note": "The retired trend bot's portfolio as a sleeve (docs/TREND_SLEEVE_DESIGN.md). Starts in shadow; it trades only after Ibrahim's /mode sleeve:trend trade (the coordinator plans and signs every leg; 'mode' here cannot make it trade). riskShare 0.5 since idea strategies trade too. Backtest 2020-2026 under risk.json: Sharpe 1.07 (top-20), 0.78 (30 unseen coins) at riskShare 0.5."
     }
   },
   "trading": {
