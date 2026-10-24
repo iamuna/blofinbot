@@ -49,6 +49,21 @@ const GROUPS = [
   ['adaptive-score', 'adaptive-score', [240, 720, 1440], (tf) => ({ tf, onlyTfs: [tf] })],
   // 2026-10-23 researcher (pushed 2026-10-24): fade the move after open interest falls 15%+ in 3 days (forced closing)
   ['oi-flush', 'oi-flush', [720, 1440], (tf) => ({ tf, onlyTfs: [tf] })],
+  // 2026-10-24 upswarm Phase 1 (upswarm/GUIDE.md §13.4): the exit grid for the slow trend entries. On 6.5 months, no
+  // target (stop or time stop only) doubled their R but rested on a few long runs; judge it here, every year, dead
+  // coins included, against the 2R target of ma-retest / ma-pullback / rsi-macd-trend above
+  ['ma-retest-notarget', 'ma-21-200', [240, 720, 1440], (tf) => ({ mode: 'retest', tf, rr: 0 })],
+  ['ma-retest-chandelier', 'ma-21-200', [240, 720], (tf) => ({ mode: 'retest', tf, rr: 0, trailAtr: 3, trailAfterR: 1 })],
+  ['ma-pullback-notarget', 'ma-21-200', [720], (tf) => ({ mode: 'pullback', tf, rr: 0 })],
+  ['rsi-macd-trend-notarget', 'rsi-macd', [720], (tf) => ({ mode: 'trend', tf, entry: 'maker', rr: 0 })],
+  ['rsi-macd-trend-chandelier', 'rsi-macd', [720], (tf) => ({ mode: 'trend', tf, entry: 'maker', rr: 0, trailAtr: 3, trailAfterR: 1 })],
+  // 2026-10-24 upswarm Phase 1: strategies running in shadow with no 5-year result, once each at their live settings,
+  // to close their files (GUIDE §12: no parameter search on families with no direction)
+  ['wyckoff-spring', 'wyckoff-spring', [60, 240], (tf) => ({ tf, onlyTfs: [tf] })],
+  ['krown-jewel', 'krown-jewel', [60, 120], (tf) => ({ tf, onlyTfs: [tf] })],
+  ['pivot-matrix', 'pivot-matrix', [60, 240], (tf) => ({ onlyTfs: [tf], htf: tf === 60 ? 720 : 1440 })],
+  ...['engulfing', 'hammer', 'star', 'morning-star', 'piercing', 'soldiers', 'harami', 'tweezer', 'doji', 'marubozu', 'three-inside', 'three-outside', 'three-methods', 'doji-star']
+    .map((f) => [`candle-${f}`, 'candles', [60, 240], (tf) => ({ pattern: f, tf, onlyTfs: [tf] })]),
 ];
 
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }
