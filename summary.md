@@ -1,6 +1,6 @@
 # Swarm — live status
 
-Updated 2026-10-24T09:30:35.935Z · account **PAPER** · risk mode normal
+Updated 2026-10-24T09:40:35.934Z · account **PAPER** · risk mode normal
 
 Equity $10752.38 (start $10000) · today -0.43% · drawdown 7.0% · 92 trades · fees $151.53 · funding $2.82
 
@@ -76,4 +76,4 @@ Open: none · working orders: 0
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: ICP: wide-spread
+Not tradable now: TIA: wide-spread
