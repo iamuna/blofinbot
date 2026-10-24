@@ -1,8 +1,8 @@
 # Swarm — live status
 
-Updated 2026-10-24T02:13:43.087Z · account **PAPER** · risk mode normal
+Updated 2026-10-24T02:23:43.088Z · account **PAPER** · risk mode normal
 
-Equity $10874.14 (start $10000) · today 0.70% · drawdown 6.0% · 78 trades · fees $125.02 · funding $2.02
+Equity $10854.92 (start $10000) · today 0.52% · drawdown 6.1% · 78 trades · fees $125.02 · funding $2.02
 
 Open: −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (candle-engulfing-1h), +TRX (candle-engulfing-4h), +DOGE (wyckoff-spring-1h), +ENA (wyckoff-spring-1h), +ETH (wyckoff-spring-1h), +FIL (wyckoff-spring-1h), +SHIB (wyckoff-spring-1h), +PENGU (wyckoff-spring-1h), −PHA (intraday-trend), +ADA (wyckoff-spring-1h) · working orders: 0
 
@@ -90,4 +90,4 @@ Open: −PEPE (candle-engulfing-1h), +WLFI (candle-engulfing-1h), −PENDLE (can
 | universe | ok |  |
 | watchdog | ok |  |
 
-Not tradable now: APR: wide-spread
+Not tradable now: ALT: wide-spread; LDO: wide-spread
