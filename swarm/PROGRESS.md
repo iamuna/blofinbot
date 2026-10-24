@@ -47,6 +47,7 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 
 ## Log
 
+- 2026-10-24 (branch `new-strats`) — Deep review, second run ([docs/DEEP_REVIEW_2026-10-24.md](docs/DEEP_REVIEW_2026-10-24.md)): the robust trend set and the golden-zone variants hold; orb-retest has no edge even before costs (fixed a zone-finder bug first, v2); donchian-1d-60/-150 shorts lose in all three samples; it-45-long is the only sub-hour variant that makes money (longs only, not proven). New tool: tools/subhour_backtest.js. Applied on Ibrahim's OK: orb-retest off, donchian-1d-60/-150 long only (config), it-45-long back to shadow on the PC (control.json on swarm-state).
 - 2026-10-24 (branch `fix/runner-rollback`, protected: needs approve.ps1) — Windows runner rollback fixed (four bugs, reproduced with a fake install). (1) A runner that restarted for its own update never armed its rollback: `$rollbackTo = $null` is the same variable as the `-RollbackTo` parameter (PowerShell names ignore case). (2) Once armed, a rollback restored the old code but kept the new runner, whose agent list the old run.js refuses (09374f9 added trend-sleeve: `unknown agent trend-sleeve` on every restart). (3) A crash-looping swarm skipped the update check, so no fix could reach it. (4) A rolled-back commit was installed again 10 minutes later. Now the rollback arms, marks the commit failed, restarts the runner from the restored run.ps1, and a crashing swarm still checks for updates. The PC stopped publishing state at 07:13 UTC today, after 09374f9 (which changes run.ps1) reached main: it was back at 08:09 UTC, without the trend-sleeve agent (older code or older runner; C:\swarm\logs\runner.log has the story). Had the new code crashed, (1) and (3) would have kept it down until someone restarted it.
 - 2026-10-24 07:45 — Daily review: agent manager retired 19 strategies with decisively negative backtests (b278683; list in swarm-reports daily/2026-10-24.md). Trade now: it-4h, ma-retest-12h, ma-retest-4h, rsi-macd-trend-12h (Ibrahim's Phase 0). Rule v2 dry run disagrees on two: ma-retest-4h → shadow (edge 0.0275 < 0.03 R), ma-retest-1d → trade. Paper +$441, but −$252 without the one IRYS trade; drawdown 6.6%.
 - 2026-10-20 11:10 — 5-year sweep built and launched (see "Now"). Universe: Binance archive daily volumes of every
@@ -132,3 +133,17 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
   full portfolio (vol targeting, cross-coin momentum, rebalancing) is the next piece of work.
 - Found: `funding-fade` never ran live (its default listens on 45m bars; tf 240 needs onlyTfs). Now runs as
   `funding-fade-4h` (shadow); the base entry is off.
+
+## 2026-10-23 (evening) — strategies from Mitch Ray TA's videos; the golden-zone retest (branch `new-strats`)
+- Ibrahim sent 4 videos (Fibonacci, swing-trading "cake-baking", bearish AB=CD, "trade effectively"). Built as
+  plugins: `mixing-bowl`, `fib-golden`, `abcd`, `wedge-break`; and `ma-retest-plus` = ma-21-200's retest with his
+  checks as switches. Hourly harness of the deep review now in the repo (`tools/hourly_backtest.js`), study script
+  `tools/video_research.js`. Write-up: docs/VIDEO_STRATEGIES_2026-10-23.md.
+- Result: the video methods alone have no edge (like every reversal / pattern family). His golden-zone rule as a
+  filter on the 4h retest (pull-back ≥ 38.2% of the impulse) doubles avg R in all three samples: `ma-retest-4h-golden`
+  +0.139 / +0.189 / +0.111 R (t 2.3 / 3.0 / 2.7), pooled t 3.73, max DD 47 R vs 127 R; the robust-five book's
+  Sharpe 0.99/0.98/1.41 → 1.19/1.34/1.50. In config as shadow (+ two 12h / 1d watches); the four video plugins off.
+  38 tries → ~439 total, t bar 3.32.
+- Open: merge `new-strats` into `main` (Ibrahim's call); then compare `ma-retest-4h-golden` with `ma-retest-4h` in
+  shadow and trade one of them, not both. Tests/tools need approve.ps1 on the PC; plugins, config and docs install themselves.
+

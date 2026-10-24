@@ -470,9 +470,10 @@
         "onlyTfs": [
           1440
         ],
-        "look": 60
+        "look": 60,
+        "shorts": false
       },
-      "note": "trend bot component; shadow"
+      "note": "trend bot component; shadow. Long only from 2026-10-24: its shorts lose in all three samples (-0.16 / -0.13 / -0.01 R; docs/DEEP_REVIEW_2026-10-24.md)"
     },
     "donchian-1d-150": {
       "base": "donchian-trend",
@@ -483,9 +484,10 @@
         "onlyTfs": [
           1440
         ],
-        "look": 150
+        "look": 150,
+        "shorts": false
       },
-      "note": "trend bot component; shadow"
+      "note": "trend bot component; shadow. Long only from 2026-10-24: its shorts lose in all three samples (-0.24 / -0.34 / -0.14 R; docs/DEEP_REVIEW_2026-10-24.md)"
     },
     "donchian-12h-60": {
       "base": "donchian-trend",
@@ -1088,6 +1090,53 @@
         "holdBars": 30
       },
       "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
+    },
+    "orb-retest": {
+      "enabled": false,
+      "mode": "shadow",
+      "params": {},
+      "note": "NY opening-range breakout entered on a retest of a flip / demand zone (Trade with Pat video, 2026-10-23; Pine version docs/pine/). Off 2026-10-24: deep review (docs/DEEP_REVIEW_2026-10-24.md) -0.21 / -0.12 / -0.13 R (IS / OOS-time / OOS-coins), about zero before costs, every setting negative"
+    },
+    "ma-retest-plus": {
+      "enabled": false,
+      "note": "base plugin (2026-10-23): the 21/200 EMA retest with Mitch Ray TA's confluence checks as switches; with all off it trades exactly like ma-21-200. Runs only as the variants below"
+    },
+    "ma-retest-4h-golden": {
+      "base": "ma-retest-plus",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "mode": "retest", "tf": 240, "onlyTfs": [240], "zone": [0.382, null] },
+      "note": "RECOMMENDED replacement for ma-retest-4h: the 4h retest taken only after a pull-back of at least 38.2% of the impulse (Fibonacci golden zone, Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md)). Hourly backtest 2020-2026: +0.139 / +0.189 / +0.111 R (t 2.3 / 3.0 / 2.7; IS / OOS-time / OOS-coins) vs ma-retest-4h +0.055 / +0.048 / +0.071; pooled 3,689 trades +0.132 R, t 3.73 (bar 3.32 for ~441 tries); +0.117 R at 2x costs; positive every full year 2021-2026; max DD 47 R vs 127 R. Shadow until its live record earns trade"
+    },
+    "ma-retest-12h-golden-fib": {
+      "base": "ma-retest-plus",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "mode": "retest", "tf": 720, "onlyTfs": [720], "zone": [0.382, null], "tgtMode": "fib" },
+      "note": "WATCH: ma-retest-12h with the golden-zone minimum and a 1.272 Fibonacci extension target (Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md)). +0.267 / +0.190 / +0.233 R vs ma-retest-12h +0.165 / +0.141 / +0.233: higher avg R in each sample but fewer trades (sum R lower); pooled t 3.26 vs 3.43. Compare in shadow before choosing"
+    },
+    "ma-retest-1d-golden": {
+      "base": "ma-retest-plus",
+      "enabled": true,
+      "mode": "shadow",
+      "params": { "mode": "retest", "tf": 1440, "onlyTfs": [1440], "zone": [0.382, null] },
+      "note": "WATCH: ma-retest-1d with the golden-zone minimum (Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md)). +0.326 / +0.265 / +0.225 R vs ma-retest-1d +0.134 / +0.085 / +0.272; positive every year incl. 2026 (base -0.18 R in 2026); only ~90 trades a year on 50 coins"
+    },
+    "mixing-bowl": {
+      "enabled": false,
+      "note": "Mitch Ray's confluence reversal ('cake-baking': RSI + MACD divergence, look-left support, pattern, Fibonacci golden zone, higher-timeframe divergence, trend bowl; 3:1), Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md). No edge: 4h -0.05 / -0.17 / -0.11 R, 12h +0.12 / +0.05 / -0.06, 1d -0.21 / -0.03 / -0.26. No ingredient, and no ingredient count, makes a reversal pay. Off"
+    },
+    "fib-golden": {
+      "enabled": false,
+      "note": "Fibonacci golden-zone pullback on 23.6%-confirmed swings, stop past 78.6%, target 1.272 (Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md)). 4h +0.042 / +0.097 / +0.059 R (t < 1, years swing -0.14 to +0.39), 12h and 1d ~0 or negative. Off; the same idea works as the golden-zone switch on ma-retest (ma-retest-4h-golden)"
+    },
+    "abcd": {
+      "enabled": false,
+      "note": "AB=CD (BC 55-81% of AB, D at the 1.272-1.618 BC extension, turn + RSI divergence, target 50% of A-D), Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md). Rare (12-35 trades on 4h) and no edge; with wider swings (2.5 ATR) 1h -0.04 / +0.03 / -0.06, 4h -0.19 / +0.08 / -0.13 R. Off"
+    },
+    "wedge-break": {
+      "enabled": false,
+      "note": "falling / rising wedge break with RSI divergence, target 50% of the pattern (Mitch Ray TA videos (2026-10-23, docs/VIDEO_STRATEGIES_2026-10-23.md)). Rare (20-200 trades) and inconsistent: 4h -0.01 / -0.02 / -0.21 R, 12h -0.14 / +0.48 / +0.09. Off"
     }
   },
   "sleeves": {

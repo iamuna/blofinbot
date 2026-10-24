@@ -73,6 +73,9 @@ Started by [src/run.js](src/run.js) (`--group` / `--agents`, `--isolate brain`).
 | `deploy/` | the same for Ubuntu (systemd, one process per group, Redis) |
 | `factory/` | strategy candidates for the factory tester (JSON) |
 | [tools/build_dataset.js](tools/build_dataset.js) | the 6.5-month backtest dataset → branch `swarm-data` |
+| [tools/hourly_backtest.js](tools/hourly_backtest.js) | the deep review's method on hourly bars (research-data / validation-data): live FeatureState → regime → StrategyHost → ExecSim, 1h–1d strategies, IS / OOS splits |
+| [tools/video_research.js](tools/video_research.js) | re-runs the 2026-10-23 video-strategies study (every table of docs/VIDEO_STRATEGIES_2026-10-23*.md) |
+| [tools/subhour_backtest.js](tools/subhour_backtest.js) | the deep review's method for 5–45m strategies: research-data 5m bars or swarm-data 1m bars through the live path, IS / OOS splits, gross R (docs/DEEP_REVIEW_2026-10-24.md) |
 | [tools/trend_sleeve_backtest.js](tools/trend_sleeve_backtest.js) | the trend sleeve on research-data / validation-data, 2020–2026 |
 | [tools/import_binance_1m.js](tools/import_binance_1m.js) | a Binance 1m kline ZIP (e.g. the 1-minute bot's BTC spot 2017–2025) → the same layout |
 | [../history/](../history/README.md) | the 5-year sweep: build data (release `swarm-history-v1`), every strategy × timeframe, walk-forward selection |
@@ -102,6 +105,9 @@ All start in shadow; trade mode is Ibrahim's call (`/mode <name> trade`). Eviden
 | session-drive, overshoot-fade, leader-follow, crowd-squeeze, noise-breakout | `src/strategies/` | the starting 1–45 minute set | all lose after costs |
 | dip-reversal | [dip_reversal.js](src/strategies/dip_reversal.js) | buy an outsized 15m drop | fails once it has a stop (−0.12 R) |
 | adaptive-score | [adaptive_score.js](src/strategies/adaptive_score.js) | the 1-minute bot's trend + momentum score, 4h–1d | `adaptive-score-12h` shadow (watch), 4h off: flat on 2021–26 (t < 0.7), +0.11 / +0.19 R at t 5 on 2018–21 ([../expansion/RESULTS_2026-10-23.md](../expansion/RESULTS_2026-10-23.md)) |
+| orb-retest | [orb_retest.js](src/strategies/orb_retest.js) | 5m close outside the 9:30–9:45 New York range, limit at the retest of a flip / demand zone, stop beyond the range, 2R (Trade with Pat video; TradingView version [docs/pine/](docs/pine/orb_common_sense_scalper.pine)) | new 2026-10-23, shadow; not in the sweep yet (sub-1h strategies have all lost after costs) |
+| ma-retest-plus | [ma_retest_plus.js](src/strategies/ma_retest_plus.js) | ma-21-200's retest (identical with every switch off) + Mitch Ray TA's checks as switches: no divergence against, 1d agrees, pull-back depth (`zone`), Fibonacci 1.272 target | new 2026-10-23 ([docs/VIDEO_STRATEGIES_2026-10-23.md](docs/VIDEO_STRATEGIES_2026-10-23.md)): **`ma-retest-4h-golden` (pull-back ≥ 38.2% of the impulse): +0.139 / +0.189 / +0.111 R vs +0.054 / +0.048 / +0.071 for ma-retest-4h, pooled t 3.73, shadow — recommended to replace ma-retest-4h**; `ma-retest-12h-golden-fib`, `ma-retest-1d-golden` shadow (watch) |
+| mixing-bowl, fib-golden, abcd, wedge-break | [mixing_bowl.js](src/strategies/mixing_bowl.js), [fib_golden.js](src/strategies/fib_golden.js), [abcd.js](src/strategies/abcd.js), [wedge_break.js](src/strategies/wedge_break.js) | Mitch Ray TA's videos: confluence reversal ("cake-baking"), golden-zone pull-back on 23.6%-confirmed swings, AB=CD, wedge break with divergence | new 2026-10-23: no edge at 4h / 12h / 1d (fib-golden-4h +0.04 / +0.10 / +0.06, t < 1); off |
 | probe | [probe.js](src/strategies/probe.js) | CI only: exercises the trade path | — |
 
 The lesson across all of it: below 1h, costs eat every edge we found; the slow (12h–1d) edges are mostly short.
@@ -136,7 +142,7 @@ strategies on Binance spot 2017–2021, by hand: [../expansion/RESULTS_2026-10-2
 | security, isolate | plugin check, update gate, signed messages, the isolated brain's lock-down |
 | ops | herald (commands, /mode), watchdog, guardian, state sync |
 | feeds, guard_recorder, universe | feeds with fake sockets, data guard, recorder, universe rules |
-| brain, strategy_engine, *strategies*, donchian_trend, funding_fade | features, regime, every plugin |
+| brain, strategy_engine, *strategies*, donchian_trend, funding_fade, orb_retest, video_strategies | features, regime, every plugin |
 | trend_sleeve | the ported engine (exactness), risk.json on its weights (fuzz), ladders, stops, the shadow agent with a fake BloFin |
 | factory | tester, gate, promotion |
 | expansion | adaptive-score, ExecSim break-even, excursions, tags, streak replay, tuner, importer |

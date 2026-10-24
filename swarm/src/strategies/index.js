@@ -23,5 +23,11 @@ const PLUGINS = [
   'oi_flush',
   'pivot_matrix',
   'adaptive_score',
+  'orb_retest',
+  'mixing_bowl',
+  'fib_golden',
+  'abcd',
+  'wedge_break',
+  'ma_retest_plus',
 ];
 module.exports = require('./loader').loadPlugins(PLUGINS);
