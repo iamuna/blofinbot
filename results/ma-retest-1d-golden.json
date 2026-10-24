@@ -1,0 +1,45 @@
+{
+ "name": "ma-retest-1d-golden",
+ "base": "ma-retest-plus",
+ "params": {
+  "mode": "retest",
+  "tf": 1440,
+  "onlyTfs": [
+   1440
+  ],
+  "zone": [
+   0.382,
+   null
+  ]
+ },
+ "ph": "ae0ce68cd1",
+ "origin": "config",
+ "idea": null,
+ "source": null,
+ "all": {
+  "n": 0
+ },
+ "cost15": {
+  "n": 0
+ },
+ "thirds": [],
+ "months": {},
+ "gate": {
+  "pass": false,
+  "why": [
+   "0 trades (need 300)",
+   "average undefined R at 1.5× costs (need > 0)",
+   "newest third undefined R (need > 0)",
+   "positive in fewer than 2 of 3 thirds",
+   "t undefined < 3.31 (bar for 415 tries)"
+  ],
+  "bar": 3.3090240483560462
+ },
+ "testedAt": "2026-10-24T09:05:33.715Z",
+ "data": {
+  "from": "2026-04-01T00:00:00.000Z",
+  "to": "2026-10-21T23:59:00.000Z",
+  "coins": 31,
+  "minutes": 293760
+ }
+}
