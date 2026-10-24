@@ -109,7 +109,7 @@ class Coordinator extends Agent {
     if (!all.length) return;
     // sentinel (decision/sentinel.js): nonsense ideas and coins too new to size never reach fusion
     for (const i of all) {
-      const bad = checkIdea(i, { now: this.now(), inst: (c) => this.universe.get(c), cfg: this.cfg });
+      const bad = checkIdea(i, { now: this.now(), inst: (c) => this.universe.get(c), cfg: this.cfg, limits: this.limits });
       if (!bad) { ideas.push(i); continue; }
       this.count('sentinelRejects');
       await this.publish('risk.decision', { id: i.id, coin: i.coin, verdict: 'reject', qty: 0, reasons: [`sentinel: ${bad}`], strategy: i.strategy }, { src: 'risk', trace: i.id });

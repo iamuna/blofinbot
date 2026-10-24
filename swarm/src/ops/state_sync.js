@@ -30,6 +30,9 @@ class StateSync extends Agent {
     this.subscribe('exec.cost', (m) => this.buf.costs.push(m.data), { durable: true });
     this.subscribe('idea', (m) => { this.ideas.push(m.data); const cut = this.now() - 86400000; while (this.ideas.length && this.ideas[0].t < cut) this.ideas.shift(); });
     this.subscribe('risk.state', (m) => { this.risk = m.data; });
+    this.subscribe('portfolio.state', (m) => { this.portfolio = Object.assign({}, this.portfolio, { state: m.data }); });
+    this.subscribe('portfolio.target', (m) => { this.portfolio = Object.assign({}, this.portfolio, { target: m.data }); });
+    this.subscribe('sleeve.state', (m) => { if (m.data.sleeve === 'trend') this.sleeve = { ts: m.data.ts, equity: m.data.equity, equity0: m.data.equity0, riskMode: m.data.riskMode, holdings: m.data.holdings, stats: m.data.stats }; });
     this.ensureRepo();
     this.every(this.Y.everyMin * 60000, () => this.sync());
   }
@@ -53,6 +56,7 @@ class StateSync extends Agent {
       universe: universe ? { ts: universe.ts, source: universe.source, coins: universe.coins.map((c) => c.coin) } : null,
       guard: guard ? { ts: guard.ts, notTradable: Object.entries(guard.coins || {}).filter(([, v]) => !v.tradable).map(([k, v]) => `${k}: ${v.reasons.join(',')}`) } : null,
       agents: this.hb, strategyResults: results, strategyModes: strategyModes || {},
+      portfolio: this.portfolio || null, sleeve: this.sleeve || null, // the shadow portfolio core and trend sleeve (upswarm Phase 2)
     };
     writeAtomic(path.join(this.dir, 'state.json'), JSON.stringify(state, null, 1));
     writeAtomic(path.join(this.dir, 'ideas.jsonl'), this.ideas.map((i) => JSON.stringify(i)).join('\n') + '\n');
@@ -82,6 +86,8 @@ class StateSync extends Agent {
     L.push('| Agent | Status | Note |', '|---|---|---|');
     for (const [k, v] of Object.entries(s.agents).sort()) L.push(`| ${k} | ${v.status} | ${(v.why || '').slice(0, 100)} |`);
     if (s.guard && s.guard.notTradable.length) L.push('', `Not tradable now: ${s.guard.notTradable.join('; ')}`);
+    const ps = s.portfolio && s.portfolio.state, pt = s.portfolio && s.portfolio.target;
+    if (ps) L.push('', `Portfolio core (shadow): equity $${ps.equity} (start $${ps.equity0}) · ${Object.keys(ps.holdings || {}).length} positions · dial ${pt ? pt.dial : '—'} · forecast vol ${pt ? pt.vol + '%' : '—'}${pt && pt.reasons.length ? ' · ' + pt.reasons.join('; ') : ''}`);
     return L.join('\n') + '\n';
   }
 }

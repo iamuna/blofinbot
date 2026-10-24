@@ -18,11 +18,12 @@
 const DAY = 86400000;
 const DEFAULTS = { maxStopDistPct: 0.25, minStopCostX: 2, roundTripBps: 15, minListedDays: 30 };
 
-function settings(cfg) { return Object.assign({}, DEFAULTS, (cfg && cfg.sentinel) || {}); }
+// code defaults < config `sentinel` < the signed risk.json (risk v2 key maxStopDistPct, docs/RISK_V2.md)
+function settings(cfg, limits) { const o = Object.assign({}, DEFAULTS, (cfg && cfg.sentinel) || {}); if (limits && Number.isFinite(limits.maxStopDistPct)) o.maxStopDistPct = limits.maxStopDistPct; return o; }
 
-// idea: {coin, side, entry:{px}, stop, target?}; ctx: {now, inst(coin) → {listedAt?}, cfg}
+// idea: {coin, side, entry:{px}, stop, target?}; ctx: {now, inst(coin) → {listedAt?}, cfg, limits}
 function checkIdea(idea, ctx = {}) {
-  const S = settings(ctx.cfg), px = idea && idea.entry && idea.entry.px;
+  const S = settings(ctx.cfg, ctx.limits), px = idea && idea.entry && idea.entry.px;
   if (!(px > 0) || !(idea.stop > 0)) return 'no entry or stop price';
   if (idea.target != null && !(idea.target > 0)) return `target price ${idea.target} is not above 0`;
   const dist = Math.abs(px - idea.stop) / px;

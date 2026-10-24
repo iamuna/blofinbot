@@ -25,6 +25,7 @@ const REGISTRY = {
   brain: () => require('./agents/brain').Brain,
   'trend-sleeve': () => require('./sleeve/agent').TrendSleeve,
   coordinator: () => require('./decision/coordinator').Coordinator,
+  portfolio: () => require('./portfolio/agent').PortfolioAgent,
   trader: (cfg) => ((cfg.trading || {}).account === 'demo' ? require('./exec/demo_trader').DemoTrader : require('./exec/trader').Trader),
   accountant: () => require('./exec/accountant').Accountant,
   herald: () => require('./ops/herald').Herald,
