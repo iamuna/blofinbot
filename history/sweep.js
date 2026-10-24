@@ -47,6 +47,8 @@ const GROUPS = [
   ['donchian-150', 'donchian-trend', [1440], (tf) => ({ tf, onlyTfs: [tf], look: 150 })],
   // 2026-10-23 (branch possible-expansion): the 1-minute bot's trend + momentum score, on slow bars only
   ['adaptive-score', 'adaptive-score', [240, 720, 1440], (tf) => ({ tf, onlyTfs: [tf] })],
+  // 2026-10-23 researcher (pushed 2026-10-24): fade the move after open interest falls 15%+ in 3 days (forced closing)
+  ['oi-flush', 'oi-flush', [720, 1440], (tf) => ({ tf, onlyTfs: [tf] })],
 ];
 
 function args() { const A = {}, v = process.argv.slice(2); for (let i = 0; i < v.length; i++) if (v[i].startsWith('--')) A[v[i].slice(2)] = v[i + 1] && !v[i + 1].startsWith('--') ? v[++i] : true; return A; }

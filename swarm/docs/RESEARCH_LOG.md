@@ -3,6 +3,32 @@
 The researcher's notebook (newest first). Every idea, why it might work, how it was tested, and the verdict. Tries
 counted in `swarm-factory/trials.jsonl` — the multiple-testing bar for the backtest gate is 2 + 0.5·log10(tries).
 
+## 2026-10-24 03:40 — oi-flush verdict from the factory, its 5-year sweep group pushed; no new try
+
+**Tries: 401 (factory LATEST, run 2026-10-23 11:29) → t bar 3.30.** Nothing passes the backtest gate. No new tries
+today: the oi-flush sweep variants (@720, @1440) were logged on 2026-10-23 and only run now.
+
+- **oi-flush-12h (factory, 6.5 months × 31 coins, run 2026-10-23 11:29)**: 10 trades, −0.49 R, t −3.36, all three
+  thirds negative (−1.0 / −0.2 / −3.7 R). Ten trades are still too few to say much, but every one of them points the
+  wrong way. **Candidate moved to `factory/rejected/`.** The real verdict is the 5-year sweep: group
+  `oi-flush` @720/@1440 added to `history/sweep.js` today (no sweep was running; last run finished 2026-10-23 12:52).
+  Judge as declared: positive at 1.5× costs in most years, both sides reported, every third. Binance open interest
+  starts ~2021-12, so 2021-Q4 has no signals.
+- **donchian-12h-60** (shadow since the repo consolidation, not a researcher candidate): factory +0.29 R, t 3.90,
+  207 trades, positive in all thirds — misses only on trade count. The 5-year sweep says otherwise: donchian-60@12h
+  −0.018 R over 5,124 trades, donchian-20@12h −0.032 R. The 6.5-month number is this window's luck; no promotion
+  case for it. donchian-20@1d (+0.011 R, Sharpe 0.27; long −37 / short +198 R out of sample) is the only positive one.
+- **Sweep** (2026-10-23, 111 variants): walk-forward 12-month/top-5 Sharpe 0.12 (t 0.24), ≈ 1%/year; best 5 in
+  hindsight Sharpe 1.17. Unchanged lesson: the selector is not a portfolio; the robust four
+  (ma-retest 12h/4h, rsi-macd-trend 12h, ma-pullback 12h) are the only slow set that holds up across samples.
+- **Shadow record** (swarm-state, review 2026-10-24 03:39): every slow strategy has 0–1 shadow trades so far; nothing
+  to judge yet.
+- **Why no new try**: the queue's funding-fade trend-filter variant (5) would be fitted to the 2021-Q4 loss that
+  shaped it; the liquidation/book ideas (2, 3) still need the home PC's recordings, which are not on `swarm-state`;
+  a quick literature check found no new open-interest result with a forced-trader mechanism we have not tested.
+  Better to let oi-flush's sweep finish than to add another variant to the pool (every extra one costs the
+  walk-forward, see 2026-10-23).
+
 ## 2026-10-23 — the 1-minute bot's tools on the 5-year data (break-even, adaptive-score, streak rule)
 
 Branch possible-expansion run for real: 60 longest-listed coins of `swarm-history-v1`, 2021-10 → 2026-09, sweep
