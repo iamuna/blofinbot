@@ -20,7 +20,8 @@
       "trend-sleeve"
     ],
     "decision": [
-      "coordinator"
+      "coordinator",
+      "portfolio"
     ],
     "trader": [
       "trader",
@@ -1104,6 +1105,49 @@
         "riskShare": 0.5
       },
       "note": "The retired trend bot's portfolio as a sleeve (docs/TREND_SLEEVE_DESIGN.md). Starts in shadow; it trades only after Ibrahim's /mode sleeve:trend trade (the coordinator plans and signs every leg; 'mode' here cannot make it trade). riskShare 0.5 since idea strategies trade too. Backtest 2020-2026 under risk.json: Sharpe 1.07 (top-20), 0.78 (30 unseen coins) at riskShare 0.5."
+    }
+  },
+  "portfolio": {
+    "enabled": true,
+    "note": "Phase 2 of the upswarm guide, in SHADOW: the portfolio constructor and the conductor build the one book the swarm would hold (trend sleeve + open ideas of the strategies in trade), cap its volatility and correlated groups, and run a simulated book next to the coordinator. It sends no orders. Switching it to trade is Ibrahim's call after two weeks of shadow (docs/PORTFOLIO_CORE.md).",
+    "rules": {
+      "portVolTargetPct": 0.1,
+      "maxClusterGrossFrac": 0.4,
+      "clusterRho": 0.7,
+      "ideaRiskPct": 0.0025,
+      "riskShare": 1
+    },
+    "shares": {
+      "sleeve:trend": 1
+    },
+    "expect": {
+      "_note": "Expected daily result per sleeve for the CUSUM (conductor): idea strategies in R per day from the 5-year sweep of 2026-10-23 (mu = sum R / days, sd = mu x sqrt(365) / Sharpe); the trend sleeve in daily return of its shadow account (Sharpe 0.78 on unseen coins at ~7% a year)",
+      "it-4h": {
+        "mu": 0.3116,
+        "sd": 9.759
+      },
+      "ma-retest-12h": {
+        "mu": 0.1406,
+        "sd": 2.464
+      },
+      "ma-retest-4h": {
+        "mu": 0.1189,
+        "sd": 5.823
+      },
+      "rsi-macd-trend-12h": {
+        "mu": 0.3152,
+        "sd": 6.691
+      },
+      "sleeve:trend": {
+        "mu": 0.00015,
+        "sd": 0.00366
+      }
+    },
+    "conductor": {
+      "volDays": 60,
+      "floor": 0.25,
+      "weekLossStopPct": 0.025,
+      "weekLossHalvePct": 0.04
     }
   },
   "trading": {

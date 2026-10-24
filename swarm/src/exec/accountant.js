@@ -52,9 +52,12 @@ class Accountant extends Agent {
     }
     const day = Math.floor(now / DAY);
     if (day !== A.day) { A.day = day; A.dayStart = equity; this.save(); }
+    // the week (Monday 00:00 UTC), for the weekly loss cap of risk v2 (docs/RISK_V2.md)
+    const week = Math.floor((day + 3) / 7);
+    if (week !== A.week) { if (A.week != null && A.weekStart > 0) A.lastWeekPct = +(equity / A.weekStart - 1).toFixed(5); A.week = week; A.weekStart = equity; this.save(); }
     if (equity > A.peak) { A.peak = equity; this.save(); }
     const acct = {
-      ts: now, mode: this.X.account, equity: +equity.toFixed(2), cash: +A.cash.toFixed(2), upl: +upl.toFixed(2), peak: +A.peak.toFixed(2), dayStart: +A.dayStart.toFixed(2),
+      ts: now, mode: this.X.account, equity: +equity.toFixed(2), cash: +A.cash.toFixed(2), upl: +upl.toFixed(2), peak: +A.peak.toFixed(2), dayStart: +A.dayStart.toFixed(2), weekStart: +A.weekStart.toFixed(2), weekPnlPct: +(equity / A.weekStart - 1).toFixed(4), lastWeekPct: A.lastWeekPct != null ? A.lastWeekPct : null,
       dd: +(1 - equity / A.peak).toFixed(4), dayPnlPct: +(equity / A.dayStart - 1).toFixed(4), gross: +gross.toFixed(2), grossX: +(gross / equity).toFixed(3), openRiskPct: +(openRisk / equity).toFixed(4),
       positions: this.open.length, trades: A.trades, winRate: A.trades ? +(A.wins / A.trades).toFixed(3) : null, fees: +A.fees.toFixed(2), funding: +A.funding.toFixed(2), equity0: A.equity0, byStrategy: A.byStrategy,
     };

@@ -33,6 +33,8 @@ const TYPES = {
   'shadow.end': { keep: 50000, req: { id: 's', strategy: 's', coin: 's', outcome: 's' } }, // an idea that never filled
   // ── sleeves: portfolios with their own capital share (src/sleeve/). Unsigned: they ask, the risk agent decides.
   'sleeve.target': { keep: 20000, req: { sleeve: 's', ts: 'n', mode: 's', weights: 'o', capitalShare: 'n', sigma: '?o' } }, // weights: {coin: fraction of the sleeve's capital}, sigma: {coin: daily vol}, every hour
+  'portfolio.target': { keep: 20000, req: { ts: 'n', book: 'o', dial: 'n', reasons: 'a' } }, // the shadow portfolio core's book (USD per coin), every hour
+  'portfolio.state': { keep: 20000, req: { ts: 'n', mode: 's', equity: 'n', holdings: 'o', legs: 'a' } }, // its simulated book after the hour
   'sleeve.state': { keep: 20000, req: { sleeve: 's', ts: 'n', mode: 's', equity: 'n', holdings: 'o', legs: 'a' } }, // the shadow book after the hour's legs
   // ── decisions, orders, positions, accounts
   'intent': { keep: 50000, req: { id: 's', coin: 's', side: 'n', entry: 'o', stop: 'n', riskPct: 'n', qty: 'n', strategies: 'a' } },

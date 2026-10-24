@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Continue'
 $Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $App = Join-Path $Root 'app'; $Data = Join-Path $Root 'data'; $Logs = Join-Path $Root 'logs'; $Approved = Join-Path $Root 'approved'
 $Branch = if ($env:SWARM_BRANCH) { $env:SWARM_BRANCH } else { 'main' }
-$Agents = 'universe,blofin-feed,binance-feed,guard,recorder,events,brain,trend-sleeve,coordinator,trader,accountant,watchdog,guardian,herald,state-sync'
+$Agents = 'universe,blofin-feed,binance-feed,guard,recorder,events,brain,trend-sleeve,coordinator,portfolio,trader,accountant,watchdog,guardian,herald,state-sync'
 New-Item -ItemType Directory -Force -Path $Data, $Logs, $Approved | Out-Null
 
 function Write-Log($t) { Add-Content -Path (Join-Path $Logs 'runner.log') -Value ("{0:u} {1}" -f (Get-Date).ToUniversalTime(), $t) }

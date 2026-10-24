@@ -4,6 +4,9 @@
  *   day loss ≥ 3% → no new trades until 00:00 UTC · ≥ 5% → close everything, no new trades until 00:00 UTC
  *   drawdown ≥ 10% → all budgets halved · ≥ 15% → only proven strategies, at half · ≥ 20% → close everything and
  *   stop until Ibrahim resumes
+ * risk v2 (docs/RISK_V2.md), active only once the keys are in the signed risk.json:
+ *   week-to-date loss ≥ weekLossStopPct → no new trades until Monday 00:00 UTC · last week ≤ −weekLossHalvePct →
+ *   this week's budgets halved
  * check(intent, size, state): per order — trims the size to the tightest limit or rejects with reasons:
  *   risk per trade, total open risk (every stop together, working orders included), one coin's notional, gross
  *   notional, net BTC exposure (alts counted by beta), spread and book depth, exchange minimum, data guard and news.
@@ -24,8 +27,12 @@ class RiskEngine {
     else if (dayLoss >= L.dayStopPct) { mode = 'no-new'; reasons.push(`day loss ${(dayLoss * 100).toFixed(1)}% ≥ ${L.dayStopPct * 100}%`); }
     if (dd >= L.ddProvenOnlyPct) { budgetScale = 0.5; provenOnly = true; reasons.push(`drawdown ${(dd * 100).toFixed(1)}%: proven strategies only, half size`); }
     else if (dd >= L.ddHalvePct) { budgetScale = 0.5; reasons.push(`drawdown ${(dd * 100).toFixed(1)}%: budgets halved`); }
+    // risk v2: the week (the accountant's weekStart, Monday 00:00 UTC)
+    const weekLoss = a.weekStart > 0 ? 1 - a.equity / a.weekStart : 0;
+    if (L.weekLossStopPct && weekLoss >= L.weekLossStopPct && mode === 'normal') { mode = 'no-new'; reasons.push(`week loss ${(weekLoss * 100).toFixed(1)}% ≥ ${L.weekLossStopPct * 100}%: no new trades until Monday`); }
+    if (L.weekLossHalvePct && a.lastWeekPct != null && -a.lastWeekPct >= L.weekLossHalvePct) { budgetScale = Math.min(budgetScale, 0.5); reasons.push(`last week ${(a.lastWeekPct * 100).toFixed(1)}%: budgets halved this week`); }
     if (o.paused && mode === 'normal') { mode = 'no-new'; reasons.push('paused'); }
-    return { mode, budgetScale, provenOnly, dayLoss, dd, reasons };
+    return { mode, budgetScale, provenOnly, dayLoss, dd, weekLoss, reasons };
   }
 
   /* intent: {coin, side, entry:{px}, stop}; size: {qty}; state: {
