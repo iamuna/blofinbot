@@ -116,7 +116,9 @@ from earlier `/mode` typos (`candel-harami-1h`, `candel-harami-4h`, `wykoff-spri
 
 ## Recommendations
 
-Shadow-only changes (install themselves after the tests pass):
+Shadow-only changes (install themselves after the tests pass). **Applied 2026-10-24 on Ibrahim's OK:** 1 and 2 in
+config/swarm.json on `new-strats`; 3 as a `control.json` command on `swarm-state` (id
+`ibrahim-2026-10-24-deep-review-it45`), read by the PC at its next state sync.
 
 1. **orb-retest → off.** No edge before costs, negative in every sample and setting.
 2. **donchian-1d-60 and donchian-1d-150 → long only** (`shorts: false`). The shorts lose in all three samples.

@@ -47,7 +47,7 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 
 ## Log
 
-- 2026-10-24 (branch `new-strats`) — Deep review, second run ([docs/DEEP_REVIEW_2026-10-24.md](docs/DEEP_REVIEW_2026-10-24.md)): the robust trend set and the golden-zone variants hold; orb-retest has no edge even before costs (fixed a zone-finder bug first, v2); donchian-1d-60/-150 shorts lose in all three samples; it-45-long is the only sub-hour variant that makes money (longs only, not proven). New tool: tools/subhour_backtest.js.
+- 2026-10-24 (branch `new-strats`) — Deep review, second run ([docs/DEEP_REVIEW_2026-10-24.md](docs/DEEP_REVIEW_2026-10-24.md)): the robust trend set and the golden-zone variants hold; orb-retest has no edge even before costs (fixed a zone-finder bug first, v2); donchian-1d-60/-150 shorts lose in all three samples; it-45-long is the only sub-hour variant that makes money (longs only, not proven). New tool: tools/subhour_backtest.js. Applied on Ibrahim's OK: orb-retest off, donchian-1d-60/-150 long only (config), it-45-long back to shadow on the PC (control.json on swarm-state).
 - 2026-10-24 07:45 — Daily review: agent manager retired 19 strategies with decisively negative backtests (b278683; list in swarm-reports daily/2026-10-24.md). Trade now: it-4h, ma-retest-12h, ma-retest-4h, rsi-macd-trend-12h (Ibrahim's Phase 0). Rule v2 dry run disagrees on two: ma-retest-4h → shadow (edge 0.0275 < 0.03 R), ma-retest-1d → trade. Paper +$441, but −$252 without the one IRYS trade; drawdown 6.6%.
 - 2026-10-20 11:10 — 5-year sweep built and launched (see "Now"). Universe: Binance archive daily volumes of every
   USDT perpetual, the live rules day by day, coins that later died kept (LUNA 230 days, FTT 21 days in it).

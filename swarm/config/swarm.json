@@ -470,9 +470,10 @@
         "onlyTfs": [
           1440
         ],
-        "look": 60
+        "look": 60,
+        "shorts": false
       },
-      "note": "trend bot component; shadow"
+      "note": "trend bot component; shadow. Long only from 2026-10-24: its shorts lose in all three samples (-0.16 / -0.13 / -0.01 R; docs/DEEP_REVIEW_2026-10-24.md)"
     },
     "donchian-1d-150": {
       "base": "donchian-trend",
@@ -483,9 +484,10 @@
         "onlyTfs": [
           1440
         ],
-        "look": 150
+        "look": 150,
+        "shorts": false
       },
-      "note": "trend bot component; shadow"
+      "note": "trend bot component; shadow. Long only from 2026-10-24: its shorts lose in all three samples (-0.24 / -0.34 / -0.14 R; docs/DEEP_REVIEW_2026-10-24.md)"
     },
     "donchian-12h-60": {
       "base": "donchian-trend",
@@ -1090,10 +1092,10 @@
       "note": "WATCH (shadow only): 2021-26 sweep +0.024 R (t 0.56, both halves and 1.5x costs positive), 2018-21 era test +0.194 R (t 5.0, every third positive): regime-dependent (expansion/RESULTS_2026-10-23.md)"
     },
     "orb-retest": {
-      "enabled": true,
+      "enabled": false,
       "mode": "shadow",
       "params": {},
-      "note": "NY opening-range breakout entered on a retest of a flip / demand zone (Trade with Pat video, 2026-10-23; Pine version docs/pine/). 5m: untested in the sweep, and every sub-1h strategy so far loses after costs; shadow only"
+      "note": "NY opening-range breakout entered on a retest of a flip / demand zone (Trade with Pat video, 2026-10-23; Pine version docs/pine/). Off 2026-10-24: deep review (docs/DEEP_REVIEW_2026-10-24.md) -0.21 / -0.12 / -0.13 R (IS / OOS-time / OOS-coins), about zero before costs, every setting negative"
     },
     "ma-retest-plus": {
       "enabled": false,
