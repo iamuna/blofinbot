@@ -34,7 +34,7 @@ class PortfolioAgent extends Agent {
     if (!this.limits) throw new Error('portfolio needs the risk limits (config/risk.json)');
     const sleeveRules = ((this.cfg.sleeves || {}).trend || {}).rules || {};
     // the whole account is the capital base; the book may use all of maxOpenRiskPct (the sleeve alone used half)
-    this.rules = PC.planRules(sleeveRules, Object.assign({ riskShare: 1, equity0: (this.cfg.trading || {}).paperEquity || 10000 }, C.rules));
+    this.rules = PC.planRules(sleeveRules, Object.assign({ riskShare: 1, equity0: (this.cfg.trading || {}).paperEquity || 10000 }, C.rules, this.capsV2()));
     this.crules = Object.assign({}, CD.RULES, { volTarget: this.rules.portVolTargetPct || PC.RULES.portVolTargetPct }, C.conductor, this.riskV2());
     this.http = this.ctx.http || net; this.rest = (this.cfg.blofin || {}).rest; this.paceMs = this.ctx.paceMs == null ? 150 : this.ctx.paceMs;
     const saved = await this.bus.kv.get('portfolio');
@@ -50,6 +50,8 @@ class PortfolioAgent extends Agent {
   }
   // risk v2 keys (docs/RISK_V2.md) in the signed risk.json override the conductor's defaults
   riskV2() { const L = this.limits || {}, o = {}; for (const k of ['weekLossStopPct', 'weekLossHalvePct']) if (Number.isFinite(L[k])) o[k] = L[k]; if (Number.isFinite(L.portVolTargetPct)) o.volTarget = L.portVolTargetPct; return o; }
+  // the constructor's caps: the signed risk.json wins over the config (docs/RISK_V2.md)
+  capsV2() { const L = this.limits || {}, o = {}; for (const k of ['portVolTargetPct', 'maxClusterGrossFrac']) if (Number.isFinite(L[k])) o[k] = L[k]; return o; }
   save() { return this.bus.kv.set('portfolio', this.P); }
 
   onIdea(i) {
@@ -171,11 +173,9 @@ class PortfolioAgent extends Agent {
     }
     for (const s of Object.values(P.daySum)) for (const k of Object.keys(s)) { const d = +String(k).replace('eq', ''); if (d < day - 120) delete s[k]; }
     // the week, on the shadow book's daily returns (Monday 00:00 UTC)
-    const ws = Math.floor(CD.weekStart(hour) / DMS), daily = P.st.daily || [];
-    const sum = (a, b) => daily.filter((x) => x[0] >= a && x[0] < b).reduce((acc, x) => acc + x[1], 0);
-    const weekPct = sum(ws, day + 1) + (P.st.dayStart > 0 ? P.st.eq / P.st.dayStart - 1 : 0), lastPct = daily.some((x) => x[0] >= ws - 7 && x[0] < ws) ? sum(ws - 7, ws) : null;
-    const d = CD.dial({ daily, ladderScale: 1, week: { pnlPct: weekPct, lastPct }, rules: this.crules }); // the drawdown ladder is applied by the planner
-    return { dial: d.dial, noNew: d.noNew, realisedVol: d.realisedVol, week: { pnlPct: +weekPct.toFixed(5), lastPct }, shares, alarms, reasons: d.reasons.concat(reasons) };
+    const daily = P.st.daily || [], wk = CD.weekOf(daily, day, P.st.dayStart > 0 ? P.st.eq / P.st.dayStart - 1 : 0);
+    const d = CD.dial({ daily, ladderScale: 1, week: wk, rules: this.crules }); // the drawdown ladder is applied by the planner
+    return { dial: d.dial, noNew: d.noNew, realisedVol: d.realisedVol, week: { pnlPct: +wk.pnlPct.toFixed(5), lastPct: wk.lastPct }, shares, alarms, reasons: d.reasons.concat(reasons) };
   }
 }
 

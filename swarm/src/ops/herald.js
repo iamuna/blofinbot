@@ -24,6 +24,7 @@ class Herald extends Agent {
     this.hb = {}; this.risk = null;
     this.subscribe('sys.heartbeat', (m) => { this.hb[m.data.agent] = Object.assign({ at: m.ts }, m.data); });
     this.subscribe('risk.state', (m) => { this.risk = m.data; this.onRisk(m.data); });
+    this.subscribe(['portfolio.state', 'portfolio.target'], (m) => { this.pf = Object.assign({}, this.pf, { [m.type === 'portfolio.state' ? 'state' : 'target']: m.data }); });
     this.subscribe('sys.log', (m) => { if (m.data.level === 'error') this.say(`⚠️ ${m.data.agent}: ${m.data.msg}`, `err:${m.data.agent}:${m.data.msg}`, 600000); });
     this.subscribe('sys.alert', (m) => this.say(`🚨 ${m.data.text}`, `alert:${m.data.key || m.data.text}`, m.data.everyMs || 600000));
     this.subscribe('trade.closed', (m) => this.hourTrades.push(m.data));
@@ -105,6 +106,9 @@ class Herald extends Agent {
     L.push('Closed trades: ' + (a.trades || 0) + ' · win rate ' + pct(a.winRate, 0));
     L.push('', '📂 Positions: ' + p.open.length + ' open · ' + (p.working || []).length + ' working orders');
     for (const x of p.open) L.push('  ' + (x.side > 0 ? 'LONG ' : 'SHORT') + ' ' + x.coin + ' · ' + ((x.strategies || []).join('+') || '?'));
+    // the portfolio core in shadow (upswarm Phase 2): what the one-book swarm would hold
+    const ps = this.pf && this.pf.state, pt = this.pf && this.pf.target;
+    if (ps) L.push('', '🧮 Portfolio core (shadow): equity ' + usd(ps.equity) + ' (start ' + usd(ps.equity0) + ') · ' + Object.keys(ps.holdings || {}).length + ' positions · dial ' + (pt ? pt.dial : '—') + ' · forecast vol ' + (pt ? pt.vol + '%' : '—') + (pt && pt.reasons && pt.reasons.length ? ' · ' + pt.reasons.slice(0, 3).join('; ') : ''));
     // strategies: the loaded ones (each reports as strategy:<name>), with shadow and paper results
     const loaded = Object.keys(hb).filter((k) => k.startsWith('strategy:')).map((k) => k.slice(9));
     const sh = this.shadowStats(), bs = a.byStrategy || {}, md = modes || {};

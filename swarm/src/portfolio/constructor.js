@@ -9,12 +9,12 @@
  * combine() then, in order:
  *   1. each sleeve × its share (the conductor's sleeve shares) × the conductor's dial;
  *   2. adds the sleeves up per coin — opposite views net out by size, no fee paid twice;
- *   3. portfolio volatility: the book's forecast volatility (daily σ per coin, correlations of daily returns shrunk
- *      halfway to their average; 0.5 between every pair when there are no returns yet) is scaled DOWN to
- *      portVolTargetPct a year — never up;
- *   4. cluster cap: coins whose daily returns correlate ≥ clusterRho form one group (majors, memes …); no group may
+ *   3. cluster cap: coins whose daily returns correlate ≥ clusterRho form one group (majors, memes …); no group may
  *      be more than maxClusterGrossFrac of the gross (never less than 1 ÷ the number of groups) — the excess is
- *      scaled away inside that group. Groups use the raw correlations; the volatility forecast the shrunk ones.
+ *      scaled away inside that group. Groups use the raw correlations; the volatility forecast the shrunk ones;
+ *   4. portfolio volatility: the book's forecast volatility (daily σ per coin, correlations of daily returns shrunk
+ *      halfway to their average; 0.5 between every pair when there are no returns yet) is scaled DOWN to
+ *      portVolTargetPct a year — never up. Last, so the book always ends at or under the target.
  * plan() hands the result to the trend sleeve's planner (sleeve.js plan(): the risk ladders, a protective stop
  * stopK daily σ away on every position, the stop-risk budget, the 25% no-trade band, and every leg that adds risk
  * through the coordinator's RiskEngine against every other leg). With only the trend sleeve at share 1 and dial 1,
@@ -106,12 +106,7 @@ function combine(sleeves, ctx = {}) {
   for (const c of Object.keys(book)) if (Math.abs(book[c]) < 1e-9) delete book[c];
   const coins = Object.keys(book).sort((a, b) => Math.abs(book[b]) - Math.abs(book[a]));
   const C = correlations(coins, ctx.returns || {}, R);
-  // 3. portfolio volatility, scaled down only
-  const volBefore = bookVol(book, sigma, C.rho, eq);
-  let volScale = 1;
-  if (volBefore > R.portVolTargetPct && volBefore > 0) { volScale = R.portVolTargetPct / volBefore; reasons.push(`forecast volatility ${(volBefore * 100).toFixed(1)}% a year > ${(R.portVolTargetPct * 100).toFixed(0)}%: book × ${volScale.toFixed(2)}`); }
-  for (const c of coins) book[c] *= volScale;
-  // 4. cluster cap
+  // 3. cluster cap
   const clusterOf = clusters(coins, C.raw, R), gross = coins.reduce((a, c) => a + Math.abs(book[c]), 0), byGroup = {}, clusterScale = {};
   for (const c of coins) byGroup[clusterOf[c]] = (byGroup[clusterOf[c]] || 0) + Math.abs(book[c]);
   const groups = Object.keys(byGroup);
@@ -127,6 +122,11 @@ function combine(sleeves, ctx = {}) {
       for (const c of coins) if (clusterScale[clusterOf[c]] != null) book[c] *= clusterScale[clusterOf[c]];
     }
   }
+  // 4. portfolio volatility, scaled down only — last, so cutting a hedge in step 3 cannot leave it above the target
+  const volBefore = bookVol(book, sigma, C.rho, eq);
+  let volScale = 1;
+  if (volBefore > R.portVolTargetPct && volBefore > 0) { volScale = R.portVolTargetPct / volBefore; reasons.push(`forecast volatility ${(volBefore * 100).toFixed(1)}% a year > ${(R.portVolTargetPct * 100).toFixed(0)}%: book × ${volScale.toFixed(2)}`); }
+  for (const c of coins) book[c] *= volScale;
   for (const c of Object.keys(bySleeve)) for (const n of Object.keys(bySleeve[c])) bySleeve[c][n] *= volScale * (clusterScale[clusterOf[c]] != null ? clusterScale[clusterOf[c]] : 1);
   return { book, bySleeve, volBefore, vol: bookVol(book, sigma, C.rho, eq), volScale, clusterOf, clusterScale, avgRho: C.avg, reasons };
 }

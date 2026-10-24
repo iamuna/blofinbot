@@ -51,4 +51,10 @@ function shareOf(base, state, now, rules = {}) {
   return { share: n >= 2 ? 0 : base * R.alarmCut ** n, alarms: n, shadow: n >= 2 };
 }
 
-module.exports = { RULES, weekStart, dial, cusumStep, shareOf };
+// the week so far and the week before, from daily returns [[day, r]] (UTC days) plus today's partial return
+function weekOf(daily, day, partial = 0) {
+  const ws = Math.floor(weekStart(day * DAY) / DAY), sum = (a, b) => daily.filter((x) => x[0] >= a && x[0] < b).reduce((acc, x) => acc + x[1], 0);
+  return { pnlPct: sum(ws, day) + partial, lastPct: daily.some((x) => x[0] >= ws - 7 && x[0] < ws) ? sum(ws - 7, ws) : null };
+}
+
+module.exports = { RULES, weekStart, weekOf, dial, cusumStep, shareOf };

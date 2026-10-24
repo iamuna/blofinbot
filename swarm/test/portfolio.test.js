@@ -161,3 +161,34 @@ test('portfolio agent: a shadow book from the trend sleeve and the ideas in trad
   assert.ok(REGISTRY.portfolio, 'the runner knows the agent');
   assert.deepStrictEqual(baseCfg().groups.decision, ['coordinator', 'portfolio']);
 });
+
+test('constructor: several sleeves at once never take the book past any risk.json limit (fuzz)', () => {
+  let seed = 11; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const COINS = ['BTC', 'ETH', 'SOL', 'XRP', 'DOGE', 'LINK', 'AVAX', 'SUI'], eq = 10000, pr = PC.planRules(baseCfg().sleeves.trend.rules, { riskShare: 1 });
+  let cases = 0, legsN = 0;
+  for (let k = 0; k < 150; k++) {
+    const px = Object.fromEntries(COINS.map((c) => [c, 10 + rnd() * 1000])), sigma = Object.fromEntries(COINS.map((c) => [c, 0.01 + rnd() * 0.08]));
+    const beta = Object.fromEntries(COINS.map((c) => [c, c === 'BTC' ? 1 : 0.5 + rnd() * 2]));
+    // three sleeves asking for anything: up to 3× equity each, both sides
+    const sleeves = {};
+    for (const s of ['sleeve:trend', 'it-4h', 'ma-retest-12h']) { sleeves[s] = {}; for (const c of COINS) if (rnd() < 0.6) sleeves[s][c] = (rnd() < 0.7 ? 1 : -1) * rnd() * 3 * eq; }
+    // other strategies' legs inside the limits
+    const others = [];
+    for (const c of COINS) if (rnd() < 0.25) { const side = rnd() < 0.6 ? 1 : -1, n = 500 + rnd() * 2000; others.push({ coin: c, side, qty: n / px[c], px: px[c], stop: px[c] * (1 - side * (0.005 + rnd() * 0.02)) }); }
+    const comb = PC.combine(sleeves, { equity: eq, sigma, rules: PC.RULES, dial: 0.25 + rnd() * 0.75 });
+    assert.ok(comb.vol <= PC.RULES.portVolTargetPct + 1e-9, `forecast vol ${comb.vol}`);
+    const mkt = Object.fromEntries(COINS.map((c) => [c, { px: px[c], sigma: sigma[c], beta: beta[c], cool: false }]));
+    const p = S.plan(PC.weightsOf(comb.book, eq), {}, mkt, { equity: eq, peak: eq, dayStart: eq }, LIMITS, others, pr);
+    const legs = others.concat(Object.entries(p.book).map(([c, h]) => ({ coin: c, side: Math.sign(h.qty), qty: Math.abs(h.qty), px: px[c], stop: h.stop, book: true })));
+    const risk = legs.reduce((a, x) => a + x.qty * Math.abs(x.px - x.stop), 0), gross = legs.reduce((a, x) => a + x.qty * x.px, 0);
+    const btc = legs.reduce((a, x) => a + x.side * x.qty * x.px * Math.min(3, Math.max(0.5, beta[x.coin])), 0), tol = 1e-6 * eq;
+    assert.ok(risk <= LIMITS.maxOpenRiskPct * eq + tol, `case ${k}: open risk ${risk / eq}`);
+    assert.ok(gross <= LIMITS.maxGrossX * eq + tol, `case ${k}: gross ${gross / eq}`);
+    assert.ok(Math.abs(btc) <= LIMITS.maxBtcBetaX * eq + tol || Object.keys(p.book).length === 0, `case ${k}: BTC ${btc / eq}`);
+    const by = {}; for (const x of legs) by[x.coin] = (by[x.coin] || 0) + x.qty * x.px;
+    for (const [c, n] of Object.entries(by)) assert.ok(n <= LIMITS.maxCoinNotionalX * eq + tol, `case ${k}: ${c} ${n / eq}`);
+    for (const x of legs) if (x.book) assert.ok(x.qty * Math.abs(x.px - x.stop) <= LIMITS.maxTradeRiskPct * eq + tol, `case ${k}: ${x.coin} position risk`);
+    cases++; legsN += p.legs.filter((l) => l.qty).length;
+  }
+  assert.ok(cases === 150 && legsN > 300, `the fuzz exercises real legs (${legsN})`);
+});

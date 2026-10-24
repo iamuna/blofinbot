@@ -72,6 +72,23 @@ f8a4a42 (Ibrahim approved and installed it by hand). Windows scripts need `power
 - `/status` (99c031e): per-strategy shadow/paper stats (trades, win %, total/avg/best/worst R, 24 h), only running strategies listed, long reports split. Approved by Ibrahim 05:02; confirm it runs (66 agents ok expected).
 - Open next: shadow results need days on 1h/4h; then add the new plugins (krown-jewel, wyckoff-spring, candles) to history/sweep.js GROUPS for the 5-year test; dragon (W) pattern was offered, not built.
 
+## 2026-10-24 (morning) — upswarm Phase 2: the portfolio core, in shadow (branch swarm-fix/upswarm-phase2)
+- Ibrahim (08:44): merge #4 and #10, then build Phase 2. Both merged; approve.ps1 on the PC installs them.
+- New `src/portfolio/`: the adapter (an idea in trade = a target its stop sizes at 0.25%), the constructor (sleeves
+  net per coin; correlated groups ≤ 40% of the gross; forecast volatility ≤ 10% a year, scaled down only) on top of
+  the trend sleeve's planner, and the conductor (the dial from 60-day realised volatility, floored at 0.25; the weekly
+  loss cap; a CUSUM per sleeve against its backtest). The `portfolio` agent runs it once an hour as a simulated
+  account (decision group, sends nothing): `portfolio.target` / `portfolio.state`, kv `portfolio`, swarm-state
+  `state.json → portfolio`, a line in /status. docs/PORTFOLIO_CORE.md.
+- Checks: the trend sleeve alone through the constructor is the sleeve's own book leg for leg (synthetic data and
+  2020–2026 research-data: 9,298 legs, same final equity); 150 random three-sleeve books stay inside every risk.json
+  limit. 120/120 tests.
+- Risk v2: the weekly loss cap is in the risk engine and the accountant keeps the week, but nothing changes until
+  Ibrahim signs the new keys (docs/RISK_V2.md: weekLossStopPct 0.025, weekLossHalvePct 0.04, maxStopDistPct 0.25,
+  portVolTargetPct 0.10, maxClusterGrossFrac 0.4).
+- Next: two weeks of shadow; then compare the shadow book with the paper account and the sleeve, and a protected
+  change lets the coordinator trade `portfolio.target` behind Ibrahim's /mode.
+
 ## 2026-10-24 — upswarm Phase 0 and Phase 1 (upswarm/GUIDE.md §12)
 - Phase 0 (Ibrahim: "do as the guide says"): the last five strategies with negative backtests still in trade
   (intraday-trend, dip-reversal, candle-morning-star-4h, candle-harami-4h, candle-three-outside-1h) → shadow through
